@@ -1,0 +1,58 @@
+{
+  "id": "scene24",
+  "name": "Четвертый важный выбор: Отношение к будущему",
+  "background": "sprites/episodes/locations/school/school_class.png",
+  "characters": [
+    {
+      "id": "player",
+      "position": "left"
+    },
+    {
+      "id": "eugene",
+      "position": "right",
+      "emotion": "normal"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "eugene",
+      "text": "Отлично! Четвертый важный выбор."
+    },
+    {
+      "speaker": "eugene",
+      "text": "Вам предлагают стажировку в престижной компании, но она находится в другом городе."
+    },
+    {
+      "speaker": "eugene",
+      "text": "У вас есть выбор: принять предложение и уехать, или остаться в родном городе с друзьями и семьей."
+    },
+    {
+      "speaker": "eugene",
+      "text": "Этот выбор покажет ваше отношение к карьере и личным связям."
+    }
+  ],
+  "choices": [
+    {
+      "id": "career_opportunity_choice",
+      "text": "Принять стажировку и уехать",
+      "nextScene": "scene25",
+      "important": true,
+      "value": "career_opportunity",
+      "description": "Выбрал карьерную возможность в другом городе",
+      "consequences": ["Карьерный рост", "Разлука с близкими"]
+    },
+    {
+      "id": "stay_home_choice",
+      "text": "Остаться с друзьями и семьей",
+      "nextScene": "scene25",
+      "important": true,
+      "value": "stay_home",
+      "description": "Выбрал остаться с близкими людьми",
+      "consequences": ["Личные связи", "Упущенная карьерная возможность"]
+    }
+  ],
+  "requirements": {},
+  "rewards": {
+    "experience": 15
+  }
+} 

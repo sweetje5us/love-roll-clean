@@ -1,0 +1,53 @@
+{
+  "id": "scene133",
+  "chapterId": 7,
+  "location": "pet_classroom",
+  "background": "school_class",
+  "characters": [
+    {
+      "id": "anna",
+      "position": "center",
+      "name": "Анна"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "anna",
+      "text": "Отлично! Если у тебя есть питомец со способностью улучшения отношений, ты можешь предложить мне поиграть с ним!",
+      "emotion": "happy"
+    },
+    {
+      "speaker": "anna",
+      "text": "Это специальное взаимодействие, которое доступно только если у тебя есть подходящий питомец.",
+      "emotion": "normal"
+    },
+    {
+      "speaker": "anna",
+      "text": "Такое взаимодействие значительно улучшит наши отношения!",
+      "emotion": "smile"
+    },
+    {
+      "speaker": "anna",
+      "text": "Попробуй найти эту опцию в диалоге, если у тебя есть питомец с такой способностью.",
+      "emotion": "happy"
+    }
+  ],
+  "choices": [
+    {
+      "text": "Понятно!",
+      "nextScene": "scene132",
+      "id": "scene133_choice1"
+    },
+    {
+      "text": "Попробуем получить питомца",
+      "nextScene": "scene125",
+      "id": "scene133_choice2"
+    },
+    {
+      "id": "scene133_choice3",
+      "text": "Предложить Анне поиграть с питомцем",
+      "nextScene": "scene134",
+      "specialInteraction": "pet_play"
+    }
+  ]
+}

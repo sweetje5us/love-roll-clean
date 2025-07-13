@@ -1,0 +1,48 @@
+{
+  "id": "scene35",
+  "name": "Добро пожаловать в игру",
+  "background": "sprites/episodes/locations/mansion/mansion_room_with_people_11zon.png",
+  "characters": [
+
+   
+  ],
+  "dialogue": [
+    {
+      "speaker": "splash",
+      "text": "Я Дмитрий Сплэш, футболист из команды Диметрио",
+      "emotion": "angry"
+    }
+  ],
+  "choices": [
+      {
+        "id": "choice1",
+        "text": "на этом все, спасибо",
+        "nextScene": "scene19"
+      },
+      {
+        "id": "choice2",
+        "text": "Расскажите о господине Диметрио",
+        "nextScene": "scene37",
+        "effects": {
+          "relationship": {
+            "splash": -10
+          }
+        }
+      },
+      {
+        "id": "choice3",
+        "text": "Расскажите про гостей",
+        "nextScene": "scene33",
+        "effects": {
+          "relationship": {
+            "splash": -10
+          }
+        }
+      }
+  ],
+  "requirements": {},
+  "rewards": {
+    "experience": 0,
+    "coins": 0
+  }
+} 

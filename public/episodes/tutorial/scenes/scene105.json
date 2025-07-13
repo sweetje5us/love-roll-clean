@@ -1,0 +1,61 @@
+{
+  "id": "scene105",
+  "chapterId": 6,
+  "location": "dice_room",
+  "background": "school_class",
+  "characters": [
+    {
+      "id": "nikolay",
+      "position": "center",
+      "name": "Николай"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "nikolay",
+      "text": "Отлично! Теперь давай проверим твой интеллект. Эта характеристика помогает решать сложные задачи и понимать сложные концепции.",
+      "emotion": "smile"
+    },
+    {
+      "speaker": "nikolay",
+      "text": "Интеллект особенно важен при анализе ситуаций, решении головоломок и понимании сложных механик игры.",
+      "emotion": "normal"
+    },
+    {
+      "speaker": "nikolay",
+      "text": "Если у тебя есть питомец с бонусом к интеллекту, он может помочь тебе лучше понимать сложные системы!",
+      "emotion": "smile"
+    },
+    {
+      "speaker": "nikolay",
+      "text": "Я подготовил для тебя небольшую головоломку. Попробуй разгадать её!",
+      "emotion": "normal"
+    }
+  ],
+  "choices": [
+    {
+      "id": "scene105_choice1",
+      "text": "[Интеллект] Попытаться решить головоломку",
+      "diceCheck": {
+        "stat": "intelligence",
+        "difficulty": 14,
+        "description": "Решение головоломки Николая",
+        "results": {
+          "critical_success": "scene106",
+          "success": "scene107",
+          "failure": "scene108"
+        }
+      }
+    },
+    {
+      "id": "scene105_choice2",
+      "text": "Попросить подсказку",
+      "nextScene": "scene107"
+    },
+    {
+      "id": "scene105_choice3",
+      "text": "Сказать, что головоломки не твоя сильная сторона",
+      "nextScene": "scene108"
+    }
+  ]
+} 

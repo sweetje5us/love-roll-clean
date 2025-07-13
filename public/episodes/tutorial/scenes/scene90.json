@@ -1,0 +1,62 @@
+{
+  "id": "scene90",
+  "chapterId": 6,
+  "location": "classroom",
+  "background": "school_class",
+  "characters": [
+    {
+      "id": "arseniy",
+      "position": "center",
+      "name": "Арсений"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "arseniy",
+      "text": "Отлично! Ты изучил основы системы предметов и обмена.",
+      "emotion": "normal"
+    },
+    {
+      "speaker": "arseniy",
+      "text": "Помимо редких питомцев, друзья могут дарить тебе:",
+      "emotion": "smile"
+    },
+    {
+      "speaker": "arseniy",
+      "text": "• Эксклюзивную одежду и аксессуары",
+      "emotion": "normal"
+    },
+    {
+      "speaker": "arseniy",
+      "text": "• Редкие зелья и материалы",
+      "emotion": "smile"
+    },
+    {
+      "speaker": "arseniy",
+      "text": "• Специальные ключи от сундуков",
+      "emotion": "normal"
+    },
+    {
+      "speaker": "arseniy",
+      "text": "• Уникальные предметы коллекции",
+      "emotion": "smile"
+    },
+    {
+      "speaker": "arseniy",
+      "text": "Помни: настоящая дружба строится на взаимном доверии и заботе.",
+      "emotion": "normal"
+    }
+  ],
+  "choices": [
+    {
+      "text": "Как узнать уровень отношений?",
+      "nextScene": "scene91",
+      "id": "scene90_choice1"
+    },
+    {
+      "text": "Завершить обучение",
+      "nextScene": "scene91",
+      "id": "scene90_choice2"
+    }
+  ]
+}

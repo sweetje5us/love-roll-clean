@@ -1,0 +1,38 @@
+{
+  "id": "scene60",
+  "chapterId": 4,
+  "location": "classroom",
+  "background": "school_class",
+  "characters": [
+    {
+      "id": "alexandra",
+      "position": "center",
+      "emotion": "smile",
+      "name": "Александра"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "alexandra",
+      "text": "Привет! Я Александра, и сегодня я расскажу тебе о магазине и экономике нашей игры.",
+      "emotion": "smile"
+    },
+    {
+      "speaker": "alexandra",
+      "text": "Магазин - это важная часть игры, где ты можешь покупать различные предметы, одежду для персонажей и многое другое.",
+      "emotion": "normal"
+    },
+    {
+      "speaker": "alexandra",
+      "text": "Но сначала давай разберемся с валютой. В игре есть два типа валюты: монеты и драгоценные камни.",
+      "emotion": "smile"
+    }
+  ],
+  "choices": [
+    {
+      "text": "Расскажи подробнее о валюте",
+      "nextScene": "scene61"
+    }
+
+  ]
+} 

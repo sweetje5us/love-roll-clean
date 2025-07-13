@@ -1,0 +1,42 @@
+{
+  "id": "scene113",
+  "chapterId": 6,
+  "location": "dice_room",
+  "background": "school_class",
+  "characters": [
+    {
+      "id": "nikolay",
+      "position": "center",
+      "name": "Николай"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "nikolay",
+      "text": "Отлично! Ты успешно освоил основы системы броска кубиков и проверки характеристик.",
+      "emotion": "happy"
+    },
+    {
+      "speaker": "nikolay",
+      "text": "Теперь ты готов к более сложным испытаниям и сможешь принимать стратегические решения в диалогах.",
+      "emotion": "smile"
+    },
+    {
+      "speaker": "nikolay",
+      "text": "Не забывай, что каждый выбор имеет значение, а случайность делает игру еще более захватывающей!",
+      "emotion": "normal"
+    },
+    {
+      "speaker": "nikolay",
+      "text": "Удачи в твоих приключениях! И помни - практика делает мастера.",
+      "emotion": "happy"
+    }
+  ],
+  "choices": [
+    {
+      "id": "scene113_choice1",
+      "text": "Спасибо за обучение!",
+      "nextChapter": 7
+    }
+  ]
+} 

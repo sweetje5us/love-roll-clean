@@ -1,0 +1,47 @@
+{
+  "id": "scene81",
+  "chapterId": 6,
+  "location": "classroom",
+  "background": "school_class",
+  "characters": [
+    {
+      "id": "arseniy",
+      "position": "center",
+      "name": "Арсений"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "arseniy",
+      "text": "Спасибо большое! Это очень мило с твоей стороны.",
+      "emotion": "smile"
+    },
+    {
+      "speaker": "arseniy",
+      "text": "Ты только что сделал важный выбор, который повлиял на наши отношения. Такие решения очень важны в игре.",
+      "emotion": "normal"
+    },
+    {
+      "speaker": "arseniy",
+      "text": "Когда ты даришь предметы персонажам или помогаешь им, ваши отношения улучшаются.",
+      "emotion": "smile"
+    },
+    {
+      "speaker": "arseniy",
+      "text": "А когда отношения достигают определённого уровня, открываются новые возможности и награды.",
+      "emotion": "normal"
+    }
+  ],
+  "choices": [
+    {
+      "text": "Расскажи о важных выборах",
+      "nextScene": "scene83",
+      "id": "scene81_choice1"
+    },
+    {
+      "text": "Какие награды за хорошие отношения?",
+      "nextScene": "scene84",
+      "id": "scene81_choice2"
+    }
+  ]
+}

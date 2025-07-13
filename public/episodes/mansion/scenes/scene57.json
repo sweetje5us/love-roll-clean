@@ -1,0 +1,42 @@
+{
+    "id": "scene57",
+    "name": "Открытие двери (Критический успех)",
+    "background": "sprites/episodes/locations/mansion/attic_inside_day.png",
+    "characters": [
+  
+     
+    ],
+    "dialogue": [
+      {
+        "speaker": "svet",
+        "text": "Я Миша, я тут прячусь, тсс",
+        "emotion": "happy"
+      }
+    ],
+    "choices": [
+      {
+        "id": "svet_meet",
+        "text": "Тебя искала Лиза",
+        "nextScene": "scene58",
+        "requirements": {
+          "importantChoice": {
+            "dulapeepa_meet": "true"
+          }
+        },
+        "important": true,
+  "value": "true",
+  "description": "Знакомство с Светом",
+  "consequences": ["выбор 1"]
+      },
+        {
+          "id": "choice2",
+          "text": "Вернуться назад",
+          "nextScene": "scene32"
+        }
+    ],
+    "requirements": {},
+    "rewards": {
+      "experience": 0,
+      "coins": 0
+    }
+  } 

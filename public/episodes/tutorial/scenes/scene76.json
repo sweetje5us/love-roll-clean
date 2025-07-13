@@ -1,0 +1,42 @@
+{
+  "id": "scene76",
+  "chapterId": 6,
+  "location": "classroom",
+  "background": "school_class",
+  "characters": [
+    {
+      "id": "arseniy",
+      "position": "center",
+      "name": "Арсений"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "arseniy",
+      "text": "Привет! Я Арсений, и сегодня я расскажу тебе о системе предметов и обмена в нашей игре.",
+      "emotion": "smile"
+    },
+    {
+      "speaker": "arseniy",
+      "text": "В игре есть множество способов взаимодействия с предметами: ты можешь получать их от персонажей, дарить их персонажам и даже обмениваться.",
+      "emotion": "normal"
+    },
+    {
+      "speaker": "arseniy",
+      "text": "Это важная часть социального взаимодействия и развития отношений с персонажами.",
+      "emotion": "smile"
+    }
+  ],
+  "choices": [
+    {
+      "id": "scene76_choice1",
+      "text": "Расскажи подробнее о получении предметов",
+      "nextScene": "scene77"
+    },
+    {
+      "id": "scene76_choice2",
+      "text": "Как дарить предметы персонажам?",
+      "nextScene": "scene80"
+    }
+  ]
+}

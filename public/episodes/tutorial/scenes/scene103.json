@@ -1,0 +1,47 @@
+{
+  "id": "scene103",
+  "chapterId": 6,
+  "location": "dice_room",
+  "background": "school_class",
+  "characters": [
+    {
+      "id": "nikolay",
+      "position": "center",
+      "name": "Николай"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "nikolay",
+      "text": "Хорошо! Обычный успех. Ты вежливо попросил, и я согласился дать тебе немного дополнительного времени.",
+      "emotion": "smile"
+    },
+    {
+      "speaker": "nikolay",
+      "text": "При обычном успехе действие выполняется, но не с таким блеском, как при критическом успехе.",
+      "emotion": "normal"
+    },
+    {
+      "speaker": "nikolay",
+      "text": "Ты получил то, что хотел, но без дополнительных бонусов или особого впечатления.",
+      "emotion": "smile"
+    },
+    {
+      "speaker": "nikolay",
+      "text": "У тебя есть 15 минут дополнительного времени. Используй их с пользой!",
+      "emotion": "normal"
+    }
+  ],
+  "choices": [
+    {
+      "id": "scene103_choice1",
+      "text": "Спасибо! Теперь давай проверим другие характеристики",
+      "nextScene": "scene105"
+    },
+    {
+      "id": "scene103_choice2",
+      "text": "Расскажи больше об обычных успехах",
+      "nextScene": "scene110"
+    }
+  ]
+} 

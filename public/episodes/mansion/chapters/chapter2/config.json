@@ -1,0 +1,10 @@
+{
+  "id": 2,
+  "name": "День 2. Расследование начинается",
+  "description": "Начало детективного расследования",
+  "duration": "5-7 минут",
+  "scenes": ["scene66"],
+  "unlocked": false,
+  "completed": false,
+  "background": "sprites/episodes/locations/mansion/mansion_inside.png"
+} 

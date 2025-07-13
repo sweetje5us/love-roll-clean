@@ -1,0 +1,53 @@
+{
+  "id": "scene37",
+  "name": "Добро пожаловать в игру",
+  "background": "sprites/episodes/locations/mansion/mansion_room_with_people_11zon.png",
+  "characters": [
+
+   
+  ],
+  "dialogue": [
+    {
+      "speaker": "splash",
+      "text": "Диметрио..",
+      "emotion": "angry"
+    },
+    {
+      "speaker": "splash",
+      "text": "Этот бессердечный кусок человека.",
+      "emotion": "angry"
+    },
+    {
+      "speaker": "splash",
+      "text": "Он выкупил мой контракт и я стал его игроком",
+      "emotion": "angry"
+    },
+    {
+      "speaker": "splash",
+      "text": "Мои условия ухудшились, тренировки усилились. Теперь от меня прежнего не осталось и следа.",
+      "emotion": "angry"
+    },
+    {
+      "speaker": "splash",
+      "text": "Знаешь, мне наскучил разговор с тобой.",
+      "emotion": "angry"
+    }
+  ],
+  "choices": [
+      {
+        "id": "choice1",
+        "text": "на этом все, спасибо",
+        "nextScene": "scene19",
+        "effects": {
+          "relationship": {
+            "splash": -10
+          }
+        }
+      }
+  ],
+  "requirements": {},
+  "rewards": {
+    "experience": 0,
+    "coins": 0
+  }
+} 

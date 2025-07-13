@@ -1,0 +1,32 @@
+{
+  "id": "scene165",
+  "chapterId": 8,
+  "location": "classroom",
+  "background": "school_class",
+  "characters": [
+    {
+      "id": "dima",
+      "position": "center",
+      "emotion": "happy"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "dima",
+      "text": "Было приятно познакомиться с тобой! Ты показал себя как внимательный и чуткий человек. Удачи в твоих будущих отношениях!",
+      "emotion": "happy"
+    }
+  ],
+  "choices": [
+    {
+      "id": "scene165_choice1",
+      "text": "Спасибо, Дмитрий! И тебе всего наилучшего!",
+      "nextScene": "scene166",
+      "effects": {
+        "relationship": {
+          "dima": 1
+        }
+      }
+    }
+  ]
+}

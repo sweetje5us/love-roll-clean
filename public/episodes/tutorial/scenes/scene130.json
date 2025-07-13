@@ -1,0 +1,52 @@
+{
+  "id": "scene130",
+  "chapterId": 7,
+  "location": "pet_classroom",
+  "background": "school_class",
+  "characters": [
+    {
+      "id": "anna",
+      "position": "center",
+      "name": "Анна"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "anna",
+      "text": "Ох... Это было... не очень убедительно.",
+      "emotion": "sad"
+    },
+    {
+      "speaker": "anna",
+      "text": "Ты так нервничал, что даже не мог связать слова в предложение.",
+      "emotion": "normal"
+    },
+    {
+      "speaker": "anna",
+      "text": "Извини, но я не могу доверить тебе питомца в таком состоянии.",
+      "emotion": "sad"
+    },
+    {
+      "speaker": "anna",
+      "text": "Попробуй потренироваться в общении с другими персонажами.",
+      "emotion": "normal"
+    },
+    {
+      "speaker": "anna",
+      "text": "Когда ты станешь более уверенным, приходи снова!",
+      "emotion": "smile"
+    }
+  ],
+  "choices": [
+    {
+      "text": "Понятно, я постараюсь улучшиться",
+      "nextScene": "scene132",
+      "effects": {
+        "relationships": {
+          "anna": 0
+        }
+      },
+      "id": "scene130_choice1"
+    }
+  ]
+}

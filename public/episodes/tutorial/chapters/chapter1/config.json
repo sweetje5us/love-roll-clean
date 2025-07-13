@@ -1,0 +1,10 @@
+{
+  "id": 1,
+  "name": "Глава 1: Знакомство с основами",
+  "description": "Знакомство с игрой и основными элементами интерфейса",
+  "duration": "3-5 минут",
+  "scenes": ["scene1", "scene2"],
+  "unlocked": true,
+  "completed": false,
+  "background": "sprites/episodes/locations/school/school_building.png"
+} 

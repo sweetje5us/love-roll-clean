@@ -1,0 +1,37 @@
+{
+  "id": 2,
+  "name": "Важные выборы и их последствия",
+  "description": "Изучаем механику важных выборов, которые могут повлиять на сюжет значительно позже",
+  "duration": "5-7 минут",
+  "scenes": [
+    "scene20",
+    "scene21", 
+    "scene22",
+    "scene23",
+    "scene24",
+    "scene25",
+    "scene26",
+    "scene27",
+    "scene29",
+    "scene30",
+    "scene31",
+    "scene32"
+  ],
+  "characters": [
+    "eugene"
+  ],
+  "objectives": [
+    "Понять механику важных выборов",
+    "Изучить концепцию Чеховского ружья",
+    "Сделать несколько важных решений",
+    "Увидеть, как выборы влияют на концовки"
+  ],
+  "rewards": {
+    "experience": 200,
+    "coins": 25,
+    "items": ["important_choice_guide"]
+  },
+  "unlocked": true,
+  "completed": false,
+  "background": "sprites/episodes/locations/school/school_class.png"
+} 

@@ -1,0 +1,69 @@
+{
+  "id": "scene25",
+  "name": "Добро пожаловать в игру",
+  "background": "sprites/episodes/locations/mansion/mansion_room_with_people_11zon.png",
+  "characters": [
+
+   
+  ],
+  "dialogue": [
+    {
+      "speaker": "oleg",
+      "text": "Я адвокат господина Диметрио",
+      "emotion": "happy"
+    },
+    {
+      "speaker": "oleg",
+      "text": "Я уже много лет с ним работаю",
+      "emotion": "happy"
+    },
+    {
+      "speaker": "oleg",
+      "text": "Подробности наших с ним рабочих отношений я с вами обсуждать не стану",
+      "emotion": "smirk"
+    },
+    {
+      "speaker": "oleg",
+      "text": "Я здесь не по работе, а как друг господина Диметрио",
+      "emotion": "neutral"
+    },
+    {
+      "speaker": "oleg",
+      "text": "Могу я расслабиться вне работы и перестать отвечать на вопросы?",
+      "emotion": "neutral"
+    }
+  ],
+  "choices": [
+      {
+        "id": "choice1",
+        "text": "Спасибо, на этом все.",
+        "nextScene": "scene23"
+      },
+      {
+        "id": "choice2",
+        "text": "[Убеждение] Расскажите о господине Диметрио",
+        "diceCheck": {
+          "stat": "charisma",
+          "difficulty": 12,
+          "description": "Попытка убедить Олега рассказать о господине Диметрио",
+          "results": {
+            "critical_success": "scene29_2",
+            "success": "scene29_1",
+            "failure": "scene29_3",
+            "critical_failure": "scene29_4"
+          }
+        },
+        "nextScene": "scene29_1"
+      },
+      {
+        "id": "choice3",
+        "text": "Расскажите про гостей",
+        "nextScene": "scene27"
+      }
+  ],
+  "requirements": {},
+  "rewards": {
+    "experience": 0,
+    "coins": 0
+  }
+} 

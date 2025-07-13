@@ -1,0 +1,53 @@
+{
+  "id": "scene68",
+  "chapterId": 4,
+  "location": "classroom",
+  "background": "school_class",
+  "characters": [
+    {
+      "id": "alexandra",
+      "position": "center",
+      "emotion": "normal",
+      "name": "Александра"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "alexandra",
+      "text": "Покупки за реальные деньги - это самый быстрый способ получить много валюты.",
+      "emotion": "smile"
+    },
+    {
+      "speaker": "alexandra",
+      "text": "В магазине есть различные пакеты: от небольших до очень крупных.",
+      "emotion": "normal"
+    },
+    {
+      "speaker": "alexandra",
+      "text": "Чем больше пакет, тем выгоднее цена за единицу валюты.",
+      "emotion": "smile"
+    },
+    {
+      "speaker": "alexandra",
+      "text": "Также есть специальные предложения с бонусами: дополнительные предметы, эксклюзивная одежда и так далее.",
+      "emotion": "normal"
+    },
+    {
+      "speaker": "alexandra",
+      "text": "Важно: все покупки безопасны и защищены. Мы используем надежные платежные системы.",
+      "emotion": "smile"
+    }
+  ],
+  "choices": [
+    {
+      "id": "choice1",
+      "text": "Как работают скидки?",
+      "nextScene": "scene69"
+    },
+    {
+      "id": "choice2",
+      "text": "Расскажи о специальных предложениях",
+      "nextScene": "scene70"
+    }
+  ]
+} 

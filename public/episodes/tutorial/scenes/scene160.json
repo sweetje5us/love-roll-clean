@@ -1,0 +1,35 @@
+{
+  "id": "scene160",
+  "chapterId": 8,
+  "location": "corridor",
+  "background": "school_corridor",
+  "characters": [
+    {
+      "id": "anna",
+      "position": "center",
+      "emotion": "happy"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "anna",
+      "text": "Привет! Я так рада тебя видеть! Знаешь, я хотела показать тебе своего питомца - он стал намного сильнее благодаря твоим советам!",
+      "emotion": "happy"
+    }
+  ],
+  "choices": [
+    {
+      "id": "scene160_choice1",
+      "text": "Конечно! Я с удовольствием посмотрю на твоего питомца",
+      "nextScene": "scene161",
+      "effects": {
+        "relationship": {}
+      }
+    },
+    {
+      "id": "scene160_choice2",
+      "text": "Да, было интересно изучать систему питомцев вместе",
+      "nextScene": "scene161"
+    }
+  ]
+}

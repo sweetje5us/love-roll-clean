@@ -1,0 +1,47 @@
+{
+  "id": "scene106",
+  "chapterId": 6,
+  "location": "dice_room",
+  "background": "school_class",
+  "characters": [
+    {
+      "id": "nikolay",
+      "position": "center",
+      "name": "Николай"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "nikolay",
+      "text": "Невероятно! Критический успех! Ты решил головоломку за считанные секунды!",
+      "emotion": "surprised"
+    },
+    {
+      "speaker": "nikolay",
+      "text": "Ты не только нашел правильный ответ, но и объяснил мне логику решения так, что я сам понял, как это работает!",
+      "emotion": "laugh"
+    },
+    {
+      "speaker": "nikolay",
+      "text": "Это показывает, что твой интеллект действительно на высоте. Ты можешь анализировать сложные ситуации и находить неочевидные решения.",
+      "emotion": "smile"
+    },
+    {
+      "speaker": "nikolay",
+      "text": "С такими способностями ты сможешь разобраться в любых механиках игры!",
+      "emotion": "happy"
+    }
+  ],
+  "choices": [
+    {
+      "id": "scene106_choice1",
+      "text": "Спасибо! Идем дальше",
+      "nextScene": "scene112"
+    },
+    {
+      "id": "scene106_choice2",
+      "text": "Расскажи больше о роли интеллекта в игре",
+      "nextScene": "scene113"
+    }
+  ]
+} 

@@ -1,0 +1,68 @@
+{
+  "id": "scene50",
+  "name": "Добро пожаловать в игру",
+  "background": "sprites/episodes/locations/mansion/mansion_room_camin_11zon.png",
+  "characters": [
+
+   
+  ],
+  "dialogue": [
+        {
+      "speaker": "mooduck",
+      "text": "Я здесь знаю только семью господина Диметрио",
+      "emotion": "angry"
+    },
+    {
+      "speaker": "mooduck",
+      "text": "его Жену - Надин",
+      "emotion": "angry"
+    },
+    {
+      "speaker": "mooduck",
+      "text": "его сына - Мишу",
+      "emotion": "angry"
+    },
+    {
+      "speaker": "mooduck",
+      "text": "Пожалуйста, не отвлекайте меня, мне нужно работать!",
+      "emotion": "angry"
+    }
+  ],
+  "choices": [
+    {
+      "id": "choice1",
+      "text": "[Харизма] Может вам чем-то помочь?",
+      "diceCheck": {
+        "stat": "charisma",
+        "difficulty": 12,
+        "description": "Попытка помочь Василию Мадуку",
+        "results": {
+          "critical_success": "scene46_2",
+          "success": "scene46_1",
+          "failure": "scene46_3",
+          "critical_failure": "scene46_4"
+        }
+      },
+      "nextScene": "scene46_1"
+    },
+    {
+      "id": "mooduck_meet",
+      "text": "Представиться, и спросить что с ним",
+      "nextScene": "scene48",
+      "important": true,
+"value": "true",
+"description": "Знакомство с Василием Мадуком",
+"consequences": ["выбор 1"]
+    },
+      {
+        "id": "choice2",
+        "text": "Вернуться",
+        "nextScene": "scene26"
+      }
+  ],
+  "requirements": {},
+  "rewards": {
+    "experience": 0,
+    "coins": 0
+  }
+} 

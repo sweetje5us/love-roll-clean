@@ -1,0 +1,44 @@
+{
+  "id": "scene52",
+  "background": "sprites/episodes/locations/school/school_corridor.png",
+  "characters": [
+    {
+      "id": "dima",
+      "position": "center"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "dima",
+      "text": "Знаешь, ты оказался хорошим человеком.",
+      "emotion": "smile1"
+    },
+    {
+      "speaker": "dima",
+      "text": "Твои поступки показали мне, что на тебя можно положиться. Ты настоящий друг.",
+      "emotion": "smile2"
+    },
+    {
+      "speaker": "dima",
+      "text": "Спасибо тебе за то, что ты был рядом, когда мне это было нужно.",
+      "emotion": "smile1"
+    },
+    {
+      "speaker": "dima",
+      "text": "Надеюсь, наша дружба будет крепнуть с каждым днем!",
+      "emotion": "excited"
+    }
+  ],
+  "choices": [
+    {
+      "id": "end_chapter",
+      "text": "Завершить главу",
+      "nextScene": "scene75",
+      "effects": {
+        "relationship": {
+          "dima": 0
+        }
+      }
+    }
+  ]
+} 

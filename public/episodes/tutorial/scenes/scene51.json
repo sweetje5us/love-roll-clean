@@ -1,0 +1,44 @@
+{
+  "id": "scene51",
+  "background": "sprites/episodes/locations/school/school_corridor.png",
+  "characters": [
+    {
+      "id": "dima",
+      "position": "center"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "dima",
+      "text": "Ну что ж, наш эксперимент подошел к концу.",
+      "emotion": "normal"
+    },
+    {
+      "speaker": "dima",
+      "text": "Ты показал себя как... обычный человек. Ничего особенного, но и ничего плохого.",
+      "emotion": "normal"
+    },
+    {
+      "speaker": "dima",
+      "text": "Может быть, в следующий раз ты будешь более решительным в своих поступках.",
+      "emotion": "normal"
+    },
+    {
+      "speaker": "dima",
+      "text": "Удачи тебе в дальнейшем!",
+      "emotion": "smile1"
+    }
+  ],
+  "choices": [
+    {
+      "id": "end_chapter",
+      "text": "Завершить главу",
+      "nextScene": "scene75",
+      "effects": {
+        "relationship": {
+          "dima": 0
+        }
+      }
+    }
+  ]
+} 

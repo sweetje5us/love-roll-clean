@@ -1,0 +1,50 @@
+{
+  "id": "scene54_1",
+  "name": "Открытие двери (успех)",
+  "background": "sprites/episodes/locations/mansion/attic_inside_day.png",
+  "characters": [
+
+   
+  ],
+  "dialogue": [
+    {
+      "speaker": "narrator",
+      "text": "Вы открываете дверь чердака",
+      "emotion": "happy"
+    },
+    {
+      "speaker": "narrator",
+      "text": "Вы чувствуете чье-то присутствие рядом",
+      "emotion": "happy"
+    }
+  ],
+  "choices": [
+  
+    {
+      "id": "choice1",
+      "text": "[Чувствительность] Осмотреться",
+      "diceCheck": {
+        "stat": "sensitivity",
+        "difficulty": 12,
+        "description": "Попытка открыть дверь",
+        "results": {
+          "critical_success": "scene56_2",
+          "success": "scene56_1",
+          "failure": "scene56_3",
+          "critical_failure": "scene56_4"
+        }
+      },
+      "nextScene": "scene56_1"
+    },
+      {
+        "id": "choice2",
+        "text": "Вернуться назад",
+        "nextScene": "scene32"
+      }
+  ],
+  "requirements": {},
+  "rewards": {
+    "experience": 0,
+    "coins": 0
+  }
+} 

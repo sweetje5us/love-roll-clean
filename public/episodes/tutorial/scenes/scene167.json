@@ -1,0 +1,47 @@
+{
+  "id": "scene167",
+  "chapterId": 8,
+  "location": "classroom",
+  "background": "school_class",
+  "characters": [
+    {
+      "id": "alexandra",
+      "position": "center",
+      "emotion": "happy"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "alexandra",
+      "text": "Я приготовила для тебя особый подарок - Ключ для открытия обычного сундука.",
+      "emotion": "happy"
+    }
+  ],
+  "choices": [
+    {
+      "id": "scene167_choice1",
+      "text": "Спасибо за подарок и совет, Александра!",
+      "nextScene": "scene168",
+      "effects": {
+        "relationships": {
+          "alexandra": 3
+        },
+        "items": {
+          "add": [
+            "old_key"
+          ]
+        }
+      }
+    },
+    {
+      "id": "scene167_choice2",
+      "text": "Твой совет о планировании очень полезен",
+      "nextScene": "scene168",
+      "effects": {
+        "relationships": {
+          "alexandra": 2
+        }
+      }
+    }
+  ]
+}

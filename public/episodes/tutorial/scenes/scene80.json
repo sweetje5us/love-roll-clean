@@ -1,0 +1,63 @@
+{
+  "id": "scene80",
+  "chapterId": 6,
+  "location": "classroom",
+  "background": "school_class",
+  "characters": [
+    {
+      "id": "arseniy",
+      "position": "center",
+      "name": "Арсений"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "arseniy",
+      "text": "Теперь давай протестируем систему передачи предметов.",
+      "emotion": "smile"
+    },
+    {
+      "speaker": "arseniy",
+      "text": "Я снова прошу у тебя яблоко. Если у тебя его есть, ты сможешь его дать.",
+      "emotion": "normal"
+    },
+    {
+      "speaker": "arseniy",
+      "text": "Если нет - вариант будет неактивным, пока у тебя не появится яблоко.",
+      "emotion": "smile"
+    },
+    {
+      "speaker": "arseniy",
+      "text": "Можешь ли ты поделиться со мной яблоком?",
+      "emotion": "normal"
+    }
+  ],
+  "choices": [
+    {
+      "text": "Конечно, вот твоё яблоко!",
+      "nextScene": "scene81",
+      "requiredItem": "apple",
+      "effects": {
+        "items": {
+          "remove": [
+            "apple"
+          ]
+        },
+        "relationships": {
+          "arseniy": 10
+        }
+      },
+      "id": "scene80_choice1"
+    },
+    {
+      "text": "Извини, у меня нет яблока",
+      "nextScene": "scene82",
+      "effects": {
+        "relationships": {
+          "arseniy": 0
+        }
+      },
+      "id": "scene80_choice2"
+    }
+  ]
+}

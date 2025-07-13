@@ -1,0 +1,53 @@
+{
+  "id": "scene93",
+  "chapterId": 6,
+  "location": "dice_room",
+  "background": "school_class",
+  "characters": [
+    {
+      "id": "nikolay",
+      "position": "center",
+      "name": "Николай"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "nikolay",
+      "text": "Привет! Я Николай, и я здесь, чтобы научить тебя новой механике - броску кубиков d20!",
+      "emotion": "smile"
+    },
+    {
+      "speaker": "nikolay",
+      "text": "Эта система позволяет проверять характеристики персонажа в различных ситуациях.",
+      "emotion": "normal"
+    },
+    {
+      "speaker": "nikolay",
+      "text": "Сейчас я покажу тебе, как это работает. Попробуй обмануть меня и сказать, что ты уже знаешь эту систему!",
+      "emotion": "laugh"
+    }
+  ],
+  "choices": [
+    {
+      "id": "scene93_choice1",
+      "text": "[Коварство] Попытаться обмануть Николая",
+      "diceCheck": {
+        "stat": "cunning",
+        "difficulty": 15,
+        "description": "Попытка обмануть Николая, сказав что знаешь систему",
+        "results": {
+          "critical_success": "scene98",
+          "success": "scene97",
+          "failure": "scene100",
+          "critical_failure": "scene95"
+        }
+      },
+      "nextScene": "scene95"
+    },
+    {
+      "id": "scene93_choice2",
+      "text": "Честно признаться, что не знаешь систему",
+      "nextScene": "scene96"
+    }
+  ]
+} 

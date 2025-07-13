@@ -1,0 +1,44 @@
+{
+  "id": "scene50",
+  "background": "sprites/episodes/locations/school/school_corridor.png",
+  "characters": [
+    {
+      "id": "dima",
+      "position": "center"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "dima",
+      "text": "Знаешь, я не очень доволен тем, как ты себя вел.",
+      "emotion": "annoyed"
+    },
+    {
+      "speaker": "dima",
+      "text": "Ты мог бы поступить лучше. Я ожидал от тебя большего.",
+      "emotion": "disappointed"
+    },
+    {
+      "speaker": "dima",
+      "text": "Может быть, в следующий раз ты подумаешь о других, а не только о себе.",
+      "emotion": "serious"
+    },
+    {
+      "speaker": "dima",
+      "text": "Надеюсь, ты извлечешь урок из этой ситуации.",
+      "emotion": "normal"
+    }
+  ],
+  "choices": [
+    {
+      "id": "end_chapter",
+      "text": "Завершить главу",
+      "nextScene": "scene75",
+      "effects": {
+        "relationship": {
+          "dima": 0
+        }
+      }
+    }
+  ]
+} 

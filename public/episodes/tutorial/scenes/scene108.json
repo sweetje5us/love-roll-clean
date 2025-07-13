@@ -1,0 +1,47 @@
+{
+  "id": "scene108",
+  "chapterId": 6,
+  "location": "dice_room",
+  "background": "school_class",
+  "characters": [
+    {
+      "id": "nikolay",
+      "position": "center",
+      "name": "Николай"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "nikolay",
+      "text": "Хм... Неудача. Ты не смог решить головоломку, даже с подсказкой.",
+      "emotion": "normal"
+    },
+    {
+      "speaker": "nikolay",
+      "text": "Возможно, головоломка была слишком сложной для твоего текущего уровня интеллекта, или ты просто не в настроении для решения задач.",
+      "emotion": "smile"
+    },
+    {
+      "speaker": "nikolay",
+      "text": "Не расстраивайся! Интеллект можно развивать, и с практикой ты станешь лучше решать подобные задачи.",
+      "emotion": "normal"
+    },
+    {
+      "speaker": "nikolay",
+      "text": "Кстати, если у тебя есть питомец с бонусом к интеллекту, он мог бы помочь в таких ситуациях!",
+      "emotion": "smile"
+    }
+  ],
+  "choices": [
+    {
+      "id": "scene108_choice1",
+      "text": "Понял, идем дальше",
+      "nextScene": "scene112"
+    },
+    {
+      "id": "scene108_choice2",
+      "text": "Расскажи больше о роли интеллекта в игре",
+      "nextScene": "scene113"
+    }
+  ]
+} 

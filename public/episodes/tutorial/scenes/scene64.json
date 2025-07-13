@@ -1,0 +1,53 @@
+{
+  "id": "scene64",
+  "chapterId": 4,
+  "location": "classroom",
+  "background": "school_class",
+  "characters": [
+    {
+      "id": "alexandra",
+      "position": "center",
+      "emotion": "smile",
+      "name": "Александра"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "alexandra",
+      "text": "Сундуки - это особые предметы, которые содержат случайные награды!",
+      "emotion": "delighted"
+    },
+    {
+      "speaker": "alexandra",
+      "text": "Есть несколько типов сундуков: обычные, серебряные, золотые и легендарные.",
+      "emotion": "normal"
+    },
+    {
+      "speaker": "alexandra",
+      "text": "Обычные сундуки можно открыть бесплатно или за монеты. Они содержат базовые предметы.",
+      "emotion": "smile"
+    },
+    {
+      "speaker": "alexandra",
+      "text": "Серебряные и золотые сундуки стоят дороже, но дают лучшие награды.",
+      "emotion": "normal"
+    },
+    {
+      "speaker": "alexandra",
+      "text": "Легендарные сундуки - самые редкие и дорогие, но они гарантированно содержат эксклюзивные предметы!",
+      "emotion": "smile"
+    }
+  ],
+  "choices": [
+    {
+      "id": "choice1",
+      "text": "Как пополнить баланс?",
+      "nextScene": "scene65"
+    },
+    {
+      "id": "choice2",
+      "text": "Расскажи о ежедневных наградах",
+      "nextScene": "scene66"
+    }
+  ]
+} 

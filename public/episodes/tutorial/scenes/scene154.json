@@ -1,0 +1,27 @@
+{
+  "id": "scene154",
+  "chapterId": 8,
+  "location": "corridor",
+  "background": "school_corridor",
+  "characters": [
+    {
+      "id": "eugene",
+      "position": "center",
+      "emotion": "angry1"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "narrator",
+      "text": "Попрощавшись с Марией, ты идешь по коридору и встречаешь Евгения. Он выглядит немного напряженным.",
+      "emotion": "normal"
+    }
+  ],
+  "choices": [
+    {
+      "id": "scene154_choice1",
+      "text": "Подойти к Евгению",
+      "nextScene": "scene155"
+    }
+  ]
+}

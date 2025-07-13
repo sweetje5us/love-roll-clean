@@ -1,0 +1,69 @@
+{
+  "id": "scene45",
+  "background": "sprites/episodes/locations/school/school_corridor.png",
+  "characters": [
+    {
+      "id": "dima",
+      "position": "center"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "dima",
+      "text": "Внезапно в коридоре появляется группа старшеклассников. Они выглядят агрессивно.",
+      "emotion": "nervous"
+    },
+    {
+      "speaker": "dima",
+      "text": "Один из них подходит к нам и говорит: 'Эй, новички! У вас есть деньги? Мы собираем на... ну, вы понимаете.'",
+      "emotion": "scared"
+    },
+    {
+      "speaker": "dima",
+      "text": "Он явно хочет запугать нас и вымогать деньги. Что ты сделаешь?",
+      "emotion": "scared"
+    }
+  ],
+  "choices": [
+    {
+      "id": "stand_up",
+      "text": "Встать на защиту Димы и противостоять хулиганам",
+      "nextScene": "scene46",
+      "effects": {
+        "relationship": {
+          "dima": 25
+        }
+      }
+    },
+    {
+      "id": "run_away",
+      "text": "Быстро уйти, оставив Диму одного",
+      "nextScene": "scene46",
+      "effects": {
+        "relationship": {
+          "dima": -30
+        }
+      }
+    },
+    {
+      "id": "negotiate",
+      "text": "Попробовать договориться мирно",
+      "nextScene": "scene46",
+      "effects": {
+        "relationship": {
+          "dima": 10
+        }
+      }
+    },
+    {
+      "id": "give_money",
+      "text": "Отдать деньги, чтобы избежать конфликта",
+      "nextScene": "scene46",
+      "effects": {
+        "relationship": {
+          "dima": -5
+        }
+      }
+    }
+  ]
+} 

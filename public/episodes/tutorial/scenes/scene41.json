@@ -1,0 +1,64 @@
+{
+  "id": "scene41",
+  "background": "sprites/episodes/locations/school/school_class.png",
+  "characters": [
+    {
+      "id": "dima",
+      "position": "center"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "dima",
+      "text": "Отлично! Начнем с того, что я хочу узнать тебя лучше. У каждого из нас есть свои увлечения и интересы.",
+      "emotion": "smile1"
+    },
+    {
+      "speaker": "dima",
+      "text": "Расскажи мне, что тебе больше всего нравится делать в свободное время?",
+      "emotion": "surprised"
+    }
+  ],
+  "choices": [
+    {
+      "id": "reading",
+      "text": "Читать книги - я люблю погружаться в другие миры",
+      "nextScene": "scene42",
+      "effects": {
+        "relationship": {
+          "dima": 8
+        }
+      }
+    },
+    {
+      "id": "sports",
+      "text": "Заниматься спортом - активность заряжает меня энергией",
+      "nextScene": "scene42",
+      "effects": {
+        "relationship": {
+          "dima": 5
+        }
+      }
+    },
+    {
+      "id": "music",
+      "text": "Слушать музыку - она помогает мне расслабиться",
+      "nextScene": "scene42",
+      "effects": {
+        "relationship": {
+          "dima": 10
+        }
+      }
+    },
+    {
+      "id": "gaming",
+      "text": "Играть в игры - виртуальные миры увлекают меня",
+      "nextScene": "scene42",
+      "effects": {
+        "relationship": {
+          "dima": 3
+        }
+      }
+    }
+  ]
+} 

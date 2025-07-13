@@ -1,0 +1,46 @@
+{
+  "id": 7,
+  "name": "Глава 7: Система питомцев",
+  "description": "Изучаем систему питомцев, их способности и взаимодействие",
+  "background": "school_class",
+  "characters": [
+    {
+      "id": "anna",
+      "name": "Анна",
+      "description": "Эксперт по системе питомцев и их способностей",
+      "role": "pet_mentor",
+      "gender": "female",
+      "age": "young",
+      "romanceAvailable": true,
+      "appearance": {
+        "hairStyle": "long_hair",
+        "hairColor": "blond",
+        "hairBehind": "long",
+        "dress": "summer_dress",
+        "dressPaid": false,
+        "accessory": "black_glasses",
+        "accessoryPaid": false,
+        "bush": "1"
+      }
+    }
+  ],
+  "scenes": [
+    "scene120",
+    "scene121", 
+    "scene122",
+    "scene123",
+    "scene123_reaction",
+    "scene124",
+    "scene125",
+    "scene126",
+    "scene127",
+    "scene128",
+    "scene129",
+    "scene130",
+    "scene131",
+    "scene132",
+    "scene133",
+    "scene134",
+    "scene140"
+  ]
+} 

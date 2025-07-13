@@ -1,0 +1,67 @@
+{
+  "id": 6,
+  "name": "Глава 6: Система броска кубиков",
+  "description": "Изучаем механику проверки характеристик через броски кубиков d20",
+  "duration": "15-20 минут",
+  "scenes": [
+    "scene92",
+    "scene93",
+    "scene94",
+    "scene95",
+    "scene96",
+    "scene97",
+    "scene98",
+    "scene99",
+    "scene100",
+    "scene101",
+    "scene102",
+    "scene103",
+    "scene104",
+    "scene105",
+    "scene106",
+    "scene107"
+  ],
+  "characters": [
+    {
+      "id": "nikolay",
+      "name": "Николай",
+      "description": "Эксперт по системе броска кубиков и проверке характеристик",
+      "role": "dice_mentor",
+      "gender": "male",
+      "age": "1",
+      "romanceAvailable": false,
+      "appearance": {
+        "hairStyle": "short3",
+        "hairColor": "dark",
+        "hairBehind": "short3",
+        "dress": "casual3",
+        "dressPaid": false,
+        "accessory": "glasses",
+        "accessoryPaid": false
+      }
+    }
+  ],
+  "locations": [
+    {
+      "id": "dice_room",
+      "name": "Комната для бросков",
+      "description": "Специальная комната для изучения механики броска кубиков"
+    }
+  ],
+  "objectives": [
+    "Понять систему проверки характеристик",
+    "Изучить механику броска кубика d20",
+    "Узнать о сложности проверок",
+    "Понять результаты: критический провал, провал, успех, критический успех",
+    "Изучить варианты ответов с тегами характеристик",
+    "Узнать о возможности переброса кубика"
+  ],
+  "rewards": {
+    "coins": 800,
+    "gems": 20,
+    "items": [
+      "lucky_charm",
+      "skill_book"
+    ]
+  }
+} 

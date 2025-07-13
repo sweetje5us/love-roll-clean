@@ -1,0 +1,63 @@
+{
+  "id": "scene152",
+  "chapterId": 8,
+  "location": "corridor",
+  "background": "school_corridor",
+  "characters": [
+    {
+      "id": "student",
+      "position": "center",
+      "emotion": "happy"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "student",
+      "text": "Привет! Помнишь, меня?",
+      "emotion": "happy"
+    }
+  ],
+  "choices": [
+    {
+      "id": "scene152_choice1",
+      "text": "Конечно помню! Мария!",
+      "nextScene": "scene153",
+     "requirements": {
+    "importantChoice": {
+      "choice_maria": "maria_friendship"
+    }
+  },
+      "effects": {
+        "relationships": {
+          "student": 3
+        }
+      }
+    },
+    {
+      "id": "scene152_choice2",
+      "text": "Нет, не помню",
+      "nextScene": "scene171",
+     "requirements": {
+    "importantChoice": {
+      "choice_maria": "maria_ignore"
+    }
+  },
+      "effects": {
+        "relationships": {
+          "student": -15
+        }
+      }
+    },
+     {
+      "id": "scene152_choice3",
+      "text": "Ты что-то хотела?",
+      "nextScene": "scene171",
+      
+      "effects": {
+        "relationships": {
+          "student": 0
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,66 @@
+{
+  "id": 5,
+  "name": "Глава 5: Система предметов и обмена",
+  "description": "Изучаем систему передачи предметов и взаимодействия с персонажами",
+  "duration": "12-15 минут",
+  "scenes": [
+    "scene76",
+    "scene77",
+    "scene79",
+    "scene80",
+    "scene81",
+    "scene82",
+    "scene83",
+    "scene84",
+    "scene85",
+    "scene86",
+    "scene87",
+    "scene88",
+    "scene89",
+    "scene90",
+    "scene91"
+  ],
+  "characters": [
+    {
+      "id": "arseniy",
+      "name": "Арсений",
+      "description": "Эксперт по системе предметов и обмена",
+      "role": "item_mentor",
+      "gender": "male",
+      "age": "mature",
+      "romanceAvailable": true,
+      "appearance": {
+        "hairStyle": "short1",
+        "hairColor": "brown",
+        "hairBehind": "short1",
+        "dress": "casual",
+        "dressPaid": false,
+        "accessory": "glasses",
+        "accessoryPaid": false
+      }
+    }
+  ],
+  "locations": [
+    {
+      "id": "classroom",
+      "name": "Классная комната",
+      "description": "Уютная классная комната для обучения"
+    }
+  ],
+  "objectives": [
+    "Понять систему передачи предметов",
+    "Изучить механику получения предметов от персонажей",
+    "Узнать о запросе предметов у игрока",
+    "Понять систему важных выборов в диалогах",
+    "Изучить влияние на отношения с персонажами",
+    "Узнать о специальных наградах за дружбу"
+  ],
+  "rewards": {
+    "coins": 600,
+    "gems": 15,
+    "items": [
+      "gift_box",
+      "rare_pet_egg"
+    ]
+  }
+} 

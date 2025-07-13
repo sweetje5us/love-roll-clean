@@ -1,0 +1,19 @@
+{
+  "id": 1,
+  "name": "День 1. Знакомство с гостями",
+  "description": "Знакомство с гостями поместья",
+  "duration": "3-5 минут",
+  "scenes": [
+    "scene1", "scene2", "scene3", "scene4", "scene5", "scene6", "scene7", "scene8", "scene9", "scene10",
+    "scene11", "scene12", "scene13", "scene14", "scene15", "scene16", "scene17", "scene18", "scene19", "scene20",
+    "scene21", "scene22", "scene23", "scene24", "scene25", "scene26", "scene27", "scene28", "scene29_1", "scene29_2",
+    "scene29_3", "scene29_4", "scene30", "scene31", "scene32", "scene32!", "scene33", "scene34", "scene35", "scene36_1",
+    "scene37", "scene38_1", "scene38_2", "scene38_3", "scene38_4", "scene38_1!", "scene38_2!", "scene38_3!", "scene38_4!",
+    "scene39", "scene40", "scene41_1", "scene41_2", "scene41_3", "scene41_4", "scene42", "scene44", "scene46_1!", "scene46_2!",
+    "scene46_3!", "scene46_4!", "scene48", "scene50", "scene52", "scene53_1", "scene53_2", "scene53_3", "scene53_4",
+    "scene54_1", "scene54_2", "scene54_3", "scene54_4", "scene55", "scene60", "scene61", "scene62", "scene63", "scene64", "scene65"
+  ],
+  "unlocked": true,
+  "completed": false,
+  "background": "sprites/episodes/locations/mansion/mansion_outside.png"
+} 

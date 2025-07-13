@@ -1,0 +1,58 @@
+{
+  "id": "scene23",
+  "name": "Третий важный выбор: Отношение к авторитетам",
+  "background": "sprites/episodes/locations/school/school_class.png",
+  "characters": [
+    {
+      "id": "player",
+      "position": "left"
+    },
+    {
+      "id": "eugene",
+      "position": "right",
+      "emotion": "normal"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "eugene",
+      "text": "Хорошо! Теперь третий важный выбор."
+    },
+    {
+      "speaker": "eugene",
+      "text": "Вы узнали, что преподаватель допустил ошибку в оценке, которая может повлиять на вашу будущую карьеру."
+    },
+    {
+      "speaker": "eugene",
+      "text": "У вас есть выбор: указать на ошибку и рискнуть испортить отношения, или промолчать ради спокойствия."
+    },
+    {
+      "speaker": "eugene",
+      "text": "Этот выбор покажет ваше отношение к справедливости и авторитетам."
+    }
+  ],
+  "choices": [
+    {
+      "id": "confront_authority_choice",
+      "text": "Указать на ошибку преподавателя",
+      "nextScene": "scene24",
+      "important": true,
+      "value": "confront_authority",
+      "description": "Выбрал указать на ошибку преподавателя",
+      "consequences": ["Справедливость", "Риск конфликта с авторитетом"]
+    },
+    {
+      "id": "accept_mistake_choice",
+      "text": "Промолчать и принять ситуацию",
+      "nextScene": "scene24",
+      "important": true,
+      "value": "accept_mistake",
+      "description": "Выбрал промолчать о ошибке преподавателя",
+      "consequences": ["Спокойствие", "Жертва справедливости"]
+    }
+  ],
+  "requirements": {},
+  "rewards": {
+    "experience": 15
+  }
+} 

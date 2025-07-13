@@ -1,0 +1,44 @@
+{
+  "id": "scene57",
+  "background": "sprites/episodes/locations/school/school_corridor.png",
+  "characters": [
+    {
+      "id": "dima",
+      "position": "center"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "dima",
+      "text": "Я понимаю, что это неожиданно...",
+      "emotion": "sad"
+    },
+    {
+      "speaker": "dima",
+      "text": "Не нужно отвечать прямо сейчас. Просто подумай об этом.",
+      "emotion": "normal"
+    },
+    {
+      "speaker": "dima",
+      "text": "Я буду ждать твоего ответа, каким бы он ни был.",
+      "emotion": "smile1"
+    },
+    {
+      "speaker": "dima",
+      "text": "Главное - не теряй меня как друга.",
+      "emotion": "smile1"
+    }
+  ],
+  "choices": [
+    {
+      "id": "end_chapter",
+      "text": "Завершить главу",
+      "nextScene": "scene75",
+      "effects": {
+        "relationship": {
+          "dima": 0
+        }
+      }
+    }
+  ]
+} 

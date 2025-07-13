@@ -1,0 +1,58 @@
+{
+  "id": "scene22",
+  "name": "Второй важный выбор: Отношение к друзьям",
+  "background": "sprites/episodes/locations/school/school_class.png",
+  "characters": [
+    {
+      "id": "player",
+      "position": "left"
+    },
+    {
+      "id": "eugene",
+      "position": "right",
+      "emotion": "normal"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "eugene",
+      "text": "Отличный выбор! Теперь переходим ко второму важному решению."
+    },
+    {
+      "speaker": "eugene",
+      "text": "Ваш лучший друг попал в беду и просит о помощи. Но помочь ему означает пожертвовать своими планами."
+    },
+    {
+      "speaker": "eugene",
+      "text": "Этот выбор покажет ваше отношение к дружбе и лояльности. Он также повлияет на будущие события."
+    },
+    {
+      "speaker": "eugene",
+      "text": "Что вы решите?"
+    }
+  ],
+  "choices": [
+    {
+      "id": "help_friend_choice",
+      "text": "Помочь другу, несмотря на личные планы",
+      "nextScene": "scene23",
+      "important": true,
+      "value": "help_friend",
+      "description": "Выбрал помочь другу в ущерб своим планам",
+      "consequences": ["Крепкая дружба", "Жертва личных интересов"]
+    },
+    {
+      "id": "prioritize_self_choice",
+      "text": "Сосредоточиться на своих целях",
+      "nextScene": "scene23",
+      "important": true,
+      "value": "prioritize_self",
+      "description": "Выбрал приоритет личных целей над помощью другу",
+      "consequences": ["Личный успех", "Риск потерять друга"]
+    }
+  ],
+  "requirements": {},
+  "rewards": {
+    "experience": 15
+  }
+} 

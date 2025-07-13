@@ -1,0 +1,47 @@
+{
+  "id": "scene164",
+  "chapterId": 8,
+  "location": "classroom",
+  "background": "school_class",
+  "characters": [
+    {
+      "id": "dima",
+      "position": "center",
+      "emotion": "smile1"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "dima",
+      "text": "Я приготовил для тебя особый подарок - книгу о социальных связях. Она поможет тебе лучше понимать людей в будущем. А еще хочу дать тебе совет: всегда слушай свое сердце, но не забывай думать головой.",
+      "emotion": "smile1"
+    }
+  ],
+  "choices": [
+    {
+      "id": "scene164_choice1",
+      "text": "Спасибо за совет и подарок, Дмитрий!",
+      "nextScene": "scene165",
+      "effects": {
+        "relationships": {
+          "dima": 3
+        },
+        "items": {
+          "add": [
+            "holy_book"
+          ]
+        }
+      }
+    },
+    {
+      "id": "scene164_choice2",
+      "text": "Твой совет очень мудрый, запомню его",
+      "nextScene": "scene165",
+      "effects": {
+        "relationships": {
+          "dima": 2
+        }
+      }
+    }
+  ]
+}

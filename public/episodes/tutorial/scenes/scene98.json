@@ -1,0 +1,47 @@
+{
+  "id": "scene98",
+  "chapterId": 6,
+  "location": "dice_room",
+  "background": "school_class",
+  "characters": [
+    {
+      "id": "nikolay",
+      "position": "center",
+      "name": "Николай"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "nikolay",
+      "text": "Успех!",
+      "emotion": "smile"
+    },
+    {
+      "speaker": "nikolay",
+      "text": "При обычном успехе действие выполняется успешно. Ты достиг своей цели, но без особого блеска.",
+      "emotion": "normal"
+    },
+    {
+      "speaker": "nikolay",
+      "text": "Успех означает, что твой результат (бросок + модификатор) равен или превышает сложность проверки.",
+      "emotion": "smile"
+    },
+    {
+      "speaker": "nikolay",
+      "text": "Это стандартный результат, который ты будешь получать чаще всего при хороших характеристиках.",
+      "emotion": "normal"
+    }
+  ],
+  "choices": [
+    {
+      "id": "scene98_choice1",
+      "text": "Расскажи подробнее о результатах бросков",
+      "nextScene": "scene96"
+    },
+    {
+      "id": "scene98_choice2",
+      "text": "А что происходит при критическом успехе?",
+      "nextScene": "scene99"
+    }
+  ]
+} 

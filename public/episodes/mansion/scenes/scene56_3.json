@@ -1,0 +1,29 @@
+{
+    "id": "scene56_3",
+    "name": "Открытие двери (Провал)",
+    "background": "sprites/episodes/locations/mansion/attic_inside_day.png",
+    "characters": [
+  
+     
+    ],
+    "dialogue": [
+      {
+        "speaker": "narrator",
+        "text": "Вы не заметили ничего необычного",
+        "emotion": "happy"
+      }
+    ],
+    "choices": [
+   
+        {
+          "id": "choice3",
+          "text": "Вернуться назад",
+          "nextScene": "scene32"
+        }
+    ],
+    "requirements": {},
+    "rewards": {
+      "experience": 0,
+      "coins": 0
+    }
+  } 

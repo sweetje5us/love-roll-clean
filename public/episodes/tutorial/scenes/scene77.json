@@ -1,0 +1,63 @@
+{
+  "id": "scene77",
+  "chapterId": 6,
+  "location": "classroom",
+  "background": "school_class",
+  "characters": [
+    {
+      "id": "arseniy",
+      "position": "center",
+
+      "name": "Арсений"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "arseniy",
+      "text": "Отлично! Давай начнем с получения предметов от персонажей.",
+      "emotion": "normal"
+    },
+    {
+      "speaker": "arseniy",
+      "text": "Персонажи могут дарить тебе предметы по разным причинам: в знак дружбы, за помощь или просто так.",
+      "emotion": "smile"
+    },
+    {
+      "speaker": "arseniy",
+      "text": "Когда ты получаешь предмет, появляется уведомление 'Получен предмет [название предмета]'.",
+      "emotion": "normal"
+    },
+    {
+      "speaker": "arseniy",
+      "text": "Вот, например, я хочу подарить тебе небольшой подарок в знак нашего знакомства!",
+      "emotion": "smile"
+    }
+  ],
+  "choices": [
+    {
+      "id": "scene77_choice1",
+      "text": "Принять подарок",
+      "nextScene": "scene79",
+      "effects": {
+        "items": {
+          "add": [
+            "present"
+          ]
+        },
+        "relationships": {
+          "arseniy": 5
+        }
+      }
+    },
+    {
+      "id": "scene77_choice2",
+      "text": "Вежливо отказаться",
+      "nextScene": "scene80",
+      "effects": {
+        "relationships": {
+          "arseniy": -2
+        }
+      }
+    }
+  ]
+}

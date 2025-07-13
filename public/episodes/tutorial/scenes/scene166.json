@@ -1,0 +1,42 @@
+{
+  "id": "scene166",
+  "chapterId": 8,
+  "location": "corridor",
+  "background": "school_corridor",
+  "characters": [
+    {
+      "id": "alexandra",
+      "position": "center",
+      "emotion": "normal"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "alexandra",
+      "text": "Привет! Я слышала, что ты заканчиваешь обучение. Хотела поговорить с тобой о том, как ты освоил систему магазина и экономики.",
+      "emotion": "normal"
+    }
+  ],
+  "choices": [
+    {
+      "id": "scene166_choice1",
+      "text": "Да, система магазина оказалась очень полезной",
+      "nextScene": "scene167",
+      "effects": {
+        "relationship": {
+          "alexandra": 1
+        }
+      }
+    },
+    {
+      "id": "scene166_choice2",
+      "text": "Твои уроки помогли мне понять важность экономики в игре",
+      "nextScene": "scene167",
+      "effects": {
+        "relationship": {
+          "alexandra": 2
+        }
+      }
+    }
+  ]
+}

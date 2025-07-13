@@ -1,0 +1,44 @@
+{
+  "id": "scene36_4",
+  "name": "Добро пожаловать в игру (Критический провал)",
+  "background": "sprites/episodes/locations/mansion/guest_room_bedroom_11zon.png",
+  "characters": [
+
+   
+  ],
+  "dialogue": [
+    {
+      "speaker": "dulapeepa",
+      "text": "АААА!!! Вы меня напугали!",
+      "emotion": "angry"
+    },
+    {
+      "speaker": "dulapeepa",
+      "text": "Владимир, на помощь!!!",
+      "emotion": "angry"
+    },
+    {
+      "speaker": "artess_god",
+      "text": "Вы доставляете слишком много хлопот",
+      "emotion": "happy"
+    }
+  ],
+  "choices": [
+    {
+      "id": "choice1",
+      "text": "Уйти",
+      "nextScene": "scene26",
+      "effects": {
+        "relationship": {
+          "artess_god": -20,
+          "dulapeepa": -20
+        }
+      }
+    }
+  ],
+  "requirements": {},
+  "rewards": {
+    "experience": 0,
+    "coins": 0
+  }
+} 

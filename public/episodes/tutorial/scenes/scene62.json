@@ -1,0 +1,48 @@
+{
+  "id": "scene62",
+  "chapterId": 4,
+  "location": "classroom",
+  "background": "school_class",
+  "characters": [
+    {
+      "id": "alexandra",
+      "position": "center",
+      "emotion": "smile",
+      "name": "Александра"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "alexandra",
+      "text": "Конечно! Магазин можно открыть, нажав на кнопку с иконкой магазина в верхней панели интерфейса.",
+      "emotion": "normal"
+    },
+    {
+      "speaker": "alexandra",
+      "text": "В магазине есть несколько разделов: предметы, одежда, сундуки и специальные предложения.",
+      "emotion": "smile"
+    },
+    {
+      "speaker": "alexandra",
+      "text": "Каждый раздел содержит разные товары. Предметы включают зелья, материалы и другие полезные вещи.",
+      "emotion": "normal"
+    },
+    {
+      "speaker": "alexandra",
+      "text": "В разделе одежды ты найдешь наряды для своих персонажей. Некоторые доступны за монеты, другие - за камни.",
+      "emotion": "smile"
+    }
+  ],
+  "choices": [
+    {
+      "id": "choice1",
+      "text": "Расскажи о сундуках",
+      "nextScene": "scene64"
+    },
+    {
+      "id": "choice2",
+      "text": "Как пополнить баланс?",
+      "nextScene": "scene65"
+    }
+  ]
+} 

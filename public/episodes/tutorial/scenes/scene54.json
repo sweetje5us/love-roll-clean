@@ -1,0 +1,71 @@
+{
+  "id": "scene54",
+  "name": "Финальная концовка главы отношений",
+  "background": "sprites/episodes/locations/school/school_corridor.png",
+  "characters": [
+    {
+      "id": "dima",
+      "position": "center"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "dima",
+      "text": "Знаешь, я должен признаться тебе в чем-то...",
+      "emotion": "nervous"
+    },
+    {
+      "speaker": "dima",
+      "text": "Все это время я не просто учил тебя отношениям. Я влюблялся в тебя с каждым днем.",
+      "emotion": "smile1"
+    },
+    {
+      "speaker": "dima",
+      "text": "Твоя доброта, твоя смелость, твоя готовность защищать меня...",
+      "emotion": "smile2"
+    },
+    {
+      "speaker": "dima",
+      "text": "Ты показал мне, что такое настоящая любовь.",
+      "emotion": "smile1"
+    },
+    {
+      "speaker": "dima",
+      "text": "Я люблю тебя. И хочу быть с тобой.",
+      "emotion": "smile2"
+    }
+  ],
+  "choices": [
+    {
+      "id": "love_back",
+      "text": "Я тоже люблю тебя!",
+      "nextScene": "scene55",
+      "effects": {
+        "relationship": {
+          "dima": 30
+        }
+      }
+    },
+    {
+      "id": "friendship",
+      "text": "Ты мне очень дорог как друг",
+      "nextScene": "scene56",
+      "effects": {
+        "relationship": {
+          "dima": -10
+        }
+      }
+    },
+    {
+      "id": "confused",
+      "text": "Я не знаю, что сказать...",
+      "nextScene": "scene57",
+      "effects": {
+        "relationship": {
+          "dima": -5
+        }
+      }
+    }
+  ],
+  "endChapter": true
+}

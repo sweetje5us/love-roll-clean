@@ -1,0 +1,47 @@
+{
+  "id": "scene99",
+  "chapterId": 6,
+  "location": "dice_room",
+  "background": "school_class",
+  "characters": [
+    {
+      "id": "nikolay",
+      "position": "center",
+      "name": "Николай"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "nikolay",
+      "text": "Критический успех!",
+      "emotion": "surprised"
+    },
+    {
+      "speaker": "nikolay",
+      "text": "При критическом успехе (бросок 20) действие выполняется с превосходством, независимо от модификаторов.",
+      "emotion": "smile"
+    },
+    {
+      "speaker": "nikolay",
+      "text": "Это означает не просто успех, а выдающийся результат, который может принести дополнительные бонусы.",
+      "emotion": "normal"
+    },
+    {
+      "speaker": "nikolay",
+      "text": "Критический успех - это редкое и ценное событие, которое может изменить ход событий в твою пользу.",
+      "emotion": "smile"
+    }
+  ],
+  "choices": [
+    {
+      "id": "scene99_choice1",
+      "text": "Расскажи подробнее о результатах бросков",
+      "nextScene": "scene96"
+    },
+    {
+      "id": "scene99_choice2",
+      "text": "А что насчет провала?",
+      "nextScene": "scene100"
+    }
+  ]
+} 

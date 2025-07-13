@@ -1,0 +1,41 @@
+{
+  "id": "scene13",
+  "name": "Добро пожаловать в игру",
+  "background": "sprites/episodes/locations/mansion/mansion_room_with_people_11zon.png",
+  "characters": [
+
+    {
+      "id": "player",
+      "position": "center"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "narrator",
+      "text": "Вы видите множество гостей, которые уже прибыли.",
+      "emotion": "neutral"
+    },
+    {
+      "speaker": "narrator",
+      "text": "Нужно побольше узнать об этом месте, и о людях которые здесь присутствуют.",
+      "emotion": "smile"
+    },
+    {
+      "speaker": "narrator",
+      "text": "Быть может вам удастся узнать кто вас и зачем пригласил.",
+      "emotion": "smile"
+    }
+  ],
+  "choices": [
+    {
+      "id": "choice1",
+      "text": "Далее",
+      "nextScene": "scene15"
+    }
+  ],
+  "requirements": {},
+  "rewards": {
+    "experience": 0,
+    "coins": 0
+  }
+} 

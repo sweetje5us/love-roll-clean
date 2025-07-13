@@ -1,0 +1,66 @@
+{
+  "id": "scene4",
+  "name": "Добрый поступок",
+  "background": "sprites/episodes/locations/school/school_corridor.png",
+  "characters": [
+    {
+      "id": "player",
+      "position": "left"
+    },
+    {
+      "id": "student",
+      "position": "right"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "narrator",
+      "text": "Вы решили помочь и подняли упавшие вещи."
+    },
+    {
+      "speaker": "student",
+      "text": "Спасибо большое! Я так растерялась, что не знала, что делать.",
+      "emotion": "happy"
+    },
+    {
+      "speaker": "student",
+      "text": "Меня зовут Мария. Надеюсь, мы станем друзьями!",
+      "emotion": "happy"
+    },
+    {
+      "speaker": "player",
+      "text": "Приятно познакомиться, Мария!",
+      "emotion": "happy"
+    }
+  ],
+  "choices": [
+    {
+      "id": "choice1",
+      "text": "Предложить вместе пойти в класс",
+      "nextScene": "scene7",
+      "effects": {
+        "relationship": {
+          "student": 8
+        },
+        "stats": {
+          "friendship": 5
+        }
+      }
+    },
+    {
+      "id": "choice2",
+      "text": "Попрощаться и пойти своим путем",
+      "nextScene": "scene8",
+      "effects": {
+        "relationship": {
+          "student": 3
+        }
+      }
+    }
+  ],
+  "requirements": {},
+  "rewards": {
+    "experience": 0,
+    "coins": 0
+  }
+} 

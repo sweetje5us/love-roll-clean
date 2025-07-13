@@ -1,0 +1,59 @@
+{
+  "id": "scene2",
+  "name": "Основы интерфейса",
+  "background": "sprites/episodes/locations/school/school_building.png",
+  "characters": [
+    {
+      "id": "player",
+      "position": "left"
+    },
+    {
+      "id": "teacher",
+      "position": "right"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "teacher",
+      "text": "Отлично! Давайте начнем с изучения основных элементов интерфейса.",
+      "emotion": "happy"
+    },
+    {
+      "speaker": "teacher",
+      "text": "Внизу экрана вы видите панель с кнопками выбора. Это ваши варианты ответов в диалогах.",
+      "emotion": "happy"
+    },
+    {
+      "speaker": "teacher",
+      "text": "Каждый выбор может повлиять на развитие событий и отношения с персонажами. Выбирайте внимательно!",
+      "emotion": "smug"
+    }
+  ],
+  "choices": [
+    {
+      "id": "choice1",
+      "text": "Понятно, продолжайте",
+      "nextScene": "scene3",
+      "effects": {
+        "relationship": {
+          "teacher": 3
+        }
+      }
+    },
+    {
+      "id": "choice2",
+      "text": "Можете показать еще раз?",
+      "nextScene": "scene2_repeat",
+      "effects": {
+        "relationship": {
+          "teacher": 1
+        }
+      }
+    }
+  ],
+  "requirements": {},
+  "rewards": {
+    "experience": 0,
+    "coins": 0
+  }
+} 

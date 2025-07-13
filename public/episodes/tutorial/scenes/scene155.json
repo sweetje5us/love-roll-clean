@@ -1,0 +1,45 @@
+{
+  "id": "scene155",
+  "chapterId": 8,
+  "location": "corridor",
+  "background": "school_corridor",
+  "characters": [
+    {
+      "id": "eugene",
+      "position": "center",
+      "emotion": "angry"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "eugene",
+      "text": "Эй, ты! Ты все еще здесь? Думал, ты уже ушел. Кстати, твоя одежда выглядит... не очень. Разве ты не знаешь, как нужно одеваться?",
+      "emotion": "angry"
+    }
+  ],
+  "choices": [
+    {
+      "id": "scene155_choice1",
+      "text": "[Холод] Ты думаешь что сможешь меня обидеть?",
+      "nextScene": "scene156",
+      "diceCheck": {
+        "stat": "coldness",
+        "difficulty": 12,
+        "successScene": "scene156",
+        "failureScene": "scene158",
+        "critical_success": "scene173",
+        "critical_failure": "scene157"
+      }
+    },
+    {
+      "id": "scene155_choice2",
+      "text": "Извини, не хотел тебя беспокоить",
+      "nextScene": "scene157",
+      "effects": {
+        "relationship": {
+          "eugene": -1
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "id": "scene60",
+  "name": "Объявление Диметрио",
+  "background": "sprites/episodes/locations/mansion/mansion_room_with_people_11zon.png",
+  "characters": [
+
+   
+  ],
+  "dialogue": [
+    {
+      "speaker": "peter",
+      "text": "Дорогие гости, минуточку внимания!",
+      "emotion": "happy"
+    },
+    {
+      "speaker": "peter",
+      "text": "Вот и виновник торжества!",
+      "emotion": "happy"
+    },
+    {
+      "speaker": "peter",
+      "text": "Встречайте господина Диметрио!",
+      "emotion": "happy"
+    }
+  ],
+  "choices": [
+      {
+        "id": "choice1",
+        "text": "Наблюдать",
+        "nextScene": "scene61"
+      }
+  ],
+  "requirements": {},
+  "rewards": {
+    "experience": 0,
+    "coins": 0
+  }
+} 

@@ -1,0 +1,38 @@
+{
+  "id": "scene41_2",
+  "name": "Добро пожаловать в игру (Критический успех)",
+  "background": "sprites/episodes/locations/mansion/mansion_door_cab_11zon.png",
+  "characters": [
+
+   
+  ],
+  "dialogue": [
+    {
+      "speaker": "narrator",
+      "text": "Не смотря на предупреждения охранника, вы решили открыть дверь",
+      "emotion": "happy"
+    }
+  ],
+  "choices": [
+      {
+        "id": "choice1",
+        "text": "Вернуться назад",
+        "nextScene": "scene26"
+      },
+      {
+        "id": "choice2",
+        "text": "Зайти в кабинет",
+        "nextScene": "scene53_1",
+        "effects": {
+          "relationship": {
+            "artess_god": -10
+          }
+        }
+      }
+  ],
+  "requirements": {},
+  "rewards": {
+    "experience": 0,
+    "coins": 0
+  }
+} 

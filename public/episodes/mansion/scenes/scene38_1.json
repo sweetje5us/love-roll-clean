@@ -1,0 +1,38 @@
+{
+  "id": "scene38_1",
+  "name": "Добро пожаловать в игру",
+  "background": "sprites/episodes/locations/mansion/mansion_room_camin_11zon.png",
+  "characters": [
+
+   
+  ],
+  "dialogue": [
+        {
+      "speaker": "mooduck",
+      "text": "Отличная рифма!",
+      "emotion": "angry"
+    },
+    {
+      "speaker": "mooduck",
+      "text": "То что нужно, сейчас запишу",
+      "emotion": "angry"
+    }
+  ],
+  "choices": [
+    {
+      "id": "choice1",
+      "text": "Спросить о гостях",
+      "nextScene": "scene48"
+    },
+    {
+      "id": "choice2",
+      "text": "Вернуться",
+      "nextScene": "scene26"
+    }
+  ],
+  "requirements": {},
+  "rewards": {
+    "experience": 0,
+    "coins": 0
+  }
+} 

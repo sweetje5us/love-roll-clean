@@ -1,0 +1,57 @@
+{
+  "id": "scene123_reaction",
+  "chapterId": 7,
+  "location": "pet_classroom",
+  "background": "school_class",
+  "characters": [
+    {
+      "id": "anna",
+      "position": "center",
+      "name": "Анна"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "anna",
+      "text": "О, это [PET_NAME]! Какой милый питомец!",
+      "emotion": "happy"
+    },
+    {
+      "speaker": "anna",
+      "text": "Я [PET_REACTION] от него!",
+      "emotion": "happy"
+    },
+    {
+      "speaker": "anna",
+      "text": "У него есть способность: [PET_ABILITY]",
+      "emotion": "normal"
+    },
+    {
+      "speaker": "anna",
+      "text": "Это очень полезная способность, которая поможет тебе в игре!",
+      "emotion": "smile"
+    },
+    {
+      "speaker": "anna",
+      "text": "Хочешь узнать больше о том, как использовать способности питомцев?",
+      "emotion": "smile"
+    }
+  ],
+  "choices": [
+    {
+      "text": "Да, расскажи подробнее",
+      "nextScene": "scene126",
+      "id": "scene123_reaction_choice1"
+    },
+    {
+      "text": "Попробуем получить еще одного питомца",
+      "nextScene": "scene125",
+      "id": "scene123_reaction_choice2"
+    },
+    {
+      "text": "Расскажи про редкость питомцев",
+      "nextScene": "scene124",
+      "id": "scene123_reaction_choice3"
+    }
+  ]
+}

@@ -1,0 +1,43 @@
+{
+  "id": "scene23",
+  "name": "Добро пожаловать в игру",
+  "background": "sprites/episodes/locations/mansion/mansion_room_with_people_11zon.png",
+  "characters": [
+
+   
+  ],
+  "dialogue": [
+    {
+      "speaker": "narrator",
+      "text": "Вам нужно узнать побольше об этом месте",
+      "emotion": "happy"
+    },
+    {
+      "speaker": "narrator",
+      "text": "Найти господина Диметрио",
+      "emotion": "happy"
+    },
+    {
+      "speaker": "narrator",
+      "text": "Дождаться объяснений по поводу вашего приглашения.",
+      "emotion": "smirk"
+    }
+  ],
+  "choices": [
+      {
+        "id": "choice1",
+        "text": "Завести новые знакомства",
+        "nextScene": "scene31"
+      },
+      {
+        "id": "choice3",
+        "text": "Осмотреть дом",
+        "nextScene": "scene26"
+      }
+  ],
+  "requirements": {},
+  "rewards": {
+    "experience": 0,
+    "coins": 0
+  }
+} 

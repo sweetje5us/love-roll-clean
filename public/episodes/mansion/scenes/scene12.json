@@ -1,0 +1,30 @@
+{
+  "id": "scene12",
+  "name": "Добро пожаловать в игру",
+  "background": "sprites/episodes/locations/mansion/mansion_behind_outside_11zon.png",
+  "characters": [],
+  "dialogue": [
+    {
+      "speaker": "narrator",
+      "text": "Вы проходите за Питером в сторону поместья.",
+      "emotion": "neutral"
+    },
+    {
+      "speaker": "narrator",
+      "text": "Вы скрыли свое официальное появление.",
+      "emotion": "smile"
+    }
+  ],
+  "choices": [
+    {
+      "id": "choice1",
+      "text": "Зайти в дом",
+      "nextScene": "scene13"
+    }
+  ],
+  "requirements": {},
+  "rewards": {
+    "experience": 0,
+    "coins": 0
+  }
+} 

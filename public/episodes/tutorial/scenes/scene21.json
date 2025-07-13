@@ -1,0 +1,58 @@
+{
+  "id": "scene21",
+  "name": "Первый важный выбор: Отношение к учебе",
+  "background": "sprites/episodes/locations/school/school_class.png",
+  "characters": [
+    {
+      "id": "player",
+      "position": "left"
+    },
+    {
+      "id": "eugene",
+      "position": "right",
+      "emotion": "normal"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "eugene",
+      "text": "Отлично! Начнем с первого важного выбора."
+    },
+    {
+      "speaker": "eugene",
+      "text": "Представьте: у вас есть важный экзамен через неделю, но также есть возможность пойти на вечеринку с друзьями."
+    },
+    {
+      "speaker": "eugene",
+      "text": "Этот выбор покажет ваше отношение к учебе и ответственности. Он повлияет на то, как будут развиваться события дальше."
+    },
+    {
+      "speaker": "eugene",
+      "text": "Что вы выберете?"
+    }
+  ],
+  "choices": [
+    {
+      "id": "study_hard_choice",
+      "text": "Усердно готовиться к экзамену",
+      "nextScene": "scene22",
+      "important": true,
+      "value": "study_hard",
+      "description": "Выбрал усердную подготовку к экзамену",
+      "consequences": ["Повышенная успеваемость", "Меньше времени на друзей"]
+    },
+    {
+      "id": "procrastinate_choice",
+      "text": "Отложить подготовку на потом",
+      "nextScene": "scene22",
+      "important": true,
+      "value": "procrastinate",
+      "description": "Выбрал отложить подготовку на потом",
+      "consequences": ["Больше времени на друзей", "Риск плохой оценки"]
+    }
+  ],
+  "requirements": {},
+  "rewards": {
+    "experience": 15
+  }
+} 

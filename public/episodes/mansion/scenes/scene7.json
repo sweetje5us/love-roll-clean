@@ -1,0 +1,73 @@
+{
+  "id": "scene2",
+  "name": "Основы интерфейса",
+  "background": "sprites/episodes/locations/mansion/mansion_outside.png",
+  "characters": [
+    {
+      "id": "player",
+      "position": "left"
+    },
+    {
+      "id": "peter",
+      "position": "right"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "peter",
+      "text": "Так кто же вы?",
+      "emotion": "surprised"
+    },
+    {
+      "speaker": "Player",
+      "text": "Я детектив, здесь по заданию правительства.",
+      "emotion": "smirk"
+    },
+    {
+      "speaker": "Player",
+      "text": "Гооворят, что здесь находится инопланетное существо, которое может быть опасно",
+      "emotion": "smirk"
+    },
+    {
+      "speaker": "peter",
+      "text": "Вы держите меня за идиота?",
+      "emotion": "angry"
+    },
+    {
+      "speaker": "peter",
+      "text": "Если вы детектив, то с какой вы здесь целью?",
+      "emotion": "angry"
+    },
+    {
+      "speaker": "peter",
+      "text": "Только если вы представитесь и объясните цель визита, я вас смогу пропустить",
+      "emotion": "angry"
+    },
+    {
+      "speaker": "peter",
+      "text": "А также мне придется доложить о вашем прибытии",
+      "emotion": "angry"
+    }
+  ],
+  "choices": [
+    {
+      "id": "well_met",
+      "text": "Представиться и все рассказать.",
+      "nextScene": "scene10",
+      "effects": {
+        "relationship": {
+          "peter": 10
+        }
+      },
+      "important": true,
+      "value": "met",
+      "description": "Представляться ",
+      "consequences": ["Выбор 2"]
+    }
+  ],
+  "requirements": {},
+  "rewards": {
+    "experience": 0,
+    "coins": 0
+  }
+} 

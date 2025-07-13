@@ -1,0 +1,40 @@
+{
+  "id": "scene9",
+  "name": "Полное игнорирование",
+  "background": "sprites/episodes/locations/school/school_corridor.png",
+  "characters": [
+    {
+      "id": "player",
+      "position": "center",
+       "emotion": "sad"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "narrator",
+      "text": "Вы полностью проигнорировали ситуацию и ушли дальше."
+    },
+    {
+      "speaker": "narrator",
+      "text": "Иногда равнодушие может привести к одиночеству."
+    }
+  ],
+  "choices": [
+    {
+      "id": "moral_choice",
+      "text": "Пойти в класс одному",
+      "nextScene": "scene10",
+      "important": true,
+  "value": "maria_enemy",
+  "description": "Игнор Марии",
+  "consequences": ["Изменяет отношения"]
+      
+
+    }
+  ],
+  "requirements": {},
+  "rewards": {
+    "experience": 0,
+    "coins": 0
+  }
+} 

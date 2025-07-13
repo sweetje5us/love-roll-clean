@@ -1,0 +1,47 @@
+{
+  "id": "scene97",
+  "chapterId": 6,
+  "location": "dice_room",
+  "background": "school_class",
+  "characters": [
+    {
+      "id": "nikolay",
+      "position": "center",
+      "name": "Николай"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "nikolay",
+      "text": "Твоя попытка не удалась, но по крайней мере ты не опозорился полностью.",
+      "emotion": "normal"
+    },
+    {
+      "speaker": "nikolay",
+      "text": "При обычной неудаче действие просто не удается выполнить. Это не катастрофа, но и не успех.",
+      "emotion": "smile"
+    },
+    {
+      "speaker": "nikolay",
+      "text": "В отличие от критической неудачи, обычная неудача может быть компенсирована высокими модификаторами.",
+      "emotion": "normal"
+    },
+    {
+      "speaker": "nikolay",
+      "text": "Например, если у тебя очень высокая характеристика, ты можешь преуспеть даже с низким броском.",
+      "emotion": "smile"
+    }
+  ],
+  "choices": [
+    {
+      "id": "scene97_choice1",
+      "text": "Расскажи подробнее о результатах бросков",
+      "nextScene": "scene96"
+    },
+    {
+      "id": "scene97_choice2",
+      "text": "А что происходит при успехе?",
+      "nextScene": "scene98"
+    }
+  ]
+} 

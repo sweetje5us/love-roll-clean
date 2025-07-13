@@ -1,0 +1,34 @@
+{
+  "id": "scene41_3",
+  "name": "Добро пожаловать в игру (Провал)",
+  "background": "sprites/episodes/locations/mansion/mansion_door_cab_11zon.png",
+  "characters": [
+
+   
+  ],
+  "dialogue": [
+
+    {
+      "speaker": "artess_god",
+      "text": "Вы что не понимаете по-хорошему?",
+      "emotion": "happy"
+    }
+  ],
+  "choices": [
+      {
+        "id": "choice1",
+        "text": "Вернуться назад",
+        "nextScene": "scene26",
+        "effects": {
+          "relationship": {
+            "artess_god": -10
+          }
+        }
+      }
+  ],
+  "requirements": {},
+  "rewards": {
+    "experience": 0,
+    "coins": 0
+  }
+} 

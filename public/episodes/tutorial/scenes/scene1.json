@@ -1,0 +1,35 @@
+{
+  "id": "scene1",
+  "name": "Добро пожаловать в игру",
+  "background": "sprites/episodes/locations/school/school_building.png",
+  "characters": [],
+  "dialogue": [
+    {
+      "speaker": "narrator",
+      "text": "Добро пожаловать в мир Love & Roll! Это увлекательное путешествие, где каждое решение имеет значение.",
+      "emotion": "neutral"
+    },
+    {
+      "speaker": "narrator",
+      "text": "Сегодня мы изучим основы игры и познакомимся с главными механиками. Готовы начать обучение?",
+      "emotion": "smile"
+    }
+  ],
+  "choices": [
+    {
+      "id": "choice1",
+      "text": "Да, готов начать обучение!",
+      "nextScene": "scene2",
+      "effects": {
+        "relationship": {
+          "teacher": 5
+        }
+      }
+    }
+  ],
+  "requirements": {},
+  "rewards": {
+    "experience": 0,
+    "coins": 0
+  }
+} 

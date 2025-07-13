@@ -1,0 +1,28 @@
+{
+  "id": "scene47_3",
+  "name": "Добро пожаловать в игру (Провал)",
+  "background": "sprites/episodes/locations/mansion/guest_room_bedroom_11zon.png",
+  "characters": [
+
+   
+  ],
+  "dialogue": [
+    {
+      "speaker": "dulapeepa",
+      "text": "Я справлюсь сама",
+      "emotion": "angry"
+    }
+  ],
+  "choices": [    
+      {
+        "id": "choice3",
+        "text": "Вернуться",
+        "nextScene": "scene26"
+      }
+  ],
+  "requirements": {},
+  "rewards": {
+    "experience": 0,
+    "coins": 0
+  }
+} 

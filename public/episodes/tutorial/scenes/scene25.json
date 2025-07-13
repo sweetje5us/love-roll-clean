@@ -1,0 +1,58 @@
+{
+  "id": "scene25",
+  "name": "Пятый важный выбор: Отношение к морали",
+  "background": "sprites/episodes/locations/school/school_class.png",
+  "characters": [
+    {
+      "id": "player",
+      "position": "left"
+    },
+    {
+      "id": "eugene",
+      "position": "right",
+      "emotion": "normal"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "eugene",
+      "text": "И последний важный выбор!"
+    },
+    {
+      "speaker": "eugene",
+      "text": "Вы случайно узнали секретную информацию, которая может принести вам большую выгоду, но использование этой информации неэтично."
+    },
+    {
+      "speaker": "eugene",
+      "text": "У вас есть выбор: использовать информацию для личной выгоды или сохранить моральные принципы."
+    },
+    {
+      "speaker": "eugene",
+      "text": "Этот выбор покажет ваше отношение к морали и этике."
+    }
+  ],
+  "choices": [
+    {
+      "id": "moral_choice",
+      "text": "Сохранить моральные принципы",
+      "nextScene": "scene26",
+      "important": true,
+      "value": "moral",
+      "description": "Выбрал моральные принципы над личной выгодой",
+      "consequences": ["Честность", "Упущенная выгода"]
+    },
+    {
+      "id": "pragmatic_choice",
+      "text": "Использовать информацию для выгоды",
+      "nextScene": "scene26",
+      "important": true,
+      "value": "pragmatic",
+      "description": "Выбрал личную выгоду над моральными принципами",
+      "consequences": ["Материальная выгода", "Компромисс морали"]
+    }
+  ],
+  "requirements": {},
+  "rewards": {
+    "experience": 15
+  }
+} 

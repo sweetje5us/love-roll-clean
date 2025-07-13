@@ -1,0 +1,59 @@
+{
+  "id": "scene44",
+  "background": "sprites/episodes/locations/school/school_class.png",
+  "characters": [
+    {
+      "id": "dima",
+      "position": "center"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "dima",
+      "text": "Спасибо за честные ответы! Теперь я лучше понимаю, кто ты такой.",
+      "emotion": "smile"
+    },
+    {
+      "speaker": "dima",
+      "text": "Но знаешь что? Настоящие отношения проверяются не в спокойные моменты, а в сложных ситуациях.",
+      "emotion": "normal"
+    },
+    {
+      "speaker": "dima",
+      "text": "Сейчас произойдет что-то, что может изменить все. Готов ли ты к этому?",
+      "emotion": "surprised"
+    }
+  ],
+  "choices": [
+    {
+      "id": "ready",
+      "text": "Да, я готов к любым испытаниям",
+      "nextScene": "scene45",
+      "effects": {
+        "relationship": {
+          "dima": 5
+        }
+      }
+    },
+    {
+      "id": "worried",
+      "text": "Что именно произойдет? Я волнуюсь...",
+      "nextScene": "scene45",
+      "effects": {
+        "relationship": {
+          "dima": 0
+        }
+      }
+    },
+    {
+      "id": "refuse",
+      "text": "Может, лучше не надо? Я не хочу проблем",
+      "nextScene": "scene45",
+      "effects": {
+        "relationship": {
+          "dima": -10
+        }
+      }
+    }
+  ]
+} 

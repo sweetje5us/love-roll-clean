@@ -1,0 +1,36 @@
+{
+  "id": "scene1",
+  "name": "Добро пожаловать в игру",
+  "background": "sprites/episodes/locations/mansion/mansion_outside.png",
+  "characters": [],
+  "dialogue": [
+    {
+      "speaker": "narrator",
+      "text": "Вы прибываете в старинное поместье Диметрио. Сегодня здесь много гостей.",
+      "emotion": "neutral"
+    },
+    {
+      "speaker": "narrator",
+      "text": "Вас пригласил один из гостей тайно. Он сообщил вам, что этим вечером планируется нечто ужасное.",
+      "emotion": "smile"
+    },
+    {
+      "speaker": "narrator",
+      "text": "И вам предстоить выяснить, что именно там происходит.",
+      "emotion": "smile"
+    }
+  ],
+  "choices": [
+    {
+      "id": "choice1",
+      "text": "Тогда начнем.",
+      "nextScene": "scene2"
+     
+    }
+  ],
+  "requirements": {},
+  "rewards": {
+    "experience": 0,
+    "coins": 0
+  }
+} 

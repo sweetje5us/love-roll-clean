@@ -1,0 +1,27 @@
+{
+  "id": "scene158",
+  "chapterId": 8,
+  "location": "corridor",
+  "background": "school_corridor",
+  "characters": [
+    {
+      "id": "eugene",
+      "position": "center",
+      "emotion": "smug"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "eugene",
+      "text": "Хм, по крайней мере ты понимаешь, когда нужно уйти. Не задерживайся здесь.",
+      "emotion": "smug"
+    }
+  ],
+  "choices": [
+    {
+      "id": "scene158_choice1",
+      "text": "Понятно",
+      "nextScene": "scene159"
+    }
+  ]
+}

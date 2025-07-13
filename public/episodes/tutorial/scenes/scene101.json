@@ -1,0 +1,61 @@
+{
+  "id": "scene101",
+  "chapterId": 6,
+  "location": "dice_room",
+  "background": "school_class",
+  "characters": [
+    {
+      "id": "nikolay",
+      "position": "center",
+      "name": "Николай"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "nikolay",
+      "text": "Теперь давай попробуем проверить твою харизму! Это характеристика, которая помогает убеждать людей и производить хорошее впечатление.",
+      "emotion": "smile"
+    },
+    {
+      "speaker": "nikolay",
+      "text": "Харизма особенно полезна в социальных ситуациях - когда нужно уговорить кого-то, произвести впечатление или просто понравиться.",
+      "emotion": "normal"
+    },
+    {
+      "speaker": "nikolay",
+      "text": "Кстати, если у тебя есть питомец с бонусом к харизме, он может помочь тебе в таких проверках!",
+      "emotion": "smile"
+    },
+    {
+      "speaker": "nikolay",
+      "text": "Попробуй уговорить меня дать тебе дополнительное время на изучение системы бросков кубиков.",
+      "emotion": "normal"
+    }
+  ],
+  "choices": [
+    {
+      "id": "scene101_choice1",
+      "text": "[Харизма] Убедить Николая дать дополнительное время",
+      "diceCheck": {
+        "stat": "charisma",
+        "difficulty": 12,
+        "description": "Убеждение Николая дать дополнительное время",
+        "results": {
+          "critical_success": "scene102",
+          "success": "scene103",
+          "failure": "scene104"
+        }
+      }
+    },
+    {
+      "id": "scene101_choice2",
+      "text": "Просто попросить вежливо",
+      "nextScene": "scene103"
+    },
+    {
+      "id": "scene101_choice3",
+      "text": "Сказать, что не нуждаешься в дополнительном времени",
+      "nextScene": "scene104"
+    }
+  ]
+} 

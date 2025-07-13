@@ -1,0 +1,67 @@
+{
+  "id": "scene89",
+  "chapterId": 6,
+  "location": "classroom",
+  "background": "school_class",
+  "characters": [
+    {
+      "id": "arseniy",
+      "position": "center",
+      "name": "Арсений"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "arseniy",
+      "text": "Отлично! Поскольку мы стали хорошими друзьями, я хочу подарить тебе что-то особенное.",
+      "emotion": "smile"
+    },
+    {
+      "speaker": "arseniy",
+      "text": "У меня есть фея. Это очень ценный питомец, которого я дарю только настоящим друзьям.",
+      "emotion": "delighted"
+    },
+    {
+      "speaker": "arseniy",
+      "text": "Фея - это магическое существо, которое будет твоим верным спутником и поможет тебе в путешествиях.",
+      "emotion": "smile"
+    },
+    {
+      "speaker": "arseniy",
+      "text": "Вот, держи! Это мой подарок тебе в знак нашей дружбы.",
+      "emotion": "delighted"
+    }
+  ],
+  "choices": [
+    {
+      "text": "Спасибо большое! Это потрясающий подарок!",
+      "nextScene": "scene90",
+      "effects": {
+        "items": {
+          "add": [
+            "fairy"
+          ]
+        },
+        "relationships": {
+          "arseniy": 20
+        }
+      },
+      "id": "scene89_choice1"
+    },
+    {
+      "text": "Я очень тронут твоим доверием",
+      "nextScene": "scene90",
+      "effects": {
+        "items": {
+          "add": [
+            "fairy"
+          ]
+        },
+        "relationships": {
+          "arseniy": 25
+        }
+      },
+      "id": "scene89_choice2"
+    }
+  ]
+}

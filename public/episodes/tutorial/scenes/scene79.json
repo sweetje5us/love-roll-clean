@@ -1,0 +1,47 @@
+{
+  "id": "scene79",
+  "chapterId": 6,
+  "location": "classroom",
+  "background": "school_class",
+  "characters": [
+    {
+      "id": "arseniy",
+      "position": "center",
+      "name": "Арсений"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "arseniy",
+      "text": "Отлично! Спасибо, что принял мой подарок. Это значит многое для меня.",
+      "emotion": "smile"
+    },
+    {
+      "speaker": "arseniy",
+      "text": "Теперь у тебя есть подарочная коробка в инвентаре. Ты можешь открыть её позже или подарить кому-то другому.",
+      "emotion": "normal"
+    },
+    {
+      "speaker": "arseniy",
+      "text": "Кстати, вот тебе ещё яблоко. Оно пригодится для демонстрации того, как персонажи могут просить предметы.",
+      "emotion": "smile"
+    }
+  ],
+  "choices": [
+    {
+      "text": "Спасибо за яблоко!",
+      "nextScene": "scene172",
+      "effects": {
+        "items": {
+          "add": [
+            "apple"
+          ]
+        },
+        "relationships": {
+          "arseniy": 3
+        }
+      },
+      "id": "scene79_choice1"
+    }
+  ]
+}

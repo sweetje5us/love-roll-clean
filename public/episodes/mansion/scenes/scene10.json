@@ -1,0 +1,53 @@
+{
+  "id": "scene2",
+  "name": "Основы интерфейса",
+  "background": "sprites/episodes/locations/mansion/mansion_outside.png",
+  "characters": [
+    {
+      "id": "player",
+      "position": "left"
+    },
+    {
+      "id": "peter",
+      "position": "right"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "peter",
+      "text": "Что понадобилось здесь детективу?",
+      "emotion": "happy"
+    },
+    {
+      "speaker": "peter",
+      "text": "Мне необходимо докладывать господину Диметрио обо всех прибывших гостях",
+      "emotion": "happy"
+    },
+    {
+      "speaker": "peter",
+      "text": "И вы не будете исключением.",
+      "emotion": "happy"
+    }
+  ],
+  "choices": [
+    {
+      "id": "well_met",
+      "text": "Конечно.",
+      "nextScene": "scene11",
+      "effects": {
+        "relationship": {
+          "peter": -10
+        }
+      },
+      "important": true,
+      "value": "met",
+      "description": "Представиться ",
+      "consequences": ["Выбор 1"]
+    }
+  ],
+  "requirements": {},
+  "rewards": {
+    "experience": 0,
+    "coins": 0
+  }
+} 

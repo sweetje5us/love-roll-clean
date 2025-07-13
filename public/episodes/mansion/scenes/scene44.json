@@ -1,0 +1,75 @@
+{
+  "id": "scene44",
+  "name": "Добро пожаловать в игру",
+  "background": "sprites/episodes/locations/mansion/mansion_room_camin_11zon.png",
+  "characters": [
+
+   
+  ],
+  "dialogue": [
+    {
+      "speaker": "narrator",
+      "text": "Вы заходите в комнату и видите человека",
+      "emotion": "angry"
+    },
+    {
+      "speaker": "narrator",
+      "text": "Человек выглядит сильно обеспокоенным, ходит ттуда-сюда и что-то бормочет",
+      "emotion": "angry"
+    },
+    {
+      "speaker": "mooduck",
+      "text": "Нет, нет, это не подойдет",
+      "emotion": "angry"
+    },
+    {
+      "speaker": "mooduck",
+      "text": "Вздор, так ничего не выйдет",
+      "emotion": "angry"
+    },
+    {
+      "speaker": "mooduck",
+      "text": "А вы еще кто?",
+      "emotion": "angry"
+    }
+  ],
+  "choices": [
+    
+      {
+        "id": "choice1",
+        "text": "[Харизма] Может вам чем-то помочь?",
+        "diceCheck": {
+          "stat": "charisma",
+          "difficulty": 12,
+          "description": "Попытка помочь Василию Мадуку",
+          "results": {
+            "critical_success": "scene46_2",
+            "success": "scene46_1",
+            "failure": "scene46_3",
+            "critical_failure": "scene46_4"
+          }
+        },
+        "nextScene": "scene46_1"
+      },
+     
+      {
+        "id": "mooduck_meet",
+        "text": "Представиться, и спросить что с ним",
+        "nextScene": "scene48",
+        "important": true,
+  "value": "true",
+  "description": "Знакомство с Василием Мадуком",
+  "consequences": ["выбор 1"]
+      },
+      {
+        "id": "choice3",
+        "text": "Что вы знаете о гостях?",
+        "nextScene": "scene50"
+      }
+  ],
+  "requirements": {},
+  "rewards": {
+    "experience": 0,
+    "coins": 0
+  }
+} 

@@ -1,0 +1,62 @@
+{
+  "id": "scene127",
+  "chapterId": 7,
+  "location": "pet_classroom",
+  "background": "school_class",
+  "characters": [
+    {
+      "id": "anna",
+      "position": "center",
+      "name": "Анна"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "anna",
+      "text": "Вау! Ты просто потрясающий!",
+      "emotion": "surprised"
+    },
+    {
+      "speaker": "anna",
+      "text": "Твоя харизма и убедительность просто завораживают!",
+      "emotion": "happy"
+    },
+    {
+      "speaker": "anna",
+      "text": "За такой результат ты заслуживаешь особого питомца!",
+      "emotion": "smile"
+    },
+    {
+      "speaker": "anna",
+      "text": "Вот тебе мистический питомец - Фея!",
+      "emotion": "happy"
+    },
+    {
+      "speaker": "anna",
+      "text": "Фея даст тебе +2 к харизме, что очень полезно для диалогов!",
+      "emotion": "normal"
+    },
+    {
+      "speaker": "anna",
+      "text": "Поздравляю с таким редким питомцем!",
+      "emotion": "smile"
+    }
+  ],
+  "choices": [
+    {
+      "text": "Спасибо!",
+      "nextScene": "scene132",
+      "effects": {
+        "items": {
+          "add": [
+            "fairy"
+          ]
+        },
+        "relationships": {
+          "anna": 15
+        }
+      },
+      "id": "scene127_choice1"
+    }
+  ]
+}

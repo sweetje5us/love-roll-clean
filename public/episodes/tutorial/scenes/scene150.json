@@ -1,0 +1,42 @@
+{
+  "id": "scene150",
+  "chapterId": 8,
+  "location": "classroom",
+  "background": "school_class",
+  "characters": [
+    {
+      "id": "teacher",
+      "position": "center",
+      "emotion": "smile"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "teacher",
+      "text": "Привет! Я рада, что ты заглянул перед окончанием обучения.",
+      "emotion": "smile"
+    },
+    {
+      "speaker": "teacher",
+      "text": "За это время ты многому научился и познакомился со всеми нашими учениками.",
+      "emotion": "smile"
+    }
+  ],
+  "choices": [
+    {
+      "id": "scene150_choice1",
+      "text": "Спасибо за обучение, Анастасия!",
+      "nextScene": "scene151",
+      "effects": {
+        "relationship": {
+          "teacher": 2
+        }
+      }
+    },
+    {
+      "id": "scene150_choice2",
+      "text": "Да, было интересно познакомиться со всеми",
+      "nextScene": "scene151"
+    }
+  ]
+}

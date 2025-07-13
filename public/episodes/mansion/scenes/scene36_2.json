@@ -1,0 +1,49 @@
+{
+  "id": "scene36_2",
+  "name": "Добро пожаловать в игру (Критический успех)",
+  "background": "sprites/episodes/locations/mansion/guest_room_bedroom_11zon.png",
+  "characters": [
+
+   
+  ],
+  "dialogue": [
+    {
+      "speaker": "narrator",
+      "text": "Вы зашли в гостевую спальню",
+      "emotion": "happy"
+    },
+    {
+      "speaker": "narrator",
+      "text": "Вы видите девушку, которая считает в слух",
+      "emotion": "happy"
+    },
+    {
+      "speaker": "dulapeepa",
+      "text": "О! Вот кто мне поможет найти Мишу!",
+      "emotion": "angry"
+    }
+  ],
+  "choices": [
+    {
+      "id": "choice1",
+      "text": "Помочь ей найти Мишу",
+      "nextScene": "scene47_1"
+    },
+    {
+      "id": "choice2",
+      "text": "Представиться, и спросить где ее Родители",
+      "nextScene": "scene40"
+    },
+      
+      {
+        "id": "choice3",
+        "text": "Ты случайно ничего не знаешь о господине Диметрио?",
+        "nextScene": "scene42"
+      }
+  ],
+  "requirements": {},
+  "rewards": {
+    "experience": 0,
+    "coins": 0
+  }
+} 

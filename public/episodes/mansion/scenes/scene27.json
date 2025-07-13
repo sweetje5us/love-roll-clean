@@ -1,0 +1,74 @@
+{
+  "id": "scene27",
+  "name": "Добро пожаловать в игру",
+  "background": "sprites/episodes/locations/mansion/mansion_room_with_people_11zon.png",
+  "characters": [
+
+   
+  ],
+  "dialogue": [
+    {
+      "speaker": "oleg",
+      "text": "Здесь я знаком лишь с Дэном и женой господина Диметрио",
+      "emotion": "happy"
+    },
+    {
+      "speaker": "oleg",
+      "text": "Мне кажется что их дружба не так проста",
+      "emotion": "happy"
+    },
+    {
+      "speaker": "oleg",
+      "text": "Дэн всегда завидовал господину Диметрио, и никогда не стеснялся этого проявлять",
+      "emotion": "smirk"
+    },
+    {
+      "speaker": "oleg",
+      "text": "С Женой господина Диметрио мне не удалось хорошо пообщаться. Она создает впечатление очень закрытого человека.",
+      "emotion": "neutral"
+    },
+    {
+      "speaker": "oleg",
+      "text": "Могу я расслабиться вне работы и перестать отвечать на вопросы?",
+      "emotion": "neutral"
+    }
+  ],
+  "choices": [
+      {
+        "id": "choice1",
+        "text": "Спасибо, на этом все.",
+        "nextScene": "scene23",
+        "effects": {
+          "relationship": {
+            "oleg": 10
+          }
+        }
+      },
+      {
+        "id": "choice2",
+        "text": "[Харизма] Расскажите о господине Диметрио",
+        "diceCheck": {
+          "stat": "charisma",
+          "difficulty": 15,
+          "description": "Попытка обмануть Николая, сказав что знаешь систему",
+          "results": {
+            "critical_success": "scene29_2",
+            "success": "scene29_1",
+            "failure": "scene29_3",
+            "critical_failure": "scene29_4"
+          }
+        },
+        "nextScene": "scene29_3"
+      },
+      {
+        "id": "choice3",
+        "text": "Расскажите про себя",
+        "nextScene": "scene25"
+      }
+  ],
+  "requirements": {},
+  "rewards": {
+    "experience": 0,
+    "coins": 0
+  }
+} 

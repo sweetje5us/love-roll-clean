@@ -1,0 +1,27 @@
+{
+  "id": "scene151",
+  "chapterId": 8,
+  "location": "classroom",
+  "background": "school_class",
+  "characters": [
+    {
+      "id": "teacher",
+      "position": "center",
+      "emotion": "happy"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "teacher",
+      "text": "Я уверена, что ты завел много друзей. Кстати, Мария хотела с тобой попрощаться. Она в коридоре.",
+      "emotion": "happy"
+    }
+  ],
+  "choices": [
+    {
+      "id": "scene151_choice1",
+      "text": "Пойду к Марии",
+      "nextScene": "scene152"
+    }
+  ]
+}

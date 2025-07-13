@@ -1,0 +1,63 @@
+{
+  "id": "scene29_1",
+  "name": "Спросить о Диметрио(успех)",
+  "background": "sprites/episodes/locations/mansion/mansion_room_with_people_11zon.png",
+  "characters": [
+
+   
+  ],
+  "dialogue": [
+    {
+      "speaker": "oleg",
+      "text": "Диметрио очень скрытный человек",
+      "emotion": "happy"
+    },
+    {
+      "speaker": "oleg",
+      "text": "Я за многие годы не смог узнать о нем достаточно, чтобы рассказать вам о нем как о человеке",
+      "emotion": "happy"
+    },
+    {
+      "speaker": "oleg",
+      "text": "Но что касается работы, тут он очень ответственный, надежный и рассудительный",
+      "emotion": "smirk"
+    },
+    {
+      "speaker": "oleg",
+      "text": "Но стоит поднять личные темы, как он становится сам не свой.",
+      "emotion": "neutral"
+    },
+    {
+      "speaker": "oleg",
+      "text": "Могу я расслабиться вне работы и перестать отвечать на вопросы?",
+      "emotion": "neutral"
+    }
+  ],
+  "choices": [
+      {
+        "id": "choice1",
+        "text": "Спасибо, на этом все.",
+        "nextScene": "scene23",
+        "effects": {
+          "relationship": {
+            "dan": 10
+          }
+        }
+      },
+      {
+        "id": "choice2",
+        "text": "Расскажите о гостях",
+        "nextScene": "scene27"
+      },
+      {
+        "id": "choice3",
+        "text": "Расскажите про себя",
+        "nextScene": "scene25"
+      }
+  ],
+  "requirements": {},
+  "rewards": {
+    "experience": 0,
+    "coins": 0
+  }
+} 

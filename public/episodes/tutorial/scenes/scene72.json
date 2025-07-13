@@ -1,0 +1,53 @@
+{
+  "id": "scene72",
+  "chapterId": 4,
+  "location": "classroom",
+  "background": "school_class",
+  "characters": [
+    {
+      "id": "alexandra",
+      "position": "center",
+      "emotion": "normal",
+      "name": "Александра"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "alexandra",
+      "text": "Безопасность покупок - очень важная тема!",
+      "emotion": "smile"
+    },
+    {
+      "speaker": "alexandra",
+      "text": "Все платежи обрабатываются через надежные платежные системы.",
+      "emotion": "normal"
+    },
+    {
+      "speaker": "alexandra",
+      "text": "Мы не храним данные твоих карт - это делают платежные системы.",
+      "emotion": "smile"
+    },
+    {
+      "speaker": "alexandra",
+      "text": "Если что-то пойдет не так, ты всегда можешь обратиться в поддержку.",
+      "emotion": "normal"
+    },
+    {
+      "speaker": "alexandra",
+      "text": "Также есть возможность отменить покупку в течение короткого времени после оплаты.",
+      "emotion": "smile"
+    }
+  ],
+  "choices": [
+    {
+      "id": "choice1",
+      "text": "Какие советы по экономии?",
+      "nextScene": "scene73"
+    },
+    {
+      "id": "choice2",
+      "text": "Расскажи о поддержке",
+      "nextScene": "scene74"
+    }
+  ]
+} 

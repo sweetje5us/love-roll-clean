@@ -1,0 +1,38 @@
+{
+  "id": "scene47_4",
+  "name": "Добро пожаловать в игру (Критический провал)",
+  "background": "sprites/episodes/locations/mansion/guest_room_bedroom_11zon.png",
+  "characters": [
+
+   
+  ],
+  "dialogue": [
+    {
+      "speaker": "dulapeepa",
+      "text": "Владимир!",
+      "emotion": "angry"
+    },
+    {
+      "speaker": "dulapeepa",
+      "text": "На помощь!",
+      "emotion": "angry"
+    },
+    {
+      "speaker": "artess_god",
+      "text": "Хватит приставать к людям тут, я вас отсюда выведу",
+      "emotion": "angry"
+    }
+  ],
+  "choices": [    
+      {
+        "id": "choice3",
+        "text": "Вернуться",
+        "nextScene": "scene26"
+      }
+  ],
+  "requirements": {},
+  "rewards": {
+    "experience": 0,
+    "coins": 0
+  }
+} 

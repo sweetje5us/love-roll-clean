@@ -1,0 +1,32 @@
+{
+  "id": "scene123",
+  "chapterId": 7,
+  "location": "pet_classroom",
+  "background": "school_class",
+  "characters": [
+    {
+      "id": "anna",
+      "position": "center",
+      "name": "Анна"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "anna",
+      "text": "Конечно! Давай посмотрим на твоего питомца.",
+      "emotion": "happy"
+    },
+    {
+      "speaker": "anna",
+      "text": "Я вижу, что у тебя есть питомец! Это...",
+      "emotion": "normal"
+    }
+  ],
+  "choices": [
+    {
+      "id": "scene123_choice1",
+      "text": "Продолжи",
+      "nextScene": "scene123_reaction"
+    }
+  ]
+} 

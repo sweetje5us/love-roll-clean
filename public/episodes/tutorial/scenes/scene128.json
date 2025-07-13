@@ -1,0 +1,57 @@
+{
+  "id": "scene128",
+  "chapterId": 7,
+  "location": "pet_classroom",
+  "background": "school_class",
+  "characters": [
+    {
+      "id": "anna",
+      "position": "center",
+      "name": "Анна"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "anna",
+      "text": "Отличная работа! Ты хорошо справился с испытанием.",
+      "emotion": "happy"
+    },
+    {
+      "speaker": "anna",
+      "text": "Твоя харизма впечатляет, и я уверена, что ты будешь хорошим хозяином.",
+      "emotion": "smile"
+    },
+    {
+      "speaker": "anna",
+      "text": "Вот тебе редкий питомец - Огненный слайм!",
+      "emotion": "normal"
+    },
+    {
+      "speaker": "anna",
+      "text": "Огненный слайм поможет тебе улучшать отношения с персонажами на +25 очков!",
+      "emotion": "normal"
+    },
+    {
+      "speaker": "anna",
+      "text": "Это очень полезная способность для развития отношений!",
+      "emotion": "smile"
+    }
+  ],
+  "choices": [
+    {
+      "text": "Спасибо!",
+      "nextScene": "scene132",
+      "effects": {
+        "items": {
+          "add": [
+            "fire_slime"
+          ]
+        },
+        "relationships": {
+          "anna": 10
+        }
+      },
+      "id": "scene128_choice1"
+    }
+  ]
+}

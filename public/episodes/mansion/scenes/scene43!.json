@@ -1,0 +1,49 @@
+{
+  "id": "scene32",
+  "name": "Добро пожаловать в игру",
+  "background": "sprites/episodes/locations/mansion/mansion_second_floor_11zon.png",
+  "characters": [
+
+   
+  ],
+  "dialogue": [
+    {
+      "speaker": "narrator",
+      "text": "Вы подошли к дверям главной спальни",
+      "emotion": "happy"
+    },
+    {
+      "speaker": "narrator",
+      "text": "Из-за двери слышен женский плач",
+      "emotion": "happy"
+    }
+  ],
+  "choices": [
+      {
+        "id": "choice1",
+        "text": "[Решительность] Открыть дверь",
+        "nextScene": "scene49_1",
+        "diceCheck": {
+          "stat": "determination",
+          "difficulty": 10,
+          "description": "Попытка открыть дверь",
+          "results": {
+            "critical_success": "scene49_1",
+            "success": "scene49_1",
+            "failure": "scene49_1",
+            "critical_failure": "scene49_1"
+          }
+        }
+      },
+      {
+        "id": "choice2",
+        "text": "Вернуться",
+        "nextScene": "scene32"
+      }
+  ],
+  "requirements": {},
+  "rewards": {
+    "experience": 0,
+    "coins": 0
+  }
+} 

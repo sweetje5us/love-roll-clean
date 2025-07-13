@@ -1,0 +1,57 @@
+{
+  "id": "scene82",
+  "chapterId": 6,
+  "location": "classroom",
+  "background": "school_class",
+  "characters": [
+    {
+      "id": "arseniy",
+      "position": "center",
+      "name": "Арсений"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "arseniy",
+      "text": "Ничего страшного! Это нормально, что у тебя нет нужного предмета.",
+      "emotion": "smile"
+    },
+    {
+      "speaker": "arseniy",
+      "text": "В таких случаях вариант 'Дать яблоко' был бы неактивным, пока у тебя не появится яблоко.",
+      "emotion": "normal"
+    },
+    {
+      "speaker": "arseniy",
+      "text": "Система автоматически проверяет твой инвентарь и показывает только доступные варианты.",
+      "emotion": "smile"
+    },
+    {
+      "speaker": "arseniy",
+      "text": "Давай я дам тебе яблоко, чтобы ты мог протестировать систему.",
+      "emotion": "normal"
+    }
+  ],
+  "choices": [
+    {
+      "text": "Спасибо, теперь у меня есть яблоко",
+      "nextScene": "scene83",
+      "effects": {
+        "items": {
+          "add": [
+            "apple"
+          ]
+        },
+        "relationships": {
+          "arseniy": 5
+        }
+      },
+      "id": "scene82_choice1"
+    },
+    {
+      "text": "Продолжи рассказ о системе",
+      "nextScene": "scene83",
+      "id": "scene82_choice2"
+    }
+  ]
+}

@@ -1,0 +1,68 @@
+{
+  "id": "scene83",
+  "chapterId": 6,
+  "location": "classroom",
+  "background": "school_class",
+  "characters": [
+    {
+      "id": "arseniy",
+      "position": "center",
+      "name": "Арсений"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "arseniy",
+      "text": "Теперь поговорим о важных выборах в диалогах.",
+      "emotion": "smile"
+    },
+    {
+      "speaker": "arseniy",
+      "text": "Некоторые решения имеют особое значение и могут значительно повлиять на отношения с персонажами.",
+      "emotion": "normal"
+    },
+    {
+      "speaker": "arseniy",
+      "text": "Такие выборы отмечены специальными значками и могут открыть новые возможности.",
+      "emotion": "smile"
+    },
+    {
+      "speaker": "arseniy",
+      "text": "У меня есть важный вопрос для тебя. Как ты относишься к дружбе?",
+      "emotion": "normal"
+    }
+  ],
+  "choices": [
+    {
+      "text": "Дружба очень важна для меня",
+      "nextScene": "scene85",
+      "isImportant": true,
+      "effects": {
+        "relationships": {
+          "arseniy": 15
+        }
+      },
+      "id": "scene83_choice1"
+    },
+    {
+      "text": "Дружба - это хорошо, но не главное",
+      "nextScene": "scene86",
+      "effects": {
+        "relationships": {
+          "arseniy": 5
+        }
+      },
+      "id": "scene83_choice2"
+    },
+    {
+      "text": "Я предпочитаю держаться на расстоянии",
+      "nextScene": "scene87",
+      "effects": {
+        "relationships": {
+          "arseniy": -5
+        }
+      },
+      "id": "scene83_choice3"
+    }
+  ]
+}

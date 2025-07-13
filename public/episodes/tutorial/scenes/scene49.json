@@ -1,0 +1,44 @@
+{
+  "id": "scene49",
+  "background": "sprites/episodes/locations/school/school_corridor.png",
+  "characters": [
+    {
+      "id": "dima",
+      "position": "center"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "dima",
+      "text": "Знаешь что? Я не хочу больше с тобой разговаривать.",
+      "emotion": "angry"
+    },
+    {
+      "speaker": "dima",
+      "text": "Твои поступки показали мне, что ты за человек. Ты эгоист, который думает только о себе.",
+      "emotion": "angry"
+    },
+    {
+      "speaker": "dima",
+      "text": "Когда мне было страшно, ты сбежал. Когда мне нужна была поддержка, ты отвернулся.",
+      "emotion": "sad"
+    },
+    {
+      "speaker": "dima",
+      "text": "Я надеялся, что ты другой. Но ты разочаровал меня. Больше не подходи ко мне.",
+      "emotion": "angry"
+    }
+  ],
+  "choices": [
+    {
+      "id": "end_chapter",
+      "text": "Завершить главу",
+      "nextScene": "scene75",
+      "effects": {
+        "relationship": {
+          "dima": 0
+        }
+      }
+    }
+  ]
+} 

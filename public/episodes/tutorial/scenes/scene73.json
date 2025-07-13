@@ -1,0 +1,58 @@
+{
+  "id": "scene73",
+  "chapterId": 4,
+  "location": "classroom",
+  "background": "school_class",
+  "characters": [
+    {
+      "id": "alexandra",
+      "position": "center",
+      "emotion": "smile",
+      "name": "Александра"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "alexandra",
+      "text": "Теперь давай поговорим о том, как экономить валюту!",
+      "emotion": "delighted"
+    },
+    {
+      "speaker": "alexandra",
+      "text": "1. Не забывай про ежедневные награды - это бесплатные монеты и камни.",
+      "emotion": "normal"
+    },
+    {
+      "speaker": "alexandra",
+      "text": "2. Смотри рекламу, когда это возможно - это тоже бесплатный способ получения валюты.",
+      "emotion": "smile"
+    },
+    {
+      "speaker": "alexandra",
+      "text": "3. Покупай товары со скидками - они появляются регулярно.",
+      "emotion": "normal"
+    },
+    {
+      "speaker": "alexandra",
+      "text": "4. Не трать драгоценные камни на обычные предметы - сохрани их для эксклюзивных товаров.",
+      "emotion": "smile"
+    },
+    {
+      "speaker": "alexandra",
+      "text": "5. Планируй покупки заранее и не поддавайся импульсивным покупкам!",
+      "emotion": "normal"
+    }
+  ],
+  "choices": [
+    {
+      "id": "choice1",
+      "text": "Расскажи о поддержке",
+      "nextScene": "scene74"
+    },
+    {
+      "id": "choice2",
+      "text": "Какие еще советы?",
+      "nextScene": "scene75"
+    }
+  ]
+} 

@@ -1,0 +1,73 @@
+{
+  "id": "scene3",
+  "name": "Первые выборы",
+  "background": "sprites/episodes/locations/school/school_class.png",
+  "characters": [
+    {
+      "id": "player",
+      "position": "left"
+    },
+    {
+      "id": "teacher",
+      "position": "right"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "teacher",
+      "text": "Теперь давайте попрактикуемся в принятии решений. Представьте, что вы впервые пришли в школу.",
+      "emotion": "smug"
+    },
+    {
+      "speaker": "teacher",
+      "text": "Как вы поступите, если увидите, что кто-то уронил свои вещи?",
+      "emotion": "smug"
+    }
+  ],
+  "choices": [
+    {
+      "id": "choice1",
+      "text": "Помогу поднять вещи",
+      "nextScene": "scene4",
+      "effects": {
+        "relationship": {
+          "teacher": 5
+        },
+        "stats": {
+          "kindness": 3
+        }
+      }
+    },
+    {
+      "id": "choice2",
+      "text": "Пройду мимо, не обращая внимания",
+      "nextScene": "scene5",
+      "effects": {
+        "relationship": {
+          "teacher": -2
+        },
+        "stats": {
+          "indifference": 2
+        }
+      }
+    },
+    {
+      "id": "choice3",
+      "text": "Сначала посмотрю, кто это уронил",
+      "nextScene": "scene6",
+      "effects": {
+        "relationship": {
+          "teacher": 2
+        },
+        "stats": {
+          "caution": 3
+        }
+      }
+    }
+  ],
+  "requirements": {},
+  "rewards": {
+    "experience": 0,
+    "coins": 0
+  }
+} 

@@ -1,0 +1,47 @@
+{
+  "id": "scene86",
+  "chapterId": 6,
+  "location": "classroom",
+  "background": "school_class",
+  "characters": [
+    {
+      "id": "arseniy",
+      "position": "center",
+      "name": "Арсений"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "arseniy",
+      "text": "Понимаю. У каждого свой взгляд на дружбу.",
+      "emotion": "smile"
+    },
+    {
+      "speaker": "arseniy",
+      "text": "Это тоже важный выбор, который показывает твою позицию.",
+      "emotion": "normal"
+    },
+    {
+      "speaker": "arseniy",
+      "text": "Отношения развиваются постепенно, и каждый выбор влияет на их развитие.",
+      "emotion": "smile"
+    },
+    {
+      "speaker": "arseniy",
+      "text": "Давай поговорим о других аспектах системы предметов.",
+      "emotion": "normal"
+    }
+  ],
+  "choices": [
+    {
+      "text": "Как достичь уровня дружбы?",
+      "nextScene": "scene88",
+      "id": "scene86_choice1"
+    },
+    {
+      "text": "Расскажи о других наградах",
+      "nextScene": "scene90",
+      "id": "scene86_choice2"
+    }
+  ]
+}

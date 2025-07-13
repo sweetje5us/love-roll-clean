@@ -1,0 +1,62 @@
+{
+  "id": "scene125",
+  "chapterId": 7,
+  "location": "pet_classroom",
+  "background": "school_class",
+  "characters": [
+    {
+      "id": "anna",
+      "position": "center",
+      "name": "Анна"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "anna",
+      "text": "Отлично! Я могу подарить тебе питомца, но сначала нужно пройти небольшое испытание.",
+      "emotion": "happy"
+    },
+    {
+      "speaker": "anna",
+      "text": "Я хочу убедиться, что ты достоин заботиться о питомце. Попробуй убедить меня!",
+      "emotion": "smile"
+    },
+    {
+      "speaker": "anna",
+      "text": "Если ты проявишь харизму и убедишь меня, я подарю тебе питомца.",
+      "emotion": "normal"
+    },
+    {
+      "speaker": "anna",
+      "text": "Чем лучше твой результат, тем более редкого питомца ты получишь!",
+      "emotion": "smile"
+    },
+    {
+      "speaker": "anna",
+      "text": "Готов попробовать?",
+      "emotion": "happy"
+    }
+  ],
+  "choices": [
+    {
+      "text": "[Харизма] Убедить Анну подарить питомца",
+      "diceCheck": {
+        "stat": "charisma",
+        "difficulty": 12,
+        "description": "Убеждение Анны подарить питомца",
+        "results": {
+          "critical_success": "scene127",
+          "success": "scene128",
+          "failure": "scene129",
+          "critical_failure": "scene130"
+        }
+      },
+      "id": "scene125_choice1"
+    },
+    {
+      "text": "Может быть, позже...",
+      "nextScene": "scene131",
+      "id": "scene125_choice2"
+    }
+  ]
+}

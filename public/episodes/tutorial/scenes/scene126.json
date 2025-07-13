@@ -1,0 +1,67 @@
+{
+  "id": "scene126",
+  "chapterId": 7,
+  "location": "pet_classroom",
+  "background": "school_class",
+  "characters": [
+    {
+      "id": "anna",
+      "position": "center",
+      "name": "Анна"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "anna",
+      "text": "Отлично! Давай поговорим о том, как использовать способности питомцев.",
+      "emotion": "happy"
+    },
+    {
+      "speaker": "anna",
+      "text": "Способности питомцев работают автоматически в определенных ситуациях:",
+      "emotion": "normal"
+    },
+    {
+      "speaker": "anna",
+      "text": "• Бонусы к характеристикам применяются при бросках кубиков",
+      "emotion": "normal"
+    },
+    {
+      "speaker": "anna",
+      "text": "• Бонусы к отношениям работают при взаимодействии с персонажами",
+      "emotion": "normal"
+    },
+    {
+      "speaker": "anna",
+      "text": "• Перебросы доступны при неудачных бросках кубиков",
+      "emotion": "normal"
+    },
+    {
+      "speaker": "anna",
+      "text": "• Денежные бонусы приносят дополнительный доход",
+      "emotion": "normal"
+    },
+    {
+      "speaker": "anna",
+      "text": "Хочешь попробовать специальное взаимодействие с питомцем?",
+      "emotion": "smile"
+    }
+  ],
+  "choices": [
+    {
+      "text": "Да, покажи!",
+      "nextScene": "scene133",
+      "id": "scene126_choice1"
+    },
+    {
+      "text": "Попробуем получить питомца",
+      "nextScene": "scene125",
+      "id": "scene126_choice2"
+    },
+    {
+      "text": "Расскажи еще про способности",
+      "nextScene": "scene121",
+      "id": "scene126_choice3"
+    }
+  ]
+}

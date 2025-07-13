@@ -1,0 +1,59 @@
+{
+  "id": "scene2",
+  "name": "Основы интерфейса",
+  "background": "sprites/episodes/locations/mansion/mansion_outside.png",
+  "characters": [
+    {
+      "id": "player",
+      "position": "left"
+    },
+    {
+      "id": "peter",
+      "position": "right"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "peter",
+      "text": "Так кто же вы?",
+      "emotion": "surprised"
+    },
+    {
+      "speaker": "Player",
+      "text": "Меня зовут Владислав Бэйбидонхертми, я с планеты Донтхертминомор, и я не потерплю к себе такого неуважения!",
+      "emotion": "smirk"
+    },
+    {
+      "speaker": "peter",
+      "text": "Вы держите меня за идиота?",
+      "emotion": "angry"
+    },
+    {
+      "speaker": "peter",
+      "text": "Если вы не представитесь, я вызову полицию",
+      "emotion": "happy"
+    }
+  ],
+  "choices": [
+    {
+      "id": "well_met",
+      "text": "Я и сам в своем роде полицейский",
+      "nextScene": "scene10",
+      
+        "effects": {
+          "relationship": {
+            "peter": -10
+          }
+        },
+      "important": true,
+      "value": "met",
+      "description": "Представляться ",
+      "consequences": ["Выбор 2"]
+    }
+  ],
+  "requirements": {},
+  "rewards": {
+    "experience": 0,
+    "coins": 0
+  }
+} 

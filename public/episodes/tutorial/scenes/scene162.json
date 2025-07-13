@@ -1,0 +1,30 @@
+{
+  "id": "scene162",
+  "chapterId": 8,
+  "location": "classroom",
+  "background": "school_class",
+  "characters": [
+    {
+      "id": "anna",
+      "position": "center",
+      "emotion": "happy"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "anna",
+      "text": "Было замечательно учиться вместе! Надеюсь, мы еще встретимся. Удачи в твоих приключениях!",
+      "emotion": "happy"
+    }
+  ],
+  "choices": [
+    {
+      "id": "scene162_choice1",
+      "text": "Спасибо, Анна! И тебе удачи!",
+      "nextScene": "scene163",
+      "effects": {
+        "relationship": {}
+      }
+    }
+  ]
+}

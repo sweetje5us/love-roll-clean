@@ -1,0 +1,33 @@
+{
+  "id": "scene171",
+  "chapterId": 8,
+  "location": "corridor",
+  "background": "school_corridor",
+  "characters": [
+    {
+      "id": "student",
+      "position": "center",
+      "emotion": "sad"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "student",
+      "text": "Нет, прости, ничего",
+      "emotion": "sad"
+    },
+     {
+      "speaker": "student",
+      "text": "Пока..",
+      "emotion": "sad"
+    }
+  ],
+  "choices": [
+    {
+      "id": "scene153_choice1",
+      "text": "Пока..",
+      "nextScene": "scene154"
+     
+    }
+  ]
+}

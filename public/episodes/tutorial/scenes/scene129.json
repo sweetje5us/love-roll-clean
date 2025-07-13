@@ -1,0 +1,57 @@
+{
+  "id": "scene129",
+  "chapterId": 7,
+  "location": "pet_classroom",
+  "background": "school_class",
+  "characters": [
+    {
+      "id": "anna",
+      "position": "center",
+      "name": "Анна"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "anna",
+      "text": "Хм, ты немного нервничал, но я вижу, что у тебя есть потенциал.",
+      "emotion": "normal"
+    },
+    {
+      "speaker": "anna",
+      "text": "Может быть, тебе нужно больше практики в общении.",
+      "emotion": "smile"
+    },
+    {
+      "speaker": "anna",
+      "text": "Но я все равно подарю тебе питомца - вот тебе обычная Крыса!",
+      "emotion": "happy"
+    },
+    {
+      "speaker": "anna",
+      "text": "Крыса поможет тебе улучшать отношения на +10 очков. Это хорошее начало!",
+      "emotion": "normal"
+    },
+    {
+      "speaker": "anna",
+      "text": "Попробуй потренироваться с ней, и в следующий раз у тебя получится лучше!",
+      "emotion": "smile"
+    }
+  ],
+  "choices": [
+    {
+      "text": "Спасибо, я постараюсь лучше!",
+      "nextScene": "scene132",
+      "effects": {
+        "items": {
+          "add": [
+            "rat"
+          ]
+        },
+        "relationships": {
+          "anna": 5
+        }
+      },
+      "id": "scene129_choice1"
+    }
+  ]
+}

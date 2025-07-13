@@ -1,0 +1,62 @@
+{
+  "id": "scene134",
+  "chapterId": 7,
+  "location": "pet_classroom",
+  "background": "school_class",
+  "characters": [
+    {
+      "id": "anna",
+      "position": "center",
+      "name": "Анна"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "anna",
+      "text": "О, это [PET_NAME]! Какой милый питомец!",
+      "emotion": "happy"
+    },
+    {
+      "speaker": "anna",
+      "text": "Давай поиграем с ним!",
+      "emotion": "excited"
+    },
+    {
+      "speaker": "anna",
+      "text": "*Анна играет с питомцем и смеется*",
+      "emotion": "happy"
+    },
+    {
+      "speaker": "anna",
+      "text": "Это было так весело! Спасибо, что поделился своим питомцем со мной.",
+      "emotion": "smile"
+    },
+    {
+      "speaker": "anna",
+      "text": "Я чувствую, что наши отношения стали еще лучше!",
+      "emotion": "happy"
+    },
+    {
+      "speaker": "anna",
+      "text": "Хочешь узнать еще что-то о питомцах?",
+      "emotion": "smile"
+    }
+  ],
+  "choices": [
+    {
+      "text": "Да, расскажи еще",
+      "nextScene": "scene121",
+      "id": "scene134_choice1"
+    },
+    {
+      "text": "Попробуем получить еще одного питомца",
+      "nextScene": "scene125",
+      "id": "scene134_choice2"
+    },
+    {
+      "text": "Спасибо за обучение!",
+      "nextScene": "scene132",
+      "id": "scene134_choice3"
+    }
+  ]
+}

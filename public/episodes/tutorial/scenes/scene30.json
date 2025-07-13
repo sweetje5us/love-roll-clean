@@ -1,0 +1,53 @@
+{
+  "id": "scene30",
+  "name": "Концовка: Дружба превыше всего",
+  "background": "sprites/episodes/locations/school/school_class.png",
+  "characters": [
+    {
+      "id": "player",
+      "position": "left"
+    },
+    {
+      "id": "eugene",
+      "position": "right",
+      "emotion": "normal"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "eugene",
+      "text": "Интересный путь! Вы выбрали дружбу и моральные принципы превыше всего."
+    },
+    {
+      "speaker": "eugene",
+      "text": "Ваши важные выборы показали, что вы цените личные связи и честность."
+    },
+    {
+      "speaker": "eugene",
+      "text": "Вы помогали другу в беде, остались с близкими людьми и сохранили моральные принципы."
+    },
+    {
+      "speaker": "eugene",
+      "text": "Результат: у вас крепкие дружеские связи и чистая совесть, хотя карьера могла бы развиваться быстрее."
+    },
+    {
+      "speaker": "eugene",
+      "text": "Это показывает, что человеческие отношения и мораль могут быть важнее материального успеха."
+    }
+  ],
+  "choices": [
+    {
+      "id": "end_chapter_friendship",
+      "text": "Завершить главу",
+      "endChapter": true
+    }
+  ],
+  "requirements": {},
+  "rewards": {
+    "experience": 40,
+    "coins": 20,
+    "relationship": {
+      "eugene": 15
+    }
+  }
+} 

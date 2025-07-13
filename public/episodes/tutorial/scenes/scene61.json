@@ -1,0 +1,53 @@
+{
+  "id": "scene61",
+  "chapterId": 4,
+  "location": "classroom",
+  "background": "school_class",
+  "characters": [
+    {
+      "id": "alexandra",
+      "position": "center",
+      "emotion": "normal",
+      "name": "Александра"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "alexandra",
+      "text": "Отлично! Давай разберем валюту подробнее.",
+      "emotion": "smile"
+    },
+    {
+      "speaker": "alexandra",
+      "text": "Монеты - это основная валюта игры. Ты получаешь их за прохождение глав, выполнение заданий и ежедневные награды.",
+      "emotion": "normal"
+    },
+    {
+      "speaker": "alexandra",
+      "text": "Монетами можно покупать обычные предметы, зелья, материалы и базовую одежду для персонажей.",
+      "emotion": "smile"
+    },
+    {
+      "speaker": "alexandra",
+      "text": "Драгоценные камни - это премиум валюта. Они более редкие и ценные.",
+      "emotion": "normal"
+    },
+    {
+      "speaker": "alexandra",
+      "text": "Камнями можно покупать эксклюзивную одежду, редкие предметы и открывать специальные сундуки.",
+      "emotion": "smile"
+    }
+  ],
+  "choices": [
+    {
+      "id": "choice1",
+      "text": "Как получить драгоценные камни?",
+      "nextScene": "scene63"
+    },
+    {
+      "id": "choice2",
+      "text": "Расскажи про магазин",
+      "nextScene": "scene62"
+    }
+  ]
+} 

@@ -1,0 +1,64 @@
+{
+  "id": "scene43",
+  "background": "sprites/episodes/locations/school/school_class.png",
+  "characters": [
+    {
+      "id": "dima",
+      "position": "center"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "dima",
+      "text": "Отлично! А теперь важный вопрос - как ты обычно ведешь себя в конфликтных ситуациях?",
+      "emotion": "happy"
+    },
+    {
+      "speaker": "dima",
+      "text": "Представь, что ты не согласен с мнением близкого друга. Что ты сделаешь?",
+      "emotion": "smile"
+    }
+  ],
+  "choices": [
+    {
+      "id": "discuss",
+      "text": "Попробую обсудить проблему спокойно и найти компромисс",
+      "nextScene": "scene44",
+      "effects": {
+        "relationship": {
+          "dima": 15
+        }
+      }
+    },
+    {
+      "id": "avoid",
+      "text": "Избегу конфликта - лучше промолчу и сохраню мир",
+      "nextScene": "scene44",
+      "effects": {
+        "relationship": {
+          "dima": 5
+        }
+      }
+    },
+    {
+      "id": "argue",
+      "text": "Буду отстаивать свою точку зрения до конца",
+      "nextScene": "scene44",
+      "effects": {
+        "relationship": {
+          "dima": -5
+        }
+      }
+    },
+    {
+      "id": "walk_away",
+      "text": "Просто уйду - не хочу тратить время на споры",
+      "nextScene": "scene44",
+      "effects": {
+        "relationship": {
+          "dima": -10
+        }
+      }
+    }
+  ]
+} 

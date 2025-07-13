@@ -1,0 +1,53 @@
+{
+  "id": "scene46_1",
+  "name": "Добро пожаловать в игру",
+  "background": "sprites/episodes/locations/mansion/mansion_room_camin_11zon.png",
+  "characters": [
+
+   
+  ],
+  "dialogue": [
+        {
+      "speaker": "mooduck",
+      "text": "Мне нужно закончить стихи господина Диметрио:",
+      "emotion": "angry"
+    },
+    {
+      "speaker": "mooduck",
+      "text": "Заходит мудрый, полный сил,",
+      "emotion": "angry"
+    },
+    {
+      "speaker": "mooduck",
+      "text": "С улыбкой к нам преподаватель.",
+      "emotion": "angry"
+    },
+    {
+      "speaker": "mooduck",
+      "text": "Он жизнь свою нам посвятил,",
+      "emotion": "angry"
+    },
+    {
+      "speaker": "mooduck",
+      "text": "...",
+      "emotion": "angry"
+    }
+  ],
+  "choices": [
+      {
+        "id": "choice1",
+        "text": "Он наших душ завоеватель!",
+        "nextScene": "scene38_1",
+        "effects": {
+          "relationship": {
+            "mooduck": 10
+          }
+        }
+      }
+  ],
+  "requirements": {},
+  "rewards": {
+    "experience": 0,
+    "coins": 0
+  }
+} 

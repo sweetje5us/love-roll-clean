@@ -1,0 +1,42 @@
+{
+  "id": "scene156",
+  "chapterId": 8,
+  "location": "corridor",
+  "background": "school_corridor",
+  "characters": [
+    {
+      "id": "eugene",
+      "position": "center",
+      "emotion": "surprised"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "eugene",
+      "text": "Ты знаешь, я не хотел тебя обидеть, прости.",
+      "emotion": "surprised"
+    },
+    {
+      "speaker": "eugene",
+      "text": "Я просто хочу помочь тебе с одеждой, вот держи это.",
+      "emotion": "surprised"
+    }
+  ],
+  "choices": [
+    {
+      "id": "scene156_choice1",
+      "text": "Спасибо за извинение",
+      "nextScene": "scene159",
+      "effects": {
+        "relationships": {
+          "eugene": 25
+        },
+        "items": {
+          "add": [
+            "female_mature_casual2"
+          ]
+        }
+      }
+    }
+  ]
+}

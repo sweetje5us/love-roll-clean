@@ -1,0 +1,57 @@
+{
+  "id": "scene131",
+  "chapterId": 7,
+  "location": "pet_classroom",
+  "background": "school_class",
+  "characters": [
+    {
+      "id": "anna",
+      "position": "center",
+      "name": "Анна"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "anna",
+      "text": "Конечно, понимаю! Не все готовы сразу заводить питомца.",
+      "emotion": "normal"
+    },
+    {
+      "speaker": "anna",
+      "text": "Когда будешь готов, просто скажи мне, и мы попробуем снова!",
+      "emotion": "smile"
+    },
+    {
+      "speaker": "anna",
+      "text": "А пока можешь изучить теорию о питомцах и их способностях.",
+      "emotion": "normal"
+    },
+    {
+      "speaker": "anna",
+      "text": "Что тебя интересует больше всего?",
+      "emotion": "happy"
+    }
+  ],
+  "choices": [
+    {
+      "text": "Расскажи про способности питомцев",
+      "nextScene": "scene121",
+      "id": "scene131_choice1"
+    },
+    {
+      "text": "Расскажи про редкость питомцев",
+      "nextScene": "scene124",
+      "id": "scene131_choice2"
+    },
+    {
+      "text": "Покажи моего питомца",
+      "nextScene": "scene123",
+      "id": "scene131_choice3"
+    },
+    {
+      "text": "Расскажи про взаимодействие с питомцами",
+      "nextScene": "scene133",
+      "id": "scene131_choice4"
+    }
+  ]
+}

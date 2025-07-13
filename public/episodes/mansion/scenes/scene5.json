@@ -1,0 +1,58 @@
+{
+  "id": "scene2",
+  "name": "Основы интерфейса",
+  "background": "sprites/episodes/locations/mansion/mansion_outside.png",
+  "characters": [
+    {
+      "id": "player",
+      "position": "left"
+    },
+    {
+      "id": "peter",
+      "position": "right"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "peter",
+      "text": "Так кто же вы?",
+      "emotion": "surprised"
+    },
+    {
+      "speaker": "Player",
+      "text": "Меня зовут Диметрио, и это я владелец этого поместья, я не потерплю к себе такого неуважения!",
+      "emotion": "smirk"
+    },
+    {
+      "speaker": "peter",
+      "text": "Вы держите меня за идиота?",
+      "emotion": "surprised"
+    },
+    {
+      "speaker": "peter",
+      "text": "Скажите, кто вы на самом деле?",
+      "emotion": "happy"
+    }
+  ],
+  "choices": [
+    {
+      "id": "well_met",
+      "text": "Представиться",
+      "nextScene": "scene10",
+      "effects": {
+        "relationship": {
+          "peter": -10
+        }
+      },
+      "important": true,
+      "value": "met",
+      "description": "Представляться ",
+      "consequences": ["Выбор 2"]
+    }
+  ],
+  "requirements": {},
+  "rewards": {
+    "experience": 0,
+    "coins": 0
+  }
+} 

@@ -1,0 +1,53 @@
+{
+  "id": "scene66",
+  "chapterId": 4,
+  "location": "classroom",
+  "background": "school_class",
+  "characters": [
+    {
+      "id": "alexandra",
+      "position": "center",
+      "emotion": "smile",
+      "name": "Александра"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "alexandra",
+      "text": "Ежедневные награды - это отличный способ получать валюту бесплатно!",
+      "emotion": "delighted"
+    },
+    {
+      "speaker": "alexandra",
+      "text": "Каждый день ты можешь получить награду, просто зайдя в игру и нажав на кнопку ежедневных наград.",
+      "emotion": "normal"
+    },
+    {
+      "speaker": "alexandra",
+      "text": "Награды растут с каждым днем: 1-й день - монеты, 2-й - больше монет, 3-й - зелья, и так далее.",
+      "emotion": "smile"
+    },
+    {
+      "speaker": "alexandra",
+      "text": "На 7-й день ты получаешь драгоценные камни! Это самая ценная награда недели.",
+      "emotion": "delighted"
+    },
+    {
+      "speaker": "alexandra",
+      "text": "Важно: если ты пропустишь день, счетчик сбросится, и тебе придется начинать сначала.",
+      "emotion": "normal"
+    }
+  ],
+  "choices": [
+    {
+      "id": "choice1",
+      "text": "Как работает реклама?",
+      "nextScene": "scene67"
+    },
+    {
+      "id": "choice2",
+      "text": "Расскажи о покупках за деньги",
+      "nextScene": "scene68"
+    }
+  ]
+} 

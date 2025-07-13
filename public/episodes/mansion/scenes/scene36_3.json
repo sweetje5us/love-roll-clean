@@ -1,0 +1,34 @@
+{
+  "id": "scene36_3",
+  "name": "Добро пожаловать в игру (Провал)",
+  "background": "sprites/episodes/locations/mansion/guest_room_bedroom_11zon.png",
+  "characters": [
+
+   
+  ],
+  "dialogue": [
+    {
+      "speaker": "dulapeepa",
+      "text": "АААА!!! Вы меня напугали!",
+      "emotion": "angry"
+    }
+  ],
+  "choices": [
+    
+      {
+        "id": "choice3",
+        "text": "Прости меня, я не знал что ты здесь, я уже ухожу",
+        "nextScene": "scene26",
+        "effects": {
+          "relationship": {
+            "dulapeepa": -10
+          }
+        }
+      }
+  ],
+  "requirements": {},
+  "rewards": {
+    "experience": 0,
+    "coins": 0
+  }
+} 

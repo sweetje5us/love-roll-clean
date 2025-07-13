@@ -1,0 +1,42 @@
+{
+  "id": "scene156",
+  "chapterId": 8,
+  "location": "corridor",
+  "background": "school_corridor",
+  "characters": [
+    {
+      "id": "eugene",
+      "position": "center",
+      "emotion": "surprised"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "eugene",
+      "text": "Хм... Знаешь, может я был слишком резок. Твоя одежда... на самом деле выглядит нормально. Извини за замечание.",
+      "emotion": "surprised"
+    }
+  ],
+  "choices": [
+    {
+      "id": "scene156_choice1",
+      "text": "Спасибо за извинение",
+      "nextScene": "scene159",
+      "effects": {
+        "relationship": {
+          "eugene": 2
+        }
+      }
+    },
+    {
+      "id": "scene156_choice2",
+      "text": "Ничего страшного",
+      "nextScene": "scene159",
+      "effects": {
+        "relationship": {
+          "eugene": 1
+        }
+      }
+    }
+  ]
+}

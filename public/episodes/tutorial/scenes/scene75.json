@@ -1,0 +1,62 @@
+{
+  "id": "scene75",
+  "chapterId": 4,
+  "location": "classroom",
+  "background": "school_class",
+  "characters": [
+    {
+      "id": "alexandra",
+      "position": "center",
+      "emotion": "smile",
+      "name": "Александра"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "alexandra",
+      "text": "Отлично! Ты изучил все основы магазина и экономики нашей игры.",
+      "emotion": "delighted"
+    },
+    {
+      "speaker": "alexandra",
+      "text": "Теперь ты знаешь:",
+      "emotion": "normal"
+    },
+    {
+      "speaker": "alexandra",
+      "text": "• Как работают монеты и драгоценные камни",
+      "emotion": "smile"
+    },
+    {
+      "speaker": "alexandra",
+      "text": "• Как пользоваться магазином и его разделами",
+      "emotion": "normal"
+    },
+    {
+      "speaker": "alexandra",
+      "text": "• Как получать валюту бесплатно",
+      "emotion": "smile"
+    },
+    {
+      "speaker": "alexandra",
+      "text": "• Как безопасно совершать покупки",
+      "emotion": "normal"
+    },
+    {
+      "speaker": "alexandra",
+      "text": "Помни: планируй покупки, используй скидки и не забывай про ежедневные награды!",
+      "emotion": "smile"
+    },
+    {
+      "speaker": "alexandra",
+      "text": "Удачи в игре! И если что-то понадобится - обращайся в поддержку.",
+      "emotion": "delighted"
+    }
+  ],
+  "choices": [
+    {
+      "text": "Завершить главу",
+      "endChapter": true
+    }
+  ]
+} 

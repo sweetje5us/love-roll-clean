@@ -1,0 +1,38 @@
+{
+  "id": "scene30",
+  "name": "Добро пожаловать в игру",
+  "background": "sprites/episodes/locations/mansion/mansion_camin_room_opened.png",
+  "characters": [
+
+   
+  ],
+  "dialogue": [
+    {
+      "speaker": "narrator",
+      "text": "Вы решили отправиться в гостиную комнату с камином",
+      "emotion": "happy"
+    },
+    {
+      "speaker": "narrator",
+      "text": "Дверь в комнату открыта, оттуда доносится звуки",
+      "emotion": "happy"
+    }
+  ],
+  "choices": [
+      {
+        "id": "choice1",
+        "text": "Зайти в комнату",
+        "nextScene": "scene44"
+      },
+      {
+        "id": "choice2",
+        "text": "Вернуться",
+        "nextScene": "scene26"
+      }
+  ],
+  "requirements": {},
+  "rewards": {
+    "experience": 0,
+    "coins": 0
+  }
+} 

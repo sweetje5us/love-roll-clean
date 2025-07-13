@@ -1,0 +1,43 @@
+{
+  "id": "scene55",
+  "name": "Заглянуть в кабинет",
+  "background": "sprites/episodes/locations/mansion/mansion_cabinet_11zon.png",
+  "characters": [
+
+   
+  ],
+  "dialogue": [
+    {
+      "speaker": "narrator",
+      "text": "Вы открываете в кабинет, минуя охранника",
+      "emotion": "happy"
+    },
+    {
+      "speaker": "narrator",
+      "text": "Вам удается заглянуть в кабинет господина Диметрио",
+      "emotion": "happy"
+    },
+    {
+      "speaker": "narrator",
+      "text": "Вы видите разбросанные по полу бумаги, но охранник не дает вам зайти",
+      "emotion": "happy"
+    },
+    {
+      "speaker": "artess_god",
+      "text": "Вы доставляете нам много проблем, я выведу вас отсюда",
+      "emotion": "happy"
+    }
+  ],
+  "choices": [
+      {
+        "id": "choice1",
+        "text": "Вернуться назад",
+        "nextScene": "scene26"
+      }
+  ],
+  "requirements": {},
+  "rewards": {
+    "experience": 0,
+    "coins": 0
+  }
+} 

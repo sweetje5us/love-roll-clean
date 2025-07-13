@@ -1,0 +1,38 @@
+{
+  "id": "scene169",
+  "chapterId": 8,
+  "location": "corridor",
+  "background": "school_corridor",
+  "characters": [
+    {
+      "id": "arseniy",
+      "position": "center",
+      "emotion": "normal"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "arseniy",
+      "text": "Привет! Я слышал, что ты заканчиваешь обучение. Хотел поговорить с тобой о том, как ты освоил систему предметов и обмена.",
+      "emotion": "happy"
+    }
+  ],
+  "choices": [
+    {
+      "id": "scene169_choice1",
+      "text": "Да, система предметов оказалась очень интересной",
+      "nextScene": "scene170",
+      "effects": {
+        "relationship": {}
+      }
+    },
+    {
+      "id": "scene169_choice2",
+      "text": "Твои уроки помогли мне понять важность правильного обмена",
+      "nextScene": "scene170",
+      "effects": {
+        "relationship": {}
+      }
+    }
+  ]
+}

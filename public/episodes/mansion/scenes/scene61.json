@@ -1,0 +1,38 @@
+{
+  "id": "scene61",
+  "name": "Появление Диметрио",
+  "background": "sprites/episodes/locations/mansion/mansion_room_with_people_11zon.png",
+  "characters": [
+
+   
+  ],
+  "dialogue": [
+    {
+      "speaker": "narrator",
+      "text": "По лестнице спускается господин Диметрио",
+      "emotion": "happy"
+    },
+    {
+      "speaker": "narrator",
+      "text": "",
+      "emotion": "happy"
+    },
+    {
+      "speaker": "narrator",
+      "text": "",
+      "emotion": "happy"
+    }
+  ],
+  "choices": [
+      {
+        "id": "choice1",
+        "text": "Наблюдать",
+        "nextScene": "scene62"
+      }
+  ],
+  "requirements": {},
+  "rewards": {
+    "experience": 0,
+    "coins": 0
+  }
+} 

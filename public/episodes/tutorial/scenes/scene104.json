@@ -1,0 +1,47 @@
+{
+  "id": "scene104",
+  "chapterId": 6,
+  "location": "dice_room",
+  "background": "school_class",
+  "characters": [
+    {
+      "id": "nikolay",
+      "position": "center",
+      "name": "Николай"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "nikolay",
+      "text": "Хм... Неудача. Твоя попытка убеждения не сработала, и я не согласился дать дополнительное время.",
+      "emotion": "normal"
+    },
+    {
+      "speaker": "nikolay",
+      "text": "При неудаче действие не выполняется, но ситуация не ухудшается критически.",
+      "emotion": "smile"
+    },
+    {
+      "speaker": "nikolay",
+      "text": "Возможно, твои аргументы были недостаточно убедительными, или я просто не в настроении давать поблажки.",
+      "emotion": "normal"
+    },
+    {
+      "speaker": "nikolay",
+      "text": "Не расстраивайся! У тебя еще будет много возможностей попрактиковаться в убеждении.",
+      "emotion": "smile"
+    }
+  ],
+  "choices": [
+    {
+      "id": "scene104_choice1",
+      "text": "Понял, давай проверим другие характеристики",
+      "nextScene": "scene105"
+    },
+    {
+      "id": "scene104_choice2",
+      "text": "Расскажи больше о неудачах",
+      "nextScene": "scene111"
+    }
+  ]
+} 

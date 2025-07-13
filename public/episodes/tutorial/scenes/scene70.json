@@ -1,0 +1,53 @@
+{
+  "id": "scene70",
+  "chapterId": 4,
+  "location": "classroom",
+  "background": "school_class",
+  "characters": [
+    {
+      "id": "alexandra",
+      "position": "center",
+      "emotion": "normal",
+      "name": "Александра"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "alexandra",
+      "text": "Специальные предложения - это уникальные товары, которые появляются на ограниченное время.",
+      "emotion": "smile"
+    },
+    {
+      "speaker": "alexandra",
+      "text": "Они могут включать эксклюзивную одежду, редкие предметы или наборы со скидками.",
+      "emotion": "normal"
+    },
+    {
+      "speaker": "alexandra",
+      "text": "Некоторые предложения привязаны к событиям или праздникам.",
+      "emotion": "smile"
+    },
+    {
+      "speaker": "alexandra",
+      "text": "Также есть предложения для новых игроков с дополнительными бонусами.",
+      "emotion": "normal"
+    },
+    {
+      "speaker": "alexandra",
+      "text": "Следи за уведомлениями и новостями игры, чтобы не пропустить интересные предложения!",
+      "emotion": "smile"
+    }
+  ],
+  "choices": [
+    {
+      "id": "choice1",
+      "text": "Как управлять инвентарем?",
+      "nextScene": "scene71"
+    },
+    {
+      "id": "choice2",
+      "text": "Расскажи о безопасности покупок",
+      "nextScene": "scene72"
+    }
+  ]
+} 

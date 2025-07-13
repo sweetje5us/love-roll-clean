@@ -1,0 +1,34 @@
+{
+  "id": "scene47",
+  "background": "sprites/episodes/locations/school/school_corridor.png",
+  "characters": [
+    {
+      "id": "dima",
+      "position": "center"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "dima",
+      "text": "Настало время подвести итоги нашего эксперимента.",
+      "emotion": "normal"
+    },
+    {
+      "speaker": "dima",
+      "text": "Твои выборы показали мне, какой ты человек. И теперь я знаю, как к тебе относиться.",
+      "emotion": "serious"
+    }
+  ],
+  "choices": [
+    {
+      "id": "check_relationship",
+      "text": "Продолжить...",
+      "nextScene": "scene48",
+      "effects": {
+        "relationship": {
+          "dima": 0
+        }
+      }
+    }
+  ]
+} 

@@ -1,0 +1,32 @@
+{
+  "id": "scene157",
+  "chapterId": 8,
+  "location": "corridor",
+  "background": "school_corridor",
+  "characters": [
+    {
+      "id": "eugene",
+      "position": "center",
+      "emotion": "angry1"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "eugene",
+      "text": "Ты что, не понимаешь? Твоя одежда выглядит неряшливо! И вообще, зачем ты здесь торчишь? Лучше бы ушел.",
+      "emotion": "angry1"
+    }
+  ],
+  "choices": [
+    {
+      "id": "scene157_choice1",
+      "text": "Извини, ухожу",
+      "nextScene": "scene159",
+      "effects": {
+        "relationship": {
+          "eugene": -2
+        }
+      }
+    }
+  ]
+}

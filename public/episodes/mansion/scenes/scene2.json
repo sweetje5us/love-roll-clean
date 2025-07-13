@@ -1,0 +1,75 @@
+{
+  "id": "scene2",
+  "name": "Основы интерфейса",
+  "background": "sprites/episodes/locations/mansion/mansion_outside.png",
+  "characters": [
+    {
+      "id": "player",
+      "position": "left"
+    },
+    {
+      "id": "peter",
+      "position": "right"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "peter",
+      "text": "А вот и вы! ",
+      "emotion": "happy"
+    },
+    {
+      "speaker": "peter",
+      "text": "Все уже в сборе, могу я посмотреть ваше приглашение? ",
+      "emotion": "happy"
+    }
+  ],
+  "choices": [
+    {
+      "id": "well_met",
+      "text": "Я здесь по работе, я детектив. Показать удостоверение?",
+      "nextScene": "scene10",
+      "important": true,
+      "value": "met",
+      "description": "Представиться ",
+      "consequences": ["Выбор 1"]
+    },
+    {
+      "id": "scene1_choice1",
+      "text": "[Коварство] Попытаться обмануть Питера",
+      "diceCheck": {
+        "stat": "cunning",
+        "difficulty": 12,
+        "description": "Попытка обмануть Питера, представившись гостем",
+        "results": {
+          "critical_success": "scene3",
+          "success": "scene4",
+          "failure": "scene5",
+          "critical_failure": "scene6"
+        }
+      },
+      "nextScene": "scene5"
+    },
+    {
+      "id": "scene1_choice2",
+      "text": "[Решительность] Представиться, но попросить молчать о том кто я",
+      "diceCheck": {
+        "stat": "determination",
+        "difficulty": 12,
+        "description": "Попытка обмануть Питера, представившись гостем",
+        "results": {
+          "critical_success": "scene9",
+          "success": "scene8",
+          "failure": "scene10",
+          "critical_failure": "scene7"
+        }
+      },
+      "nextScene": "scene10"
+    }
+  ],
+  "requirements": {},
+  "rewards": {
+    "experience": 0,
+    "coins": 0
+  }
+} 

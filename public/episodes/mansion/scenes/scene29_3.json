@@ -1,0 +1,48 @@
+{
+  "id": "scene29_3",
+  "name": "Спросить о Диметрио (Провал)",
+  "background": "sprites/episodes/locations/mansion/mansion_room_with_people_11zon.png",
+  "characters": [
+
+   
+  ],
+  "dialogue": [
+    {
+      "speaker": "oleg",
+      "text": "Диметрио очень скрытный человек",
+      "emotion": "happy"
+    },
+    {
+      "speaker": "oleg",
+      "text": "Могу я расслабиться вне работы и перестать отвечать на вопросы?",
+      "emotion": "neutral"
+    }
+  ],
+  "choices": [
+      {
+        "id": "choice1",
+        "text": "Спасибо, на этом все.",
+        "nextScene": "scene23",
+        "effects": {
+          "relationship": {
+            "oleg": -10
+          }
+        }
+      },
+      {
+        "id": "choice2",
+        "text": "Расскажите о гостях",
+        "nextScene": "scene27"
+      },
+      {
+        "id": "choice3",
+        "text": "Расскажите про себя",
+        "nextScene": "scene25"
+      }
+  ],
+  "requirements": {},
+  "rewards": {
+    "experience": 0,
+    "coins": 0
+  }
+} 

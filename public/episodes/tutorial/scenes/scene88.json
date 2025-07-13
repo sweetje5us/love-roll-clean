@@ -1,0 +1,57 @@
+{
+  "id": "scene88",
+  "chapterId": 6,
+  "location": "classroom",
+  "background": "school_class",
+  "characters": [
+    {
+      "id": "arseniy",
+      "position": "center",
+      "name": "Арсений"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "arseniy",
+      "text": "Отличный вопрос! Достичь уровня дружбы можно несколькими способами:",
+      "emotion": "normal"
+    },
+    {
+      "speaker": "arseniy",
+      "text": "1. Делать важные выборы в пользу персонажа",
+      "emotion": "smile"
+    },
+    {
+      "speaker": "arseniy",
+      "text": "2. Дарить предметы, которые персонаж просит",
+      "emotion": "normal"
+    },
+    {
+      "speaker": "arseniy",
+      "text": "3. Помогать персонажу в сложных ситуациях",
+      "emotion": "smile"
+    },
+    {
+      "speaker": "arseniy",
+      "text": "4. Выбирать диалоги, которые показывают твою заботу и понимание",
+      "emotion": "normal"
+    },
+    {
+      "speaker": "arseniy",
+      "text": "Каждый положительный выбор приближает тебя к дружбе, а отрицательный - отдаляет.",
+      "emotion": "smile"
+    }
+  ],
+  "choices": [
+    {
+      "text": "Расскажи о других наградах",
+      "nextScene": "scene90",
+      "id": "scene88_choice1"
+    },
+    {
+      "text": "Как узнать уровень отношений?",
+      "nextScene": "scene91",
+      "id": "scene88_choice2"
+    }
+  ]
+}

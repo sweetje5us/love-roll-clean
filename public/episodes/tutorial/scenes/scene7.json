@@ -1,0 +1,48 @@
+{
+  "id": "scene7",
+  "name": "Новая дружба",
+  "background": "sprites/episodes/locations/school/school_class.png",
+  "characters": [
+    {
+      "id": "player",
+      "position": "left"
+    },
+    {
+      "id": "student",
+      "position": "right"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "student",
+      "text": "Похоже у меня новый друг! Мне будет намного легче привыкнуть к новой школе.",
+      "emotion": "happy"
+    },
+    {
+      "speaker": "player",
+      "text": "Я тоже рада познакомиться! Давай вместе исследовать школу.",
+      "emotion": "happy"
+    },
+    {
+      "speaker": "narrator",
+      "text": "Вы вместе отправляетесь в класс, обсуждая планы на учебу."
+    }
+  ],
+  "choices": [
+    {
+      "id": "choice_maria",
+      "text": "Пойти в класс",
+      "nextScene": "scene11",
+      "important": true,
+      "value": "maria_friendship",
+      "description": "Дружба с Марией",
+      "consequences": ["Друг"]
+    
+    }
+  ],
+  "requirements": {},
+  "rewards": {
+    "experience": 0,
+    "coins": 0
+  }
+} 

@@ -1,0 +1,33 @@
+{
+  "id": "scene174",
+  "chapterId": 8,
+  "location": "classroom",
+  "background": "sprites/episodes/locations/school/school_building.png",
+  "characters": [
+  ],
+  "dialogue": [
+    {
+      "speaker": "narrator",
+      "text": "Поздравляю! Ты успешно завершил эпизод! ",
+      "emotion": "happy"
+    },
+    {
+      "speaker": "narrator",
+      "text": "Увидимся в следующих эпизодах!",
+      "emotion": "excited"
+    }
+  ],
+  "choices": [
+    {
+      "id": "scene174_choice1",
+      "text": "Отлично, пока!",
+      "nextScene": "episode_complete",
+      "effects": {
+        "episode_complete": {
+          "experience": 100,
+          "coins": 50
+        }
+      }
+    }
+  ]
+}

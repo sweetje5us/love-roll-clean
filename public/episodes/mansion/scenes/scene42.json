@@ -1,0 +1,55 @@
+{
+  "id": "scene42",
+  "name": "Добро пожаловать в игру",
+  "background": "sprites/episodes/locations/mansion/guest_room_bedroom_11zon.png",
+  "characters": [
+
+   
+  ],
+  "dialogue": [
+    {
+      "speaker": "dulapeepa",
+      "text": "Диметрио - папа Миши",
+      "emotion": "angry"
+    },
+    {
+      "speaker": "dulapeepa",
+      "text": "Мы часто бываем у них в гостях, когда Диметрио занят или в отъезде",
+      "emotion": "angry"
+    }
+  ],
+  "choices": [
+
+      {
+        "id": "choice1",
+        "text": "[Чувствительность] Предложить помощь в поисках Миши",
+        "diceCheck": {
+          "stat": "sensitivity",
+          "difficulty": 12,
+          "description": "Попытка открыть дверь",
+          "results": {
+            "critical_success": "scene47_2",
+            "success": "scene47_1",
+            "failure": "scene47_3",
+            "critical_failure": "scene47_4"
+          }
+        },
+        "nextScene": "scene47_1"
+      },
+      {
+        "id": "choice2",
+        "text": "Выйти из комнаты",
+        "nextScene": "scene26"
+      },
+      {
+        "id": "choice3",
+        "text": "Где твои родители?",
+        "nextScene": "scene40"
+      }
+  ],
+  "requirements": {},
+  "rewards": {
+    "experience": 0,
+    "coins": 0
+  }
+} 

@@ -1,0 +1,62 @@
+{
+  "id": "scene91",
+  "chapterId": 6,
+  "location": "classroom",
+  "background": "school_class",
+  "characters": [
+    {
+      "id": "arseniy",
+      "position": "center",
+      "name": "Арсений"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "arseniy",
+      "text": "Отлично! Ты успешно изучил систему предметов и обмена.",
+      "emotion": "happy"
+    },
+    {
+      "speaker": "arseniy",
+      "text": "Теперь ты знаешь:",
+      "emotion": "normal"
+    },
+    {
+      "speaker": "arseniy",
+      "text": "• Как получать предметы от персонажей",
+      "emotion": "smile"
+    },
+    {
+      "speaker": "arseniy",
+      "text": "• Как дарить предметы персонажам",
+      "emotion": "normal"
+    },
+    {
+      "speaker": "arseniy",
+      "text": "• Как работают важные выборы",
+      "emotion": "smile"
+    },
+    {
+      "speaker": "arseniy",
+      "text": "• Как развивать отношения с персонажами",
+      "emotion": "normal"
+    },
+    {
+      "speaker": "arseniy",
+      "text": "• Какие награды дают друзья",
+      "emotion": "smile"
+    },
+    {
+      "speaker": "arseniy",
+      "text": "Удачи в игре! И помни - настоящая дружба ценится больше всего.",
+      "emotion": "happy"
+    }
+  ],
+  "choices": [
+    {
+      "text": "Завершить главу",
+      "endChapter": true,
+      "id": "scene91_choice1"
+    }
+  ]
+}

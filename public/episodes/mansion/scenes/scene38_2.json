@@ -1,0 +1,39 @@
+{
+  "id": "scene38_2",
+  "name": "Добро пожаловать в игру",
+  "background": "sprites/episodes/locations/mansion/mansion_room_camin_11zon.png",
+  "characters": [
+
+   
+  ],
+  "dialogue": [
+        {
+      "speaker": "mooduck",
+      "text": "Что?",
+      "emotion": "angry"
+    },
+    {
+      "speaker": "mooduck",
+      "text": "Зачем ты вообще открываешь рот?",
+      "emotion": "angry"
+    }
+  ],
+  "choices": [
+   
+      {
+        "id": "choice1",
+        "text": "Простите, я уйду",
+        "nextScene": "scene26",
+        "effects": {
+          "relationship": {
+            "mooduck": -10
+          }
+        }
+      }
+  ],
+  "requirements": {},
+  "rewards": {
+    "experience": 0,
+    "coins": 0
+  }
+} 

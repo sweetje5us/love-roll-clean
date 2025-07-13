@@ -1,0 +1,50 @@
+{
+  "id": "scene85",
+  "chapterId": 6,
+  "location": "classroom",
+  "background": "school_class",
+  "characters": [
+    {
+      "id": "arseniy",
+      "position": "center",
+      "name": "Арсений"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "arseniy",
+      "text": "Вау! Это именно то, что я хотел услышать!",
+      "emotion": "smile"
+    },
+    {
+      "speaker": "arseniy",
+      "text": "Ты только что сделал очень важный выбор, который значительно улучшил наши отношения.",
+      "emotion": "delighted"
+    },
+    {
+      "speaker": "arseniy",
+      "text": "Такие решения открывают новые возможности в диалогах и могут привести к особым наградам.",
+      "emotion": "smile"
+    },
+    {
+      "speaker": "arseniy",
+      "text": "Кстати, наши отношения уже достаточно хорошие. Хочешь, я покажу тебе, что могут дарить друзья?",
+      "emotion": "normal"
+    }
+  ],
+  "choices": [
+    {
+      "text": "Конечно! Что ты можешь подарить?",
+      "nextScene": "scene89",
+      "requiredRelationship": {
+        "arseniy": "friendship"
+      },
+      "id": "scene85_choice1"
+    },
+    {
+      "text": "Расскажи о других способах улучшения отношений",
+      "nextScene": "scene88",
+      "id": "scene85_choice2"
+    }
+  ]
+}

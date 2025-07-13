@@ -1,0 +1,125 @@
+{
+  "id": "scene48",
+  "background": "sprites/episodes/locations/school/school_corridor.png",
+  "characters": [
+    {
+      "id": "dima",
+      "position": "center"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "dima",
+      "text": "Позволь мне проверить наши отношения...",
+      "emotion": "normal"
+    }
+  ],
+  "choices": [
+    {
+      "id": "check_hatred",
+      "text": "Проверить отношения (ненависть)",
+      "nextScene": "scene49",
+      "conditions": {
+        "relationship": {
+          "dima": {
+            "max": -50
+          }
+        }
+      },
+      "effects": {
+        "relationship": {
+          "dima": 0
+        }
+      }
+    },
+    {
+      "id": "check_dislike",
+      "text": "Проверить отношения (неприязнь)",
+      "nextScene": "scene50",
+      "conditions": {
+        "relationship": {
+          "dima": {
+            "min": -49,
+            "max": -10
+          }
+        }
+      },
+      "effects": {
+        "relationship": {
+          "dima": 0
+        }
+      }
+    },
+    {
+      "id": "check_neutral",
+      "text": "Проверить отношения (нейтральные)",
+      "nextScene": "scene51",
+      "conditions": {
+        "relationship": {
+          "dima": {
+            "min": -9,
+            "max": 9
+          }
+        }
+      },
+      "effects": {
+        "relationship": {
+          "dima": 0
+        }
+      }
+    },
+    {
+      "id": "check_friendship",
+      "text": "Проверить отношения (дружба)",
+      "nextScene": "scene52",
+      "conditions": {
+        "relationship": {
+          "dima": {
+            "min": 10,
+            "max": 49
+          }
+        }
+      },
+      "effects": {
+        "relationship": {
+          "dima": 0
+        }
+      }
+    },
+    {
+      "id": "check_close_friendship",
+      "text": "Проверить отношения (близкая дружба)",
+      "nextScene": "scene53",
+      "conditions": {
+        "relationship": {
+          "dima": {
+            "min": 50,
+            "max": 99
+          }
+        }
+      },
+      "effects": {
+        "relationship": {
+          "dima": 0
+        }
+      }
+    },
+    {
+      "id": "check_romance",
+      "text": "Проверить отношения (романтика)",
+      "nextScene": "scene54",
+      "conditions": {
+        "relationship": {
+          "dima": {
+            "min": 100
+          }
+        }
+      },
+      "effects": {
+        "relationship": {
+          "dima": 0
+        }
+      }
+    }
+  ]
+} 

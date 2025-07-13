@@ -1,0 +1,53 @@
+{
+  "id": "scene46_4",
+  "name": "Добро пожаловать в игру (Критический провал)",
+  "background": "sprites/episodes/locations/mansion/mansion_room_camin_11zon.png",
+  "characters": [
+
+   
+  ],
+  "dialogue": [
+        {
+      "speaker": "mooduck",
+      "text": "Мне нужно закончить стихи господина Диметрио:",
+      "emotion": "angry"
+    },
+    {
+      "speaker": "mooduck",
+      "text": "Заходит мудрый, полный сил,",
+      "emotion": "angry"
+    },
+    {
+      "speaker": "mooduck",
+      "text": "С улыбкой к нам преподаватель.",
+      "emotion": "angry"
+    },
+    {
+      "speaker": "mooduck",
+      "text": "Он жизнь свою нам посвятил,",
+      "emotion": "angry"
+    },
+    {
+      "speaker": "mooduck",
+      "text": "...",
+      "emotion": "angry"
+    }
+  ],
+  "choices": [
+    {
+        "id": "choice1",
+        "text": "Я есть хочу, давай фалафель",
+        "nextScene": "scene38_2",
+        "effects": {
+          "relationship": {
+            "mooduck": -20
+          }
+        }
+      }
+  ],
+  "requirements": {},
+  "rewards": {
+    "experience": 0,
+    "coins": 0
+  }
+} 

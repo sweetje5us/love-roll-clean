@@ -1,0 +1,36 @@
+{
+  "id": "scene14",
+  "name": "Добро пожаловать в игру",
+  "background": "sprites/episodes/locations/mansion/mansion_room_with_people_11zon.png",
+  "characters": [
+
+    {
+      "id": "peter",
+      "position": "center"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "peter",
+      "text": "Дорогие гости, минуточку внимания!",
+      "emotion": "neutral"
+    },
+    {
+      "speaker": "peter",
+      "text": "Сегодня нас с вами почтил честью своим присутствием Детектив.",
+      "emotion": "smile"
+    }
+  ],
+  "choices": [
+    {
+      "id": "choice1",
+      "text": "Добрый вечер, не обращайте на меня внимание, я здесь не по работе.",
+      "nextScene": "scene16"
+    }
+  ],
+  "requirements": {},
+  "rewards": {
+    "experience": 0,
+    "coins": 0
+  }
+} 

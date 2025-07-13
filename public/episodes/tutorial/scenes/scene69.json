@@ -1,0 +1,53 @@
+{
+  "id": "scene69",
+  "chapterId": 4,
+  "location": "classroom",
+  "background": "school_class",
+  "characters": [
+    {
+      "id": "alexandra",
+      "position": "center",
+      "emotion": "smile",
+      "name": "Александра"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "alexandra",
+      "text": "Скидки - это отличный способ сэкономить!",
+      "emotion": "delighted"
+    },
+    {
+      "speaker": "alexandra",
+      "text": "В магазине регулярно появляются товары со скидками. Они отмечены специальными значками.",
+      "emotion": "normal"
+    },
+    {
+      "speaker": "alexandra",
+      "text": "Скидки могут быть на отдельные товары или на целые категории.",
+      "emotion": "smile"
+    },
+    {
+      "speaker": "alexandra",
+      "text": "Также есть временные акции с большими скидками. Следи за новостями!",
+      "emotion": "normal"
+    },
+    {
+      "speaker": "alexandra",
+      "text": "Важно: скидки действуют ограниченное время, поэтому не упускай возможность!",
+      "emotion": "smile"
+    }
+  ],
+  "choices": [
+    {
+      "id": "choice1",
+      "text": "Расскажи о специальных предложениях",
+      "nextScene": "scene70"
+    },
+    {
+      "id": "choice2",
+      "text": "Как управлять инвентарем?",
+      "nextScene": "scene71"
+    }
+  ]
+} 

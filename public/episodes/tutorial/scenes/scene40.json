@@ -1,0 +1,59 @@
+{
+  "id": "scene40",
+  "background": "sprites/episodes/locations/school/school_corridor.png",
+  "characters": [
+    {
+      "id": "dima",
+      "position": "center"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "dima",
+      "text": "Привет! Я Дмитрий, и я здесь, чтобы провести с тобой особый эксперимент.",
+      "emotion": "smile"
+    },
+    {
+      "speaker": "dima",
+      "text": "Сегодня мы не просто изучим систему отношений - мы проживем настоящую историю, где каждый твой выбор будет иметь значение.",
+      "emotion": "normal"
+    },
+    {
+      "speaker": "dima",
+      "text": "Готов ли ты к приключению, которое может изменить твою жизнь?",
+      "emotion": "happy"
+    }
+  ],
+  "choices": [
+    {
+      "id": "ready",
+      "text": "Конечно! Я готов к приключению",
+      "nextScene": "scene41",
+      "effects": {
+        "relationship": {
+          "dima": 10
+        }
+      }
+    },
+    {
+      "id": "cautious",
+      "text": "Хм, а что именно произойдет?",
+      "nextScene": "scene41",
+      "effects": {
+        "relationship": {
+          "dima": 0
+        }
+      }
+    },
+    {
+      "id": "excited",
+      "text": "Вау! Это звучит потрясающе!",
+      "nextScene": "scene41",
+      "effects": {
+        "relationship": {
+          "dima": 15
+        }
+      }
+    }
+  ]
+} 

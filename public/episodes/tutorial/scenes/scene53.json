@@ -1,0 +1,49 @@
+{
+  "id": "scene53",
+  "background": "sprites/episodes/locations/school/school_corridor.png",
+  "characters": [
+    {
+      "id": "dima",
+      "position": "center"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "dima",
+      "text": "Ты знаешь, ты стал для меня больше чем просто другом.",
+      "emotion": "smile2"
+    },
+    {
+      "speaker": "dima",
+      "text": "Ты - мой лучший друг. Тот, кому я могу доверить все свои секреты.",
+      "emotion": "smile1"
+    },
+    {
+      "speaker": "dima",
+      "text": "Когда ты встал на мою защиту, я понял, что ты готов на все ради меня.",
+      "emotion": "touched"
+    },
+    {
+      "speaker": "dima",
+      "text": "Спасибо тебе за все. Ты - настоящий герой.",
+      "emotion": "smile2"
+    },
+    {
+      "speaker": "dima",
+      "text": "Я никогда не забуду то, что ты для меня сделал.",
+      "emotion": "smile1"
+    }
+  ],
+  "choices": [
+    {
+      "id": "end_chapter",
+      "text": "Завершить главу",
+      "endChapter": true,
+      "effects": {
+        "relationship": {
+          "dima": 0
+        }
+      }
+    }
+  ]
+} 

@@ -1,0 +1,33 @@
+{
+  "id": "scene10",
+  "name": "Конец первой главы",
+  "background": "sprites/episodes/locations/school/school_class.png",
+  "characters": [
+    {
+      "id": "player",
+      "position": "left"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "narrator",
+      "text": "Первый урок подходит к концу."
+    },
+    {
+      "speaker": "narrator",
+      "text": "Поздравляем! Вы завершили первую главу обучения. Впереди вас ждут новые знакомства и испытания!"
+    }
+  ],
+  "choices": [
+    {
+      "id": "end_chapter",
+      "text": "Продолжить к следующей главе",
+      "endChapter": true
+    }
+  ],
+  "requirements": {},
+  "rewards": {
+    "experience": 100,
+    "coins": 10
+  }
+} 

@@ -1,0 +1,68 @@
+{
+  "id": "scene20",
+  "name": "Добро пожаловать в игру",
+  "background": "sprites/episodes/locations/mansion/mansion_room_with_people_11zon.png",
+  "characters": [
+
+   
+  ],
+  "dialogue": [
+    {
+      "speaker": "dan",
+      "text": "Ох, конечно все хотят знать о господине Диметрио",
+      "emotion": "happy"
+    },
+    {
+      "speaker": "dan",
+      "text": "Я всегда в его тени, мне уже начинает казаться что со мной общаются, только из-за того что я его друг",
+      "emotion": "happy"
+    },
+    {
+      "speaker": "dan",
+      "text": "Никто не спросит про меня, про мою дочь",
+      "emotion": "smirk"
+    },
+    {
+      "speaker": "dan",
+      "text": "Все хотят знать только про него",
+      "emotion": "neutral"
+    },
+    {
+      "speaker": "dan",
+      "text": "Диметрио, Диметрио, Диметрио..",
+      "emotion": "neutral"
+    }
+  ],
+  "choices": [
+      {
+        "id": "choice1",
+        "text": "Расскажите про себя",
+        "nextScene": "scene18",
+        "effects": {
+          "relationship": {
+            "dan": 10
+          }
+        }
+      },
+      {
+        "id": "choice2",
+        "text": "Расскажите про вашу дочь",
+        "nextScene": "scene22",
+        "effects": {
+          "relationship": {
+            "dan": 10
+          }
+        }
+      },
+      {
+        "id": "choice3",
+        "text": "Это все, спасибо, я пойду",
+        "nextScene": "scene24"
+      }
+  ],
+  "requirements": {},
+  "rewards": {
+    "experience": 0,
+    "coins": 0
+  }
+} 

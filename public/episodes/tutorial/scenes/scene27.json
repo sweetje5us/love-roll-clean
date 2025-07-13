@@ -1,0 +1,93 @@
+{
+  "id": "scene27",
+  "name": "Определение концовки на основе важных выборов",
+  "background": "sprites/episodes/locations/school/school_class.png",
+  "characters": [
+    {
+      "id": "player",
+      "position": "left"
+    },
+    {
+      "id": "eugene",
+      "position": "right",
+      "emotion": "normal"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "eugene",
+      "text": "Система анализирует ваши важные выборы..."
+    },
+    {
+      "speaker": "eugene",
+      "text": "На основе ваших решений определяется ваша финальная концовка."
+    },
+    {
+      "speaker": "eugene",
+      "text": "Каждый выбор создал определенный паттерн, который ведет к уникальному результату."
+    },
+    {
+      "speaker": "eugene",
+      "text": "Переходим к вашей персональной концовке!"
+    }
+  ],
+  "choices": [
+    {
+      "id": "ending_balanced",
+      "text": "Концовка: Сбалансированный подход",
+      "nextScene": "scene29",
+      "requirements": {
+        "importantChoice": {
+          "study_hard_choice": "study_hard",
+          "help_friend_choice": "help_friend",
+          "moral_choice": "moral"
+        }
+      }
+    },
+    {
+      "id": "ending_career",
+      "text": "Концовка: Карьерный успех",
+      "nextScene": "scene31",
+      "requirements": {
+        "importantChoice": {
+          "study_hard_choice": "study_hard",
+          "prioritize_self_choice": "prioritize_self",
+          "career_opportunity_choice": "career_opportunity"
+        }
+      }
+    },
+    {
+      "id": "ending_friendship",
+      "text": "Концовка: Дружба превыше всего",
+      "nextScene": "scene30",
+      "requirements": {
+        "importantChoice": {
+          "help_friend_choice": "help_friend",
+          "stay_home_choice": "stay_home",
+          "moral_choice": "moral"
+        }
+      }
+    },
+    {
+      "id": "ending_pragmatic",
+      "text": "Концовка: Прагматичный подход",
+      "nextScene": "scene32",
+      "requirements": {
+        "importantChoice": {
+          "procrastinate_choice": "procrastinate",
+          "prioritize_self_choice": "prioritize_self",
+          "pragmatic_choice": "pragmatic"
+        }
+      }
+    },
+    {
+      "id": "ending_default",
+      "text": "Концовка: Смешанный путь",
+      "nextScene": "scene29"
+    }
+  ],
+  "requirements": {},
+  "rewards": {
+    "experience": 25
+  }
+} 

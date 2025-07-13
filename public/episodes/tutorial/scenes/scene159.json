@@ -1,0 +1,27 @@
+{
+  "id": "scene159",
+  "chapterId": 8,
+  "location": "corridor",
+  "background": "school_corridor",
+  "characters": [
+    {
+      "id": "anna",
+      "position": "center",
+      "emotion": "delighted"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "narrator",
+      "text": "Покинув Евгения, ты встречаешь Анну. Она выглядит радостной и приветливой.",
+      "emotion": "normal"
+    }
+  ],
+  "choices": [
+    {
+      "id": "scene159_choice1",
+      "text": "Подойти к Анне",
+      "nextScene": "scene160"
+    }
+  ]
+}

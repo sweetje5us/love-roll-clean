@@ -1,0 +1,39 @@
+{
+  "id": "scene46",
+  "background": "sprites/episodes/locations/school/school_corridor.png",
+  "characters": [
+    {
+      "id": "dima",
+      "position": "center"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "dima",
+      "text": "Ситуация разрешилась. Хулиганы ушли, но то, что произошло, изменило наши отношения.",
+      "emotion": "serious"
+    },
+    {
+      "speaker": "dima",
+      "text": "Теперь я понимаю, кто ты на самом деле. И это понимание повлияет на то, как сложится наша история.",
+      "emotion": "normal"
+    },
+    {
+      "speaker": "dima",
+      "text": "Давай посмотрим, что нас ждет дальше...",
+      "emotion": "smile1"
+    }
+  ],
+  "choices": [
+    {
+      "id": "continue",
+      "text": "Продолжить...",
+      "nextScene": "scene47",
+      "effects": {
+        "relationship": {
+          "dima": 0
+        }
+      }
+    }
+  ]
+} 

@@ -1,0 +1,47 @@
+{
+  "id": "scene172",
+  "chapterId": 6,
+  "location": "classroom",
+  "background": "school_class",
+  "characters": [
+    {
+      "id": "arseniy",
+      "position": "center",
+      "name": "Арсений"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "arseniy",
+      "text": "Я передал тебе яблоко.",
+      "emotion": "smile"
+    },
+    {
+      "speaker": "arseniy",
+      "text": "Теперь ты можешь открыть инвентарь и найти его там.",
+      "emotion": "normal"
+    },
+    {
+      "speaker": "arseniy",
+      "text": "Также ты можешь открыть магазин и найти его в разделе Инвентаря в магазине.",
+      "emotion": "smile"
+    },
+    {
+      "speaker": "arseniy",
+      "text": "Ты можешь продать предмет за монеты, если тебе он не нужен",
+      "emotion": "normal"
+    },
+    {
+      "speaker": "arseniy",
+      "text": "Если хочешь протестировать работу системы, то пока не продавай яблоко.",
+      "emotion": "normal"
+    }
+  ],
+  "choices": [
+    {
+      "text": "Хорошо, я все понял!",
+      "nextScene": "scene80"
+      
+    }
+  ]
+}

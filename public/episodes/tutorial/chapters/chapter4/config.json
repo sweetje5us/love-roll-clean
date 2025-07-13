@@ -1,0 +1,68 @@
+{
+  "id": 4,
+  "name": "Глава 4: Магазин и экономика",
+  "description": "Изучаем систему магазина, валюты и покупок",
+  "duration": "10-12 минут",
+  "scenes": [
+    "scene60",
+    "scene61", 
+    "scene62",
+    "scene63",
+    "scene64",
+    "scene65",
+    "scene66",
+    "scene67",
+    "scene68",
+    "scene69",
+    "scene70",
+    "scene71",
+    "scene72",
+    "scene73",
+    "scene74",
+    "scene75"
+  ],
+  "characters": [
+    {
+      "id": "alexandra",
+      "name": "Александра",
+      "description": "Эксперт по магазину и экономике игры",
+      "role": "shop_mentor",
+      "gender": "female",
+      "age": "mature",
+      "romanceAvailable": false,
+      "appearance": {
+        "hairStyle": "long",
+        "hairColor": "silver",
+        "hairBehind": "long",
+        "dress": "casual",
+        "dressPaid": false,
+        "accessory": "circle_glasses",
+        "accessoryPaid": false,
+        "bush": "1"
+      }
+    }
+  ],
+  "locations": [
+    {
+      "id": "classroom",
+      "name": "Классная комната",
+      "description": "Уютная классная комната для обучения"
+    }
+  ],
+  "objectives": [
+    "Понять систему валюты (монеты и драгоценные камни)",
+    "Изучить структуру магазина и его разделы",
+    "Узнать о способах получения валюты",
+    "Понять систему сундуков",
+    "Изучить ежедневные награды и рекламу",
+    "Узнать о безопасности покупок"
+  ],
+  "rewards": {
+    "coins": 500,
+    "gems": 10,
+    "items": [
+      "basic_health_potion",
+      "basic_mana_potion"
+    ]
+  }
+} 

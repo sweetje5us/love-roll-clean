@@ -1,0 +1,47 @@
+{
+  "id": "scene107",
+  "chapterId": 6,
+  "location": "dice_room",
+  "background": "school_class",
+  "characters": [
+    {
+      "id": "nikolay",
+      "position": "center",
+      "name": "Николай"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "nikolay",
+      "text": "Хорошо! Обычный успех. Ты вежливо попросил подсказку, и я дал тебе небольшую помощь.",
+      "emotion": "smile"
+    },
+    {
+      "speaker": "nikolay",
+      "text": "С подсказкой ты смог решить головоломку, хотя и не так быстро, как мог бы с более высоким интеллектом.",
+      "emotion": "normal"
+    },
+    {
+      "speaker": "nikolay",
+      "text": "Это показывает, что ты можешь анализировать ситуации, но иногда нужна небольшая помощь.",
+      "emotion": "smile"
+    },
+    {
+      "speaker": "nikolay",
+      "text": "Не стесняйся просить помощи, когда она нужна - это тоже признак интеллекта!",
+      "emotion": "normal"
+    }
+  ],
+  "choices": [
+    {
+      "id": "scene107_choice1",
+      "text": "Спасибо! Идем дальше",
+      "nextScene": "scene112"
+    },
+    {
+      "id": "scene107_choice2",
+      "text": "Расскажи больше о роли интеллекта в игре",
+      "nextScene": "scene113"
+    }
+  ]
+} 

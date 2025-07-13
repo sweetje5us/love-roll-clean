@@ -1,0 +1,51 @@
+{
+  "episodes": {
+    "tutorial": {
+      "id": "tutorial",
+      "name": "Обучение",
+      "description": "Познакомьтесь с основами игры и механиками взаимодействия",
+      "longDescription": "Этот эпизод поможет вам освоить все основные механики игры. Вы научитесь взаимодействовать с персонажами, принимать решения и понимать последствия своих выборов.",
+      "preview": "sprites/episodes/locations/school/school_building.png",
+      "type": "tutorial",
+      "ageRating": "0+",
+      "duration": "15-20 минут",
+      "difficulty": "easy",
+      "unlocked": true,
+      "completed": false,
+      "tags": ["обучение", "введение", "механики"]
+    },
+    "mansion": {
+      "id": "mansion",
+      "name": "Поместье",
+      "description": "Детективное расследование",
+      "longDescription": "Этот эпизод поможет вам освоить все основные механики игры. Вы научитесь взаимодействовать с персонажами, принимать решения и понимать последствия своих выборов. Пройдите через простые ситуации, чтобы понять, как работает система диалогов, выборов и последствий.",
+      "preview": "sprites/episodes/locations/mansion/mansion_outside.png",
+      "type": "detective",
+      "ageRating": "0+",
+      "duration": "60-75 минут",
+      "difficulty": "normal",
+      "unlocked": true,
+      "completed": false,
+      "tags": ["детектив", "расследование", "поместье"]
+    }
+  },
+  "types": {
+    "tutorial": {
+      "name": "Обучение",
+      "color": "#4ade80",
+      "icon": "fas fa-graduation-cap"
+    },
+    "detective": {
+      "name": "Детектив",
+      "color": "#8b5cf6",
+      "icon": "fas fa-search"
+    }
+  },
+  "ageRatings": {
+    "0+": {
+      "name": "0+",
+      "color": "#22c55e",
+      "description": "Для всех возрастов"
+    }
+  }
+} 

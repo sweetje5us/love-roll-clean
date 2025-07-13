@@ -1,0 +1,30 @@
+{
+  "id": "scene65",
+  "name": "Конец первой главы",
+  "background": "sprites/episodes/locations/mansion/mansion_outside_building_night_11zon.png",
+  "characters": [
+   
+  ],
+  "dialogue": [
+    {
+      "speaker": "narrator",
+      "text": "Первый день в посместье подошел к концу."
+    },
+    {
+      "speaker": "narrator",
+      "text": "Вы успели завести знакомства и пообщаться с господином Диметрио"
+    }
+  ],
+  "choices": [
+    {
+      "id": "end_chapter",
+      "text": "Лечь спать",
+      "endChapter": true
+    }
+  ],
+  "requirements": {},
+  "rewards": {
+    "experience": 100,
+    "coins": 10
+  }
+} 

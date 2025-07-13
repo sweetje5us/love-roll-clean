@@ -1,0 +1,38 @@
+{
+  "id": "scene41_4",
+  "name": "Добро пожаловать в игру (Критический провал)",
+  "background": "sprites/episodes/locations/mansion/mansion_door_cab_11zon.png",
+  "characters": [
+
+   
+  ],
+  "dialogue": [
+    {
+      "speaker": "narrator",
+      "text": "Охранник пытается вас остановить",
+      "emotion": "happy"
+    },
+    {
+        "speaker": "narrator",
+        "text": "Он силой выводит вас",
+        "emotion": "happy"
+      }
+  ],
+  "choices": [
+      {
+        "id": "choice1",
+        "text": "Вернуться назад",
+        "nextScene": "scene26",
+        "effects": {
+          "relationship": {
+            "artess_god": -20
+          }
+        }
+      }
+  ],
+  "requirements": {},
+  "rewards": {
+    "experience": 0,
+    "coins": 0
+  }
+} 

@@ -1,0 +1,54 @@
+{
+  "id": "scene39",
+  "name": "Добро пожаловать в игру",
+  "background": "sprites/episodes/locations/mansion/mansion_door_cab_11zon.png",
+  "characters": [
+
+   
+  ],
+  "dialogue": [
+    {
+      "speaker": "artess_god",
+      "text": "Господин Диметрио занят",
+      "emotion": "happy"
+    },
+    {
+      "speaker": "artess_god",
+      "text": "Как только он освободится, он выйдет к гостям",
+      "emotion": "happy"
+    },
+    {
+      "speaker": "narrator",
+      "text": "Пожалуйста не делайте глупостей",
+      "emotion": "happy"
+    }
+  ],
+  "choices": [
+      {
+        "id": "choice1",
+        "text": "Вернуться назад",
+        "nextScene": "scene26"
+      },
+      {
+        "id": "choice2",
+        "text": "[Решительность] Дернуть ручку двери",
+        "diceCheck": {
+          "stat": "determination",
+          "difficulty": 12,
+          "description": "Попытка открыть дверь",
+          "results": {
+            "critical_success": "scene41_2",
+            "success": "scene41_1",
+            "failure": "scene41_3",
+            "critical_failure": "scene41_4"
+          }
+        },
+        "nextScene": "scene41_1"
+      }
+  ],
+  "requirements": {},
+  "rewards": {
+    "experience": 0,
+    "coins": 0
+  }
+} 

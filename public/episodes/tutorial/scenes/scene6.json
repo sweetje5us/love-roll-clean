@@ -1,0 +1,66 @@
+{
+  "id": "scene6",
+  "name": "Осторожный подход",
+  "background": "sprites/episodes/locations/school/school_corridor.png",
+  "characters": [
+    {
+      "id": "player",
+      "position": "left"
+    },
+    {
+      "id": "student",
+      "position": "right"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "narrator",
+      "text": "Вы решили сначала посмотреть, кто уронил вещи."
+    },
+    {
+      "speaker": "student",
+      "text": "Ой, вы тоже здесь? Извините, я немного неуклюжая...",
+      "emotion": "surprised"
+    },
+    {
+      "speaker": "student",
+      "text": "Меня зовут Мария. Я новенькая в этой школе.",
+      "emotion": "normal"
+    }
+  ],
+  "choices": [
+    {
+      "id": "choice1",
+      "text": "Помочь собрать вещи",
+      "nextScene": "scene4",
+      "effects": {
+        "relationship": {
+          "student": 6
+        },
+        "stats": {
+          "kindness": 2,
+          "caution": 1
+        }
+      }
+    },
+    {
+      "id": "choice2",
+      "text": "Представиться и предложить дружбу",
+      "nextScene": "scene7",
+      "effects": {
+        "relationship": {
+          "student": 7
+        },
+        "stats": {
+          "friendship": 4,
+          "caution": 2
+        }
+      }
+    }
+  ],
+  "requirements": {},
+  "rewards": {
+    "experience": 0,
+    "coins": 2
+  }
+} 

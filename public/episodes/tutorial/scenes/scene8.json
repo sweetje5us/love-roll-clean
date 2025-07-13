@@ -1,0 +1,37 @@
+{
+  "id": "scene8",
+  "name": "Одиночество",
+  "background": "sprites/episodes/locations/school/school_corridor.png",
+  "characters": [
+    {
+      "id": "player",
+      "position": "center"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "narrator",
+      "text": "Вы решили пойти своим путем. Впереди вас ждет новый день в школе."
+    },
+    {
+      "speaker": "narrator",
+      "text": "Иногда одиночество помогает сосредоточиться на учебе, но не забывайте о новых знакомствах!"
+    }
+  ],
+  "choices": [
+    {
+      "id": "choice_maria",
+      "text": "Пойти в класс одному",
+      "nextScene": "scene11",
+      "important": true,
+      "value": "maria_ignore",
+      "description": "Игнор Марии",
+      "consequences": ["Игнор"]
+    }
+  ],
+  "requirements": {},
+  "rewards": {
+    "experience": 0,
+    "coins": 0
+  }
+} 

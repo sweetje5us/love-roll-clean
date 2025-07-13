@@ -1,0 +1,47 @@
+{
+  "id": "scene100",
+  "chapterId": 6,
+  "location": "dice_room",
+  "background": "school_class",
+  "characters": [
+    {
+      "id": "nikolay",
+      "position": "center",
+      "name": "Николай"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "nikolay",
+      "text": "Хм... полный провал.",
+      "emotion": "normal"
+    },
+    {
+      "speaker": "nikolay",
+      "text": "В этом случае действие не удается выполнить, кроме того, появляются негативные последствия",
+      "emotion": "smile"
+    },
+    {
+      "speaker": "nikolay",
+      "text": "Это пример обычной неудачи - твоя характеристика коварства оказалась недостаточной для этой задачи.",
+      "emotion": "normal"
+    },
+    {
+      "speaker": "nikolay",
+      "text": "При обычной неудаче действие не удается, но ты можешь попробовать снова или выбрать другой подход.",
+      "emotion": "smile"
+    }
+  ],
+  "choices": [
+    {
+      "id": "scene100_choice1",
+      "text": "Понял, расскажи подробнее о результатах бросков",
+      "nextScene": "scene96"
+    },
+    {
+      "id": "scene100_choice2",
+      "text": "А что происходит при успехе?",
+      "nextScene": "scene97"
+    }
+  ]
+} 

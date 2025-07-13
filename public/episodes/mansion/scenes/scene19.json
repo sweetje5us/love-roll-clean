@@ -1,0 +1,38 @@
+{
+  "id": "scene19",
+  "name": "Добро пожаловать в игру",
+  "background": "sprites/episodes/locations/mansion/mansion_room_with_people_11zon.png",
+  "characters": [
+
+   
+  ],
+  "dialogue": [
+    {
+      "speaker": "narrator",
+      "text": "Вы узнали достаточно про гостей",
+      "emotion": "happy"
+    },
+    {
+      "speaker": "narrator",
+      "text": "Вы можете попробовать найти господина Диметрио",
+      "emotion": "happy"
+    },
+    {
+      "speaker": "narrator",
+      "text": "Или просто осмотреть дом",
+      "emotion": "smirk"
+    }
+  ],
+  "choices": [
+      {
+        "id": "choice3",
+        "text": "Осмотреть дом",
+        "nextScene": "scene26"
+      }
+  ],
+  "requirements": {},
+  "rewards": {
+    "experience": 0,
+    "coins": 0
+  }
+} 

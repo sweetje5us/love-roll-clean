@@ -1,0 +1,49 @@
+{
+  "id": "scene55",
+  "background": "sprites/episodes/locations/school/school_corridor.png",
+  "characters": [
+    {
+      "id": "dima",
+      "position": "center"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "dima",
+      "text": "Ты... ты тоже?",
+      "emotion": "excited"
+    },
+    {
+      "speaker": "dima",
+      "text": "Я не могу поверить! Это самое прекрасное, что со мной происходило!",
+      "emotion": "smile2"
+    },
+    {
+      "speaker": "dima",
+      "text": "Ты сделал меня самым счастливым человеком на свете.",
+      "emotion": "smile1"
+    },
+    {
+      "speaker": "dima",
+      "text": "Я обещаю, что буду любить тебя вечно.",
+      "emotion": "smile2"
+    },
+    {
+      "speaker": "dima",
+      "text": "Наша любовь - это настоящее чудо.",
+      "emotion": "smile1"
+    }
+  ],
+  "choices": [
+    {
+      "id": "end_chapter",
+      "text": "Завершить главу",
+      "nextScene": "scene75",
+      "effects": {
+        "relationship": {
+          "dima": 0
+        }
+      }
+    }
+  ]
+} 

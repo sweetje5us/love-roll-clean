@@ -1,0 +1,42 @@
+{
+  "id": "scene163",
+  "chapterId": 8,
+  "location": "corridor",
+  "background": "school_corridor",
+  "characters": [
+    {
+      "id": "dima",
+      "position": "center",
+      "emotion": "normal"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "dima",
+      "text": "Привет! Я слышал, что ты заканчиваешь обучение. Хотел поговорить с тобой о том, как развивались твои отношения с другими учениками.",
+      "emotion": "normal"
+    }
+  ],
+  "choices": [
+    {
+      "id": "scene163_choice1",
+      "text": "Да, было интересно изучать систему отношений",
+      "nextScene": "scene164",
+      "effects": {
+        "relationship": {
+          "dima": 1
+        }
+      }
+    },
+    {
+      "id": "scene163_choice2",
+      "text": "Твои уроки очень помогли мне понять механику отношений",
+      "nextScene": "scene164",
+      "effects": {
+        "relationship": {
+          "dima": 2
+        }
+      }
+    }
+  ]
+}

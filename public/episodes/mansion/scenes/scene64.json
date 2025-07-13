@@ -1,0 +1,47 @@
+{
+  "id": "scene64",
+  "name": "Конец вечера",
+  "background": "sprites/episodes/locations/mansion/guest_room_bedroom_11zon.png",
+  "characters": [
+    {
+      "id": "player",
+      "position": "left"
+    }
+   
+  ],
+  "dialogue": [
+    {
+      "speaker": "narrator",
+      "text": "Вы остаетесь с ночевой в гостевой комнате",
+      "emotion": "happy"
+    },
+    {
+      "speaker": "narrator",
+      "text": "Диметрио появился лишь под конец вечера",
+      "emotion": "happy"
+    },
+    {
+      "speaker": "narrator",
+      "text": "Совсем немного пообщался с гостями",
+      "emotion": "happy"
+    },
+    {
+      "speaker": "narrator",
+      "text": "И снова исчез",
+      "emotion": "happy"
+    }
+  ],
+  "choices": [
+    
+      {
+        "id": "choice2",
+        "text": "Закончить главу",
+        "nextScene": "scene65"
+      }
+  ],
+  "requirements": {},
+  "rewards": {
+    "experience": 0,
+    "coins": 0
+  }
+} 

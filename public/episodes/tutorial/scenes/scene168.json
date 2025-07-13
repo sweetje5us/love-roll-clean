@@ -1,0 +1,32 @@
+{
+  "id": "scene168",
+  "chapterId": 8,
+  "location": "classroom",
+  "background": "school_class",
+  "characters": [
+    {
+      "id": "alexandra",
+      "position": "center",
+      "emotion": "happy"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "alexandra",
+      "text": "Было приятно учить тебя! Ты показал себя как ответственный и расчетливый ученик. Удачи в твоих будущих торговых сделках!",
+      "emotion": "happy"
+    }
+  ],
+  "choices": [
+    {
+      "id": "scene168_choice1",
+      "text": "Спасибо, Александра! И тебе успехов в преподавании!",
+      "nextScene": "scene169",
+      "effects": {
+        "relationship": {
+          "alexandra": 1
+        }
+      }
+    }
+  ]
+}

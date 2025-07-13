@@ -1,0 +1,43 @@
+{
+    "id": "scene54_4",
+    "name": "Открытие двери (Критический Провал)",
+    "background": "sprites/episodes/locations/mansion/attic_door_11zon.png",
+    "characters": [
+  
+     
+    ],
+    "dialogue": [
+          {
+        "speaker": "narrator",
+        "text": "Дверь не поддается",
+        "emotion": "angry"
+      },
+      {
+        "speaker": "narrator",
+        "text": "Шум привлек внимание охранника",
+        "emotion": "angry"
+      },
+      {
+        "speaker": "artess_god",
+        "text": "Вы доставляете нам много проблем, я выведу вас отсюда",
+        "emotion": "angry"
+      }
+    ],
+    "choices": [
+        {
+          "id": "choice1",
+          "text": "Вернуться назад",
+          "nextScene": "scene32",
+          "effects": {
+          "relationship": {
+            "artess_god": -20
+          }
+        }
+        }
+    ],
+    "requirements": {},
+    "rewards": {
+      "experience": 0,
+      "coins": 0
+    }
+  } 

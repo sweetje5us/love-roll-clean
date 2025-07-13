@@ -1,0 +1,49 @@
+{
+  "id": "scene26",
+  "name": "Анализ важных выборов",
+  "background": "sprites/episodes/locations/school/school_class.png",
+  "characters": [
+    {
+      "id": "player",
+      "position": "left"
+    },
+    {
+      "id": "eugene",
+      "position": "right",
+      "emotion": "happy"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "eugene",
+      "text": "Превосходно! Вы сделали все пять важных выборов."
+    },
+    {
+      "speaker": "eugene",
+      "text": "Теперь давайте посмотрим, как ваши решения повлияют на финальную концовку."
+    },
+    {
+      "speaker": "eugene",
+      "text": "Каждый ваш выбор создал определенный паттерн поведения, который определит вашу судьбу."
+    },
+    {
+      "speaker": "eugene",
+      "text": "Система проанализирует ваши важные выборы и направит вас к соответствующей концовке."
+    },
+    {
+      "speaker": "eugene",
+      "text": "Готовы узнать, какая судьба ждет вас?"
+    }
+  ],
+  "choices": [
+    {
+      "id": "analyze_choices",
+      "text": "Узнать свою концовку",
+      "nextScene": "scene27"
+    }
+  ],
+  "requirements": {},
+  "rewards": {
+    "experience": 20
+  }
+} 

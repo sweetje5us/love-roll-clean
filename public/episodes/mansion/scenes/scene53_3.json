@@ -1,0 +1,38 @@
+{
+  "id": "scene53_3",
+  "name": "Добро пожаловать в игру (Провал)",
+  "background": "sprites/episodes/locations/mansion/mansion_cabinet_11zon.png",
+  "characters": [
+
+   
+  ],
+  "dialogue": [
+    {
+      "speaker": "narrator",
+      "text": "Вам не удается открыть дверь,",
+      "emotion": "happy"
+    },
+    {
+      "speaker": "narrator",
+      "text": "Так как охранник не дает вам зайти",
+      "emotion": "happy"
+    },
+    {
+      "speaker": "narrator",
+      "text": "Вам придется вернуться",
+      "emotion": "happy"
+    }
+  ],
+  "choices": [
+      {
+        "id": "choice1",
+        "text": "Вернуться назад",
+        "nextScene": "scene26"
+      }
+  ],
+  "requirements": {},
+  "rewards": {
+    "experience": 0,
+    "coins": 0
+  }
+} 

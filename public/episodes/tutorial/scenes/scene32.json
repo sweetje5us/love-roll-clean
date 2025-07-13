@@ -1,0 +1,53 @@
+{
+  "id": "scene32",
+  "name": "Концовка: Прагматичный подход",
+  "background": "sprites/episodes/locations/school/school_class.png",
+  "characters": [
+    {
+      "id": "player",
+      "position": "left"
+    },
+    {
+      "id": "eugene",
+      "position": "right",
+      "emotion": "annoyed"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "eugene",
+      "text": "Прагматичный подход! Вы выбрали личную выгоду и практичность."
+    },
+    {
+      "speaker": "eugene",
+      "text": "Ваши важные выборы показали, что вы цените практическую пользу и личные интересы."
+    },
+    {
+      "speaker": "eugene",
+      "text": "Вы отложили подготовку, ставили личные цели выше помощи другу и использовали информацию для выгоды."
+    },
+    {
+      "speaker": "eugene",
+      "text": "Результат: вы получили краткосрочную выгоду, но потеряли доверие друзей и моральную репутацию."
+    },
+    {
+      "speaker": "eugene",
+      "text": "Это показывает, что прагматизм может привести к успеху, но ценой моральных принципов."
+    }
+  ],
+  "choices": [
+    {
+      "id": "end_chapter_pragmatic",
+      "text": "Завершить главу",
+      "endChapter": true
+    }
+  ],
+  "requirements": {},
+  "rewards": {
+    "experience": 35,
+    "coins": 15,
+    "relationship": {
+      "eugene": 5
+    }
+  }
+}

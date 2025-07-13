@@ -1,0 +1,53 @@
+{
+  "id": "scene33",
+  "name": "Добро пожаловать в игру",
+  "background": "sprites/episodes/locations/mansion/mansion_room_with_people_11zon.png",
+  "characters": [
+
+   
+  ],
+  "dialogue": [
+    {
+      "speaker": "splash",
+      "text": "Вы хотите знать об этом сборище лживых скупердяев?",
+      "emotion": "angry"
+    },
+    {
+      "speaker": "splash",
+      "text": "Тогда я вам сейчас расскажу",
+      "emotion": "angry"
+    },
+    {
+      "speaker": "splash",
+      "text": "Бахши. Это тот кучный инвестор, который мать продаст за выгодную сделку",
+      "emotion": "angry"
+    },
+    {
+      "speaker": "splash",
+      "text": "Питер. Это дворецкий, который чихнуть не может без согласования с Диметрио.",
+      "emotion": "angry"
+    },
+    {
+      "speaker": "splash",
+      "text": "Знаешь, мне наскучил разговор с тобой.",
+      "emotion": "angry"
+    }
+  ],
+  "choices": [
+      {
+        "id": "choice1",
+        "text": "на этом все, спасибо",
+        "nextScene": "scene19",
+        "effects": {
+          "relationship": {
+            "splash": -10
+          }
+        }
+      }
+  ],
+  "requirements": {},
+  "rewards": {
+    "experience": 0,
+    "coins": 0
+  }
+} 

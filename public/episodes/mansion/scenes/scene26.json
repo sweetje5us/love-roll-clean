@@ -1,0 +1,65 @@
+{
+  "id": "scene26",
+  "name": "Добро пожаловать в игру",
+  "background": "sprites/episodes/locations/mansion/mansion_inside.png",
+  "characters": [
+
+   
+  ],
+  "dialogue": [
+    {
+      "speaker": "narrator",
+      "text": "Вы решили осмотреть дом",
+      "emotion": "happy"
+    },
+    {
+      "speaker": "narrator",
+      "text": "С чего начать?",
+      "emotion": "happy"
+    }
+  ],
+  "choices": [
+      {
+        "id": "choice1",
+        "text": "Пройти к кабинету Диметрио",
+        "nextScene": "scene34"
+      },
+      {
+        "id": "choice2",
+        "text": "Пройти на второй этаж",
+        "nextScene": "scene32"
+      },
+      {
+        "id": "choice3",
+        "text": "Осмотреть гостевую спальню первого этажа",
+        "nextScene": "scene28"
+      },
+      {
+        "id": "choice4",
+        "text": "Осмотреть комнату с камином",
+        "nextScene": "scene30"
+      },
+      {
+        "id": "choice5",
+        "text": "Вернуться в главный зал",
+        "nextScene": "scene15"
+      },
+      {
+        "id": "choice6",
+        "text": "Закончить исследование дома",
+        "nextScene": "scene60",
+        "requirements": {
+    "importantChoice": {
+      "mooduck_meet": "true",
+      "oleg_meet": "true",
+      "artess_god_meet": "true"
+    }
+  }
+      }
+  ],
+  "requirements": {},
+  "rewards": {
+    "experience": 0,
+    "coins": 0
+  }
+} 

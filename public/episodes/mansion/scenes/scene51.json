@@ -1,0 +1,50 @@
+{
+  "id": "scene51",
+  "name": "Добро пожаловать в игру",
+  "background": "sprites/episodes/locations/mansion/mansion_door_bedroom_first_floor_11zon.png",
+  "characters": [
+
+   
+  ],
+  "dialogue": [
+    {
+      "speaker": "narrator",
+      "text": "Вы решили отправиться в гостевую спальню второго этажа",
+      "emotion": "happy"
+    },
+    {
+      "speaker": "narrator",
+      "text": "Вы подошли к закрытой двери",
+      "emotion": "happy"
+    }
+  ],
+  "choices": [
+     
+      {
+        "id": "choice1",
+        "text": "[Решительность] Открыть дверь",
+        "diceCheck": {
+          "stat": "determination",
+          "difficulty": 12,
+          "description": "Попытка открыть дверь",
+          "results": {
+            "critical_success": "scene36_2",
+            "success": "scene36_1",
+            "failure": "scene36_3",
+            "critical_failure": "scene36_4"
+          }
+        },
+        "nextScene": "scene36_1"
+      },
+      {
+        "id": "choice2",
+        "text": "Вернуться",
+        "nextScene": "scene26"
+      }
+  ],
+  "requirements": {},
+  "rewards": {
+    "experience": 0,
+    "coins": 0
+  }
+} 

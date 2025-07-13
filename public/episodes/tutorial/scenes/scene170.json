@@ -1,0 +1,46 @@
+{
+  "id": "scene170",
+  "chapterId": 8,
+  "location": "classroom",
+  "background": "school_class",
+  "characters": [
+    {
+      "id": "arseniy",
+      "position": "center",
+      "emotion": "happy"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "arseniy",
+      "text": "Поздравляю! Ты успешно завершил обучение. Теперь ты готов к настоящим приключениям! ",
+      "emotion": "happy"
+    },
+    {
+      "speaker": "arseniy",
+      "text": "Я приготовил для тебя особый подарок - обычный сундук с предметами.",
+      "emotion": "excited"
+    }
+  ],
+  "choices": [
+    {
+      "id": "scene170_choice1",
+      "text": "Спасибо за подарок и совет, Арсений!",
+      "nextScene": "scene174",
+      "effects": {
+        "relationships": {
+          "arseniy": 3
+        },
+        "items": {
+          "add": [
+            "basic_chest"
+          ]
+        },
+        "episode_complete": {
+          "experience": 100,
+          "coins": 100
+        }
+      }
+    }
+  ]
+}

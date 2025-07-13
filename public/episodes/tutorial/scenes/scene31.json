@@ -1,0 +1,53 @@
+{
+  "id": "scene31",
+  "name": "Концовка: Карьерный успех",
+  "background": "sprites/episodes/locations/school/school_class.png",
+  "characters": [
+    {
+      "id": "player",
+      "position": "left"
+    },
+    {
+      "id": "eugene",
+      "position": "right",
+      "emotion": "normal"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "eugene",
+      "text": "Амбициозный путь! Вы выбрали карьеру и личные цели превыше всего."
+    },
+    {
+      "speaker": "eugene",
+      "text": "Ваши важные выборы показали, что вы цените успех и профессиональный рост."
+    },
+    {
+      "speaker": "eugene",
+      "text": "Вы усердно готовились к экзамену, ставили личные цели выше помощи другу и уехали ради карьерной возможности."
+    },
+    {
+      "speaker": "eugene",
+      "text": "Результат: вы достигли значительных карьерных высот, но некоторые дружеские связи пострадали."
+    },
+    {
+      "speaker": "eugene",
+      "text": "Это показывает, что успех часто требует жертв в личной жизни."
+    }
+  ],
+  "choices": [
+    {
+      "id": "end_chapter_career",
+      "text": "Завершить главу",
+      "endChapter": true
+    }
+  ],
+  "requirements": {},
+  "rewards": {
+    "experience": 45,
+    "coins": 30,
+    "relationship": {
+      "eugene": 10
+    }
+  }
+}

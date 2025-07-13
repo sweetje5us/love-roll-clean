@@ -1,0 +1,47 @@
+{
+  "id": "scene161",
+  "chapterId": 8,
+  "location": "classroom",
+  "background": "school_class",
+  "characters": [
+    {
+      "id": "anna",
+      "position": "center",
+      "emotion": "excited"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "anna",
+      "text": "Смотри! Мой питомец теперь знает новые трюки. А еще я приготовила для тебя особый подарок - редкий предмет, который поможет в будущих приключениях!",
+      "emotion": "excited"
+    }
+  ],
+  "choices": [
+    {
+      "id": "scene161_choice1",
+      "text": "Спасибо, Анна! Это очень мило с твоей стороны",
+      "nextScene": "scene162",
+      "effects": {
+        "relationships": {
+          "anna": 3
+        },
+        "items": {
+          "add": [
+            "resurrection_potion"
+          ]
+        }
+      }
+    },
+    {
+      "id": "scene161_choice2",
+      "text": "Твой питомец действительно стал сильнее!",
+      "nextScene": "scene162",
+      "effects": {
+        "relationships": {
+          "anna": 2
+        }
+      }
+    }
+  ]
+}

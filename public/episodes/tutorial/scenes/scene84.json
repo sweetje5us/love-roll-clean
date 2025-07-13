@@ -1,0 +1,47 @@
+{
+  "id": "scene84",
+  "chapterId": 6,
+  "location": "classroom",
+  "background": "school_class",
+  "characters": [
+    {
+      "id": "arseniy",
+      "position": "center",
+      "name": "Арсений"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "arseniy",
+      "text": "Отличный вопрос! Когда отношения с персонажем достигают уровня дружбы или выше, открываются особые возможности.",
+      "emotion": "normal"
+    },
+    {
+      "speaker": "arseniy",
+      "text": "Например, друзья могут дарить тебе редкие предметы, эксклюзивную одежду или даже питомцев!",
+      "emotion": "smile"
+    },
+    {
+      "speaker": "arseniy",
+      "text": "Если наши отношения станут достаточно крепкими, я мог бы подарить тебе редкого питомца.",
+      "emotion": "normal"
+    },
+    {
+      "speaker": "arseniy",
+      "text": "Но сначала нужно построить настоящую дружбу. Это требует времени и взаимного доверия.",
+      "emotion": "smile"
+    }
+  ],
+  "choices": [
+    {
+      "text": "Расскажи о важных выборах",
+      "nextScene": "scene83",
+      "id": "scene84_choice1"
+    },
+    {
+      "text": "Как достичь уровня дружбы?",
+      "nextScene": "scene88",
+      "id": "scene84_choice2"
+    }
+  ]
+}

@@ -1,0 +1,47 @@
+{
+  "id": "scene87",
+  "chapterId": 6,
+  "location": "classroom",
+  "background": "school_class",
+  "characters": [
+    {
+      "id": "arseniy",
+      "position": "center",
+      "name": "Арсений"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "arseniy",
+      "text": "Я понимаю. Не все готовы к близким отношениям сразу.",
+      "emotion": "normal"
+    },
+    {
+      "speaker": "arseniy",
+      "text": "Но помни, что каждый выбор имеет последствия. Отношения развиваются на основе твоих решений.",
+      "emotion": "smile"
+    },
+    {
+      "speaker": "arseniy",
+      "text": "Возможно, со временем твоё мнение изменится. Главное - быть честным с собой и другими.",
+      "emotion": "normal"
+    },
+    {
+      "speaker": "arseniy",
+      "text": "Давай продолжим изучение системы предметов.",
+      "emotion": "smile"
+    }
+  ],
+  "choices": [
+    {
+      "text": "Как достичь уровня дружбы?",
+      "nextScene": "scene88",
+      "id": "scene87_choice1"
+    },
+    {
+      "text": "Расскажи о других наградах",
+      "nextScene": "scene90",
+      "id": "scene87_choice2"
+    }
+  ]
+}

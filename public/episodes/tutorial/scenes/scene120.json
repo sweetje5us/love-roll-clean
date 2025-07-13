@@ -1,0 +1,52 @@
+{
+  "id": "scene120",
+  "chapterId": 7,
+  "location": "pet_classroom",
+  "background": "school_class",
+  "characters": [
+    {
+      "id": "anna",
+      "position": "center",
+      "name": "Анна"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "anna",
+      "text": "Привет! Я Анна, и я буду твоим наставником по системе питомцев.",
+      "emotion": "happy"
+    },
+    {
+      "speaker": "anna",
+      "text": "Питомцы - это особые существа, которые могут стать твоими верными спутниками в игре.",
+      "emotion": "smile"
+    },
+    {
+      "speaker": "anna",
+      "text": "Каждый питомец уникален и обладает своими способностями, которые могут помочь тебе в различных ситуациях.",
+      "emotion": "normal"
+    },
+    {
+      "speaker": "anna",
+      "text": "Давай начнем с изучения основ! Что ты хочешь узнать в первую очередь?",
+      "emotion": "smile"
+    }
+  ],
+  "choices": [
+    {
+      "id": "scene120_choice1",
+      "text": "Расскажи про способности питомцев",
+      "nextScene": "scene121"
+    },
+    {
+      "id": "scene120_choice2",
+      "text": "Как получить питомца?",
+      "nextScene": "scene122"
+    },
+    {
+      "id": "scene120_choice3",
+      "text": "Покажи мне моего питомца",
+      "nextScene": "scene123"
+    }
+  ]
+} 

@@ -1,0 +1,52 @@
+{
+  "id": "scene153",
+  "chapterId": 8,
+  "location": "corridor",
+  "background": "school_corridor",
+  "characters": [
+    {
+      "id": "student",
+      "position": "center",
+      "emotion": "happy"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "student",
+      "text": "Я приготовила тебе небольшой подарок на память. Это шоколадка - моя любимая! Надеюсь, мы еще встретимся.",
+      "emotion": "happy"
+    }
+  ],
+  "choices": [
+    {
+      "id": "scene153_choice1",
+      "text": "Спасибо! Обязательно встретимся",
+      "nextScene": "scene154",
+      "effects": {
+        "relationships": {
+          "student": 2
+        },
+        "items": {
+          "add": [
+            "chocolate"
+          ]
+        }
+      }
+    },
+    {
+      "id": "scene153_choice2",
+      "text": "Спасибо за подарок",
+      "nextScene": "scene154",
+      "effects": {
+        "relationships": {
+          "student": 1
+        },
+        "items": {
+          "add": [
+            "chocolate"
+          ]
+        }
+      }
+    }
+  ]
+}

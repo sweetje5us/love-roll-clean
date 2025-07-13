@@ -1,0 +1,64 @@
+{
+  "id": "scene42",
+  "background": "sprites/episodes/locations/school/school_class.png",
+  "characters": [
+    {
+      "id": "dima",
+      "position": "center"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "dima",
+      "text": "Интересно! А теперь скажи мне - что для тебя важнее всего в жизни?",
+      "emotion": "smile"
+    },
+    {
+      "speaker": "dima",
+      "text": "Какие ценности ты считаешь самыми важными?",
+      "emotion": "surprised"
+    }
+  ],
+  "choices": [
+    {
+      "id": "family",
+      "text": "Семья и близкие люди - они всегда на первом месте",
+      "nextScene": "scene43",
+      "effects": {
+        "relationship": {
+          "dima": 12
+        }
+      }
+    },
+    {
+      "id": "career",
+      "text": "Карьера и самореализация - хочу добиться успеха",
+      "nextScene": "scene43",
+      "effects": {
+        "relationship": {
+          "dima": 6
+        }
+      }
+    },
+    {
+      "id": "freedom",
+      "text": "Свобода и независимость - не хочу быть ограниченным",
+      "nextScene": "scene43",
+      "effects": {
+        "relationship": {
+          "dima": 8
+        }
+      }
+    },
+    {
+      "id": "helping",
+      "text": "Помощь другим - хочу делать мир лучше",
+      "nextScene": "scene43",
+      "effects": {
+        "relationship": {
+          "dima": 15
+        }
+      }
+    }
+  ]
+} 

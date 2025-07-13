@@ -1,0 +1,38 @@
+{
+  "id": "scene21",
+  "name": "Добро пожаловать в игру",
+  "background": "sprites/episodes/locations/mansion/mansion_room_with_people_11zon.png",
+  "characters": [
+
+   
+  ],
+  "dialogue": [
+    {
+      "speaker": "narrator",
+      "text": "Вы собираетесь выйти на улицу",
+      "emotion": "happy"
+    },
+    {
+      "speaker": "peter",
+      "text": "Но Питер настойчиво просит вас остаться",
+      "emotion": "angry"
+    }
+  ],
+  "choices": [
+      {
+        "id": "choice1",
+        "text": "вернуться",
+        "nextScene": "scene24",
+        "effects": {
+          "relationship": {
+            "peter": -10
+          }
+        }
+      }
+  ],
+  "requirements": {},
+  "rewards": {
+    "experience": 0,
+    "coins": 0
+  }
+} 

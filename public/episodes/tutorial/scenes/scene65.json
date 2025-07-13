@@ -1,0 +1,53 @@
+{
+  "id": "scene65",
+  "chapterId": 4,
+  "location": "classroom",
+  "background": "school_class",
+  "characters": [
+    {
+      "id": "alexandra",
+      "position": "center",
+      "emotion": "normal",
+      "name": "Александра"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "alexandra",
+      "text": "Пополнить баланс можно несколькими способами:",
+      "emotion": "smile"
+    },
+    {
+      "speaker": "alexandra",
+      "text": "Для монет: прохождение глав, выполнение заданий, ежедневные награды и просмотр рекламы.",
+      "emotion": "normal"
+    },
+    {
+      "speaker": "alexandra",
+      "text": "Для драгоценных камней: покупка за реальные деньги, ежедневные награды, реклама и специальные события.",
+      "emotion": "smile"
+    },
+    {
+      "speaker": "alexandra",
+      "text": "В магазине есть специальный раздел 'Пополнить баланс', где ты можешь выбрать подходящий способ.",
+      "emotion": "normal"
+    },
+    {
+      "speaker": "alexandra",
+      "text": "Также есть различные пакеты с бонусами - они выгоднее, чем покупка валюты по отдельности.",
+      "emotion": "smile"
+    }
+  ],
+  "choices": [
+    {
+      "id": "choice1",
+      "text": "Расскажи о ежедневных наградах",
+      "nextScene": "scene66"
+    },
+    {
+      "id": "choice2",
+      "text": "Как работает реклама?",
+      "nextScene": "scene67"
+    }
+  ]
+} 

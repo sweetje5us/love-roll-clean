@@ -1,0 +1,42 @@
+{
+  "id": "scene47_2",
+  "name": "Добро пожаловать в игру (Критический успех)",
+  "background": "sprites/episodes/locations/mansion/guest_room_bedroom_11zon.png",
+  "characters": [
+
+   
+  ],
+  "dialogue": [
+    {
+      "speaker": "dulapeepa",
+      "text": "Я слышала как Миша убежал на второй этаж",
+      "emotion": "angry"
+    },
+    {
+      "speaker": "dulapeepa",
+      "text": "Нужно начать поиски оттуда",
+      "emotion": "angry"
+    },
+    {
+      "speaker": "dulapeepa",
+      "text": "Мы с ним договорились, что на чердаке прятаться нельзя",
+      "emotion": "angry"
+    }
+  ],
+  "choices": [    
+    {
+      "id": "dulapeepa_meet",
+      "text": "Хорошо, пойду его искать",
+      "nextScene": "scene26",
+      "important": true,
+"value": "true",
+"description": "Знакомство с Дулапеепой",
+"consequences": ["выбор 1"]
+    }
+  ],
+  "requirements": {},
+  "rewards": {
+    "experience": 0,
+    "coins": 0
+  }
+} 

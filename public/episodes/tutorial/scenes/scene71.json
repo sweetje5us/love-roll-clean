@@ -1,0 +1,53 @@
+{
+  "id": "scene71",
+  "chapterId": 4,
+  "location": "classroom",
+  "background": "school_class",
+  "characters": [
+    {
+      "id": "alexandra",
+      "position": "center",
+      "emotion": "normal",
+      "name": "Александра"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "alexandra",
+      "text": "Инвентарь - это место, где хранятся все твои предметы.",
+      "emotion": "smile"
+    },
+    {
+      "speaker": "alexandra",
+      "text": "Ты можешь открыть инвентарь, нажав на кнопку с иконкой сумки в верхней панели.",
+      "emotion": "normal"
+    },
+    {
+      "speaker": "alexandra",
+      "text": "В инвентаре есть фильтры: все предметы, зелья, материалы, одежда и так далее.",
+      "emotion": "smile"
+    },
+    {
+      "speaker": "alexandra",
+      "text": "Ты можешь использовать предметы прямо из инвентаря или продать их за монеты.",
+      "emotion": "normal"
+    },
+    {
+      "speaker": "alexandra",
+      "text": "Также можно сортировать предметы по типу, редкости или цене.",
+      "emotion": "smile"
+    }
+  ],
+  "choices": [
+    {
+      "id": "choice1",
+      "text": "Расскажи о безопасности покупок",
+      "nextScene": "scene72"
+    },
+    {
+      "id": "choice2",
+      "text": "Какие советы по экономии?",
+      "nextScene": "scene73"
+    }
+  ]
+} 

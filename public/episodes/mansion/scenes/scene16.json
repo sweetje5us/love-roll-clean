@@ -1,0 +1,72 @@
+{
+  "id": "scene16",
+  "name": "Добро пожаловать в игру",
+  "background": "sprites/episodes/locations/mansion/mansion_room_with_people_11zon.png",
+  "characters": [
+
+   
+  ],
+  "dialogue": [
+    {
+      "speaker": "dan",
+      "text": "Привет, детектив!",
+      "emotion": "happy"
+    },
+    {
+      "speaker": "dan",
+      "text": "Спасибо что смогли приехать",
+      "emotion": "happy"
+    },
+    {
+      "speaker": "dan",
+      "text": "Это я вас пригласил",
+      "emotion": "smirk"
+    },
+    {
+      "speaker": "dan",
+      "text": "Нам с вами нужно будет об этом поговорить",
+      "emotion": "neutral"
+    },
+    {
+      "speaker": "dan",
+      "text": "Но не сейчас, а позже",
+      "emotion": "neutral"
+    }
+  ],
+  "choices": [
+      {
+        "id": "dan_meet",
+        "text": "Расскажите о себе",
+        "nextScene": "scene18",
+        "effects": {
+          "relationship": {
+            "dan": 10
+          }
+        },
+        "important": true,
+  "value": "true",
+  "description": "Знакомство с Даном",
+  "consequences": ["выбор 1"]
+      },
+      {
+        "id": "choice2",
+        "text": "расскажите о господине Диметрио",
+        "nextScene": "scene20",
+        "effects": {
+          "relationship": {
+            "dan": -10
+          }
+        }
+      },
+      {
+        "id": "choice3",
+        "text": "Расскажите про гостей",
+        "nextScene": "scene18"
+      }
+  ],
+  "requirements": {},
+  "rewards": {
+    "experience": 0,
+    "coins": 0
+  }
+} 

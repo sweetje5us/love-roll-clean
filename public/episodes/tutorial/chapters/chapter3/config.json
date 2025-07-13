@@ -1,0 +1,63 @@
+{
+  "id": 3,
+  "name": "Глава 3: Система отношений",
+  "description": "Изучаем систему отношений и их влияние на сюжет",
+  "duration": "10-15 минут",
+  "scenes": [
+    "scene40",
+    "scene41", 
+    "scene42",
+    "scene43",
+    "scene44",
+    "scene45",
+    "scene46",
+    "scene47",
+    "scene48",
+    "scene49",
+    "scene50",
+    "scene51",
+    "scene52",
+    "scene53",
+    "scene54",
+    "scene55",
+    "scene56",
+    "scene57",
+    "scene58",
+    "scene59",
+    "scene60",
+    "scene61",
+    "scene62",
+    "scene63",
+    "scene64",
+    "scene65",
+    "scene66",
+    "scene67",
+    "scene68",
+    "scene69",
+    "scene70",
+    "scene71",
+    "scene72",
+    "scene73",
+    "scene74",
+    "scene75"
+  ],
+  "characters": [
+    {
+      "id": "dima",
+      "name": "Дима",
+      "description": "Эксперт по отношениям, который поможет вам понять систему отношений в игре",
+      "romanceAvailable": true
+    }
+  ],
+  "objectives": [
+    "Понять основы системы отношений",
+    "Пройти опрос по интересам",
+    "Пережить переломные моменты",
+    "Достичь определенного уровня отношений",
+    "Получить уникальную концовку"
+  ],
+  "rewards": {
+    "experience": 150,
+    "coins": 75
+  }
+} 

@@ -1,0 +1,43 @@
+{
+    "id": "scene54_2",
+    "name": "Открытие двери (Критический успех)",
+    "background": "sprites/episodes/locations/mansion/attic_inside_day.png",
+    "characters": [
+  
+     
+    ],
+    "dialogue": [
+      {
+        "speaker": "narrator",
+        "text": "Вы открываете дверь чердака",
+        "emotion": "happy"
+      },
+      {
+        "speaker": "narrator",
+        "text": "Вы чувствуете чье-то присутствие рядом",
+        "emotion": "happy"
+      },
+      {
+        "speaker": "narrator",
+        "text": "Прислушавшись вы понимаете что это детский голос",
+        "emotion": "happy"
+      }
+    ],
+    "choices": [
+          {
+            "id": "choice1",
+            "text": "Кто здесь?",
+            "nextScene": "scene56_1"
+          },
+        {
+          "id": "choice2",
+          "text": "Вернуться назад",
+          "nextScene": "scene32"
+        }
+    ],
+    "requirements": {},
+    "rewards": {
+      "experience": 0,
+      "coins": 0
+    }
+  } 

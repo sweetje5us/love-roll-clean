@@ -1,0 +1,61 @@
+{
+  "id": "scene92",
+  "chapterId": 6,
+  "location": "dice_room",
+  "background": "school_class",
+  "characters": [
+    {
+      "id": "nikolay",
+      "position": "center",
+      "name": "Николай"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "nikolay",
+      "text": "Привет! Я Николай, и сегодня я расскажу тебе о системе броска кубиков и проверки характеристик.",
+      "emotion": "smile"
+    },
+    {
+      "speaker": "nikolay",
+      "text": "В нашей игре есть шесть основных характеристик: Харизма, Холод, Чувствительность, Коварство, Решительность и Интеллект.",
+      "emotion": "normal"
+    },
+    {
+      "speaker": "nikolay",
+      "text": "Каждая характеристика влияет на твои возможности в различных ситуациях. Когда ты выбираешь вариант ответа с тегом характеристики, происходит проверка.",
+      "emotion": "smile"
+    },
+    {
+      "speaker": "nikolay",
+      "text": "Проверка включает в себя бросок кубика d20 плюс бонус от твоей характеристики. Результат определяет успех или неудачу действия.",
+      "emotion": "normal"
+    }
+  ],
+  "choices": [
+    {
+      "id": "scene92_choice1",
+      "text": "Расскажи подробнее о проверках характеристик",
+      "nextScene": "scene93"
+    },
+    {
+      "id": "scene92_choice2",
+      "text": "Как работает бросок кубика d20?",
+      "nextScene": "scene94"
+    },
+    {
+      "id": "scene92_choice3",
+      "text": "[Коварство] Попробуй обмануть меня, что ты знаешь всё об этой системе",
+      "diceCheck": {
+        "stat": "cunning",
+        "difficulty": 15,
+        "description": "Попытка обмануть Николая",
+        "results": {
+          "critical_success": "scene95",
+          "success": "scene96",
+          "failure": "scene97"
+        }
+      }
+    }
+  ]
+} 

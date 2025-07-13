@@ -1,0 +1,58 @@
+{
+  "id": "scene2",
+  "name": "Основы интерфейса",
+  "background": "sprites/episodes/locations/mansion/mansion_outside.png",
+  "characters": [
+    {
+      "id": "player",
+      "position": "left"
+    },
+    {
+      "id": "peter",
+      "position": "right"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "peter",
+      "text": "Так кто же вы?",
+      "emotion": "surprised"
+    },
+    {
+      "speaker": "Player",
+      "text": "Я секретный агент, здесь по заданию.",
+      "emotion": "smirk"
+    },
+    {
+      "speaker": "Player",
+      "text": "Стоит вам открыть рот обо мне, и вы бесследно исчезнете.",
+      "emotion": "smirk"
+    },
+    {
+      "speaker": "peter",
+      "text": "П-п-простите, я вас провожу до поместья.",
+      "emotion": "surprised"
+    }
+  ],
+  "choices": [
+    {
+      "id": "well_met",
+      "text": "Пройти за Питером",
+      "nextScene": "scene12",
+      "effects": {
+        "relationship": {
+          "peter": -10
+        }
+      },
+      "important": true,
+      "value": "not_met",
+      "description": "Не Представляться ",
+      "consequences": ["Выбор 2"]
+    }
+  ],
+  "requirements": {},
+  "rewards": {
+    "experience": 0,
+    "coins": 0
+  }
+} 

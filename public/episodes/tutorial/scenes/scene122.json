@@ -1,0 +1,67 @@
+{
+  "id": "scene122",
+  "chapterId": 7,
+  "location": "pet_classroom",
+  "background": "school_class",
+  "characters": [
+    {
+      "id": "anna",
+      "position": "center",
+      "name": "Анна"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "anna",
+      "text": "Отлично! Теперь расскажу тебе о том, как получить питомцев.",
+      "emotion": "happy"
+    },
+    {
+      "speaker": "anna",
+      "text": "Есть несколько способов получить питомца:",
+      "emotion": "normal"
+    },
+    {
+      "speaker": "anna",
+      "text": "• Покупка в магазине - самый простой способ",
+      "emotion": "normal"
+    },
+    {
+      "speaker": "anna",
+      "text": "• Получение в качестве награды за выполнение заданий",
+      "emotion": "normal"
+    },
+    {
+      "speaker": "anna",
+      "text": "• Подарки от персонажей при хороших отношениях",
+      "emotion": "normal"
+    },
+    {
+      "speaker": "anna",
+      "text": "• Специальные события и праздники",
+      "emotion": "normal"
+    },
+    {
+      "speaker": "anna",
+      "text": "Хочешь узнать больше о способностях питомцев?",
+      "emotion": "smile"
+    }
+  ],
+  "choices": [
+    {
+      "id": "scene122_choice1",
+      "text": "Да, расскажи про способности",
+      "nextScene": "scene121"
+    },
+    {
+      "id": "scene122_choice2",
+      "text": "Расскажи про редкость питомцев",
+      "nextScene": "scene124"
+    },
+    {
+      "id": "scene122_choice3",
+      "text": "Покажи моего питомца",
+      "nextScene": "scene123"
+    }
+  ]
+} 

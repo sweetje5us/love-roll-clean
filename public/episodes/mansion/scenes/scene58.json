@@ -1,0 +1,34 @@
+{
+    "id": "scene58",
+    "name": "Открытие двери (Критический успех)",
+    "background": "sprites/episodes/locations/mansion/attic_inside_day.png",
+    "characters": [
+  
+     
+    ],
+    "dialogue": [
+      {
+        "speaker": "svet",
+        "text": "Будет круто, если ты не скажешь ей где я",
+        "emotion": "happy"
+      }
+    ],
+    "choices": [
+      
+      {
+        "id": "choice1",
+        "text": "Кто ты?",
+        "nextScene": "scene57"
+      },
+        {
+          "id": "choice2",
+          "text": "Вернуться назад",
+          "nextScene": "scene32"
+        }
+    ],
+    "requirements": {},
+    "rewards": {
+      "experience": 0,
+      "coins": 0
+    }
+  } 

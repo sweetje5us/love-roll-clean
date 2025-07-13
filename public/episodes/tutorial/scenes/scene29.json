@@ -1,0 +1,53 @@
+{
+  "id": "scene29",
+  "name": "Концовка: Сбалансированный подход",
+  "background": "sprites/episodes/locations/school/school_class.png",
+  "characters": [
+    {
+      "id": "player",
+      "position": "left"
+    },
+    {
+      "id": "eugene",
+      "position": "right",
+      "emotion": "happy"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "eugene",
+      "text": "Превосходно! Вы выбрали сбалансированный подход к жизни."
+    },
+    {
+      "speaker": "eugene",
+      "text": "Ваши важные выборы показали, что вы цените и учебу, и дружбу, и моральные принципы."
+    },
+    {
+      "speaker": "eugene",
+      "text": "Вы усердно готовились к экзамену, помогали другу в беде и сохранили моральные принципы."
+    },
+    {
+      "speaker": "eugene",
+      "text": "Результат: вы успешно сдали экзамен, сохранили крепкую дружбу и заслужили уважение окружающих."
+    },
+    {
+      "speaker": "eugene",
+      "text": "Это идеальный пример того, как правильные важные выборы приводят к счастливому финалу!"
+    }
+  ],
+  "choices": [
+    {
+      "id": "end_chapter_balanced",
+      "text": "Завершить главу",
+      "endChapter": true
+    }
+  ],
+  "requirements": {},
+  "rewards": {
+    "experience": 50,
+    "coins": 25,
+    "relationship": {
+      "eugene": 20
+    }
+  }
+} 

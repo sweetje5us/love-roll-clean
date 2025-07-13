@@ -1,0 +1,52 @@
+{
+    "id": "scene56_2",
+    "name": "Открытие двери (Критический успех)",
+    "background": "sprites/episodes/locations/mansion/attic_inside_day.png",
+    "characters": [
+  
+     
+    ],
+    "dialogue": [
+      {
+        "speaker": "svet",
+        "text": "Как вы меня так быстро нашли?",
+        "emotion": "happy"
+      },
+      {
+        "speaker": "svet",
+        "text": "Вас Лиза подговорила?",
+        "emotion": "happy"
+      }
+    ],
+    "choices": [
+      {
+        "id": "choice1",
+        "text": "Кто ты?",
+        "nextScene": "scene57"
+      },
+      {
+        "id": "svet_meet",
+        "text": "Да, тебя искала Лиза",
+        "nextScene": "scene58",
+        "requirements": {
+          "importantChoice": {
+            "dulapeepa_meet": "true"
+          }
+        },
+        "important": true,
+  "value": "true",
+  "description": "Знакомство с Светом",
+  "consequences": ["выбор 1"]
+      },
+        {
+          "id": "choice3",
+          "text": "Вернуться назад",
+          "nextScene": "scene32"
+        }
+    ],
+    "requirements": {},
+    "rewards": {
+      "experience": 0,
+      "coins": 0
+    }
+  } 

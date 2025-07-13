@@ -1,0 +1,53 @@
+{
+  "id": "scene67",
+  "chapterId": 4,
+  "location": "classroom",
+  "background": "school_class",
+  "characters": [
+    {
+      "id": "alexandra",
+      "position": "center",
+      "emotion": "normal",
+      "name": "Александра"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "alexandra",
+      "text": "Реклама - это еще один способ получить валюту бесплатно!",
+      "emotion": "smile"
+    },
+    {
+      "speaker": "alexandra",
+      "text": "Ты можешь смотреть короткие рекламные ролики (обычно 15-30 секунд) и получать за это награды.",
+      "emotion": "normal"
+    },
+    {
+      "speaker": "alexandra",
+      "text": "За каждый просмотр рекламы ты получаешь монеты или драгоценные камни.",
+      "emotion": "smile"
+    },
+    {
+      "speaker": "alexandra",
+      "text": "Кнопка для просмотра рекламы появляется в разных местах: в магазине, при открытии сундуков, в ежедневных наградах.",
+      "emotion": "normal"
+    },
+    {
+      "speaker": "alexandra",
+      "text": "Важно: реклама доступна не всегда. Есть ограничения по времени и количеству просмотров.",
+      "emotion": "smile"
+    }
+  ],
+  "choices": [
+    {
+      "id": "choice1",
+      "text": "Расскажи о покупках за деньги",
+      "nextScene": "scene68"
+    },
+    {
+      "id": "choice2",
+      "text": "Как работают скидки?",
+      "nextScene": "scene69"
+    }
+  ]
+} 

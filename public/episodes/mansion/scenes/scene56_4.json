@@ -1,0 +1,44 @@
+{
+    "id": "scene56_4",
+    "name": "Открытие двери (Критический провал)",
+    "background": "sprites/episodes/locations/mansion/attic_inside_day.png",
+    "characters": [
+  
+     
+    ],
+    "dialogue": [
+      {
+        "speaker": "narrator",
+        "text": "Вы не заметили ничего необычного",
+        "emotion": "happy"
+      },
+      {
+        "speaker": "narrator",
+        "text": "Шум, привлек внимание охранника",
+        "emotion": "happy"
+      },
+      {
+        "speaker": "artess_god",
+        "text": "Вы доставляете нам много проблем, я выведу вас отсюда",
+        "emotion": "happy"
+      }
+    ],
+    "choices": [
+   
+        {
+          "id": "choice3",
+          "text": "Вернуться назад",
+          "nextScene": "scene32",
+          "effects": {
+            "relationship": {
+              "artess_god": -20
+            }
+          }
+        }
+    ],
+    "requirements": {},
+    "rewards": {
+      "experience": 0,
+      "coins": 0
+    }
+  } 

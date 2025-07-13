@@ -1,0 +1,72 @@
+{
+  "id": "scene124",
+  "chapterId": 7,
+  "location": "pet_classroom",
+  "background": "school_class",
+  "characters": [
+    {
+      "id": "anna",
+      "position": "center",
+      "name": "Анна"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "anna",
+      "text": "Отличный вопрос! Питомцы делятся по редкости, и это влияет на их силу и ценность.",
+      "emotion": "happy"
+    },
+    {
+      "speaker": "anna",
+      "text": "Существует четыре уровня редкости:",
+      "emotion": "normal"
+    },
+    {
+      "speaker": "anna",
+      "text": "• Обычные (Common) - базовые питомцы, доступные всем. Имеют простые способности.",
+      "emotion": "normal"
+    },
+    {
+      "speaker": "anna",
+      "text": "• Редкие (Rare) - более сильные питомцы с улучшенными способностями. Стоят дороже.",
+      "emotion": "normal"
+    },
+    {
+      "speaker": "anna",
+      "text": "• Мистические (Mythical) - очень редкие питомцы с мощными способностями. Очень дорогие.",
+      "emotion": "normal"
+    },
+    {
+      "speaker": "anna",
+      "text": "• Легендарные (Legendary) - самые редкие и сильные питомцы. Настоящие сокровища!",
+      "emotion": "happy"
+    },
+    {
+      "speaker": "anna",
+      "text": "Чем выше редкость, тем сильнее способности питомца. Но и получить их сложнее!",
+      "emotion": "smile"
+    },
+    {
+      "speaker": "anna",
+      "text": "Хочешь попробовать получить питомца прямо сейчас?",
+      "emotion": "smile"
+    }
+  ],
+  "choices": [
+    {
+      "text": "Да, попробуем!",
+      "nextScene": "scene125",
+      "id": "scene124_choice1"
+    },
+    {
+      "text": "Сначала покажи моего питомца",
+      "nextScene": "scene123",
+      "id": "scene124_choice2"
+    },
+    {
+      "text": "Расскажи еще про способности",
+      "nextScene": "scene121",
+      "id": "scene124_choice3"
+    }
+  ]
+}

@@ -1,0 +1,58 @@
+{
+  "id": "scene2",
+  "name": "Основы интерфейса",
+  "background": "sprites/episodes/locations/mansion/mansion_outside.png",
+  "characters": [
+    {
+      "id": "player",
+      "position": "left"
+    },
+    {
+      "id": "peter",
+      "position": "right"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "peter",
+      "text": "Так кто же вы?",
+      "emotion": "surprised"
+    },
+    {
+      "speaker": "Player",
+      "text": "Меня зовут Мон Ди Обди, я не потерплю к себе такого неуважения!",
+      "emotion": "smirk"
+    },
+    {
+      "speaker": "peter",
+      "text": "Извините пожалуйста, Мон Ди",
+      "emotion": "surprised"
+    },
+    {
+      "speaker": "peter",
+      "text": "Конечно, проходите",
+      "emotion": "happy"
+    }
+  ],
+  "choices": [
+    {
+      "id": "well_met",
+      "text": "Пройти за Питером",
+      "nextScene": "scene12",
+      "effects": {
+        "relationship": {
+          "peter": 10
+        }
+      },
+      "important": true,
+      "value": "not_met",
+      "description": "Не Представляться ",
+      "consequences": ["Выбор 2"]
+    }
+  ],
+  "requirements": {},
+  "rewards": {
+    "experience": 0,
+    "coins": 0
+  }
+} 

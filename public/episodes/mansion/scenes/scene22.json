@@ -1,0 +1,63 @@
+{
+  "id": "scene22",
+  "name": "Добро пожаловать в игру",
+  "background": "sprites/episodes/locations/mansion/mansion_room_with_people_11zon.png",
+  "characters": [
+
+   
+  ],
+  "dialogue": [
+    {
+      "speaker": "dan",
+      "text": "Вы правда хотите знать о моей дочери?",
+      "emotion": "happy"
+    },
+    {
+      "speaker": "dan",
+      "text": "Мало кто здесь интересуется мной, а уж что до моей дочери..",
+      "emotion": "happy"
+    },
+    {
+      "speaker": "dan",
+      "text": "Она славная, добрая. Иногда мне кажется что она слишком замкнутая, но здесь кажется у нее появился друг.",
+      "emotion": "smirk"
+    },
+    {
+      "speaker": "dan",
+      "text": "Мне было непросто растить ее без матери",
+      "emotion": "neutral"
+    }
+  ],
+  "choices": [
+      {
+        "id": "choice1",
+        "text": "Расскажите про себя",
+        "nextScene": "scene18",
+        "effects": {
+          "relationship": {
+            "dan": 10
+          }
+        }
+      },
+      {
+        "id": "choice2",
+        "text": "Расскажите про Диметрио",
+        "nextScene": "scene20",
+        "effects": {
+          "relationship": {
+            "dan": -10
+          }
+        }
+      },
+      {
+        "id": "choice3",
+        "text": "Это все, спасибо, я пойду",
+        "nextScene": "scene24"
+      }
+  ],
+  "requirements": {},
+  "rewards": {
+    "experience": 0,
+    "coins": 0
+  }
+} 

@@ -1,0 +1,60 @@
+{
+  "id": "scene5",
+  "name": "Равнодушный проход",
+  "background": "sprites/episodes/locations/school/school_corridor.png",
+  "characters": [
+    {
+      "id": "player",
+      "position": "left"
+    },
+    {
+      "id": "student",
+      "position": "right"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "narrator",
+      "text": "Вы прошли мимо, не обращая внимания на упавшие вещи."
+    },
+    {
+      "speaker": "student",
+      "text": "Эх... Никто не хочет помочь...",
+      "emotion": "sad"
+    },
+    {
+      "speaker": "narrator",
+      "text": "Мария медленно собирает свои вещи, выглядит расстроенной."
+    }
+  ],
+  "choices": [
+    {
+      "id": "choice1",
+      "text": "Вернуться и все-таки помочь",
+      "nextScene": "scene4",
+      "effects": {
+        "relationship": {
+          "student": 3
+        },
+        "stats": {
+          "kindness": 2
+        }
+      }
+    },
+    {
+      "id": "choice2",
+      "text": "Продолжить идти, не оглядываясь",
+      "nextScene": "scene9",
+      "effects": {
+        "stats": {
+          "indifference": 3
+        }
+      }
+    }
+  ],
+  "requirements": {},
+  "rewards": {
+    "experience": 0,
+    "coins": 0
+  }
+} 

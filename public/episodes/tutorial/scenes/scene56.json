@@ -1,0 +1,44 @@
+{
+  "id": "scene56",
+  "background": "sprites/episodes/locations/school/school_corridor.png",
+  "characters": [
+    {
+      "id": "dima",
+      "position": "center"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "dima",
+      "text": "Я понимаю...",
+      "emotion": "sad"
+    },
+    {
+      "speaker": "dima",
+      "text": "Ты мне очень дорог как друг, и я не хочу потерять нашу дружбу.",
+      "emotion": "normal"
+    },
+    {
+      "speaker": "dima",
+      "text": "Спасибо за честность. Это значит для меня больше, чем ты думаешь.",
+      "emotion": "smile1"
+    },
+    {
+      "speaker": "dima",
+      "text": "Наша дружба очень важна для меня.",
+      "emotion": "smile1"
+    }
+  ],
+  "choices": [
+    {
+      "id": "end_chapter",
+      "text": "Завершить главу",
+      "nextScene": "scene75",
+      "effects": {
+        "relationship": {
+          "dima": 0
+        }
+      }
+    }
+  ]
+} 

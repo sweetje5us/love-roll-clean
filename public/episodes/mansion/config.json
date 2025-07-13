@@ -1,0 +1,256 @@
+{
+  "id": "mansion",
+  "name": "Поместье",
+  "description": "Детективное расследование",
+  "longDescription": "Этот эпизод поможет вам освоить все основные механики игры. Вы научитесь взаимодействовать с персонажами, принимать решения и понимать последствия своих выборов. Пройдите через простые ситуации, чтобы понять, как работает система диалогов, выборов и последствий.",
+"preview": "sprites/episodes/locations/mansion/mansion_outside.png",
+  "type": "detective",
+  "ageRating": "0+",
+  "duration": "60-75 минут",
+  "difficulty": "normal",
+  "unlocked": true,
+  "completed": false,
+  "tags": ["детектив", "расследование", "поместье"],
+  "chapters": [
+    {
+      "id": 1,
+      "name": "Глава 1: Знакомство с основами",
+      "description": "Знакомство с игрой и основными элементами интерфейса",
+      "duration": "3-5 минут",
+      "scenes": ["scene1", "scene2"]
+    },
+    {
+      "id": 2,
+      "name": "Глава 2: Расследование",
+      "description": "Расследование",
+      "duration": "3-5 минут",
+      "scenes": ["scene66"]
+    }
+  ],
+  "characters": [
+    {
+      "id": "peter",
+      "name": "Питер",
+      "description": "Дворецкий",
+      "role": "dovr",
+      "gender": "male",
+      "age": "mature",
+      "romanceAvailable": true,
+      "appearance": {
+        "hairStyle": "short2",
+        "hairColor": "brown",
+        "hairBehind": "short2",
+        "dress": "teacher_uniform",
+        "dressPaid": false,
+        "accessory": "circle_glasses",
+        "accessoryPaid": false
+      }
+    },
+    {
+      "id": "svet",
+      "name": "Михаил",
+      "description": "Сын господина Диметрио",
+      "role": "son",
+      "gender": "male",
+      "age": "young",
+      "romanceAvailable": true,
+      "appearance": {
+        "hairStyle": "",
+        "hairColor": "dark",
+        "hairBehind": "",
+        "dress": "casual3",
+        "dressPaid": false,
+        "accessory": "",
+        "accessoryPaid": false
+      }
+    },
+    {
+      "id": "bakhshi",
+      "name": "Бахши",
+      "description": "Представитель банка",
+      "role": "banker",
+      "gender": "male",
+      "age": "mature",
+      "romanceAvailable": true,
+      "appearance": {
+        "hairStyle": "short1",
+        "hairColor": "dark",
+        "hairBehind": "",
+        "dress": "office3",
+        "dressPaid": false,
+        "accessory": "black_glasses",
+        "accessoryPaid": false
+      }
+    },
+    {
+      "id": "splash",
+      "name": "Дмитрий Сплэш",
+      "description": "Известный футболист",
+      "role": "footballer",
+      "gender": "male",
+      "age": "young",
+      "romanceAvailable": true,
+      "appearance": {
+        "hairStyle": "short1",
+        "hairColor": "dark",
+        "hairBehind": "",
+        "dress": "sport_uniform",
+        "dressPaid": false,
+        "accessory": "",
+        "accessoryPaid": false
+      }
+    },
+    {
+      "id": "oleg",
+      "name": "Олежа Канди",
+      "description": "Адвокат",
+      "role": "lawyer",
+      "gender": "male",
+      "age": "mature",
+      "romanceAvailable": true,
+      "appearance": {
+        "hairStyle": "short1",
+        "hairColor": "brown",
+        "hairBehind": "short2",
+        "dress": "office4",
+        "dressPaid": true,
+        "accessory": "",
+        "accessoryPaid": false
+      }
+    },
+    {
+      "id": "mooduck",
+      "name": "Василий Мадук",
+      "description": "Известный писатель",
+      "role": "writer",
+      "gender": "male",
+      "age": "mature",
+      "romanceAvailable": true,
+      "appearance": {
+        "hairStyle": "long1",
+        "hairColor": "brown",
+        "hairBehind": "long",
+        "dress": "hoodie1",
+        "dressPaid": false,
+        "accessory": "",
+        "accessoryPaid": false
+      }
+    },
+    {
+      "id": "artess_god",
+      "name": "Владимир Артов",
+      "description": "личная охрана господина Диметрио",
+      "role": "guard",
+      "gender": "male",
+      "age": "mature",
+      "romanceAvailable": true,
+      "appearance": {
+        "hairStyle": "",
+        "hairColor": "brown",
+        "hairBehind": "",
+        "dress": "tanktop",
+        "dressPaid": false,
+        "accessory": "",
+        "accessoryPaid": false
+      }
+    },
+    {
+      "id": "dan",
+      "name": "Дэн",
+      "description": "Лучший друг господина Диметрио",
+      "role": "friend",
+      "gender": "male",
+      "age": "mature",
+      "romanceAvailable": true,
+      "appearance": {
+        "hairStyle": "curly",
+        "hairColor": "brown",
+        "hairBehind": "short3",
+        "dress": "winter",
+        "dressPaid": false,
+        "accessory": "",
+        "accessoryPaid": false
+      }
+    },
+    {
+      "id": "dimetrio",
+      "name": "Диметрио",
+      "description": "Хозяин поместья",
+      "role": "host",
+      "gender": "male",
+      "age": "mature",
+      "romanceAvailable": true,
+      "appearance": {
+        "hairStyle": "short1",
+        "hairColor": "blond",
+        "hairBehind": "short3",
+        "dress": "vest",
+        "dressPaid": true,
+        "accessory": "",
+        "accessoryPaid": false
+      }
+    },
+    {
+      "id": "shasta",
+      "name": "Диана",
+      "description": "Доктор",
+      "role": "doctor",
+      "gender": "female",
+      "age": "mature",
+      "romanceAvailable": true,
+      "appearance": {
+        "hairStyle": "middle",
+        "hairColor": "brown",
+        "hairBehind": "short",
+        "dress": "doc_suit3",
+        "dressPaid": false,
+        "accessory": "",
+        "accessoryPaid": false
+      }
+    },
+    {
+      "id": "dulapeepa",
+      "name": "Елизавета",
+      "description": "Дочь Дэна",
+      "role": "daughter",
+      "gender": "female",
+      "age": "young",
+      "romanceAvailable": true,
+      "appearance": {
+        "hairStyle": "short_hair",
+        "hairColor": "blond",
+        "hairBehind": "short",
+        "dress": "pajama",
+        "dressPaid": false,
+        "accessory": "",
+        "accessoryPaid": false
+      }
+    },
+    {
+      "id": "nadson",
+      "name": "Надин",
+      "description": "Жена господина Диметрио",
+      "role": "wife",
+      "gender": "female",
+      "age": "mature",
+      "romanceAvailable": true,
+      "appearance": {
+        "hairStyle": "short",
+        "hairColor": "brown",
+        "hairBehind": "short_curly",
+        "dress": "shirt1",
+        "dressPaid": false,
+        "accessory": "",
+        "accessoryPaid": false
+      }
+    }
+  ],
+  "locations": [
+    {
+      "id": "mansion",
+      "name": "Классная комната",
+      "description": "Уютная классная комната для обучения"
+    }
+  ]
+
+} 

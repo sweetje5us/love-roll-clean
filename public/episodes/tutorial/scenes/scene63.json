@@ -1,0 +1,53 @@
+{
+  "id": "scene63",
+  "chapterId": 4,
+  "location": "classroom",
+  "background": "school_class",
+  "characters": [
+    {
+      "id": "alexandra",
+      "position": "center",
+      "emotion": "normal",
+      "name": "Александра"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "alexandra",
+      "text": "Драгоценные камни можно получить несколькими способами:",
+      "emotion": "smile"
+    },
+    {
+      "speaker": "alexandra",
+      "text": "1. Ежедневные награды - каждый день ты получаешь небольшую награду, а на 7-й день - драгоценные камни.",
+      "emotion": "normal"
+    },
+    {
+      "speaker": "alexandra",
+      "text": "2. Просмотр рекламы - ты можешь смотреть короткие рекламные ролики и получать камни за это.",
+      "emotion": "smile"
+    },
+    {
+      "speaker": "alexandra",
+      "text": "3. Покупка за реальные деньги - самый быстрый способ получить много камней.",
+      "emotion": "normal"
+    },
+    {
+      "speaker": "alexandra",
+      "text": "4. Специальные события и акции - следи за новостями игры!",
+      "emotion": "smile"
+    }
+  ],
+  "choices": [
+    {
+      "id": "choice1",
+      "text": "Расскажи о ежедневных наградах",
+      "nextScene": "scene66"
+    },
+    {
+      "id": "choice2",
+      "text": "Как работает реклама?",
+      "nextScene": "scene67"
+    }
+  ]
+} 

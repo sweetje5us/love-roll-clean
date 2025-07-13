@@ -1,0 +1,33 @@
+{
+  "id": "scene53_4",
+  "name": "Добро пожаловать в игру (Критический провал)",
+  "background": "sprites/episodes/locations/mansion/mansion_cabinet_11zon.png",
+  "characters": [
+
+   
+  ],
+  "dialogue": [
+    {
+      "speaker": "narrator",
+      "text": "Едва бросив взгляд на дверную ручку,",
+      "emotion": "happy"
+    },
+    {
+      "speaker": "narrator",
+      "text": "Охранник скручивает вас и выталкивает назад",
+      "emotion": "happy"
+    }
+  ],
+  "choices": [
+      {
+        "id": "choice1",
+        "text": "Подчиниться",
+        "nextScene": "scene26"
+      }
+  ],
+  "requirements": {},
+  "rewards": {
+    "experience": 0,
+    "coins": 0
+  }
+} 

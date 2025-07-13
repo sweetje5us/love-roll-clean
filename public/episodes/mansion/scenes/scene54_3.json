@@ -1,0 +1,28 @@
+{
+    "id": "scene54_3",
+    "name": "Открытие двери (Провал)",
+    "background": "sprites/episodes/locations/mansion/attic_door_11zon.png",
+    "characters": [
+  
+     
+    ],
+    "dialogue": [
+          {
+        "speaker": "narrator",
+        "text": "Дверь не поддается",
+        "emotion": "angry"
+      }
+    ],
+    "choices": [
+        {
+          "id": "choice1",
+          "text": "Вернуться назад",
+          "nextScene": "scene32"
+        }
+    ],
+    "requirements": {},
+    "rewards": {
+      "experience": 0,
+      "coins": 0
+    }
+  } 

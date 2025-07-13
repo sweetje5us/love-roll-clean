@@ -1,0 +1,54 @@
+{
+  "id": "scene140",
+  "chapterId": 7,
+  "location": "pet_classroom",
+  "background": "school_class",
+  "characters": [
+    {
+      "id": "anna",
+      "position": "center",
+      "name": "Анна"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "anna",
+      "text": "Поздравляю! Ты успешно завершил обучение по системе питомцев!",
+      "emotion": "happy"
+    },
+    {
+      "speaker": "anna",
+      "text": "Теперь ты знаешь все о том, как получать питомцев, использовать их способности и взаимодействовать с ними.",
+      "emotion": "smile"
+    },
+    {
+      "speaker": "anna",
+      "text": "Помни, что питомцы - это не просто украшения, а настоящие помощники в игре!",
+      "emotion": "normal"
+    },
+    {
+      "speaker": "anna",
+      "text": "Используй их способности с умом, и они помогут тебе достичь успеха в отношениях и приключениях!",
+      "emotion": "happy"
+    },
+    {
+      "speaker": "anna",
+      "text": "Удачи в твоих приключениях! И не забывай заботиться о своих питомцах!",
+      "emotion": "smile"
+    }
+  ],
+  "choices": [
+    {
+      "text": "Спасибо за обучение!",
+      "id": "scene140_choice1",
+      "nextChapter": 8
+    }
+  ],
+  "rewards": {
+    "experience": 200,
+    "coins": 100,
+    "items": {
+      "add": ["present"]
+    }
+  }
+} 

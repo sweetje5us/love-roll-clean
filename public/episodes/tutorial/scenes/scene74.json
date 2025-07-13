@@ -1,0 +1,58 @@
+{
+  "id": "scene74",
+  "chapterId": 4,
+  "location": "classroom",
+  "background": "school_class",
+  "characters": [
+    {
+      "id": "alexandra",
+      "position": "center",
+      "emotion": "normal",
+      "name": "Александра"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "alexandra",
+      "text": "Если у тебя возникнут проблемы с покупками или магазином, наша поддержка всегда готова помочь!",
+      "emotion": "smile"
+    },
+    {
+      "speaker": "alexandra",
+      "text": "Ты можешь обратиться к нам через:",
+      "emotion": "normal"
+    },
+    {
+      "speaker": "alexandra",
+      "text": "1. Встроенную систему поддержки в игре",
+      "emotion": "smile"
+    },
+    {
+      "speaker": "alexandra",
+      "text": "2. Email: support@loveandroll.com",
+      "emotion": "normal"
+    },
+    {
+      "speaker": "alexandra",
+      "text": "3. Социальные сети - мы активно отвечаем на сообщения",
+      "emotion": "smile"
+    },
+    {
+      "speaker": "alexandra",
+      "text": "При обращении обязательно укажи свой ID игрока и опиши проблему подробно.",
+      "emotion": "normal"
+    }
+  ],
+  "choices": [
+    {
+      "id": "choice1",
+      "text": "Какие еще советы?",
+      "nextScene": "scene75"
+    },
+    {
+      "id": "choice2",
+      "text": "Завершить обучение",
+      "nextScene": "scene75"
+    }
+  ]
+} 

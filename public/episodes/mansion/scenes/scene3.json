@@ -1,0 +1,53 @@
+{
+  "id": "scene2",
+  "name": "Основы интерфейса",
+  "background": "sprites/episodes/locations/mansion/mansion_outside.png",
+  "characters": [
+    {
+      "id": "player",
+      "position": "left"
+    },
+    {
+      "id": "peter",
+      "position": "right"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "peter",
+      "text": "Так кто же вы?",
+      "emotion": "surprised"
+    },
+    {
+      "speaker": "player",
+      "text": "Меня зовут Банши Давтях, я не потерплю к себе такого неуважения!",
+      "emotion": "happy"
+    },
+    {
+      "speaker": "peter",
+      "text": "Извините пожалуйста, конечно, проходите",
+      "emotion": "surprised"
+    }
+  ],
+  "choices": [
+    {
+      "id": "well_met",
+      "text": "Пройти за Питером",
+      "nextScene": "scene12",
+      "effects": {
+        "relationship": {
+          "peter": 10
+        }
+      },
+      "important": true,
+      "value": "not_met",
+      "description": "Не Представляться ",
+      "consequences": ["Выбор 2"]
+    }
+  ],
+  "requirements": {},
+  "rewards": {
+    "experience": 0,
+    "coins": 0
+  }
+} 

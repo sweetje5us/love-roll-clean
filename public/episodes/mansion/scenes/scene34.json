@@ -1,0 +1,64 @@
+{
+  "id": "scene34",
+  "name": "Добро пожаловать в игру",
+  "background": "sprites/episodes/locations/mansion/mansion_door_cab_11zon.png",
+  "characters": [
+
+   
+  ],
+  "dialogue": [
+    {
+      "speaker": "narrator",
+      "text": "Вы решили отправиться к кабинету господина Диметрио",
+      "emotion": "happy"
+    },
+    {
+      "speaker": "narrator",
+      "text": "Вы видите у двери охранника",
+      "emotion": "happy"
+    },
+    {
+      "speaker": "narrator",
+      "text": "Он настроен совсем не доброжелательно",
+      "emotion": "happy"
+    }
+  ],
+  "choices": [
+      
+      {
+        "id": "artess_god_meet",
+        "text": "Заговорить с охранником",
+        "nextScene": "scene39",
+        "important": true,
+  "value": "true",
+  "description": "Знакомство с Артес",
+  "consequences": ["выбор 1"]
+      },
+      {
+        "id": "choice2",
+        "text": "[Решительность] Дернуть ручку двери",
+        "diceCheck": {
+          "stat": "determination",
+          "difficulty": 12,
+          "description": "Попытка открыть дверь",
+          "results": {
+            "critical_success": "scene41_2",
+            "success": "scene41_1",
+            "failure": "scene41_3",
+            "critical_failure": "scene41_4"
+          }
+        },
+        "nextScene": "scene41_1"
+      },
+      {
+        "id": "choice3",
+        "text": "Вернуться назад",
+        "nextScene": "scene26"
+      }
+  ],
+  "requirements": {},
+  "rewards": {
+    "experience": 0,
+    "coins": 0
+  }
+} 
