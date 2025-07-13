@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тест проверки инвентаря</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f0f0f0;
+        }
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .test-button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .test-button:hover {
+            background: #0056b3;
+        }
+        .result {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+            font-family: monospace;
+        }
+        .success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>Тест проверки инвентаря</h1>
+        
+        <div class="test-section">
+            <h2>Текущий инвентарь</h2>
+            <div id="inventory-display"></div>
+            <button class="test-button" onclick="addApple()">Добавить яблоко</button>
+            <button class="test-button" onclick="removeApple()">Убрать яблоко</button>
+            <button class="test-button" onclick="addPresent()">Добавить подарок</button>
+            <button class="test-button" onclick="clearInventory()">Очистить инвентарь</button>
+        </div>
+
+        <div class="test-section">
+            <h2>Тестирование выборов</h2>
+            <button class="test-button" onclick="testChoice1()">Тест "Дать яблоко"</button>
+            <button class="test-button" onclick="testChoice2()">Тест "Извини, у меня нет яблока"</button>
+            <button class="test-button" onclick="testChoice3()">Тест "Принять подарок"</button>
+        </div>
+
+        <div class="test-section">
+            <h2>Результаты тестирования</h2>
+            <div id="test-results"></div>
+        </div>
+    </div>
+
+    <script>
+        // Имитация инвентаря в сложном формате (как в GameScreen.js)
+        let inventory = {
+            rat: {
+                quantity: 1,
+                lastAdded: new Date().toISOString()
+            }
+        };
+
+        // Функция для обновления отображения инвентаря
+        function updateInventoryDisplay() {
+            const display = document.getElementById('inventory-display');
+            display.innerHTML = '<h3>Инвентарь:</h3>';
+            
+            if (Object.keys(inventory).length === 0) {
+                display.innerHTML += '<p>Инвентарь пуст</p>';
+                return;
+            }
+            
+            Object.entries(inventory).forEach(([itemId, itemData]) => {
+                const quantity = itemData.quantity || itemData;
+                display.innerHTML += `<p><strong>${itemId}:</strong> ${quantity} шт.</p>`;
+            });
+        }
+
+        // Функции для работы с инвентарем
+        function addApple() {
+            if (!inventory.apple) {
+                inventory.apple = {
+                    quantity: 0,
+                    lastAdded: new Date().toISOString()
+                };
+            }
+            inventory.apple.quantity++;
+            updateInventoryDisplay();
+            showResult('Добавлено яблоко', 'success');
+        }
+
+        function removeApple() {
+            if (inventory.apple && inventory.apple.quantity > 0) {
+                inventory.apple.quantity--;
+                if (inventory.apple.quantity === 0) {
+                    delete inventory.apple;
+                }
+                updateInventoryDisplay();
+                showResult('Убрано яблоко', 'success');
+            } else {
+                showResult('Яблок нет в инвентаре', 'error');
+            }
+        }
+
+        function addPresent() {
+            if (!inventory.present) {
+                inventory.present = {
+                    quantity: 0,
+                    lastAdded: new Date().toISOString()
+                };
+            }
+            inventory.present.quantity++;
+            updateInventoryDisplay();
+            showResult('Добавлен подарок', 'success');
+        }
+
+        function clearInventory() {
+            inventory = {};
+            updateInventoryDisplay();
+            showResult('Инвентарь очищен', 'success');
+        }
+
+        // Функция проверки доступности выбора (как в dialogueItemSystem.js)
+        function isChoiceAvailable(choice, inventory) {
+            console.log('isChoiceAvailable - проверка выбора:', choice.id);
+            console.log('isChoiceAvailable - инвентарь:', inventory);
+            
+            // Проверяем требуемый предмет
+            if (choice.requiredItem) {
+                console.log('isChoiceAvailable - требуется предмет:', choice.requiredItem);
+                
+                // Поддерживаем оба формата инвентаря
+                const itemData = inventory[choice.requiredItem];
+                console.log('isChoiceAvailable - данные предмета:', itemData);
+                
+                if (typeof itemData === 'number') {
+                    // Простой формат: { itemId: number }
+                    const hasItem = itemData > 0;
+                    console.log('isChoiceAvailable - простой формат, количество:', itemData, 'доступен:', hasItem);
+                    return hasItem;
+                } else if (itemData && typeof itemData === 'object' && itemData.quantity !== undefined) {
+                    // Сложный формат: { itemId: { quantity: number, ... } }
+                    const hasItem = itemData.quantity > 0;
+                    console.log('isChoiceAvailable - сложный формат, количество:', itemData.quantity, 'доступен:', hasItem);
+                    return hasItem;
+                }
+                
+                console.log('isChoiceAvailable - предмет не найден в инвентаре');
+                return false;
+            }
+
+            console.log('isChoiceAvailable - выбор доступен (нет требований)');
+            return true;
+        }
+
+        // Тестовые выборы
+        const choice1 = {
+            id: 'scene78_choice1',
+            text: 'Дать яблоко',
+            requiredItem: 'apple'
+        };
+
+        const choice2 = {
+            id: 'scene78_choice2',
+            text: 'Извини, у меня нет яблока'
+        };
+
+        const choice3 = {
+            id: 'scene77_choice1',
+            text: 'Принять подарок'
+        };
+
+        // Функции тестирования
+        function testChoice1() {
+            const isAvailable = isChoiceAvailable(choice1, inventory);
+            showResult(`Выбор "${choice1.text}" доступен: ${isAvailable}`, isAvailable ? 'success' : 'error');
+        }
+
+        function testChoice2() {
+            const isAvailable = isChoiceAvailable(choice2, inventory);
+            showResult(`Выбор "${choice2.text}" доступен: ${isAvailable}`, isAvailable ? 'success' : 'error');
+        }
+
+        function testChoice3() {
+            const isAvailable = isChoiceAvailable(choice3, inventory);
+            showResult(`Выбор "${choice3.text}" доступен: ${isAvailable}`, isAvailable ? 'success' : 'error');
+        }
+
+        // Функция для показа результатов
+        function showResult(message, type = 'success') {
+            const results = document.getElementById('test-results');
+            const resultDiv = document.createElement('div');
+            resultDiv.className = `result ${type}`;
+            resultDiv.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            results.appendChild(resultDiv);
+            
+            // Ограничиваем количество результатов
+            while (results.children.length > 10) {
+                results.removeChild(results.firstChild);
+            }
+        }
+
+        // Инициализация
+        updateInventoryDisplay();
+        console.log('Тест проверки инвентаря загружен');
+    </script>
+</body>
+</html> 

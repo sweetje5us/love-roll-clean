@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тест перехода к 7 главе</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f0f0f0;
+        }
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .success {
+            color: green;
+            background: #e6ffe6;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .error {
+            color: red;
+            background: #ffe6e6;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .info {
+            color: blue;
+            background: #e6f3ff;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .log {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+            font-family: monospace;
+            white-space: pre-wrap;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>Тест перехода к 7 главе</h1>
+        
+        <div class="test-section">
+            <h3>Проверка файлов 7 главы</h3>
+            <div id="file-check-results"></div>
+            <button onclick="checkChapter7Files()">Проверить файлы</button>
+        </div>
+        
+        <div class="test-section">
+            <h3>Создание тестового прогресса</h3>
+            <div id="progress-results"></div>
+            <button onclick="createTestProgress()">Создать прогресс для 6 главы</button>
+            <button onclick="createChapter7Progress()">Создать прогресс для 7 главы</button>
+        </div>
+        
+        <div class="test-section">
+            <h3>Проверка конфигурации</h3>
+            <div id="config-results"></div>
+            <button onclick="checkConfig()">Проверить конфигурацию</button>
+        </div>
+        
+        <div class="test-section">
+            <h3>Лог операций</h3>
+            <div id="log" class="log"></div>
+            <button onclick="clearLog()">Очистить лог</button>
+        </div>
+    </div>
+
+    <script>
+        function log(message) {
+            const logElement = document.getElementById('log');
+            logElement.textContent += new Date().toLocaleTimeString() + ': ' + message + '\n';
+            logElement.scrollTop = logElement.scrollHeight;
+        }
+
+        function clearLog() {
+            document.getElementById('log').textContent = '';
+        }
+
+        async function checkChapter7Files() {
+            const resultsDiv = document.getElementById('file-check-results');
+            resultsDiv.innerHTML = '';
+            
+            log('Проверка файлов 7 главы...');
+            
+            const filesToCheck = [
+                '/episodes/tutorial/chapters/chapter7/config.json',
+                '/episodes/tutorial/scenes/scene120.json',
+                '/episodes/tutorial/scenes/scene121.json',
+                '/episodes/tutorial/scenes/scene122.json',
+                '/episodes/tutorial/scenes/scene123.json',
+                '/episodes/tutorial/scenes/scene123_reaction.json',
+                '/episodes/tutorial/scenes/scene124.json',
+                '/episodes/tutorial/scenes/scene125.json',
+                '/episodes/tutorial/scenes/scene126.json',
+                '/episodes/tutorial/scenes/scene127.json',
+                '/episodes/tutorial/scenes/scene128.json',
+                '/episodes/tutorial/scenes/scene129.json',
+                '/episodes/tutorial/scenes/scene130.json',
+                '/episodes/tutorial/scenes/scene131.json',
+                '/episodes/tutorial/scenes/scene132.json',
+                '/episodes/tutorial/scenes/scene133.json',
+                '/episodes/tutorial/scenes/scene134.json'
+            ];
+            
+            let allGood = true;
+            
+            for (const file of filesToCheck) {
+                try {
+                    const response = await fetch(file);
+                    if (response.ok) {
+                        const div = document.createElement('div');
+                        div.className = 'success';
+                        div.textContent = `✓ ${file}`;
+                        resultsDiv.appendChild(div);
+                        log(`Файл найден: ${file}`);
+                    } else {
+                        const div = document.createElement('div');
+                        div.className = 'error';
+                        div.textContent = `✗ ${file} - ${response.status} ${response.statusText}`;
+                        resultsDiv.appendChild(div);
+                        log(`Файл не найден: ${file} - ${response.status}`);
+                        allGood = false;
+                    }
+                } catch (error) {
+                    const div = document.createElement('div');
+                    div.className = 'error';
+                    div.textContent = `✗ ${file} - ${error.message}`;
+                    resultsDiv.appendChild(div);
+                    log(`Ошибка проверки файла: ${file} - ${error.message}`);
+                    allGood = false;
+                }
+            }
+            
+            if (allGood) {
+                log('Все файлы 7 главы найдены');
+            } else {
+                log('Некоторые файлы 7 главы отсутствуют');
+            }
+        }
+
+        function createTestProgress() {
+            try {
+                log('Создание тестового прогресса для 6 главы...');
+                
+                // Создаем прогресс, который должен перейти к 7-й главе
+                const testProgress = {
+                    episodeId: 'tutorial',
+                    currentChapter: 6,
+                    currentScene: 'scene113',
+                    completedChapters: [1, 2, 3, 4, 5],
+                    playerChoices: {},
+                    importantChoices: {},
+                    progress: {
+                        relation_nikolay: 50,
+                        relation_anna: 0
+                    },
+                    playerCharacterId: '1751735945156',
+                    lastPlayed: new Date().toISOString()
+                };
+                
+                localStorage.setItem('tutorial_progress', JSON.stringify(testProgress));
+                log('Создан тестовый прогресс для 6 главы');
+                log(`Текущая сцена: ${testProgress.currentScene}`);
+                log('Теперь запустите игру и нажмите "Спасибо за обучение!" в сцене 113');
+                
+                const resultsDiv = document.getElementById('progress-results');
+                resultsDiv.innerHTML = '<div class="success">✓ Тестовый прогресс для 6 главы создан</div>';
+            } catch (error) {
+                log(`Ошибка создания прогресса: ${error.message}`);
+                const resultsDiv = document.getElementById('progress-results');
+                resultsDiv.innerHTML = `<div class="error">✗ Ошибка: ${error.message}</div>`;
+            }
+        }
+
+        function createChapter7Progress() {
+            try {
+                log('Создание тестового прогресса для 7 главы...');
+                
+                // Создаем прогресс для 7-й главы
+                const testProgress = {
+                    episodeId: 'tutorial',
+                    currentChapter: 7,
+                    currentScene: 'scene120',
+                    completedChapters: [1, 2, 3, 4, 5, 6],
+                    playerChoices: {},
+                    importantChoices: {},
+                    progress: {
+                        relation_anna: 0
+                    },
+                    playerCharacterId: '1751735945156',
+                    lastPlayed: new Date().toISOString()
+                };
+                
+                localStorage.setItem('tutorial_progress', JSON.stringify(testProgress));
+                log('Создан тестовый прогресс для 7 главы');
+                log(`Текущая сцена: ${testProgress.currentScene}`);
+                log('Теперь запустите игру и проверьте 7 главу');
+                
+                const resultsDiv = document.getElementById('progress-results');
+                resultsDiv.innerHTML = '<div class="success">✓ Тестовый прогресс для 7 главы создан</div>';
+            } catch (error) {
+                log(`Ошибка создания прогресса: ${error.message}`);
+                const resultsDiv = document.getElementById('progress-results');
+                resultsDiv.innerHTML = `<div class="error">✗ Ошибка: ${error.message}</div>`;
+            }
+        }
+
+        async function checkConfig() {
+            const resultsDiv = document.getElementById('config-results');
+            resultsDiv.innerHTML = '';
+            
+            log('Проверка конфигурации эпизода...');
+            
+            try {
+                // Проверяем основной конфиг
+                const response = await fetch('/episodes/tutorial/config.json');
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                const config = await response.json();
+                log('Основной конфиг загружен');
+                
+                // Проверяем наличие 7 главы
+                const chapter7 = config.chapters.find(ch => ch.id === 7);
+                if (chapter7) {
+                    const div = document.createElement('div');
+                    div.className = 'success';
+                    div.textContent = `✓ Глава 7 найдена: ${chapter7.name}`;
+                    resultsDiv.appendChild(div);
+                    log(`Глава 7: ${chapter7.name}`);
+                    log(`Сцены: ${chapter7.scenes.join(', ')}`);
+                } else {
+                    const div = document.createElement('div');
+                    div.className = 'error';
+                    div.textContent = '✗ Глава 7 не найдена в конфигурации';
+                    resultsDiv.appendChild(div);
+                    log('Глава 7 не найдена в конфигурации');
+                }
+                
+                // Проверяем конфиг 7 главы
+                const chapter7Response = await fetch('/episodes/tutorial/chapters/chapter7/config.json');
+                if (chapter7Response.ok) {
+                    const chapter7Config = await chapter7Response.json();
+                    const div = document.createElement('div');
+                    div.className = 'success';
+                    div.textContent = `✓ Конфиг главы 7 загружен: ${chapter7Config.name}`;
+                    resultsDiv.appendChild(div);
+                    log(`Конфиг главы 7: ${chapter7Config.name}`);
+                    log(`Персонажи: ${chapter7Config.characters.map(c => c.name).join(', ')}`);
+                } else {
+                    const div = document.createElement('div');
+                    div.className = 'error';
+                    div.textContent = '✗ Не удалось загрузить конфиг главы 7';
+                    resultsDiv.appendChild(div);
+                    log('Не удалось загрузить конфиг главы 7');
+                }
+                
+            } catch (error) {
+                const div = document.createElement('div');
+                div.className = 'error';
+                div.textContent = `✗ Ошибка проверки конфигурации: ${error.message}`;
+                resultsDiv.appendChild(div);
+                log(`Ошибка проверки конфигурации: ${error.message}`);
+            }
+        }
+
+        // Показываем текущий прогресс при загрузке
+        function showCurrentProgress() {
+            try {
+                const progress = localStorage.getItem('tutorial_progress');
+                if (progress) {
+                    const data = JSON.parse(progress);
+                    log(`Текущий прогресс: Глава ${data.currentChapter}, Сцена ${data.currentScene}`);
+                } else {
+                    log('Прогресс не найден');
+                }
+            } catch (error) {
+                log(`Ошибка чтения прогресса: ${error.message}`);
+            }
+        }
+
+        // Показываем текущий прогресс при загрузке
+        showCurrentProgress();
+    </script>
+</body>
+</html> 

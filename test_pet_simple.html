@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Простой тест плейсхолдеров</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: #f0f0f0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .result {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .success { background: #e6ffe6; color: green; }
+        .error { background: #ffe6e6; color: red; }
+        .info { background: #e6f3ff; color: blue; }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover { background: #0056b3; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Простой тест плейсхолдеров питомца</h1>
+        
+        <div id="results"></div>
+        
+        <button onclick="addPetToCharacter()">Добавить питомца персонажу</button>
+        <button onclick="checkCharacter()">Проверить персонажа</button>
+        <button onclick="testPlaceholders()">Тест плейсхолдеров</button>
+        <button onclick="clearResults()">Очистить результаты</button>
+    </div>
+
+    <script>
+        function addResult(message, type = 'info') {
+            const resultsDiv = document.getElementById('results');
+            const div = document.createElement('div');
+            div.className = `result ${type}`;
+            div.textContent = new Date().toLocaleTimeString() + ': ' + message;
+            resultsDiv.appendChild(div);
+        }
+
+        function clearResults() {
+            document.getElementById('results').innerHTML = '';
+        }
+
+        function addPetToCharacter() {
+            try {
+                // Получаем прогресс
+                const progressData = localStorage.getItem('tutorial_progress');
+                if (!progressData) {
+                    addResult('Прогресс не найден', 'error');
+                    return;
+                }
+                
+                const progress = JSON.parse(progressData);
+                
+                // Получаем персонажа
+                const characterData = localStorage.getItem(`character_${progress.playerCharacterId}`);
+                if (!characterData) {
+                    addResult('Данные персонажа не найдены', 'error');
+                    return;
+                }
+                
+                const character = JSON.parse(characterData);
+                
+                // Добавляем питомца
+                character.pet = {
+                    id: 'slime',
+                    name: 'Слаймчик'
+                };
+                
+                // Сохраняем
+                localStorage.setItem(`character_${progress.playerCharacterId}`, JSON.stringify(character));
+                
+                addResult(`Питомец добавлен: ${character.pet.name}`, 'success');
+                
+            } catch (error) {
+                addResult(`Ошибка: ${error.message}`, 'error');
+            }
+        }
+
+        function checkCharacter() {
+            try {
+                const progressData = localStorage.getItem('tutorial_progress');
+                if (!progressData) {
+                    addResult('Прогресс не найден', 'error');
+                    return;
+                }
+                
+                const progress = JSON.parse(progressData);
+                const characterData = localStorage.getItem(`character_${progress.playerCharacterId}`);
+                
+                if (!characterData) {
+                    addResult('Данные персонажа не найдены', 'error');
+                    return;
+                }
+                
+                const character = JSON.parse(characterData);
+                
+                addResult(`Персонаж: ${character.name}`, 'info');
+                addResult(`Питомец: ${character.pet ? character.pet.name : 'Нет'}`, character.pet ? 'success' : 'error');
+                
+                if (character.pet) {
+                    addResult(`ID питомца: ${character.pet.id}`, 'info');
+                }
+                
+            } catch (error) {
+                addResult(`Ошибка: ${error.message}`, 'error');
+            }
+        }
+
+        function testPlaceholders() {
+            try {
+                const progressData = localStorage.getItem('tutorial_progress');
+                if (!progressData) {
+                    addResult('Прогресс не найден', 'error');
+                    return;
+                }
+                
+                const progress = JSON.parse(progressData);
+                const characterData = localStorage.getItem(`character_${progress.playerCharacterId}`);
+                
+                if (!characterData) {
+                    addResult('Данные персонажа не найдены', 'error');
+                    return;
+                }
+                
+                const character = JSON.parse(characterData);
+                
+                if (!character.pet) {
+                    addResult('У персонажа нет питомца', 'error');
+                    return;
+                }
+                
+                // Тестируем плейсхолдеры
+                const testText = 'О, это [PET_NAME]! Какой милый питомец!';
+                let processedText = testText;
+                
+                processedText = processedText.replace(/\[PET_NAME\]/g, character.pet.name);
+                
+                addResult(`Исходный текст: ${testText}`, 'info');
+                addResult(`Обработанный текст: ${processedText}`, 'success');
+                
+            } catch (error) {
+                addResult(`Ошибка: ${error.message}`, 'error');
+            }
+        }
+
+        // Показываем текущий статус при загрузке
+        window.onload = function() {
+            addResult('Страница загружена', 'info');
+            checkCharacter();
+        };
+    </script>
+</body>
+</html> 

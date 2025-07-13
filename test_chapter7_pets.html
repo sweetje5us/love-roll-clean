@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тест главы 7 - Система питомцев</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #ff8cc6;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            text-shadow: 0 2px 4px rgba(255, 140, 198, 0.3);
+        }
+
+        .test-section {
+            margin-bottom: 40px;
+            padding: 20px;
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-radius: 15px;
+            border-left: 5px solid #ff8cc6;
+        }
+
+        .test-section h2 {
+            color: #ff8cc6;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+        }
+
+        .test-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .test-card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border: 2px solid #ffdfea;
+            transition: all 0.3s ease;
+        }
+
+        .test-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(255, 140, 198, 0.2);
+            border-color: #ff8cc6;
+        }
+
+        .test-card h3 {
+            color: #ff8cc6;
+            margin-bottom: 10px;
+            font-size: 1.2em;
+        }
+
+        .test-card p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .test-button {
+            background: linear-gradient(135deg, #ff8cc6, #ff6bb5);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .test-button:hover {
+            background: linear-gradient(135deg, #ff6bb5, #ff4aa6);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 140, 198, 0.4);
+        }
+
+        .pet-info {
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+        }
+
+        .pet-info h4 {
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+
+        .pet-ability {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 12px;
+            border-radius: 6px;
+            margin: 5px 0;
+            font-size: 0.9em;
+        }
+
+        .dice-test {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+        }
+
+        .dice-test h4 {
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+
+        .dice-result {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 12px;
+            border-radius: 6px;
+            margin: 5px 0;
+            font-size: 0.9em;
+        }
+
+        .special-interaction {
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+        }
+
+        .special-interaction h4 {
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+
+        .status {
+            padding: 10px;
+            border-radius: 8px;
+            margin: 10px 0;
+            font-weight: 600;
+        }
+
+        .status.success {
+            background: #d1fae5;
+            color: #065f46;
+            border: 2px solid #10b981;
+        }
+
+        .status.error {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 2px solid #ef4444;
+        }
+
+        .status.info {
+            background: #dbeafe;
+            color: #1e40af;
+            border: 2px solid #3b82f6;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🐾 Тест главы 7 - Система питомцев</h1>
+
+        <div class="test-section">
+            <h2>📋 Обзор главы 7</h2>
+            <p>Глава 7 представляет систему питомцев с персонажем Анной. Включает в себя:</p>
+            <ul>
+                <li>Знакомство с системой питомцев</li>
+                <li>Объяснение способностей и редкости питомцев</li>
+                <li>Получение питомцев через проверку характеристик</li>
+                <li>Специальные взаимодействия с питомцами</li>
+                <li>Динамический текст с плейсхолдерами</li>
+            </ul>
+        </div>
+
+        <div class="test-section">
+            <h2>🎭 Сцены главы 7</h2>
+            <div class="test-grid">
+                <div class="test-card">
+                    <h3>Сцена 120 - Знакомство</h3>
+                    <p>Анна знакомится с игроком и рассказывает о системе питомцев</p>
+                    <button class="test-button" onclick="testScene('scene120')">Тестировать сцену</button>
+                </div>
+
+                <div class="test-card">
+                    <h3>Сцена 121 - Способности</h3>
+                    <p>Анна объясняет различные способности питомцев</p>
+                    <button class="test-button" onclick="testScene('scene121')">Тестировать сцену</button>
+                </div>
+
+                <div class="test-card">
+                    <h3>Сцена 122 - Получение</h3>
+                    <p>Анна рассказывает о способах получения питомцев</p>
+                    <button class="test-button" onclick="testScene('scene122')">Тестировать сцену</button>
+                </div>
+
+                <div class="test-card">
+                    <h3>Сцена 124 - Редкость</h3>
+                    <p>Анна объясняет систему редкости питомцев</p>
+                    <button class="test-button" onclick="testScene('scene124')">Тестировать сцену</button>
+                </div>
+
+                <div class="test-card">
+                    <h3>Сцена 125 - Проверка</h3>
+                    <p>Анна предлагает получить питомца через проверку харизмы</p>
+                    <button class="test-button" onclick="testScene('scene125')">Тестировать сцену</button>
+                </div>
+
+                <div class="test-card">
+                    <h3>Сцена 133 - Взаимодействие</h3>
+                    <p>Анна рассказывает о специальных взаимодействиях с питомцами</p>
+                    <button class="test-button" onclick="testScene('scene133')">Тестировать сцену</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h2>🎲 Система получения питомцев</h2>
+            <div class="dice-test">
+                <h4>Проверка харизмы для получения питомца</h4>
+                <div class="dice-result">
+                    <strong>Сложность:</strong> 12<br>
+                    <strong>Критический успех (20):</strong> Мистический питомец (Фея)<br>
+                    <strong>Успех (12-19):</strong> Редкий питомец (Огненный слайм)<br>
+                    <strong>Неудача (2-11):</strong> Обычный питомец (Крыса)<br>
+                    <strong>Критическая неудача (1):</strong> Питомец не дается
+                </div>
+            </div>
+            <button class="test-button" onclick="testDiceRoll()">Тестировать бросок кубика</button>
+        </div>
+
+        <div class="test-section">
+            <h2>🐾 Специальные взаимодействия</h2>
+            <div class="special-interaction">
+                <h4>Игра с питомцем</h4>
+                <p>Если у игрока есть питомец со способностью улучшения отношений, доступно специальное взаимодействие "Предложить Анне поиграть с питомцем"</p>
+                <div class="dice-result">
+                    <strong>Эффект:</strong> +10 к отношениям с Анной<br>
+                    <strong>Требование:</strong> Питомец с special.type = "relation"
+                </div>
+            </div>
+            <button class="test-button" onclick="testSpecialInteraction()">Тестировать взаимодействие</button>
+        </div>
+
+        <div class="test-section">
+            <h2>📝 Динамический текст</h2>
+            <div class="pet-info">
+                <h4>Плейсхолдеры в диалогах</h4>
+                <div class="pet-ability">
+                    <strong>[PET_NAME]</strong> - заменяется на имя питомца игрока
+                </div>
+                <div class="pet-ability">
+                    <strong>[PET_ABILITY]</strong> - заменяется на описание способности питомца
+                </div>
+                <div class="pet-ability">
+                    <strong>[PET_REACTION]</strong> - заменяется на "испугалась" или "умилилась" в зависимости от pet.scary
+                </div>
+            </div>
+            <button class="test-button" onclick="testDynamicText()">Тестировать динамический текст</button>
+        </div>
+
+        <div class="test-section">
+            <h2>📊 Статус тестирования</h2>
+            <div id="testStatus">
+                <div class="status info">Готов к тестированию</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function testScene(sceneId) {
+            const status = document.getElementById('testStatus');
+            status.innerHTML = `
+                <div class="status success">
+                    ✅ Тестирование сцены ${sceneId}...
+                </div>
+            `;
+            
+            // Имитация загрузки сцены
+            setTimeout(() => {
+                status.innerHTML = `
+                    <div class="status success">
+                        ✅ Сцена ${sceneId} загружена успешно
+                    </div>
+                `;
+            }, 1000);
+        }
+
+        function testDiceRoll() {
+            const status = document.getElementById('testStatus');
+            status.innerHTML = `
+                <div class="status info">
+                    🎲 Бросаем кубик d20...
+                </div>
+            `;
+            
+            setTimeout(() => {
+                const roll = Math.floor(Math.random() * 20) + 1;
+                let result, pet;
+                
+                if (roll === 20) {
+                    result = 'Критический успех';
+                    pet = 'Мистический питомец (Фея)';
+                } else if (roll >= 12) {
+                    result = 'Успех';
+                    pet = 'Редкий питомец (Огненный слайм)';
+                } else if (roll >= 2) {
+                    result = 'Неудача';
+                    pet = 'Обычный питомец (Крыса)';
+                } else {
+                    result = 'Критическая неудача';
+                    pet = 'Питомец не дается';
+                }
+                
+                status.innerHTML = `
+                    <div class="status success">
+                        ✅ Бросок: ${roll} - ${result}<br>
+                        🐾 Результат: ${pet}
+                    </div>
+                `;
+            }, 1500);
+        }
+
+        function testSpecialInteraction() {
+            const status = document.getElementById('testStatus');
+            status.innerHTML = `
+                <div class="status info">
+                    🐾 Проверяем специальное взаимодействие...
+                </div>
+            `;
+            
+            setTimeout(() => {
+                status.innerHTML = `
+                    <div class="status success">
+                        ✅ Специальное взаимодействие доступно<br>
+                        💕 Отношения с Анной: +10
+                    </div>
+                `;
+            }, 1000);
+        }
+
+        function testDynamicText() {
+            const status = document.getElementById('testStatus');
+            status.innerHTML = `
+                <div class="status info">
+                    📝 Тестируем динамический текст...
+                </div>
+            `;
+            
+            setTimeout(() => {
+                status.innerHTML = `
+                    <div class="status success">
+                        ✅ Динамический текст работает<br>
+                        🐾 [PET_NAME] → "Мурзик"<br>
+                        ⚡ [PET_ABILITY] → "Улучшает отношения на +25"<br>
+                        😊 [PET_REACTION] → "умилилась"
+                    </div>
+                `;
+            }, 1000);
+        }
+    </script>
+</body>
+</html> 

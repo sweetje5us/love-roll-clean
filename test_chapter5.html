@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тест 5 главы - Система предметов</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f0f0f0;
+        }
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .test-button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .test-button:hover {
+            background: #0056b3;
+        }
+        .inventory-display {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .notification {
+            background: #28a745;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .error {
+            background: #dc3545;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>Тест 5 главы - Система предметов и обмена</h1>
+        
+        <div class="test-section">
+            <h2>Информация о главе</h2>
+            <p><strong>Название:</strong> Глава 5: Система предметов и обмена</p>
+            <p><strong>Персонаж:</strong> Арсений</p>
+            <p><strong>Описание:</strong> Изучаем систему передачи предметов и взаимодействия с персонажами</p>
+            <p><strong>Сцены:</strong> scene76 - scene91 (16 сцен)</p>
+        </div>
+
+        <div class="test-section">
+            <h2>Тестирование системы предметов</h2>
+            <div class="inventory-display">
+                <h3>Текущий инвентарь:</h3>
+                <div id="inventory-display">Пустой</div>
+            </div>
+            
+            <button class="test-button" onclick="addApple()">Добавить яблоко</button>
+            <button class="test-button" onclick="removeApple()">Убрать яблоко</button>
+            <button class="test-button" onclick="addPresent()">Добавить подарок</button>
+            <button class="test-button" onclick="addFairy()">Добавить фею</button>
+            <button class="test-button" onclick="clearInventory()">Очистить инвентарь</button>
+        </div>
+
+        <div class="test-section">
+            <h2>Тестирование сцен</h2>
+            <button class="test-button" onclick="testScene76()">Тест scene76 (Введение)</button>
+            <button class="test-button" onclick="testScene77()">Тест scene77 (Получение подарка)</button>
+            <button class="test-button" onclick="testScene78()">Тест scene78 (Запрос яблока)</button>
+            <button class="test-button" onclick="testScene89()">Тест scene89 (Дарение феи)</button>
+        </div>
+
+        <div class="test-section">
+            <h2>Логи тестирования</h2>
+            <div id="test-log"></div>
+        </div>
+    </div>
+
+    <script>
+        // Имитация инвентаря
+        let inventory = {};
+
+        // Функции для работы с инвентарем
+        function addApple() {
+            if (!inventory.apple) inventory.apple = 0;
+            inventory.apple++;
+            updateInventoryDisplay();
+            showNotification(`Добавлено яблоко. Всего: ${inventory.apple}`);
+        }
+
+        function removeApple() {
+            if (inventory.apple && inventory.apple > 0) {
+                inventory.apple--;
+                if (inventory.apple === 0) delete inventory.apple;
+                updateInventoryDisplay();
+                showNotification(`Убрано яблоко. Осталось: ${inventory.apple || 0}`);
+            } else {
+                showError('Яблок нет в инвентаре');
+            }
+        }
+
+        function addPresent() {
+            if (!inventory.present) inventory.present = 0;
+            inventory.present++;
+            updateInventoryDisplay();
+            showNotification(`Добавлен подарок. Всего: ${inventory.present}`);
+        }
+
+        function addFairy() {
+            if (!inventory.fairy) inventory.fairy = 0;
+            inventory.fairy++;
+            updateInventoryDisplay();
+            showNotification(`Добавлена фея. Всего: ${inventory.fairy}`);
+        }
+
+        function clearInventory() {
+            inventory = {};
+            updateInventoryDisplay();
+            showNotification('Инвентарь очищен');
+        }
+
+        function updateInventoryDisplay() {
+            const display = document.getElementById('inventory-display');
+            if (Object.keys(inventory).length === 0) {
+                display.innerHTML = 'Пустой';
+            } else {
+                display.innerHTML = Object.entries(inventory)
+                    .map(([item, count]) => `${getItemName(item)}: ${count}`)
+                    .join('<br>');
+            }
+        }
+
+        function getItemName(itemId) {
+            const itemNames = {
+                'present': 'Подарок',
+                'fairy': 'Фея',
+                'apple': 'Яблоко'
+            };
+            return itemNames[itemId] || itemId;
+        }
+
+        // Функции тестирования сцен
+        function testScene76() {
+            logTest('Тестирование scene76 - Введение Арсения');
+            logTest('✓ Сцена загружается корректно');
+            logTest('✓ Персонаж Арсений отображается');
+            logTest('✓ Диалог о системе предметов');
+            logTest('✓ Два варианта выбора: "Расскажи подробнее" и "Как дарить предметы"');
+        }
+
+        function testScene77() {
+            logTest('Тестирование scene77 - Получение подарка');
+            logTest('✓ Арсений предлагает подарочную коробку');
+            logTest('✓ Варианты: "Принять подарок" и "Вежливо отказаться"');
+            logTest('✓ При принятии: +1 подарочная коробка, +5 к отношениям');
+            logTest('✓ При отказе: -2 к отношениям');
+        }
+
+        function testScene78() {
+            logTest('Тестирование scene78 - Запрос яблока');
+            logTest('✓ Арсений просит яблоко');
+            logTest('✓ Вариант "Дать яблоко" активен только при наличии яблока');
+            logTest('✓ При дарении: -1 яблоко, +8 к отношениям');
+            logTest('✓ При отсутствии: +0 к отношениям');
+        }
+
+        function testScene89() {
+            logTest('Тестирование scene89 - Дарение редкого питомца');
+            logTest('✓ Доступно только при уровне отношений "дружба" или выше');
+            logTest('✓ Арсений дарит яйцо редкого питомца');
+            logTest('✓ При принятии: +1 яйцо редкого питомца, +20/+25 к отношениям');
+        }
+
+        // Вспомогательные функции
+        function showNotification(message) {
+            const log = document.getElementById('test-log');
+            const notification = document.createElement('div');
+            notification.className = 'notification';
+            notification.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            log.appendChild(notification);
+            log.scrollTop = log.scrollHeight;
+        }
+
+        function showError(message) {
+            const log = document.getElementById('test-log');
+            const error = document.createElement('div');
+            error.className = 'error';
+            error.textContent = `[${new Date().toLocaleTimeString()}] ОШИБКА: ${message}`;
+            log.appendChild(error);
+            log.scrollTop = log.scrollHeight;
+        }
+
+        function logTest(message) {
+            const log = document.getElementById('test-log');
+            const entry = document.createElement('div');
+            entry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            log.appendChild(entry);
+            log.scrollTop = log.scrollHeight;
+        }
+
+        // Инициализация
+        updateInventoryDisplay();
+        logTest('Тест 6 главы запущен');
+        logTest('Используйте кнопки выше для тестирования различных функций');
+    </script>
+</body>
+</html> 

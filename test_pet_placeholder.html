@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тест плейсхолдеров питомца</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f0f0f0;
+        }
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .success {
+            color: green;
+            background: #e6ffe6;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .error {
+            color: red;
+            background: #ffe6e6;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .info {
+            color: blue;
+            background: #e6f3ff;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .log {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+            font-family: monospace;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>Тест плейсхолдеров питомца</h1>
+        
+        <div class="test-section">
+            <h3>Проверка данных персонажа</h3>
+            <div id="character-results"></div>
+            <button onclick="checkCharacterData()">Проверить данные персонажа</button>
+        </div>
+        
+        <div class="test-section">
+            <h3>Проверка плейсхолдеров</h3>
+            <div id="placeholder-results"></div>
+            <button onclick="testPlaceholders()">Тестировать плейсхолдеры</button>
+        </div>
+        
+        <div class="test-section">
+            <h3>Создание тестового персонажа с питомцем</h3>
+            <div id="create-results"></div>
+            <button onclick="createCharacterWithPet()">Создать персонажа с питомцем</button>
+        </div>
+        
+        <div class="test-section">
+            <h3>Лог операций</h3>
+            <div id="log" class="log"></div>
+            <button onclick="clearLog()">Очистить лог</button>
+        </div>
+    </div>
+
+    <script>
+        function log(message) {
+            const logElement = document.getElementById('log');
+            logElement.textContent += new Date().toLocaleTimeString() + ': ' + message + '\n';
+            logElement.scrollTop = logElement.scrollHeight;
+        }
+
+        function clearLog() {
+            document.getElementById('log').textContent = '';
+        }
+
+        async function checkCharacterData() {
+            const resultsDiv = document.getElementById('character-results');
+            resultsDiv.innerHTML = '';
+            
+            log('Проверка данных персонажа...');
+            
+            try {
+                // Получаем прогресс из localStorage
+                const progressData = localStorage.getItem('tutorial_progress');
+                if (!progressData) {
+                    resultsDiv.innerHTML = '<div class="error">Прогресс не найден</div>';
+                    log('Прогресс не найден');
+                    return;
+                }
+                
+                const progress = JSON.parse(progressData);
+                log(`Прогресс загружен: Глава ${progress.currentChapter}, Сцена ${progress.currentScene}`);
+                
+                // Получаем данные персонажа
+                const characterData = localStorage.getItem(`character_${progress.playerCharacterId}`);
+                if (!characterData) {
+                    resultsDiv.innerHTML = '<div class="error">Данные персонажа не найдены</div>';
+                    log('Данные персонажа не найдены');
+                    return;
+                }
+                
+                const character = JSON.parse(characterData);
+                log('Данные персонажа загружены');
+                
+                const div = document.createElement('div');
+                div.className = 'info';
+                div.innerHTML = `
+                    <strong>Персонаж:</strong> ${character.name}<br>
+                    <strong>Пол:</strong> ${character.gender}<br>
+                    <strong>Возраст:</strong> ${character.age}<br>
+                    <strong>Питомец:</strong> ${character.pet ? 'Есть' : 'Нет'}
+                `;
+                resultsDiv.appendChild(div);
+                
+                if (character.pet) {
+                    log(`Питомец: ${character.pet.name} (${character.pet.id})`);
+                    
+                    const petDiv = document.createElement('div');
+                    petDiv.className = 'success';
+                    petDiv.innerHTML = `
+                        <strong>Питомец:</strong> ${character.pet.name}<br>
+                        <strong>ID:</strong> ${character.pet.id}<br>
+                        <strong>Имя:</strong> ${character.pet.name}
+                    `;
+                    resultsDiv.appendChild(petDiv);
+                } else {
+                    log('У персонажа нет питомца');
+                    const noPetDiv = document.createElement('div');
+                    noPetDiv.className = 'error';
+                    noPetDiv.textContent = 'У персонажа нет питомца';
+                    resultsDiv.appendChild(noPetDiv);
+                }
+                
+            } catch (error) {
+                resultsDiv.innerHTML = `<div class="error">Ошибка: ${error.message}</div>`;
+                log(`Ошибка: ${error.message}`);
+            }
+        }
+
+        async function testPlaceholders() {
+            const resultsDiv = document.getElementById('placeholder-results');
+            resultsDiv.innerHTML = '';
+            
+            log('Тестирование плейсхолдеров...');
+            
+            try {
+                // Получаем данные персонажа
+                const progressData = localStorage.getItem('tutorial_progress');
+                if (!progressData) {
+                    resultsDiv.innerHTML = '<div class="error">Прогресс не найден</div>';
+                    return;
+                }
+                
+                const progress = JSON.parse(progressData);
+                const characterData = localStorage.getItem(`character_${progress.playerCharacterId}`);
+                if (!characterData) {
+                    resultsDiv.innerHTML = '<div class="error">Данные персонажа не найдены</div>';
+                    return;
+                }
+                
+                const character = JSON.parse(characterData);
+                
+                // Загружаем данные предметов
+                const itemsResponse = await fetch('/src/data/items.json');
+                if (!itemsResponse.ok) {
+                    throw new Error('Не удалось загрузить данные предметов');
+                }
+                const itemsData = await itemsResponse.json();
+                
+                // Тестируем плейсхолдеры
+                const testText = 'О, это [PET_NAME]! Какой милый питомец! Способность: [PET_ABILITY]. Реакция: [PET_REACTION]';
+                
+                if (character.pet?.id) {
+                    const pet = Object.values(itemsData.items.pet || {}).find(p => p.id === character.pet.id);
+                    if (pet) {
+                        let processedText = testText;
+                        
+                        // Заменяем плейсхолдеры
+                        processedText = processedText.replace(/\[PET_NAME\]/g, character.pet.name || pet.name);
+                        processedText = processedText.replace(/\[PET_ABILITY\]/g, getPetSpecialText(pet));
+                        
+                        // Реакция на пугающего питомца
+                        if (pet.scary) {
+                            processedText = processedText.replace(/\[PET_REACTION\]/g, 'испугалась');
+                        } else {
+                            processedText = processedText.replace(/\[PET_REACTION\]/g, 'умилилась');
+                        }
+                        
+                        const div = document.createElement('div');
+                        div.className = 'success';
+                        div.innerHTML = `
+                            <strong>Исходный текст:</strong> ${testText}<br>
+                            <strong>Обработанный текст:</strong> ${processedText}<br>
+                            <strong>Питомец:</strong> ${pet.name}<br>
+                            <strong>Способность:</strong> ${getPetSpecialText(pet)}<br>
+                            <strong>Пугающий:</strong> ${pet.scary ? 'Да' : 'Нет'}
+                        `;
+                        resultsDiv.appendChild(div);
+                        
+                        log(`Плейсхолдеры обработаны: ${processedText}`);
+                    } else {
+                        resultsDiv.innerHTML = '<div class="error">Питомец не найден в данных предметов</div>';
+                        log('Питомец не найден в данных предметов');
+                    }
+                } else {
+                    resultsDiv.innerHTML = '<div class="error">У персонажа нет питомца для тестирования</div>';
+                    log('У персонажа нет питомца для тестирования');
+                }
+                
+            } catch (error) {
+                resultsDiv.innerHTML = `<div class="error">Ошибка: ${error.message}</div>`;
+                log(`Ошибка: ${error.message}`);
+            }
+        }
+
+        function getPetSpecialText(pet) {
+            if (!pet.special) return 'Нет способности';
+            
+            switch (pet.special.type) {
+                case 'stat':
+                    return `+${pet.special.bonus} к ${pet.special.stat_type}`;
+                case 'money':
+                    return `+${pet.special.increase} монет`;
+                case 'relation':
+                    return `+${pet.special.increase} к отношениям`;
+                case 'reroll':
+                    return `${pet.special.count} переброс`;
+                case 'price':
+                    return `Скидка ${pet.special.value} монет`;
+                case 'cube':
+                    return `Модификатор куба ${pet.special.modificator}`;
+                default:
+                    return 'Неизвестная способность';
+            }
+        }
+
+        function createCharacterWithPet() {
+            const resultsDiv = document.getElementById('create-results');
+            resultsDiv.innerHTML = '';
+            
+            log('Создание персонажа с питомцем...');
+            
+            try {
+                // Создаем тестового персонажа с питомцем
+                const testCharacter = {
+                    id: '1751735945156',
+                    name: 'Тестовый персонаж',
+                    gender: 'female',
+                    age: '1',
+                    type: 'female',
+                    appearance: {
+                        hairStyle: 'long_hair',
+                        hairColor: 'brown',
+                        hairBehind: 'long',
+                        dress: 'summer_dress',
+                        dressPaid: false,
+                        accessory: null,
+                        accessoryPaid: false,
+                        bush: '1'
+                    },
+                    pet: {
+                        id: 'slime',
+                        name: 'Слаймчик'
+                    },
+                    stats: {
+                        charisma: 5,
+                        intelligence: 5,
+                        cunning: 5,
+                        determination: 5,
+                        sensitivity: 5,
+                        coldness: 5
+                    }
+                };
+                
+                // Сохраняем персонажа
+                localStorage.setItem(`character_${testCharacter.id}`, JSON.stringify(testCharacter));
+                
+                // Создаем прогресс для 7 главы
+                const testProgress = {
+                    episodeId: 'tutorial',
+                    currentChapter: 7,
+                    currentScene: 'scene123',
+                    completedChapters: [1, 2, 3, 4, 5, 6],
+                    playerChoices: {},
+                    importantChoices: {},
+                    progress: {
+                        relation_anna: 0
+                    },
+                    playerCharacterId: testCharacter.id,
+                    lastPlayed: new Date().toISOString()
+                };
+                
+                localStorage.setItem('tutorial_progress', JSON.stringify(testProgress));
+                
+                const div = document.createElement('div');
+                div.className = 'success';
+                div.innerHTML = `
+                    <strong>Персонаж создан:</strong><br>
+                    Имя: ${testCharacter.name}<br>
+                    Питомец: ${testCharacter.pet.name} (${testCharacter.pet.id})<br>
+                    Прогресс: Глава 7, Сцена scene123
+                `;
+                resultsDiv.appendChild(div);
+                
+                log(`Персонаж создан: ${testCharacter.name} с питомцем ${testCharacter.pet.name}`);
+                
+            } catch (error) {
+                resultsDiv.innerHTML = `<div class="error">Ошибка: ${error.message}</div>`;
+                log(`Ошибка: ${error.message}`);
+            }
+        }
+
+        // Показываем текущий прогресс при загрузке
+        function showCurrentProgress() {
+            try {
+                const progress = localStorage.getItem('tutorial_progress');
+                if (progress) {
+                    const data = JSON.parse(progress);
+                    log(`Текущий прогресс: Глава ${data.currentChapter}, Сцена ${data.currentScene}`);
+                    
+                    const characterData = localStorage.getItem(`character_${data.playerCharacterId}`);
+                    if (characterData) {
+                        const character = JSON.parse(characterData);
+                        log(`Персонаж: ${character.name}${character.pet ? `, питомец: ${character.pet.name}` : ', без питомца'}`);
+                    }
+                } else {
+                    log('Прогресс не найден');
+                }
+            } catch (error) {
+                log(`Ошибка чтения прогресса: ${error.message}`);
+            }
+        }
+
+        // Показываем текущий прогресс при загрузке
+        showCurrentProgress();
+    </script>
+</body>
+</html> 

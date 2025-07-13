@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Визуальная новелла</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Анимация для кнопок */
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        .pulse:hover {
+            animation: pulse 1.5s infinite;
+        }
+        
+        /* Стиль для заполненного XP-бара */
+        .xp-bar-fill {
+            transition: width 0.5s ease-in-out;
+        }
+        
+        /* Стиль для диалогового окна персонажа */
+        .character-box {
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        /* Градиент для верхней панели */
+        .top-panel {
+            background: linear-gradient(180deg, rgba(70,63,58,0.8) 0%, rgba(50,45,41,0.8) 100%);
+            backdrop-filter: blur(5px);
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-white font-sans">
+    <!-- Основной контейнер -->
+    <div class="relative w-full h-screen max-w-md mx-auto overflow-hidden">
+        <!-- Фоновое изображение сцены -->
+        <div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1608889825205-eebdb9fc5806?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80')] bg-cover bg-center opacity-70"></div>
+        
+        <!-- Затемнение для лучшей читаемости текста -->
+        <div class="absolute inset-0 bg-black bg-opacity-30"></div>
+        
+        <!-- Верхняя панель UI -->
+        <div class="top-panel relative z-10 w-full p-3 flex items-center justify-between rounded-b-xl">
+            <!-- Блок персонажа -->
+            <div class="flex items-center">
+                <!-- Аватар персонажа -->
+                <div class="relative">
+                    <img src="https://api.dicebear.com/7.x/adventurer-neutral/svg?seed=Mia" alt="Персонаж" class="w-14 h-14 rounded-full border-2 border-yellow-400 object-cover">
+                    <div class="absolute -bottom-1 -right-1 bg-yellow-500 text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">5</div>
+                </div>
+                
+                <!-- Имя и уровень -->
+                <div class="ml-3">
+                    <div class="font-bold text-lg">Мия</div>
+                    <div class="flex items-center space-x-2">
+                        <span class="text-yellow-400 text-xs">Уровень</span>
+                        <div class="bg-yellow-500 text-black font-bold rounded-full w-6 h-6 flex items-center justify-center text-xs">
+                            12
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Шкала опыта -->
+            <div class="flex-1 mx-4">
+                <div class="relative h-3 bg-gray-700 rounded-full overflow-hidden">
+                    <div class="xp-bar-fill absolute top-0 left-0 h-full bg-gradient-to-r from-purple-500 to-pink-500" style="width: 68%;"></div>
+                </div>
+                <div class="text-right text-xs mt-1.5">420/620 XP</div>
+            </div>
+            
+            <!-- Кнопки навигации -->
+            <div class="flex space-x-2">
+                <button class="nav-button pulse w-10 h-10 rounded-full flex items-center justify-center bg-blue-600 hover:bg-blue-700">
+                    <i class="fas fa-heart"></i>
+                </button>
+                <button class="nav-button pulse w-10 h-10 rounded-full flex items-center justify-center bg-green-600 hover:bg-green-700">
+                    <i class="fas fa-bag-shopping"></i>
+                </button>
+                <button class="nav-button pulse w-10 h-10 rounded-full flex items-center justify-center bg-purple-600 hover:purple-700">
+                    <i class="fas fa-store"></i>
+                </button>
+                <button class="nav-button pulse w-10 h-10 rounded-full flex items-center justify-center bg-red-600 hover:bg-red-700">
+                    <i class="fas fa-pause"></i>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Контейнер для контента игры -->
+        <div class="relative z-10 h-full pt-20 pb-32 px-4 flex flex-col justify-end">
+            <!-- Диалоговое окно -->
+            <div class="character-box bg-gray-800 bg-opacity-90 rounded-xl p-4 mb-4">
+                <div class="flex items-center mb-2">
+                    <div class="w-10 h-1 bg-yellow-400 rounded-full mr-2"></div>
+                    <span class="text-yellow-400 font-semibold">Мия</span>
+                </div>
+                <p class="text-sm">Я не думала, что смогу доверять кому-то после всего, что произошло... Но ты кажешься другим.</p>
+            </div>
+            
+            <!-- Бокс с выбором действий -->
+            <div class="bg-gray-800 bg-opacity-80 rounded-xl p-4">
+                <p class="text-sm opacity-80 mb-3">Выберите ответ:</p>
+                <div class="space-y-2">
+                    <button class="choice-button w-full bg-gray-700 hover:bg-gray-600 rounded-lg py-2 px-3 text-left text-sm transition-colors">
+                        Я ценю твое доверие. Пообещаю не подвести тебя.
+                    </button>
+                    <button class="choice-button w-full bg-gray-700 hover:bg-gray-600 rounded-lg py-2 px-3 text-left text-sm transition-colors">
+                        Может быть, тебе не стоит так быстро доверять незнакомцам?
+                    </button>
+                    <button class="choice-button w-full bg-gray-700 hover:bg-gray-600 rounded-lg py-2 px-3 text-left text-sm transition-colors">
+                        *Молча кивнуть*
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Небольшая интерактивность
+        document.addEventListener('DOMContentLoaded', function() {
+            const choiceButtons = document.querySelectorAll('.choice-button');
+            
+            choiceButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // Удаляем активный класс со всех кнопок
+                    choiceButtons.forEach(btn => btn.classList.remove('bg-yellow-600', 'text-white'));
+                    
+                    // Добавляем активный класс к текущей кнопке
+                    this.classList.add('bg-yellow-600', 'text-white');
+                    
+                    // Здесь можно добавить логику перехода к следующему диалогу
+                    setTimeout(() => {
+                        // Пример обновления диалога
+                        document.querySelector('.character-box p').textContent = "Спасибо за твой выбор. Давай продолжим...";
+                        
+                        // Сбрасываем выбор
+                        choiceButtons.forEach(btn => btn.classList.remove('bg-yellow-600', 'text-white'));
+                    }, 1000);
+                });
+            });
+            
+            // Имитация заполнения XP-бара при загрузке
+            setTimeout(() => {
+                document.querySelector('.xp-bar-fill').style.width = '68%';
+            }, 500);
+        });
+    </script>
+</body>
+</html>

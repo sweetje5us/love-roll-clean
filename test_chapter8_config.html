@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тест конфига Главы 8</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .success {
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+        .info {
+            background-color: #d1ecf1;
+            border-color: #bee5eb;
+            color: #0c5460;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .log {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .character-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            margin: 10px 0;
+        }
+        .character-item {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #dee2e6;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Тест конфига Главы 8</h1>
+        <p>Проверка конфигурации главы 8 и персонажей</p>
+
+        <div class="test-section info">
+            <h3>Информация о тесте</h3>
+            <p>Этот тест проверяет:</p>
+            <ul>
+                <li>Наличие конфига главы 8</li>
+                <li>Правильность структуры конфига</li>
+                <li>Наличие всех персонажей</li>
+                <li>Совместимость ID персонажей со сценами</li>
+                <li>Список сцен</li>
+            </ul>
+        </div>
+
+        <div class="test-section">
+            <h3>Проверка конфига главы 8</h3>
+            <button onclick="checkChapter8Config()">Проверить конфиг</button>
+            <div id="chapter8ConfigResult" class="log"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>Проверка персонажей</h3>
+            <button onclick="checkCharacters()">Проверить персонажей</button>
+            <div id="charactersResult" class="log"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>Проверка совместимости ID</h3>
+            <button onclick="checkCharacterIds()">Проверить ID персонажей</button>
+            <div id="characterIdsResult" class="log"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>Полный тест</h3>
+            <button onclick="runFullTest()">Запустить полный тест</button>
+            <div id="fullTestResult" class="log"></div>
+        </div>
+    </div>
+
+    <script>
+        function log(elementId, message, type = 'info') {
+            const element = document.getElementById(elementId);
+            const timestamp = new Date().toLocaleTimeString();
+            const className = type === 'error' ? 'error' : type === 'success' ? 'success' : 'info';
+            element.innerHTML += `<div class="${className}">[${timestamp}] ${message}</div>`;
+            element.scrollTop = element.scrollHeight;
+        }
+
+        async function checkChapter8Config() {
+            const result = document.getElementById('chapter8ConfigResult');
+            result.innerHTML = '';
+            
+            log('chapter8ConfigResult', 'Начинаю проверку конфига главы 8...');
+            
+            try {
+                const response = await fetch('episodes/tutorial/chapters/chapter8/config.json');
+                if (response.ok) {
+                    const data = await response.json();
+                    
+                    log('chapter8ConfigResult', `✓ Конфиг главы 8 загружен`, 'success');
+                    log('chapter8ConfigResult', `✓ ID: ${data.id}`, 'info');
+                    log('chapter8ConfigResult', `✓ Название: ${data.name}`, 'info');
+                    log('chapter8ConfigResult', `✓ Описание: ${data.description}`, 'info');
+                    log('chapter8ConfigResult', `✓ Длительность: ${data.duration}`, 'info');
+                    log('chapter8ConfigResult', `✓ Фон: ${data.background}`, 'info');
+                    
+                    if (data.characters && Array.isArray(data.characters)) {
+                        log('chapter8ConfigResult', `✓ Персонажи: ${data.characters.length}`, 'success');
+                    } else {
+                        log('chapter8ConfigResult', `✗ Персонажи отсутствуют или неверный формат`, 'error');
+                    }
+                    
+                    if (data.scenes && Array.isArray(data.scenes)) {
+                        log('chapter8ConfigResult', `✓ Сцены: ${data.scenes.length}`, 'success');
+                    } else {
+                        log('chapter8ConfigResult', `✗ Сцены отсутствуют или неверный формат`, 'error');
+                    }
+                } else {
+                    log('chapter8ConfigResult', '✗ Не удалось загрузить конфиг главы 8', 'error');
+                }
+            } catch (error) {
+                log('chapter8ConfigResult', `✗ Ошибка при загрузке конфига: ${error.message}`, 'error');
+            }
+        }
+
+        async function checkCharacters() {
+            const result = document.getElementById('charactersResult');
+            result.innerHTML = '';
+            
+            log('charactersResult', 'Начинаю проверку персонажей...');
+            
+            try {
+                const response = await fetch('episodes/tutorial/chapters/chapter8/config.json');
+                if (response.ok) {
+                    const data = await response.json();
+                    
+                    if (data.characters && Array.isArray(data.characters)) {
+                        log('charactersResult', `Найдено ${data.characters.length} персонажей:`, 'info');
+                        
+                        const characterList = document.createElement('div');
+                        characterList.className = 'character-list';
+                        
+                        for (const character of data.characters) {
+                            const characterItem = document.createElement('div');
+                            characterItem.className = 'character-item';
+                            characterItem.innerHTML = `
+                                <strong>${character.name}</strong><br>
+                                ID: ${character.id}<br>
+                                Роль: ${character.role}<br>
+                                Пол: ${character.gender}<br>
+                                Возраст: ${character.age}<br>
+                                Романтика: ${character.romanceAvailable ? 'Да' : 'Нет'}
+                            `;
+                            characterList.appendChild(characterItem);
+                            
+                            log('charactersResult', `✓ ${character.name} (${character.id}) - ${character.role}`, 'success');
+                        }
+                        
+                        result.appendChild(characterList);
+                    } else {
+                        log('charactersResult', '✗ Персонажи не найдены', 'error');
+                    }
+                } else {
+                    log('charactersResult', '✗ Не удалось загрузить конфиг', 'error');
+                }
+            } catch (error) {
+                log('charactersResult', `✗ Ошибка при проверке персонажей: ${error.message}`, 'error');
+            }
+        }
+
+        async function checkCharacterIds() {
+            const result = document.getElementById('characterIdsResult');
+            result.innerHTML = '';
+            
+            log('characterIdsResult', 'Начинаю проверку совместимости ID персонажей...');
+            
+            try {
+                // Загружаем конфиг главы
+                const configResponse = await fetch('episodes/tutorial/chapters/chapter8/config.json');
+                if (!configResponse.ok) {
+                    log('characterIdsResult', '✗ Не удалось загрузить конфиг главы', 'error');
+                    return;
+                }
+                
+                const configData = await configResponse.json();
+                const characterIds = configData.characters.map(c => c.id);
+                
+                log('characterIdsResult', `ID персонажей в конфиге: ${characterIds.join(', ')}`, 'info');
+                
+                // Проверяем несколько сцен
+                const testScenes = ['scene150', 'scene152', 'scene155', 'scene160', 'scene169'];
+                
+                for (const sceneId of testScenes) {
+                    try {
+                        const sceneResponse = await fetch(`episodes/tutorial/scenes/${sceneId}.json`);
+                        if (sceneResponse.ok) {
+                            const sceneData = await sceneResponse.json();
+                            
+                            // Проверяем ID персонажей в сцене
+                            if (sceneData.characters && Array.isArray(sceneData.characters)) {
+                                for (const character of sceneData.characters) {
+                                    if (characterIds.includes(character.id)) {
+                                        log('characterIdsResult', `✓ ${sceneId}: ${character.id} найден в конфиге`, 'success');
+                                    } else {
+                                        log('characterIdsResult', `✗ ${sceneId}: ${character.id} НЕ найден в конфиге`, 'error');
+                                    }
+                                }
+                            }
+                            
+                            // Проверяем speaker в диалогах
+                            if (sceneData.dialogue && Array.isArray(sceneData.dialogue)) {
+                                for (const dialogue of sceneData.dialogue) {
+                                    if (characterIds.includes(dialogue.speaker)) {
+                                        log('characterIdsResult', `✓ ${sceneId}: speaker "${dialogue.speaker}" найден в конфиге`, 'success');
+                                    } else {
+                                        log('characterIdsResult', `✗ ${sceneId}: speaker "${dialogue.speaker}" НЕ найден в конфиге`, 'error');
+                                    }
+                                }
+                            }
+                        } else {
+                            log('characterIdsResult', `✗ Не удалось загрузить ${sceneId}`, 'error');
+                        }
+                    } catch (error) {
+                        log('characterIdsResult', `✗ Ошибка при проверке ${sceneId}: ${error.message}`, 'error');
+                    }
+                }
+            } catch (error) {
+                log('characterIdsResult', `✗ Ошибка при проверке ID: ${error.message}`, 'error');
+            }
+        }
+
+        async function runFullTest() {
+            const result = document.getElementById('fullTestResult');
+            result.innerHTML = '';
+            
+            log('fullTestResult', 'Запуск полного теста конфига главы 8...');
+            
+            // Запускаем все проверки
+            await checkChapter8Config();
+            await checkCharacters();
+            await checkCharacterIds();
+            
+            log('fullTestResult', 'Полный тест завершен!', 'success');
+        }
+    </script>
+</body>
+</html> 

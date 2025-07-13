@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тест перехода к 4-й главе</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .danger {
+            background: #dc3545;
+        }
+        .danger:hover {
+            background: #c82333;
+        }
+        .success {
+            background: #28a745;
+        }
+        .success:hover {
+            background: #218838;
+        }
+        .info {
+            background: #17a2b8;
+        }
+        .info:hover {
+            background: #138496;
+        }
+        .log {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Тест перехода к 4-й главе</h1>
+        
+        <h2>Управление сохранениями</h2>
+        <button onclick="clearAllSaves()" class="danger">Очистить все сохранения</button>
+        <button onclick="clearEpisodeSaves()" class="danger">Очистить сохранения эпизода</button>
+        <button onclick="showCurrentProgress()" class="info">Показать текущий прогресс</button>
+        
+        <h2>Тестирование глав</h2>
+        <button onclick="testChapter3()" class="success">Тест 3-й главы</button>
+        <button onclick="testChapter4()" class="success">Тест 4-й главы</button>
+        <button onclick="testChapterTransition()" class="info">Тест перехода между главами</button>
+        
+        <h2>Лог операций</h2>
+        <div id="log" class="log"></div>
+    </div>
+
+    <script>
+        function log(message) {
+            const logElement = document.getElementById('log');
+            const timestamp = new Date().toLocaleTimeString();
+            logElement.textContent += `[${timestamp}] ${message}\n`;
+            logElement.scrollTop = logElement.scrollHeight;
+        }
+
+        function clearAllSaves() {
+            try {
+                localStorage.clear();
+                log('Все сохранения очищены');
+            } catch (error) {
+                log(`Ошибка очистки: ${error.message}`);
+            }
+        }
+
+        function clearEpisodeSaves() {
+            try {
+                const keys = Object.keys(localStorage);
+                const episodeKeys = keys.filter(key => key.includes('tutorial'));
+                episodeKeys.forEach(key => {
+                    localStorage.removeItem(key);
+                    log(`Удален ключ: ${key}`);
+                });
+                log(`Очищены сохранения эпизода tutorial (${episodeKeys.length} ключей)`);
+            } catch (error) {
+                log(`Ошибка очистки эпизода: ${error.message}`);
+            }
+        }
+
+        function showCurrentProgress() {
+            try {
+                const keys = Object.keys(localStorage);
+                const episodeKeys = keys.filter(key => key.includes('tutorial'));
+                
+                log('Текущие ключи сохранений:');
+                episodeKeys.forEach(key => {
+                    const value = localStorage.getItem(key);
+                    log(`  ${key}: ${value ? value.substring(0, 100) + '...' : 'null'}`);
+                });
+                
+                if (episodeKeys.length === 0) {
+                    log('Сохранений эпизода tutorial не найдено');
+                }
+            } catch (error) {
+                log(`Ошибка чтения прогресса: ${error.message}`);
+            }
+        }
+
+        function testChapter3() {
+            try {
+                log('Тестирование 3-й главы...');
+                
+                // Создаем тестовый прогресс для 3-й главы
+                const testProgress = {
+                    episodeId: 'tutorial',
+                    currentChapter: 3,
+                    currentScene: 'scene53',
+                    completedChapters: [1, 2],
+                    playerChoices: {},
+                    importantChoices: {},
+                    progress: {
+                        relation_teacher: 28,
+                        relation_student: 13,
+                        relation_dima: 150
+                    },
+                    playerCharacterId: '1751735945156',
+                    lastPlayed: new Date().toISOString()
+                };
+                
+                localStorage.setItem('tutorial_progress', JSON.stringify(testProgress));
+                log('Создан тестовый прогресс для 3-й главы');
+                log(`Текущая сцена: ${testProgress.currentScene}`);
+            } catch (error) {
+                log(`Ошибка тестирования 3-й главы: ${error.message}`);
+            }
+        }
+
+        function testChapter4() {
+            try {
+                log('Тестирование 4-й главы...');
+                
+                // Создаем тестовый прогресс для 4-й главы
+                const testProgress = {
+                    episodeId: 'tutorial',
+                    currentChapter: 4,
+                    currentScene: 'scene60',
+                    completedChapters: [1, 2, 3],
+                    playerChoices: {},
+                    importantChoices: {},
+                    progress: {
+                        relation_teacher: 28,
+                        relation_student: 13,
+                        relation_dima: 150
+                    },
+                    playerCharacterId: '1751735945156',
+                    lastPlayed: new Date().toISOString()
+                };
+                
+                localStorage.setItem('tutorial_progress', JSON.stringify(testProgress));
+                log('Создан тестовый прогресс для 4-й главы');
+                log(`Текущая сцена: ${testProgress.currentScene}`);
+            } catch (error) {
+                log(`Ошибка тестирования 4-й главы: ${error.message}`);
+            }
+        }
+
+        function testChapterTransition() {
+            try {
+                log('Тестирование перехода между главами...');
+                
+                // Создаем прогресс, который должен перейти к 4-й главе
+                const testProgress = {
+                    episodeId: 'tutorial',
+                    currentChapter: 3,
+                    currentScene: 'scene53',
+                    completedChapters: [1, 2],
+                    playerChoices: {},
+                    importantChoices: {},
+                    progress: {
+                        relation_teacher: 28,
+                        relation_student: 13,
+                        relation_dima: 150
+                    },
+                    playerCharacterId: '1751735945156',
+                    lastPlayed: new Date().toISOString()
+                };
+                
+                localStorage.setItem('tutorial_progress', JSON.stringify(testProgress));
+                log('Создан прогресс для тестирования перехода');
+                log('Теперь запустите игру и завершите 3-ю главу');
+            } catch (error) {
+                log(`Ошибка тестирования перехода: ${error.message}`);
+            }
+        }
+
+        // Показываем текущий прогресс при загрузке
+        showCurrentProgress();
+    </script>
+</body>
+</html> 

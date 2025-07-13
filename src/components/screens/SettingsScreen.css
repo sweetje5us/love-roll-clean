@@ -1,0 +1,233 @@
+.settings-screen {
+  min-height: 100vh;
+  padding: 20px;
+  background: linear-gradient(to bottom, #fdf2f8, #f3e8ff);
+}
+
+.settings-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding-top: 80px;
+}
+
+.settings-title {
+  font-size: 2.5rem;
+  color: #ff6b9a;
+  margin-bottom: 30px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.settings-group {
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 15px;
+  padding: 25px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px);
+  border: 2px solid transparent;
+  transition: all 0.3s ease;
+}
+
+.settings-group:hover {
+  border-color: rgba(255, 107, 154, 0.2);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+.settings-group h3 {
+  color: #ff6b9a;
+  margin-bottom: 20px;
+  font-size: 1.3rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.settings-group h3::before {
+  content: '';
+  width: 4px;
+  height: 20px;
+  background: linear-gradient(to bottom, #ff6b9a, #ff8fab);
+  border-radius: 2px;
+}
+
+.setting-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 15px;
+  padding: 15px 0;
+  border-bottom: 1px solid rgba(255, 107, 154, 0.1);
+}
+
+.setting-item:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+}
+
+.setting-item label {
+  font-weight: 600;
+  color: #333;
+  flex: 1;
+  font-size: 1rem;
+}
+
+.setting-item input[type="range"] {
+  flex: 2;
+  margin: 0 15px;
+  accent-color: #ff6b9a;
+  height: 6px;
+  border-radius: 3px;
+  background: rgba(255, 107, 154, 0.2);
+  outline: none;
+}
+
+.setting-item input[type="range"]::-webkit-slider-thumb {
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #ff6b9a;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(255, 107, 154, 0.3);
+  transition: all 0.3s ease;
+}
+
+.setting-item input[type="range"]::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+  box-shadow: 0 4px 12px rgba(255, 107, 154, 0.4);
+}
+
+.setting-item input[type="range"]::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #ff6b9a;
+  cursor: pointer;
+  border: none;
+  box-shadow: 0 2px 6px rgba(255, 107, 154, 0.3);
+}
+
+.setting-item span {
+  color: #666;
+  font-weight: 600;
+  min-width: 50px;
+  text-align: right;
+  font-size: 0.9rem;
+}
+
+.setting-item input[type="checkbox"] {
+  width: 24px;
+  height: 24px;
+  accent-color: #ff6b9a;
+  cursor: pointer;
+  border-radius: 4px;
+  border: 2px solid rgba(255, 107, 154, 0.3);
+  transition: all 0.3s ease;
+}
+
+.setting-item input[type="checkbox"]:checked {
+  background-color: #ff6b9a;
+  border-color: #ff6b9a;
+}
+
+.setting-item input[type="checkbox"]:hover {
+  transform: scale(1.1);
+}
+
+/* Стили для дополнительных настроек */
+.setting-item.select {
+  position: relative;
+}
+
+.setting-item select {
+  padding: 8px 12px;
+  border: 2px solid rgba(255, 107, 154, 0.3);
+  border-radius: 8px;
+  background: white;
+  color: #333;
+  font-size: 0.9rem;
+  cursor: pointer;
+  outline: none;
+  transition: all 0.3s ease;
+}
+
+.setting-item select:focus {
+  border-color: #ff6b9a;
+  box-shadow: 0 0 0 3px rgba(255, 107, 154, 0.1);
+}
+
+.setting-item select:hover {
+  border-color: #ff6b9a;
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+  .settings-screen {
+    padding: 15px;
+  }
+  
+  .settings-container {
+    padding-top: 60px;
+  }
+  
+  .settings-title {
+    font-size: 2rem;
+    margin-bottom: 20px;
+  }
+  
+  .settings-group {
+    padding: 20px;
+    margin-bottom: 15px;
+  }
+  
+  .settings-group h3 {
+    font-size: 1.1rem;
+  }
+  
+  .setting-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 10px 0;
+  }
+  
+  .setting-item label {
+    font-size: 0.9rem;
+  }
+  
+  .setting-item input[type="range"] {
+    width: 100%;
+    margin: 0;
+  }
+  
+  .setting-item span {
+    align-self: flex-end;
+    font-size: 0.8rem;
+  }
+  
+  .setting-item input[type="checkbox"] {
+    align-self: flex-end;
+  }
+  
+  .setting-item select {
+    width: 100%;
+    align-self: stretch;
+  }
+}
+
+/* Стили для планшетов */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .settings-container {
+    max-width: 600px;
+  }
+  
+  .settings-group {
+    padding: 22px;
+  }
+  
+  .setting-item {
+    padding: 12px 0;
+  }
+} 

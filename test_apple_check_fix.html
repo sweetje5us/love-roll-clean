@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тест проверки яблока - Исправление</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .test-title {
+            color: #333;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        .test-description {
+            color: #666;
+            margin-bottom: 15px;
+        }
+        .test-button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .test-button:hover {
+            background: #0056b3;
+        }
+        .test-button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .log-output {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 10px 0;
+            max-height: 400px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 12px;
+            white-space: pre-wrap;
+        }
+        .status {
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .status.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        .inventory-display {
+            background: #e9ecef;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <h1>Тест проверки яблока - Исправление</h1>
+    
+    <div class="test-section">
+        <h2 class="test-title">Описание проблемы</h2>
+        <div class="test-description">
+            <p><strong>Проблема:</strong> В сцене с Арсением (scene80) проверка наличия яблока работает неверно.</p>
+            <p><strong>Причина:</strong> Несоответствие форматов инвентаря между episodeManager.js (простой формат) и dialogueItemSystem.js (сложный формат).</p>
+            <p><strong>Исправление:</strong> Улучшена логика проверки предметов в обоих файлах для поддержки обоих форматов.</p>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2 class="test-title">Тест 1: Проверка простого формата инвентаря</h2>
+        <div class="test-description">
+            Тестируем проверку предметов с простым форматом инвентаря: { itemId: number }
+        </div>
+        <button class="test-button" onclick="testSimpleFormat()">Запустить тест</button>
+        <div id="simple-format-result"></div>
+        <div id="simple-format-log" class="log-output"></div>
+    </div>
+
+    <div class="test-section">
+        <h2 class="test-title">Тест 2: Проверка сложного формата инвентаря</h2>
+        <div class="test-description">
+            Тестируем проверку предметов с сложным форматом инвентаря: { itemId: { quantity: number, ... } }
+        </div>
+        <button class="test-button" onclick="testComplexFormat()">Запустить тест</button>
+        <div id="complex-format-result"></div>
+        <div id="complex-format-log" class="log-output"></div>
+    </div>
+
+    <div class="test-section">
+        <h2 class="test-title">Тест 3: Симуляция сцены с Арсением</h2>
+        <div class="test-description">
+            Симулируем сцену scene80 с проверкой наличия яблока
+        </div>
+        <button class="test-button" onclick="testArseniyScene()">Запустить тест</button>
+        <div id="arseniy-result"></div>
+        <div id="arseniy-log" class="log-output"></div>
+    </div>
+
+    <div class="test-section">
+        <h2 class="test-title">Текущий инвентарь</h2>
+        <div id="current-inventory" class="inventory-display">Инвентарь не загружен</div>
+        <button class="test-button" onclick="loadInventory()">Загрузить инвентарь</button>
+        <button class="test-button" onclick="addApple()">Добавить яблоко</button>
+        <button class="test-button" onclick="removeApple()">Убрать яблоко</button>
+    </div>
+
+    <script>
+        // Имитация функций из dialogueItemSystem.js
+        function isChoiceAvailable(choice, inventory) {
+            console.log('isChoiceAvailable - проверка выбора:', choice.id || 'undefined');
+            console.log('isChoiceAvailable - инвентарь:', inventory);
+            
+            // Проверяем требуемый предмет
+            if (choice.requiredItem) {
+                console.log('isChoiceAvailable - требуется предмет:', choice.requiredItem);
+                
+                // Поддерживаем оба формата инвентаря
+                const itemData = inventory[choice.requiredItem];
+                console.log('isChoiceAvailable - данные предмета:', itemData);
+                
+                if (typeof itemData === 'number') {
+                    // Простой формат: { itemId: number }
+                    const hasItem = itemData > 0;
+                    console.log('isChoiceAvailable - простой формат, количество:', itemData, 'доступен:', hasItem);
+                    return hasItem;
+                } else if (itemData && typeof itemData === 'object' && itemData.quantity !== undefined) {
+                    // Сложный формат: { itemId: { quantity: number, ... } }
+                    const hasItem = itemData.quantity > 0;
+                    console.log('isChoiceAvailable - сложный формат, количество:', itemData.quantity, 'доступен:', hasItem);
+                    return hasItem;
+                } else {
+                    // Предмет не найден
+                    console.log('isChoiceAvailable - предмет не найден в инвентаре');
+                    return false;
+                }
+            }
+
+            console.log('isChoiceAvailable - выбор доступен (нет требований)');
+            return true;
+        }
+
+        // Имитация функций из episodeManager.js
+        function checkItemRequirement(choice, currentInventory) {
+            if (choice.requiredItem) {
+                const itemQuantity = currentInventory[choice.requiredItem];
+                let hasItem = false;
+                
+                if (typeof itemQuantity === 'number') {
+                    // Простой формат: { itemId: number }
+                    hasItem = itemQuantity > 0;
+                } else if (itemQuantity && typeof itemQuantity === 'object' && itemQuantity.quantity !== undefined) {
+                    // Сложный формат: { itemId: { quantity: number, ... } }
+                    hasItem = itemQuantity.quantity > 0;
+                } else {
+                    // Предмет не найден
+                    hasItem = false;
+                }
+                
+                console.log(`Выбор ${choice.id} требует предмет ${choice.requiredItem}: ${hasItem ? 'есть' : 'нет'}`);
+                return hasItem;
+            }
+            return true;
+        }
+
+        // Функции для тестирования
+        function testSimpleFormat() {
+            const logElement = document.getElementById('simple-format-log');
+            const resultElement = document.getElementById('simple-format-result');
+            
+            logElement.textContent = '';
+            console.log = (message) => {
+                logElement.textContent += message + '\n';
+            };
+
+            // Тестовые данные
+            const simpleInventory = {
+                rat: 1,
+                apple: 0,
+                present: 1
+            };
+
+            const choiceWithApple = {
+                id: 'scene80_choice1',
+                text: 'Спасибо за яблоко!',
+                requiredItem: 'apple'
+            };
+
+            const choiceWithoutRequirement = {
+                id: 'scene80_choice2',
+                text: 'Просто ответ',
+                requiredItem: null
+            };
+
+            console.log('=== ТЕСТ ПРОСТОГО ФОРМАТА ===');
+            console.log('Инвентарь:', simpleInventory);
+            console.log('');
+
+            // Тест 1: Выбор с требованием яблока (яблока нет)
+            console.log('Тест 1: Выбор с требованием яблока (яблока нет)');
+            const result1 = isChoiceAvailable(choiceWithApple, simpleInventory);
+            console.log('Результат:', result1);
+            console.log('');
+
+            // Тест 2: Выбор без требований
+            console.log('Тест 2: Выбор без требований');
+            const result2 = isChoiceAvailable(choiceWithoutRequirement, simpleInventory);
+            console.log('Результат:', result2);
+            console.log('');
+
+            // Тест 3: EpisodeManager проверка
+            console.log('Тест 3: EpisodeManager проверка');
+            const result3 = checkItemRequirement(choiceWithApple, simpleInventory);
+            console.log('Результат:', result3);
+            console.log('');
+
+            // Добавляем яблоко и тестируем снова
+            simpleInventory.apple = 1;
+            console.log('Добавлено яблоко. Новый инвентарь:', simpleInventory);
+            console.log('');
+
+            console.log('Тест 4: Выбор с требованием яблока (яблоко есть)');
+            const result4 = isChoiceAvailable(choiceWithApple, simpleInventory);
+            console.log('Результат:', result4);
+            console.log('');
+
+            console.log('Тест 5: EpisodeManager проверка (яблоко есть)');
+            const result5 = checkItemRequirement(choiceWithApple, simpleInventory);
+            console.log('Результат:', result5);
+
+            const allTestsPassed = !result1 && result2 && !result3 && result4 && result5;
+            
+            if (allTestsPassed) {
+                resultElement.innerHTML = '<div class="status success">✅ Все тесты пройдены успешно!</div>';
+            } else {
+                resultElement.innerHTML = '<div class="status error">❌ Некоторые тесты не пройдены</div>';
+            }
+        }
+
+        function testComplexFormat() {
+            const logElement = document.getElementById('complex-format-log');
+            const resultElement = document.getElementById('complex-format-result');
+            
+            logElement.textContent = '';
+            console.log = (message) => {
+                logElement.textContent += message + '\n';
+            };
+
+            // Тестовые данные
+            const complexInventory = {
+                rat: { quantity: 1, lastAdded: '2025-01-01T00:00:00.000Z' },
+                apple: { quantity: 0, lastAdded: '2025-01-01T00:00:00.000Z' },
+                present: { quantity: 1, lastAdded: '2025-01-01T00:00:00.000Z' }
+            };
+
+            const choiceWithApple = {
+                id: 'scene80_choice1',
+                text: 'Спасибо за яблоко!',
+                requiredItem: 'apple'
+            };
+
+            console.log('=== ТЕСТ СЛОЖНОГО ФОРМАТА ===');
+            console.log('Инвентарь:', complexInventory);
+            console.log('');
+
+            // Тест 1: Выбор с требованием яблока (яблока нет)
+            console.log('Тест 1: Выбор с требованием яблока (яблока нет)');
+            const result1 = isChoiceAvailable(choiceWithApple, complexInventory);
+            console.log('Результат:', result1);
+            console.log('');
+
+            // Тест 2: EpisodeManager проверка
+            console.log('Тест 2: EpisodeManager проверка');
+            const result2 = checkItemRequirement(choiceWithApple, complexInventory);
+            console.log('Результат:', result2);
+            console.log('');
+
+            // Добавляем яблоко и тестируем снова
+            complexInventory.apple.quantity = 1;
+            console.log('Добавлено яблоко. Новый инвентарь:', complexInventory);
+            console.log('');
+
+            console.log('Тест 3: Выбор с требованием яблока (яблоко есть)');
+            const result3 = isChoiceAvailable(choiceWithApple, complexInventory);
+            console.log('Результат:', result3);
+            console.log('');
+
+            console.log('Тест 4: EpisodeManager проверка (яблоко есть)');
+            const result4 = checkItemRequirement(choiceWithApple, complexInventory);
+            console.log('Результат:', result4);
+
+            const allTestsPassed = !result1 && !result2 && result3 && result4;
+            
+            if (allTestsPassed) {
+                resultElement.innerHTML = '<div class="status success">✅ Все тесты пройдены успешно!</div>';
+            } else {
+                resultElement.innerHTML = '<div class="status error">❌ Некоторые тесты не пройдены</div>';
+            }
+        }
+
+        function testArseniyScene() {
+            const logElement = document.getElementById('arseniy-log');
+            const resultElement = document.getElementById('arseniy-result');
+            
+            logElement.textContent = '';
+            console.log = (message) => {
+                logElement.textContent += message + '\n';
+            };
+
+            // Симуляция сцены scene80
+            const scene80 = {
+                id: 'scene80',
+                choices: [
+                    {
+                        id: 'scene80_choice1',
+                        text: 'Спасибо за яблоко!',
+                        requiredItem: 'apple'
+                    },
+                    {
+                        id: 'scene80_choice2',
+                        text: 'Просто ответ',
+                        requiredItem: null
+                    }
+                ]
+            };
+
+            // Симуляция инвентаря после получения яблока
+            const inventoryWithApple = {
+                rat: { quantity: 1, lastAdded: '2025-01-01T00:00:00.000Z' },
+                present: { quantity: 1, lastAdded: '2025-01-01T00:00:00.000Z' },
+                apple: { quantity: 1, lastAdded: '2025-01-01T00:00:00.000Z' }
+            };
+
+            console.log('=== СИМУЛЯЦИЯ СЦЕНЫ С АРСЕНИЕМ ===');
+            console.log('Сцена:', scene80.id);
+            console.log('Инвентарь:', inventoryWithApple);
+            console.log('');
+
+            // Проверяем все выборы
+            const availableChoices = scene80.choices.filter(choice => {
+                console.log(`Проверка выбора: ${choice.id}`);
+                const isAvailable = isChoiceAvailable(choice, inventoryWithApple);
+                console.log(`Результат: ${isAvailable ? 'доступен' : 'недоступен'}`);
+                console.log('');
+                return isAvailable;
+            });
+
+            console.log('Доступные выборы:', availableChoices.map(c => c.id));
+
+            const expectedAvailable = ['scene80_choice2']; // choice1 требует яблоко, но оно есть
+            const actualAvailable = availableChoices.map(c => c.id);
+            
+            const testPassed = JSON.stringify(expectedAvailable) === JSON.stringify(actualAvailable);
+            
+            if (testPassed) {
+                resultElement.innerHTML = '<div class="status success">✅ Симуляция сцены с Арсением прошла успешно!</div>';
+            } else {
+                resultElement.innerHTML = '<div class="status error">❌ Симуляция сцены с Арсением не прошла</div>';
+            }
+        }
+
+        // Функции для работы с инвентарем
+        function loadInventory() {
+            const savedInventory = localStorage.getItem('game_inventory');
+            const inventory = savedInventory ? JSON.parse(savedInventory) : {};
+            
+            const displayElement = document.getElementById('current-inventory');
+            displayElement.textContent = JSON.stringify(inventory, null, 2);
+        }
+
+        function addApple() {
+            const savedInventory = localStorage.getItem('game_inventory');
+            const inventory = savedInventory ? JSON.parse(savedInventory) : {};
+            
+            inventory.apple = {
+                quantity: 1,
+                lastAdded: new Date().toISOString()
+            };
+            
+            localStorage.setItem('game_inventory', JSON.stringify(inventory));
+            loadInventory();
+        }
+
+        function removeApple() {
+            const savedInventory = localStorage.getItem('game_inventory');
+            const inventory = savedInventory ? JSON.parse(savedInventory) : {};
+            
+            delete inventory.apple;
+            
+            localStorage.setItem('game_inventory', JSON.stringify(inventory));
+            loadInventory();
+        }
+
+        // Загружаем инвентарь при загрузке страницы
+        window.onload = function() {
+            loadInventory();
+        };
+    </script>
+</body>
+</html> 

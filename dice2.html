@@ -1,0 +1,267 @@
+HTML SCSS JSResult Skip Results Iframe
+<div id="app">
+  <form @submit.prevent="">
+    <label for="drama">Drama ({{ dramaDescription }}):</label>
+    <input type="range" id="drama" v-model.number="delayIncrement" min="2" max="200">
+    <input type="checkbox" id="heighten" v-model="heighten">
+    <label for="heighten">Heighten near the end</label>
+  </form>
+  <svg v-if="numbers.length === 1" viewBox="0 0 136 157" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:1.5;">
+    <path d="M67.975,1.75l66.226,38.235l0,76.471l-66.226,38.235l-66.225,-38.235l0,-76.471l66.225,-38.235Z" style="fill:none;stroke-width:3.5px;" /></svg>
+  <transition-group name="whittle" tag="ul">
+    <li v-for="n in numbers" :key="n" :class="{'shaking': numbers.length === 2}">
+      {{ n }}
+    </li>
+  </transition-group>
+  <button @click="newRoll" :disabled="rolling">
+    New Roll
+  </button>
+</div>
+
+Resources
+
+HTML SCSS JSResult Skip Results Iframe
+@import url("https://fonts.googleapis.com/css?family=Martel&display=swap");
+
+body {
+  --color: #53565a;
+  --white: #fff;
+  --black: #101820;
+  --yellow: #ffd100;
+  --orange: #ff6a13;
+  --red: #e4002b;
+  --lightGray: #a7a8aa;
+  --midGray: #888b8d;
+  --darkGray: #53565a;
+  --darkerGray: #341f23;
+  --lightBlue: #7ba7bc;
+  --darkBlue: #34657f;
+  --paper: var(--white);
+  --ink: var(--black);
+  background: var(--paper);
+  color: var(--ink);
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: "Martel", sans-serif;
+
+  @media (prefers-color-scheme: dark) {
+    --paper: var(--black);
+    --ink: var(--white);
+  }
+}
+
+li {
+  transform-origin: center;
+  transform: scale(1);
+  opacity: 1;
+}
+
+#app {
+  --transition: cubic-bezier(0.75, 0, 0.25, 1);
+  display: flex;
+  align-items: center;
+  width: 100%;
+  max-width: 100vw;
+  min-height: 50vw;
+  overflow-y: visible;
+  overflow-x: hidden;
+
+  form {
+    position: fixed;
+    width: calc(100vw - 2rem);
+    top: 5vh;
+    left: 1rem;
+    text-align: center;
+
+    input[type="range"] {
+      margin: 0 auto 1rem;
+      width: 100%;
+      display: block;
+      max-width: 20rem;
+    }
+  }
+
+  svg {
+    --size: 18rem;
+
+    @media (min-width: 800px) {
+      --size: 20rem;
+    }
+
+    pointer-events: none;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: var(--size);
+    height: var(--size);
+    left: calc(50vw - (var(--size) / 2));
+    top: calc(50vh - (var(--size) / 2));
+    animation: draw 1s var(--transition) forwards;
+    stroke-dasharray: 480;
+    stroke-dashoffset: 480;
+    animation-delay: 1.2s;
+    stroke: var(--ink);
+    fill: var(--lightBlue);
+  }
+
+  ul {
+    list-style-type: none;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+    justify-content: center;
+    overflow: visible;
+
+    li {
+      padding: 0 0.5em;
+      font-size: 2rem;
+      transition: all 0.5s var(--transition);
+
+      @media (min-width: 800px) {
+        font-size: 2.5vw;
+        padding: 1.2vw;
+      }
+
+      @media (min-width: 1020px) {
+        font-size: 2rem;
+      }
+
+      &.shaking {
+        animation: shake 0.1s var(--transition) infinite;
+
+        & + .shaking {
+          animation-delay: 0.05s;
+        }
+      }
+
+      &:only-child {
+        transform: scale(5);
+      }
+    }
+  }
+
+  button {
+    position: fixed;
+    display: block;
+    bottom: 10vh;
+    left: calc(50vw - 5em);
+    padding: 0.5em;
+    font-size: inherit;
+    border-radius: 4px;
+    font-family: inherit;
+    width: 10em;
+    color: inherit;
+    border: 2px solid;
+    background: transparent;
+
+    &:disabled {
+      opacity: 0.5;
+    }
+  }
+}
+
+.whittle-leave-active {
+  position: absolute;
+}
+
+.whittle-enter,
+.whittle-leave-to {
+  opacity: 0;
+  transform: translateY(0) scale(5);
+  margin-top: 0 !important;
+}
+
+.whittle-move {
+  transition: transform 1.2s var(--transition);
+}
+
+@keyframes draw {
+  from {
+    stroke-dashoffset: 480;
+  }
+  to {
+    stroke-dashoffset: 20;
+  }
+}
+
+@keyframes shake {
+  from {
+    margin-top: -0.05em;
+  }
+  to {
+    margin-top: 0.05em;
+  }
+}
+View Compiled
+
+Resources
+
+HTML SCSS JSResult Skip Results Iframe
+const d = 20;
+
+const App = new Vue({
+  el: "#app",
+  data: () => ({
+    numbers: Array.from(Array(d), (_, i) => i + 1),
+    rolling: false,
+    delay: 40,
+    delayIncrement: 40,
+    heighten: true }),
+
+  watch: {
+    delayIncrement(newVal) {
+      this.delay = newVal;
+    } },
+
+  methods: {
+    newRoll() {
+      let timeout = this.numbers.length > 1 ? 0 : 1000;
+      this.delay = this.delayIncrement;
+      this.rolling = true;
+      this.numbers = Array.from(Array(d), (_, i) => i + 1);
+      setTimeout(() => {
+        this.removeDigits();
+      }, timeout);
+    },
+    setDelay() {
+      if (this.numbers.length <= 5 && this.heighten) {
+        return this.numbers.length === 2 ? this.delay * 3 : this.delay * 2;
+      } else {
+        return this.delay;
+      }
+    },
+    removeDigits() {
+      const randomRemoved = Math.floor(Math.random() * this.numbers.length);
+      this.numbers.splice(randomRemoved, 1);
+
+      if (this.numbers.length > 1) {
+        console.log(this.delay, this.delayIncrement);
+        setTimeout(() => {
+          this.delay += this.delayIncrement;
+          this.removeDigits();
+        }, this.setDelay());
+      } else {
+        this.rolling = false;
+      }
+    } },
+
+  computed: {
+    dramaDescription() {
+      //Yes I know I should've used a switch statement but I like this better ;p
+      if (this.delayIncrement < 10) return "little to none";
+      if (this.delayIncrement < 30) return "slight";
+      if (this.delayIncrement < 50) return "moderate";
+      if (this.delayIncrement < 90) return "heightened";
+      if (this.delayIncrement < 120) return "tedious";
+      if (this.delayIncrement < 150) return "painful";
+      if (this.delayIncrement < 180) return "unbearable";
+      if (this.delayIncrement < 200) return "excruciating";
+      return "obnoxious";
+    } } });
+View Babel Code
+
+Resources

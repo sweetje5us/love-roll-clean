@@ -1,0 +1,498 @@
+.item-card {
+  background: #fff;
+  border-radius: 16px;
+  padding: 12px;
+  box-shadow: 0 2px 8px rgba(255, 182, 193, 0.08);
+  border: 1px solid #fce4ec;
+  transition: all 0.2s ease;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.item-card:hover {
+  box-shadow: 0 4px 12px rgba(255, 182, 193, 0.15);
+}
+
+/* Бейдж редкости */
+.item-rarity-badge {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  color: #fff;
+  font-size: 10px;
+  font-weight: bold;
+  padding: 4px 8px;
+  border-radius: 12px;
+  text-transform: uppercase;
+  z-index: 2;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Бейдж скидки */
+.item-discount-badge {
+  position: absolute;
+  top: -6px;
+  left: -6px;
+  background: linear-gradient(135deg, #ff6b6b, #ff8e8e);
+  color: #fff;
+  font-size: 10px;
+  font-weight: bold;
+  padding: 4px 6px;
+  border-radius: 12px;
+  z-index: 2;
+  box-shadow: 0 2px 4px rgba(255, 107, 107, 0.3);
+}
+
+/* Изображение предмета */
+.item-image {
+  width: 100%;
+  height: 80px;
+  border-radius: 12px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+  position: relative;
+}
+
+.item-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  padding: 8px;
+}
+
+.item-image-placeholder {
+  display: none;
+  width: 100%;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+  color: #adb5bd;
+  font-size: 24px;
+}
+
+/* Информация о предмете */
+.item-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.item-name {
+  font-size: 14px;
+  font-weight: bold;
+  color: #333;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.item-description {
+  font-size: 11px;
+  color: #666;
+  margin: 0;
+  line-height: 1.2;
+  flex: 1;
+}
+
+/* Бейдж типа */
+.item-type-badge {
+  color: #fff;
+  font-size: 9px;
+  font-weight: bold;
+  padding: 2px 6px;
+  border-radius: 8px;
+  text-transform: uppercase;
+  align-self: flex-start;
+  margin-top: 2px;
+}
+
+/* Цена */
+.item-price {
+  margin-top: 4px;
+}
+
+.price-amount {
+  font-size: 13px;
+  font-weight: bold;
+  color: #ff8cc6;
+}
+
+/* Скидочная цена */
+.discounted-price {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.original-price-amount {
+  font-size: 11px;
+  color: #999;
+  text-decoration: line-through;
+}
+
+.discount-price-amount {
+  font-size: 13px;
+  font-weight: bold;
+  color: #ff6b6b;
+}
+
+.item-sell-price {
+  font-size: 11px;
+  color: #666;
+  margin-top: 2px;
+}
+
+/* Кнопки действий */
+.item-actions {
+  display: flex;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.item-buy-btn, .item-sell-btn {
+  flex: 1;
+  padding: 6px 8px;
+  border: none;
+  border-radius: 8px;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+}
+
+.item-buy-btn {
+  background: linear-gradient(135deg, #ff8cc6, #ff6bb5);
+  color: #fff;
+}
+
+.item-buy-btn:hover {
+  background: linear-gradient(135deg, #ff6bb5, #ff5aa4);
+  transform: translateY(-1px);
+}
+
+.item-sell-btn {
+  background: linear-gradient(135deg, #ff6b6b, #ff5252);
+  color: #fff;
+}
+
+.item-sell-btn:hover {
+  background: linear-gradient(135deg, #ff5252, #ff4444);
+  transform: translateY(-1px);
+}
+
+/* Размеры */
+.item-card.small {
+  padding: 8px;
+  gap: 6px;
+}
+
+.item-card.small .item-image {
+  height: 60px;
+}
+
+.item-card.small .item-name {
+  font-size: 12px;
+}
+
+.item-card.small .item-description {
+  font-size: 10px;
+}
+
+.item-card.small .item-buy-btn,
+.item-card.small .item-sell-btn {
+  padding: 4px 6px;
+  font-size: 10px;
+}
+
+.item-card.large {
+  padding: 16px;
+  gap: 12px;
+}
+
+.item-card.large .item-image {
+  height: 100px;
+}
+
+.item-card.large .item-name {
+  font-size: 16px;
+}
+
+.item-card.large .item-description {
+  font-size: 13px;
+}
+
+.item-card.large .item-buy-btn,
+.item-card.large .item-sell-btn {
+  padding: 8px 12px;
+  font-size: 13px;
+}
+
+/* Адаптивность */
+@media (max-width: 480px) {
+  .item-card {
+    padding: 10px;
+    gap: 6px;
+  }
+  
+  .item-image {
+    height: 70px;
+  }
+  
+  .item-name {
+    font-size: 13px;
+  }
+  
+  .item-description {
+    font-size: 10px;
+  }
+  
+  .item-buy-btn,
+  .item-sell-btn {
+    padding: 5px 8px;
+    font-size: 10px;
+  }
+}
+
+/* Анимации */
+.item-card {
+  animation: fadeInUp 0.3s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Эффекты при наведении */
+.item-card:hover .item-image {
+  transform: scale(1.05);
+  transition: transform 0.2s ease;
+}
+
+/* Эффекты при клике */
+.item-card:active {
+  transform: scale(0.98);
+}
+
+/* Стили для разных редкостей */
+.item-card[data-rarity="legendary"] {
+  border: 2px solid #f59e0b;
+  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.2);
+}
+
+.item-card[data-rarity="mythical"] {
+  border: 2px solid #8b5cf6;
+  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.2);
+}
+
+.item-card[data-rarity="rare"] {
+  border: 2px solid #3b82f6;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+}
+
+/* Стили для сундуков */
+.item-card.chest-item {
+  border: 2px solid #f59e0b;
+  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+  position: relative;
+}
+
+.item-card.chest-item::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+  transition: left 0.5s ease;
+}
+
+.item-card.chest-item:hover::before {
+  left: 100%;
+}
+
+.item-chest-badge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: linear-gradient(135deg, #f59e0b, #f97316);
+  color: white;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  box-shadow: 0 2px 6px rgba(245, 158, 11, 0.3);
+  z-index: 10;
+}
+
+.item-chest-hint {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 10px;
+  color: #f59e0b;
+  margin-top: 4px;
+  font-weight: 600;
+}
+
+.item-chest-hint i {
+  font-size: 8px;
+}
+
+.item-chest-btn {
+  flex: 1;
+  padding: 6px 8px;
+  border: none;
+  border-radius: 8px;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+  background: linear-gradient(135deg, #f59e0b, #f97316);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+.item-chest-btn:hover {
+  background: linear-gradient(135deg, #f97316, #ea580c);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(245, 158, 11, 0.3);
+}
+
+.item-chest-btn i {
+  font-size: 10px;
+}
+
+/* Анимация для сундуков */
+.item-card.chest-item {
+  animation: chestGlow 2s ease-in-out infinite alternate;
+}
+
+@keyframes chestGlow {
+  0% {
+    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+  }
+  100% {
+    box-shadow: 0 6px 16px rgba(245, 158, 11, 0.5);
+  }
+}
+
+/* Стили для питомцев */
+.pet-item {
+  border: 2px solid #fce4ec;
+  background: linear-gradient(135deg, #fff0f5, #fdf2f8);
+}
+
+.pet-item:hover {
+  border-color: #ff8cc6;
+  box-shadow: 0 8px 25px rgba(255, 140, 198, 0.3);
+}
+
+/* Бейдж специальной способности */
+.item-special-badge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  color: white;
+  font-weight: bold;
+  z-index: 10;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  border: 2px solid white;
+}
+
+/* Специальная способность питомца */
+.item-special-ability {
+  font-size: 12px;
+  font-weight: 600;
+  margin: 4px 0;
+  padding: 4px 8px;
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 6px;
+  border-left: 3px solid currentColor;
+  text-align: center;
+}
+
+/* Информация о питомце */
+.pet-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: 4px 0;
+}
+
+.pet-trait {
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  text-align: center;
+  font-weight: 500;
+}
+
+.pet-trait.friendly {
+  background: rgba(16, 185, 129, 0.1);
+  color: #059669;
+}
+
+.pet-trait.scary {
+  background: rgba(239, 68, 68, 0.1);
+  color: #dc2626;
+}
+
+.pet-trait.scene-available {
+  background: rgba(59, 130, 246, 0.1);
+  color: #2563eb;
+}
+
+.pet-trait.scene-unavailable {
+  background: rgba(107, 114, 128, 0.1);
+  color: #6b7280;
+}
+
+/* Адаптивность для мобильных устройств */
+@media (max-width: 768px) {
+  .item-special-badge {
+    width: 24px;
+    height: 24px;
+    font-size: 12px;
+    top: 6px;
+    right: 6px;
+  }
+  
+  .item-special-ability {
+    font-size: 11px;
+    padding: 3px 6px;
+  }
+  
+  .pet-trait {
+    font-size: 9px;
+    padding: 1px 4px;
+  }
+} 

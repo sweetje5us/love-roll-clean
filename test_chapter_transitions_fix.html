@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тест исправления переходов между главами</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .success {
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
+        }
+        .warning {
+            background-color: #fff3cd;
+            border-color: #ffeaa7;
+            color: #856404;
+        }
+        .error {
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+        .info {
+            background-color: #d1ecf1;
+            border-color: #bee5eb;
+            color: #0c5460;
+        }
+        .step {
+            margin: 10px 0;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-left: 4px solid #007bff;
+        }
+        .log {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 10px;
+            margin: 10px 0;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        button:disabled {
+            background-color: #6c757d;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Тест исправления переходов между главами</h1>
+        
+        <div class="test-section info">
+            <h3>Что было исправлено:</h3>
+            <ul>
+                <li><strong>Двойная загрузка глав:</strong> Убрана двойная инициализация при переходах между главами</li>
+                <li><strong>Undefined в выборах:</strong> Исправлена обработка выборов без ID</li>
+                <li><strong>React ключи:</strong> Добавлены уникальные ключи для всех элементов списка</li>
+            </ul>
+        </div>
+
+        <div class="test-section">
+            <h3>Инструкции по тестированию:</h3>
+            
+            <div class="step">
+                <strong>Шаг 1:</strong> Откройте игру и перейдите к главе 2
+            </div>
+            
+            <div class="step">
+                <strong>Шаг 2:</strong> Дойдите до конца главы 2 и выберите переход к следующей главе
+            </div>
+            
+            <div class="step">
+                <strong>Шаг 3:</strong> Проверьте, что глава 3 загружается только один раз (без дублирования в логах)
+            </div>
+            
+            <div class="step">
+                <strong>Шаг 4:</strong> Дойдите до конца главы 3 и перейдите к главе 4
+            </div>
+            
+            <div class="step">
+                <strong>Шаг 5:</strong> Убедитесь, что нет ошибок в консоли и главы загружаются корректно
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h3>Что проверять в консоли:</h3>
+            
+            <div class="log">
+                ✅ <strong>Правильно:</strong>
+                EpisodeManager.nextChapter - прогресс обновлен для главы: 3
+                EpisodeManager.loadChapter - начало выполнения (только один раз)
+                EpisodeManager.loadChapter - chapterData загружена
+                
+                ❌ <strong>Неправильно (было раньше):</strong>
+                EpisodeManager.nextChapter - вызываем loadChapter с ID: 3
+                EpisodeManager.loadChapter - начало выполнения (дважды)
+                EpisodeManager.loadChapter - chapterData загружена (дважды)
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h3>Проверка исправлений:</h3>
+            
+            <div class="step success">
+                <strong>✅ Двойная загрузка:</strong> 
+                <p>Теперь <code>nextChapter()</code> только обновляет прогресс, а <code>loadChapter()</code> вызывается только один раз при инициализации.</p>
+            </div>
+            
+            <div class="step success">
+                <strong>✅ Undefined в выборах:</strong> 
+                <p>В логах теперь показывается <code>undefined</code> вместо ошибки, если у выбора нет ID.</p>
+            </div>
+            
+            <div class="step success">
+                <strong>✅ React ключи:</strong> 
+                <p>Все элементы списка теперь имеют уникальные ключи: <code>choice.id || \`choice-\${index}\`</code></p>
+            </div>
+        </div>
+
+        <div class="test-section warning">
+            <h3>Ожидаемые результаты:</h3>
+            <ul>
+                <li>Переходы между главами происходят плавно без дублирования</li>
+                <li>В консоли нет ошибок React о ключах</li>
+                <li>Логи показывают только одну загрузку главы при переходе</li>
+                <li>Все выборы отображаются корректно, даже без ID</li>
+            </ul>
+        </div>
+
+        <div class="test-section">
+            <h3>Ссылки для тестирования:</h3>
+            <p><a href="http://localhost:3000" target="_blank">Открыть игру</a></p>
+            <p><a href="http://localhost:3000/test_chapter4_transition.html" target="_blank">Тест перехода к главе 4</a></p>
+        </div>
+    </div>
+</body>
+</html> 

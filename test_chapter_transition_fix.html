@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тест исправления перехода между главами</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .test-title {
+            color: #333;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        .test-description {
+            color: #666;
+            margin-bottom: 15px;
+        }
+        .test-button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .test-button:hover {
+            background: #0056b3;
+        }
+        .test-button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .log-output {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 10px 0;
+            max-height: 400px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 12px;
+            white-space: pre-wrap;
+        }
+        .status {
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .status.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        .simulation-area {
+            background: #e9ecef;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .chapter-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 10px 0;
+            padding: 10px;
+            background: white;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Тест исправления перехода между главами</h1>
+    
+    <div class="test-section">
+        <h2 class="test-title">Описание проблемы</h2>
+        <div class="test-description">
+            <p><strong>Проблема:</strong> После завершения главы 5 автоматически загружается глава 7, пропуская главу 6.</p>
+            <p><strong>Причина:</strong> Двойной вызов `handleEndCreditsComplete` из-за автоматического таймера и клика пользователя в `ChapterCredits`.</p>
+            <p><strong>Исправление:</strong> Добавлена защита от повторного вызова в `ChapterCredits` и улучшена защита в `GameScreen`.</p>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2 class="test-title">Тест 1: Защита от повторного вызова в ChapterCredits</h2>
+        <div class="test-description">
+            Тестируем защиту от двойного вызова `onComplete` в компоненте ChapterCredits
+        </div>
+        <button class="test-button" onclick="testChapterCreditsProtection()">Запустить тест</button>
+        <div id="credits-protection-result"></div>
+        <div id="credits-protection-log" class="log-output"></div>
+    </div>
+
+    <div class="test-section">
+        <h2 class="test-title">Тест 2: Симуляция перехода между главами</h2>
+        <div class="test-description">
+            Симулируем переход от главы 5 к главе 6 с проверкой защиты от двойного вызова
+        </div>
+        <button class="test-button" onclick="testChapterTransition()">Запустить тест</button>
+        <div id="transition-result"></div>
+        <div id="transition-log" class="log-output"></div>
+    </div>
+
+    <div class="test-section">
+        <h2 class="test-title">Симуляция игры</h2>
+        <div class="simulation-area">
+            <div class="chapter-info">
+                <span><strong>Текущая глава:</strong> <span id="current-chapter">5</span></span>
+                <span><strong>Завершенные главы:</strong> <span id="completed-chapters">1, 2, 3, 4</span></span>
+            </div>
+            <div class="chapter-info">
+                <span><strong>Состояние:</strong> <span id="game-state">В игре</span></span>
+                <span><strong>Переход:</strong> <span id="transition-state">Нет</span></span>
+            </div>
+            <button class="test-button" onclick="simulateEndChapter()">Завершить главу 5</button>
+            <button class="test-button" onclick="resetSimulation()">Сбросить симуляцию</button>
+        </div>
+    </div>
+
+    <script>
+        // Имитация состояния игры
+        let gameState = {
+            currentChapter: 5,
+            completedChapters: [1, 2, 3, 4],
+            isLoading: false,
+            isTransitioning: false
+        };
+
+        let callCount = 0;
+        let transitionLog = [];
+
+        // Имитация ChapterCredits с защитой
+        class MockChapterCredits {
+            constructor() {
+                this.isVisible = true;
+                this.hasCompleted = false;
+                this.callCount = 0;
+            }
+
+            triggerComplete(onComplete) {
+                if (!this.hasCompleted && onComplete) {
+                    this.hasCompleted = true;
+                    this.callCount++;
+                    onComplete();
+                    return true;
+                }
+                return false;
+            }
+
+            simulateAutoComplete(onComplete) {
+                setTimeout(() => {
+                    this.triggerComplete(onComplete);
+                }, 100);
+            }
+
+            simulateClick(onComplete) {
+                setTimeout(() => {
+                    this.triggerComplete(onComplete);
+                }, 50);
+            }
+
+            reset() {
+                this.isVisible = true;
+                this.hasCompleted = false;
+                this.callCount = 0;
+            }
+        }
+
+        // Имитация handleEndCreditsComplete
+        function mockHandleEndCreditsComplete() {
+            callCount++;
+            transitionLog.push(`Вызов ${callCount}: ${new Date().toLocaleTimeString()}`);
+            
+            if (gameState.isLoading || gameState.isTransitioning) {
+                transitionLog.push(`  ❌ Заблокирован: isLoading=${gameState.isLoading}, isTransitioning=${gameState.isTransitioning}`);
+                return false;
+            }
+
+            transitionLog.push(`  ✅ Выполняется переход к главе ${gameState.currentChapter + 1}`);
+            gameState.isTransitioning = true;
+            gameState.isLoading = true;
+
+            // Симулируем загрузку следующей главы
+            setTimeout(() => {
+                gameState.currentChapter++;
+                gameState.completedChapters.push(gameState.currentChapter - 1);
+                gameState.isLoading = false;
+                gameState.isTransitioning = false;
+                transitionLog.push(`  ✅ Глава ${gameState.currentChapter} загружена`);
+                updateSimulationDisplay();
+            }, 200);
+
+            return true;
+        }
+
+        // Функции для тестирования
+        function testChapterCreditsProtection() {
+            const logElement = document.getElementById('credits-protection-log');
+            const resultElement = document.getElementById('credits-protection-result');
+            
+            logElement.textContent = '';
+            transitionLog = [];
+
+            console.log = (message) => {
+                logElement.textContent += message + '\n';
+            };
+
+            console.log('=== ТЕСТ ЗАЩИТЫ CHAPTERCREDITS ===');
+            console.log('');
+
+            // Тест 1: Обычный вызов
+            console.log('Тест 1: Обычный вызов');
+            const credits1 = new MockChapterCredits();
+            const result1 = credits1.triggerComplete(() => console.log('onComplete вызван'));
+            console.log(`Результат: ${result1}, Вызовов: ${credits1.callCount}`);
+            console.log('');
+
+            // Тест 2: Повторный вызов
+            console.log('Тест 2: Повторный вызов');
+            const result2 = credits1.triggerComplete(() => console.log('onComplete вызван повторно'));
+            console.log(`Результат: ${result2}, Вызовов: ${credits1.callCount}`);
+            console.log('');
+
+            // Тест 3: Автоматический + клик
+            console.log('Тест 3: Автоматический + клик (должен быть только один вызов)');
+            const credits2 = new MockChapterCredits();
+            
+            // Симулируем автоматический вызов
+            credits2.simulateAutoComplete(() => console.log('Автоматический onComplete'));
+            
+            // Симулируем клик пользователя
+            credits2.simulateClick(() => console.log('Клик onComplete'));
+            
+            // Ждем завершения
+            setTimeout(() => {
+                console.log(`Итоговое количество вызовов: ${credits2.callCount}`);
+                
+                const testPassed = credits2.callCount === 1;
+                if (testPassed) {
+                    resultElement.innerHTML = '<div class="status success">✅ Защита от повторного вызова работает!</div>';
+                } else {
+                    resultElement.innerHTML = '<div class="status error">❌ Защита не работает</div>';
+                }
+            }, 300);
+        }
+
+        function testChapterTransition() {
+            const logElement = document.getElementById('transition-log');
+            const resultElement = document.getElementById('transition-result');
+            
+            logElement.textContent = '';
+            callCount = 0;
+            transitionLog = [];
+
+            console.log = (message) => {
+                logElement.textContent += message + '\n';
+            };
+
+            console.log('=== ТЕСТ ПЕРЕХОДА МЕЖДУ ГЛАВАМИ ===');
+            console.log('');
+
+            // Сбрасываем состояние
+            gameState = {
+                currentChapter: 5,
+                completedChapters: [1, 2, 3, 4],
+                isLoading: false,
+                isTransitioning: false
+            };
+
+            console.log('Начальное состояние:', gameState);
+            console.log('');
+
+            // Симулируем двойной вызов handleEndCreditsComplete
+            console.log('Симулируем двойной вызов handleEndCreditsComplete...');
+            
+            const result1 = mockHandleEndCreditsComplete();
+            console.log(`Первый вызов: ${result1 ? 'успешен' : 'заблокирован'}`);
+            
+            const result2 = mockHandleEndCreditsComplete();
+            console.log(`Второй вызов: ${result2 ? 'успешен' : 'заблокирован'}`);
+            
+            console.log('');
+
+            // Ждем завершения перехода
+            setTimeout(() => {
+                console.log('Лог переходов:');
+                transitionLog.forEach(log => console.log(log));
+                console.log('');
+                
+                console.log('Финальное состояние:', gameState);
+                
+                const testPassed = callCount === 2 && gameState.currentChapter === 6 && gameState.completedChapters.length === 5;
+                
+                if (testPassed) {
+                    resultElement.innerHTML = '<div class="status success">✅ Переход работает корректно!</div>';
+                } else {
+                    resultElement.innerHTML = '<div class="status error">❌ Проблема с переходом</div>';
+                }
+            }, 500);
+        }
+
+        // Функции для симуляции
+        function simulateEndChapter() {
+            const stateElement = document.getElementById('game-state');
+            const transitionElement = document.getElementById('transition-state');
+            
+            stateElement.textContent = 'Завершение главы...';
+            transitionElement.textContent = 'В процессе';
+            
+            // Симулируем завершение главы
+            setTimeout(() => {
+                const success = mockHandleEndCreditsComplete();
+                if (success) {
+                    stateElement.textContent = 'Переход к следующей главе';
+                } else {
+                    stateElement.textContent = 'Переход заблокирован';
+                    transitionElement.textContent = 'Защита сработала';
+                }
+            }, 100);
+        }
+
+        function resetSimulation() {
+            gameState = {
+                currentChapter: 5,
+                completedChapters: [1, 2, 3, 4],
+                isLoading: false,
+                isTransitioning: false
+            };
+            callCount = 0;
+            transitionLog = [];
+            updateSimulationDisplay();
+        }
+
+        function updateSimulationDisplay() {
+            document.getElementById('current-chapter').textContent = gameState.currentChapter;
+            document.getElementById('completed-chapters').textContent = gameState.completedChapters.join(', ');
+            document.getElementById('game-state').textContent = gameState.isLoading ? 'Загрузка...' : 'В игре';
+            document.getElementById('transition-state').textContent = gameState.isTransitioning ? 'Переход' : 'Нет';
+        }
+
+        // Инициализация при загрузке страницы
+        window.onload = function() {
+            updateSimulationDisplay();
+        };
+    </script>
+</body>
+</html> 

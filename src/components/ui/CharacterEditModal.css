@@ -1,0 +1,660 @@
+/* Модальное окно редактирования персонажа */
+.character-edit-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.character-edit-modal {
+  background: #fff;
+  border-radius: 20px;
+  width: 100%;
+  max-width: 800px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+}
+
+/* Заголовок модального окна */
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px;
+  background: linear-gradient(135deg, #fff0f5, #fce4ec);
+  border-bottom: 1px solid #ffdfea;
+}
+
+.modal-header h2 {
+  font-size: 24px;
+  font-weight: 700;
+  color: #ff8cc6;
+  margin: 0;
+}
+
+.close-button {
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #ff8cc6, #ff6bb5);
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.close-button:hover {
+  transform: scale(1.1);
+  box-shadow: 0 4px 12px rgba(255, 140, 198, 0.4);
+}
+
+/* Вкладки */
+.modal-tabs {
+  display: flex;
+  background: #fff;
+  border-bottom: 1px solid #ffdfea;
+  padding: 0 8px;
+}
+
+.modal-tabs .tab-button {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 8px;
+  border: none;
+  background: transparent;
+  color: #a8a8a8;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border-bottom: 3px solid transparent;
+  min-height: 60px;
+}
+
+.modal-tabs .tab-button i {
+  font-size: 18px;
+  margin-bottom: 4px;
+}
+
+.modal-tabs .tab-button span {
+  font-size: 11px;
+  line-height: 1.2;
+}
+
+.modal-tabs .tab-button.active {
+  color: #ff8cc6;
+  border-bottom-color: #ff8cc6;
+  background: linear-gradient(135deg, #fff0f5, #fce4ec);
+}
+
+.modal-tabs .tab-button:hover {
+  color: #ff8cc6;
+  background: #fff0f5;
+}
+
+/* Содержимое модального окна */
+.modal-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0;
+  background: #fff;
+}
+
+/* Редактор персонажа */
+.character-editor {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 16px;
+  gap: 20px;
+}
+
+/* Настройки персонажа */
+.character-settings {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  overflow-y: auto;
+  padding-bottom: 20px;
+}
+
+.setting-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.setting-label {
+  font-size: 14px;
+  font-weight: 700;
+  color: #ff8cc6;
+  margin: 0;
+}
+
+/* Поле ввода имени */
+.name-input {
+  width: 100%;
+  padding: 12px 16px;
+  border: 2px solid #ffdfea;
+  border-radius: 12px;
+  font-size: 16px;
+  background: #fff;
+  color: #333;
+  transition: all 0.2s ease;
+}
+
+.name-input:focus {
+  outline: none;
+  border-color: #ff8cc6;
+  box-shadow: 0 0 0 3px rgba(255, 140, 198, 0.1);
+}
+
+.name-input::placeholder {
+  color: #a8a8a8;
+}
+
+/* Кнопки опций */
+.option-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.option-button {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 16px;
+  border: 2px solid #ffdfea;
+  border-radius: 12px;
+  background: #fff;
+  color: #666;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.option-button:hover {
+  border-color: #ff8cc6;
+  color: #ff8cc6;
+  transform: translateY(-1px);
+}
+
+.option-button.active {
+  background: linear-gradient(135deg, #ff8cc6, #ff6bb5);
+  border-color: #ff8cc6;
+  color: white;
+  box-shadow: 0 4px 12px rgba(255, 140, 198, 0.3);
+}
+
+/* Редактор характеристик */
+.stats-editor {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.stats-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #ffdfea;
+}
+
+.stats-header h3 {
+  font-size: 18px;
+  font-weight: 700;
+  color: #ff8cc6;
+  margin: 0;
+}
+
+.points-counter {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: #666;
+}
+
+.points-value {
+  font-weight: 700;
+  color: #ff8cc6;
+  font-size: 16px;
+}
+
+.points-value.complete {
+  color: #22c55e;
+}
+
+.pet-bonus-info {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: #22c55e;
+  background: rgba(34, 197, 94, 0.1);
+  padding: 4px 8px;
+  border-radius: 6px;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+
+.stat-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.8), rgba(255, 240, 245, 0.8));
+  border: 1px solid #ffdfea;
+  border-radius: 12px;
+  transition: all 0.2s ease;
+}
+
+.stat-item:hover {
+  border-color: #ff8cc6;
+  box-shadow: 0 2px 8px rgba(255, 140, 198, 0.1);
+}
+
+.stat-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+}
+
+.stat-info i {
+  font-size: 18px;
+  color: #ff8cc6;
+  width: 20px;
+  text-align: center;
+}
+
+.stat-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+  cursor: help;
+}
+
+.stat-value-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+}
+
+.stat-value {
+  font-size: 16px;
+  font-weight: 700;
+  color: #ff8cc6;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.pet-stat-bonus {
+  font-size: 12px;
+  color: #22c55e;
+  font-weight: 600;
+}
+
+.stat-bonus {
+  font-size: 12px;
+  color: #666;
+  font-weight: 600;
+  background: rgba(255, 140, 198, 0.1);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.stat-controls {
+  display: flex;
+  gap: 8px;
+}
+
+.stat-button {
+  width: 32px;
+  height: 32px;
+  border: 1px solid #ffdfea;
+  border-radius: 6px;
+  background: #fff;
+  color: #ff8cc6;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.stat-button:hover:not(.disabled) {
+  background: #ff8cc6;
+  color: white;
+  border-color: #ff8cc6;
+  transform: scale(1.1);
+}
+
+.stat-button.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Редактор питомцев */
+.pet-editor {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.pet-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.pet-section h3 {
+  font-size: 18px;
+  font-weight: 700;
+  color: #ff8cc6;
+  margin: 0;
+}
+
+.current-pet {
+  padding: 16px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.8), rgba(255, 240, 245, 0.8));
+  border: 1px solid #ffdfea;
+  border-radius: 12px;
+}
+
+.selected-pet {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.pet-sprite {
+  width: 80px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 140, 198, 0.1);
+  border-radius: 12px;
+  border: 2px solid #ffdfea;
+}
+
+.pet-sprite img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.pet-info {
+  flex: 1;
+}
+
+.pet-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.pet-header h4 {
+  font-size: 16px;
+  font-weight: 700;
+  color: #333;
+  margin: 0;
+}
+
+.remove-pet-button {
+  width: 24px;
+  height: 24px;
+  border: none;
+  border-radius: 50%;
+  background: #ff4757;
+  color: white;
+  font-size: 10px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.remove-pet-button:hover {
+  background: #ff3742;
+  transform: scale(1.1);
+  box-shadow: 0 2px 8px rgba(255, 71, 87, 0.3);
+}
+
+.special-ability {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.special-icon {
+  font-size: 14px;
+}
+
+.empty-pet-slot {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 32px;
+  color: #a8a8a8;
+  font-size: 14px;
+}
+
+.empty-pet-slot i {
+  font-size: 24px;
+}
+
+.pets-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 12px;
+}
+
+.pet-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 12px;
+  background: #fff;
+  border: 2px solid #ffdfea;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.pet-card:hover {
+  border-color: #ff8cc6;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 140, 198, 0.2);
+}
+
+.pet-card.selected {
+  background: linear-gradient(135deg, #ff8cc6, #ff6bb5);
+  border-color: #ff8cc6;
+  color: white;
+}
+
+.pet-card-sprite {
+  width: 60px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 140, 198, 0.1);
+  border-radius: 8px;
+}
+
+.pet-card-sprite img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.pet-card-info {
+  text-align: center;
+  width: 100%;
+}
+
+.pet-card-info h5 {
+  font-size: 12px;
+  font-weight: 600;
+  margin: 0 0 4px 0;
+  color: inherit;
+}
+
+.pet-card-special {
+  display: flex;
+  justify-content: center;
+}
+
+.special-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  font-size: 10px;
+}
+
+.no-pets-message {
+  text-align: center;
+  padding: 32px;
+  color: #a8a8a8;
+}
+
+.no-pets-message i {
+  font-size: 32px;
+  margin-bottom: 12px;
+}
+
+.no-pets-message p {
+  margin: 4px 0;
+  font-size: 14px;
+}
+
+/* Кнопки действий */
+.modal-actions {
+  display: flex;
+  gap: 12px;
+  padding: 20px 24px;
+  background: #fff;
+  border-top: 1px solid #ffdfea;
+}
+
+.cancel-button,
+.save-button {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.cancel-button {
+  background: #f3f4f6;
+  color: #666;
+}
+
+.cancel-button:hover {
+  background: #e5e7eb;
+  transform: translateY(-1px);
+}
+
+.save-button {
+  background: linear-gradient(135deg, #ff8cc6, #ff6bb5);
+  color: white;
+}
+
+.save-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(255, 140, 198, 0.3);
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+  .character-edit-modal {
+    max-width: 100%;
+    max-height: 95vh;
+    margin: 10px;
+  }
+  
+  .modal-header {
+    padding: 16px 20px;
+  }
+  
+  .modal-header h2 {
+    font-size: 20px;
+  }
+  
+  .modal-content {
+    padding: 12px;
+  }
+  
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .pets-grid {
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  }
+  
+  .modal-actions {
+    padding: 16px 20px;
+  }
+  
+  .cancel-button,
+  .save-button {
+    padding: 10px 20px;
+    font-size: 14px;
+  }
+} 

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Принудительная очистка сохранений</title>
+</head>
+<body>
+    <h1>Принудительная очистка всех сохранений</h1>
+    
+    <div>
+        <h2>Все ключи в localStorage:</h2>
+        <pre id="all-keys"></pre>
+    </div>
+    
+    <div>
+        <h2>Действия:</h2>
+        <button onclick="forceClearAll()">Принудительно очистить ВСЕ</button>
+        <button onclick="clearSpecificKeys()">Очистить только игровые ключи</button>
+        <button onclick="refreshKeys()">Обновить список ключей</button>
+    </div>
+    
+    <script>
+        function forceClearAll() {
+            // Очищаем ВСЕ данные в localStorage
+            localStorage.clear();
+            console.log('ВСЕ данные в localStorage очищены');
+            refreshKeys();
+        }
+        
+        function clearSpecificKeys() {
+            // Очищаем только игровые ключи
+            const gameKeys = [
+                'gameRelationships',
+                'episode_saves',
+                'game_state',
+                'character_saves',
+                'inventory_saves',
+                'currency_saves',
+                'relationships_saves',
+                'progress_saves'
+            ];
+            
+            gameKeys.forEach(key => {
+                localStorage.removeItem(key);
+                console.log(`Удален ключ: ${key}`);
+            });
+            
+            // Также удаляем все ключи, содержащие определенные слова
+            const keysToRemove = [];
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                if (key && (
+                    key.includes('save') || 
+                    key.includes('progress') || 
+                    key.includes('relationship') ||
+                    key.includes('episode') ||
+                    key.includes('game') ||
+                    key.includes('character') ||
+                    key.includes('inventory') ||
+                    key.includes('currency')
+                )) {
+                    keysToRemove.push(key);
+                }
+            }
+            
+            keysToRemove.forEach(key => {
+                localStorage.removeItem(key);
+                console.log(`Удален ключ: ${key}`);
+            });
+            
+            console.log('Все игровые ключи очищены');
+            refreshKeys();
+        }
+        
+        function refreshKeys() {
+            const keys = [];
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                const value = localStorage.getItem(key);
+                keys.push(`${key}: ${value ? value.substring(0, 100) + '...' : 'null'}`);
+            }
+            
+            document.getElementById('all-keys').textContent = 
+                keys.length > 0 ? keys.join('\n') : 'localStorage пуст';
+        }
+        
+        // Инициализация
+        refreshKeys();
+    </script>
+</body>
+</html> 

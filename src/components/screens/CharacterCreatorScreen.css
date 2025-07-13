@@ -1,0 +1,1063 @@
+/* Основные стили экрана создания персонажа */
+.character-creator-screen {
+  width: 100% !important;
+  height: 100vh !important;
+  background: linear-gradient(135deg, #fff0f5 0%, #fce4ec 100%);
+  padding: 0 !important;
+  margin: 0 !important;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  overflow: hidden;
+  box-sizing: border-box;
+  position: relative;
+}
+
+.character-creator-screen * {
+  box-sizing: border-box;
+}
+
+.character-creator-container {
+  width: 100% !important;
+  height: 100vh !important;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* Заголовок */
+.character-creator-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  background: linear-gradient(135deg, #fff0f5, #fce4ec);
+  border-bottom: 1px solid #ffdfea;
+  box-shadow: 0 2px 8px rgba(255, 182, 193, 0.1);
+  flex-shrink: 0;
+}
+
+.character-creator-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #ff8cc6;
+  margin: 0;
+  text-align: center;
+  flex: 1;
+}
+
+/* Кнопка назад */
+.character-creator-screen .back-button {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #ff8cc6, #ff6bb5);
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(255, 140, 198, 0.3);
+  z-index: 10;
+}
+
+.character-creator-screen .back-button:hover {
+  transform: scale(1.1);
+  box-shadow: 0 4px 12px rgba(255, 140, 198, 0.4);
+}
+
+/* Вкладки */
+.character-creator-tabs {
+  display: flex;
+  background: #fff;
+  border-bottom: 1px solid #ffdfea;
+  padding: 0 8px;
+  flex-shrink: 0;
+}
+
+.tab-button {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 8px;
+  border: none;
+  background: transparent;
+  color: #a8a8a8;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border-bottom: 3px solid transparent;
+  min-height: 60px;
+}
+
+.tab-button i {
+  font-size: 18px;
+  margin-bottom: 4px;
+}
+
+.tab-button span {
+  font-size: 11px;
+  line-height: 1.2;
+}
+
+.tab-button.active {
+  color: #ff8cc6;
+  border-bottom-color: #ff8cc6;
+  background: linear-gradient(135deg, #fff0f5, #fce4ec);
+}
+
+.tab-button:hover {
+  color: #ff8cc6;
+  background: #fff0f5;
+}
+
+/* Содержимое */
+.character-creator-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0;
+  background: #fff;
+}
+
+/* Редактор персонажа */
+.character-editor {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 16px;
+  gap: 20px;
+}
+
+/* Превью персонажа - стили перенесены в CharacterPreview.css */
+
+/* Настройки персонажа */
+.character-settings {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  overflow-y: auto;
+  padding-bottom: 20px;
+}
+
+.setting-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.setting-label {
+  font-size: 14px;
+  font-weight: 700;
+  color: #ff8cc6;
+  margin: 0;
+}
+
+/* Поле ввода имени */
+.name-input {
+  width: 100%;
+  padding: 12px 16px;
+  border: 2px solid #ffdfea;
+  border-radius: 12px;
+  font-size: 16px;
+  background: #fff;
+  color: #333;
+  transition: all 0.2s ease;
+}
+
+.name-input:focus {
+  outline: none;
+  border-color: #ff8cc6;
+  box-shadow: 0 0 0 3px rgba(255, 140, 198, 0.1);
+}
+
+.name-input::placeholder {
+  color: #a8a8a8;
+}
+
+/* Кнопки опций */
+.option-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.option-button {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 8px;
+  border: 2px solid #ffdfea;
+  border-radius: 12px;
+  background: #fff;
+  color: #666;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-height: 60px;
+}
+
+.option-button i {
+  font-size: 18px;
+  margin-bottom: 4px;
+}
+
+.option-button.active {
+  border-color: #ff8cc6;
+  background: linear-gradient(135deg, #ff8cc6, #ff6bb5);
+  color: white;
+  box-shadow: 0 2px 8px rgba(255, 140, 198, 0.3);
+}
+
+.option-button:hover {
+  border-color: #ff8cc6;
+  background: #fff0f5;
+  color: #ff8cc6;
+}
+
+/* Сетка опций */
+.option-grid {
+  display: flex;
+  flex-direction: row;
+  overflow-x: auto;
+  gap: 8px;
+  padding-bottom: 4px;
+  scrollbar-width: thin;
+  scrollbar-color: #ff8cc6 #f3f4f6;
+}
+
+.option-grid::-webkit-scrollbar {
+  height: 6px;
+}
+.option-grid::-webkit-scrollbar-thumb {
+  background: #ff8cc6;
+  border-radius: 4px;
+}
+.option-grid::-webkit-scrollbar-track {
+  background: #f3f4f6;
+  border-radius: 4px;
+}
+
+.option-grid-item {
+  min-width: 90px;
+  flex: 0 0 auto;
+}
+
+.option-grid-item {
+  padding: 10px 8px;
+  border: 2px solid #ffdfea;
+  border-radius: 8px;
+  background: #fff;
+  color: #666;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+  text-transform: capitalize;
+}
+
+.option-grid-item.active {
+  border-color: #ff8cc6;
+  background: linear-gradient(135deg, #ff8cc6, #ff6bb5);
+  color: white;
+  box-shadow: 0 2px 8px rgba(255, 140, 198, 0.3);
+}
+
+.option-grid-item:hover {
+  border-color: #ff8cc6;
+  background: #fff0f5;
+  color: #ff8cc6;
+}
+
+/* Платные предметы */
+.option-grid-item.paid {
+  position: relative;
+  background: linear-gradient(135deg, #fbbf24, #f59e0b);
+  color: white;
+  border-color: #f59e0b;
+}
+
+.option-grid-item.paid i {
+  font-size: 10px;
+  margin-right: 4px;
+}
+
+.option-grid-item.paid.active {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  border-color: #d97706;
+  box-shadow: 0 2px 8px rgba(245, 158, 11, 0.4);
+}
+
+.option-grid-item.paid:hover {
+  background: linear-gradient(135deg, #fbbf24, #f59e0b);
+  border-color: #f59e0b;
+  color: white;
+}
+
+/* Секция сохранения */
+.save-section {
+  flex-shrink: 0;
+  padding: 16px 0;
+  border-top: 1px solid #ffdfea;
+  margin-top: 20px;
+}
+
+.save-button {
+  width: 100%;
+  padding: 16px;
+  border: none;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #ff8cc6, #ff6bb5);
+  color: white;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-shadow: 0 4px 16px rgba(255, 140, 198, 0.3);
+}
+
+.save-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255, 140, 198, 0.4);
+}
+
+.save-button i {
+  font-size: 18px;
+}
+
+/* Редактор характеристик */
+.stats-editor {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  height: 100%;
+  overflow-y: auto;
+}
+
+.stats-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 16px;
+  border-bottom: 2px solid #ffdfea;
+}
+
+.stats-header h3 {
+  color: #ff8cc6;
+  font-size: 20px;
+  font-weight: 700;
+  margin: 0;
+}
+
+.points-counter {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.points-value {
+  background: #ff8cc6;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 20px;
+  min-width: 30px;
+  text-align: center;
+  font-weight: 700;
+}
+
+.points-value.complete {
+  background: #10b981;
+}
+
+.stats-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.stat-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  background: white;
+  border: 2px solid #ffdfea;
+  border-radius: 12px;
+  transition: all 0.2s ease;
+}
+
+.stat-item:hover {
+  border-color: #ff8cc6;
+  box-shadow: 0 4px 8px rgba(255, 140, 198, 0.1);
+}
+
+.stat-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+}
+
+.stat-info i {
+  font-size: 20px;
+  color: #ff8cc6;
+  width: 24px;
+  text-align: center;
+}
+
+.stat-name {
+  font-size: 16px;
+  font-weight: 600;
+  color: #374151;
+  flex: 1;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.stat-name:hover {
+  color: #ff8cc6;
+}
+
+.stat-value-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.stat-value {
+  font-size: 18px;
+  font-weight: 700;
+  color: #ff8cc6;
+  background: #fff0f5;
+  padding: 6px 12px;
+  border-radius: 8px;
+  min-width: 40px;
+  text-align: center;
+}
+
+.stat-bonus {
+  font-size: 12px;
+  font-weight: 600;
+  color: #666;
+  background: #f3f4f6;
+  padding: 2px 6px;
+  border-radius: 4px;
+  min-width: 30px;
+  text-align: center;
+}
+
+.stat-controls {
+  display: flex;
+  gap: 8px;
+}
+
+.stat-button {
+  width: 36px;
+  height: 36px;
+  border: 2px solid #ffdfea;
+  background: white;
+  color: #ff8cc6;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  font-size: 14px;
+}
+
+.stat-button:hover:not(.disabled) {
+  border-color: #ff8cc6;
+  background: #fff0f5;
+  transform: scale(1.05);
+}
+
+.stat-button.disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  border-color: #e5e7eb;
+  color: #9ca3af;
+}
+
+.stat-button.disabled:hover {
+  transform: none;
+  border-color: #e5e7eb;
+  background: white;
+}
+
+.stats-info {
+  background: #fff0f5;
+  border: 2px solid #ffdfea;
+  border-radius: 12px;
+  padding: 16px;
+  margin-top: 16px;
+}
+
+.stats-info p {
+  margin: 0 0 12px 0;
+  font-weight: 600;
+  color: #ff8cc6;
+}
+
+.stats-info ul {
+  margin: 0;
+  padding-left: 20px;
+  color: #666;
+}
+
+.stats-info li {
+  margin: 4px 0;
+  font-size: 14px;
+}
+
+/* Стили для бонусов от питомцев */
+.pet-bonus-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: linear-gradient(135deg, #fef3c7, #fde68a);
+  border: 1px solid #f59e0b;
+  border-radius: 8px;
+  color: #92400e;
+  font-size: 14px;
+  font-weight: 600;
+  margin-top: 8px;
+}
+
+.pet-bonus-info i {
+  color: #f59e0b;
+}
+
+.pet-stat-bonus {
+  color: #f59e0b;
+  font-size: 14px;
+  font-weight: 600;
+  margin-left: 4px;
+}
+
+/* Заглушки для других вкладок */
+
+
+
+
+/* Адаптивность */
+@media (max-width: 480px) {
+  .character-creator-header {
+    padding: 8px 12px;
+  }
+  
+  .character-creator-title {
+    font-size: 18px;
+  }
+  
+  .character-creator-screen .back-button {
+    width: 36px;
+    height: 36px;
+    font-size: 14px;
+  }
+  
+  .tab-button {
+    padding: 8px 4px;
+    min-height: 50px;
+  }
+  
+  .tab-button i {
+    font-size: 16px;
+  }
+  
+  .tab-button span {
+    font-size: 10px;
+  }
+  
+  .character-editor {
+    padding: 12px;
+    gap: 16px;
+  }
+  
+  .character-settings {
+    gap: 12px;
+  }
+  
+  .setting-label {
+    font-size: 13px;
+  }
+  
+  .name-input {
+    padding: 10px 12px;
+    font-size: 15px;
+  }
+  
+  .option-button {
+    padding: 10px 6px;
+    min-height: 50px;
+    font-size: 13px;
+  }
+  
+  .option-button i {
+    font-size: 16px;
+  }
+  
+  .option-grid-item {
+    padding: 8px 6px;
+    font-size: 11px;
+  }
+  
+  .save-button {
+    padding: 14px;
+    font-size: 15px;
+  }
+  
+  .save-button i {
+    font-size: 16px;
+  }
+  
+  .color-palette {
+    gap: 6px;
+  }
+  
+  .color-option {
+    width: 28px;
+    height: 28px;
+  }
+  
+  .stats-editor {
+    padding: 16px;
+    gap: 16px;
+  }
+  
+  .stats-header {
+    flex-direction: column;
+    gap: 12px;
+    align-items: flex-start;
+  }
+  
+  .stats-header h3 {
+    font-size: 18px;
+  }
+  
+  .points-counter {
+    font-size: 14px;
+  }
+  
+  .stat-item {
+    padding: 12px;
+    flex-direction: column;
+    gap: 12px;
+    align-items: stretch;
+  }
+  
+  .stat-info {
+    justify-content: space-between;
+  }
+  
+  .stat-controls {
+    justify-content: center;
+  }
+  
+  .stat-button {
+    width: 40px;
+    height: 40px;
+    font-size: 16px;
+  }
+  
+  .stat-value-container {
+    gap: 1px;
+  }
+  
+  .stat-value {
+    font-size: 16px;
+    padding: 4px 10px;
+  }
+  
+  .stat-bonus {
+    font-size: 11px;
+    padding: 1px 4px;
+  }
+}
+
+@media (max-width: 360px) {
+  .character-editor {
+    padding: 8px;
+    gap: 12px;
+  }
+  
+  .option-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .option-buttons {
+    flex-direction: column;
+  }
+  
+  .color-palette {
+    gap: 4px;
+  }
+  
+  .color-option {
+    width: 24px;
+    height: 24px;
+  }
+}
+
+/* Цветовая палитра для волос */
+.color-palette {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  width: 100%;
+  justify-content: center;
+}
+
+.color-option {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 2px solid #e5e7eb;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.color-option:hover {
+  transform: scale(1.1);
+  border-color: #ff8cc6;
+}
+
+.color-option.active {
+  border-color: #ff8cc6;
+  box-shadow: 0 0 0 2px #fff, 0 0 0 4px #ff8cc6;
+}
+
+/* Цвета волос */
+.color-blond { background: linear-gradient(135deg, #fbbf24, #f59e0b); }
+.color-brown { background: linear-gradient(135deg, #a16207, #92400e); }
+.color-dark { background: linear-gradient(135deg, #374151, #1f2937); }
+.color-pink { background: linear-gradient(135deg, #ec4899, #be185d); }
+.color-silver { background: linear-gradient(135deg, #9ca3af, #6b7280); }
+.color-red { background: linear-gradient(135deg, #ef4444, #dc2626); }
+
+/* Стили для вкладки питомца */
+.pet-editor {
+  padding: 16px;
+  height: 100%;
+  overflow-y: auto;
+}
+
+.pet-selection {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.pet-selection h3 {
+  font-size: 18px;
+  font-weight: 700;
+  color: #ff8cc6;
+  margin: 0 0 16px 0;
+  text-align: center;
+}
+
+/* Слот для выбранного питомца */
+.pet-slot {
+  background: linear-gradient(135deg, #fff0f5, #fce4ec);
+  border: 2px solid #ffdfea;
+  border-radius: 16px;
+  padding: 20px;
+  min-height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.pet-slot:hover {
+  border-color: #ff8cc6;
+  box-shadow: 0 4px 12px rgba(255, 140, 198, 0.1);
+}
+
+.selected-pet {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+}
+
+.pet-image {
+  width: 80px;
+  height: 80px;
+  border-radius: 12px;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.pet-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.pet-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f3f4f6;
+  color: #9ca3af;
+  font-size: 24px;
+}
+
+.pet-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.pet-info h4 {
+  font-size: 18px;
+  font-weight: 700;
+  color: #333;
+  margin: 0;
+}
+
+.pet-special {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.special-ability {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.special-icon {
+  font-size: 14px;
+}
+
+.special-text {
+  font-size: 11px;
+}
+
+.empty-pet-slot {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  color: #a8a8a8;
+  font-size: 14px;
+}
+
+.empty-pet-slot i {
+  font-size: 24px;
+  color: #ff8cc6;
+}
+
+/* Список доступных питомцев */
+.available-pets {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.available-pets h4 {
+  font-size: 16px;
+  font-weight: 700;
+  color: #ff8cc6;
+  margin: 0;
+}
+
+.pets-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 12px;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.pet-card {
+  background: #fff;
+  border: 2px solid #ffdfea;
+  border-radius: 12px;
+  padding: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.pet-card:hover {
+  border-color: #ff8cc6;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 140, 198, 0.15);
+}
+
+.pet-card.selected {
+  border-color: #ff8cc6;
+  background: linear-gradient(135deg, #fff0f5, #fce4ec);
+  box-shadow: 0 4px 12px rgba(255, 140, 198, 0.2);
+}
+
+.pet-card-image {
+  width: 60px;
+  height: 60px;
+  border-radius: 8px;
+  background: #f3f4f6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.pet-card-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.pet-card-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  width: 100%;
+}
+
+.pet-card-info h5 {
+  font-size: 12px;
+  font-weight: 600;
+  color: #333;
+  margin: 0;
+  text-align: center;
+  line-height: 1.2;
+}
+
+.pet-card-special {
+  display: flex;
+  justify-content: center;
+}
+
+.special-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  font-size: 12px;
+}
+
+.no-pets-message {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 20px;
+  color: #a8a8a8;
+  text-align: center;
+}
+
+.no-pets-message i {
+  font-size: 24px;
+  color: #ff8cc6;
+}
+
+.no-pets-message p {
+  margin: 0;
+  font-size: 14px;
+}
+
+/* Адаптивность для вкладки питомца */
+@media (max-width: 480px) {
+  .pet-editor {
+    padding: 12px;
+  }
+  
+  .pet-slot {
+    padding: 16px;
+    min-height: 100px;
+  }
+  
+  .selected-pet {
+    gap: 12px;
+  }
+  
+  .pet-image {
+    width: 60px;
+    height: 60px;
+  }
+  
+  .pet-info h4 {
+    font-size: 16px;
+  }
+  
+  .pets-grid {
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 8px;
+  }
+  
+  .pet-card {
+    padding: 8px;
+  }
+  
+  .pet-card-image {
+    width: 50px;
+    height: 50px;
+  }
+  
+  .pet-card-info h5 {
+    font-size: 11px;
+  }
+}
+
+@media (max-width: 360px) {
+  .pets-grid {
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+  }
+  
+  .pet-card-image {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .pet-card-info h5 {
+    font-size: 10px;
+  }
+}
+
+ 

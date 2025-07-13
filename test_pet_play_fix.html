@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тест исправления pet_play</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .success { background-color: #d4edda; }
+        .error { background-color: #f8d7da; }
+        .info { background-color: #d1ecf1; }
+        button {
+            padding: 10px 15px;
+            margin: 5px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        .btn-primary { background-color: #007bff; color: white; }
+        .btn-success { background-color: #28a745; color: white; }
+        .btn-warning { background-color: #ffc107; color: black; }
+    </style>
+</head>
+<body>
+    <h1>Тест исправления pet_play</h1>
+    
+    <div class="test-section info">
+        <h3>Инструкции по тестированию</h3>
+        <ol>
+            <li>Откройте консоль браузера (F12)</li>
+            <li>Запустите игру и перейдите к главе 7</li>
+            <li>Получите питомца со способностью отношений (например, крысу)</li>
+            <li>Перейдите к сцене 133</li>
+            <li>Проверьте, что вариант "Предложить Анне поиграть с питомцем" активен и подсвечен</li>
+            <li>Выберите этот вариант</li>
+            <li>Проверьте в консоли логи PET_PLAY DEBUG</li>
+            <li>Проверьте, что отношения с Анной изменились</li>
+        </ol>
+    </div>
+
+    <div class="test-section">
+        <h3>Проверка питомцев со способностью отношений</h3>
+        <p>Следующие питомцы должны работать с pet_play:</p>
+        <ul>
+            <li><strong>Крыса</strong> - +10 к отношениям</li>
+            <li><strong>Лиса</strong> - +15 к отношениям</li>
+            <li><strong>Огненный слайм</strong> - +25 к отношениям</li>
+            <li><strong>Волк</strong> - +25 к отношениям</li>
+            <li><strong>Тигр</strong> - +35 к отношениям</li>
+            <li><strong>Василиск</strong> - +50 к отношениям</li>
+        </ul>
+    </div>
+
+    <div class="test-section">
+        <h3>Ожидаемые логи в консоли</h3>
+        <p>При выборе pet_play должны появиться логи:</p>
+        <pre>
+PET_PLAY DEBUG - petId: [ID питомца]
+PET_PLAY DEBUG - найденный питомец: [объект питомца]
+PET_PLAY DEBUG - создаем модифицированный выбор с increase: [число]
+PET_PLAY DEBUG - модифицированный выбор: [объект выбора]
+PET_PLAY DEBUG - выбор заменен в сцене
+EpisodeManager.applyChoiceEffects - применяем эффекты: {relationship: {anna: [число]}}
+EpisodeManager.applyChoiceEffects - обрабатываем отношения: {anna: [число]}
+EpisodeManager.applyChoiceEffects - DEBUG: playerCharacterId: [ID игрока]
+EpisodeManager.applyChoiceEffects - DEBUG: oldValue: [старое значение]
+EpisodeManager.applyChoiceEffects - DEBUG: newValue: [новое значение]
+        </pre>
+    </div>
+
+    <div class="test-section">
+        <h3>Проверка без питомца</h3>
+        <p>Если у игрока нет питомца со способностью отношений:</p>
+        <ul>
+            <li>Вариант должен быть неактивен (серый)</li>
+            <li>Должно показываться: "(требуется питомец со способностью улучшения отношений)"</li>
+            <li>При клике ничего не должно происходить</li>
+        </ul>
+    </div>
+
+    <div class="test-section">
+        <h3>Проверка с питомцем без способности отношений</h3>
+        <p>Если у игрока есть питомец без способности relations:</p>
+        <ul>
+            <li>Вариант должен быть неактивен</li>
+            <li>В консоли должен быть лог: "PET_PLAY DEBUG - питомец не найден или не имеет способности relation"</li>
+        </ul>
+    </div>
+
+    <script>
+        // Функция для проверки структуры данных питомцев
+        function checkPetData() {
+            console.log('=== ПРОВЕРКА ДАННЫХ ПИТОМЦЕВ ===');
+            
+            // Импортируем данные питомцев (если доступны)
+            if (typeof itemsData !== 'undefined' && itemsData.items && itemsData.items.pet) {
+                const petsWithRelation = Object.values(itemsData.items.pet).filter(pet => 
+                    pet.special && pet.special.type === 'relation'
+                );
+                
+                console.log('Питомцы со способностью relations:', petsWithRelation);
+                
+                petsWithRelation.forEach(pet => {
+                    console.log(`${pet.name}: +${pet.special.increase} к отношениям`);
+                });
+            } else {
+                console.log('Данные питомцев недоступны в этом контексте');
+            }
+        }
+
+        // Запускаем проверку при загрузке страницы
+        window.addEventListener('load', checkPetData);
+    </script>
+</body>
+</html> 

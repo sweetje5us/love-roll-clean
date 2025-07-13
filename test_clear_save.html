@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Очистка сохранений</title>
+</head>
+<body>
+    <h1>Очистка сохранений эпизода tutorial</h1>
+    <button onclick="clearSave()">Очистить сохранения</button>
+    <button onclick="showSaves()">Показать сохранения</button>
+    <div id="result"></div>
+
+    <script type="module">
+        import { clearEpisodeSaves, getEpisodeSaves } from './src/utils/saveUtils.js';
+
+        window.clearSave = function() {
+            try {
+                clearEpisodeSaves('tutorial');
+                document.getElementById('result').innerHTML = '<p style="color: green;">Сохранения эпизода tutorial очищены!</p>';
+            } catch (error) {
+                document.getElementById('result').innerHTML = '<p style="color: red;">Ошибка: ' + error.message + '</p>';
+            }
+        };
+
+        window.showSaves = function() {
+            try {
+                const saves = getEpisodeSaves();
+                document.getElementById('result').innerHTML = '<pre>' + JSON.stringify(saves, null, 2) + '</pre>';
+            } catch (error) {
+                document.getElementById('result').innerHTML = '<p style="color: red;">Ошибка: ' + error.message + '</p>';
+            }
+        };
+    </script>
+</body>
+</html> 

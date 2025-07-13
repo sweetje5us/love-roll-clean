@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тест Главы 8 - Этап 2</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .success {
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+        .info {
+            background-color: #d1ecf1;
+            border-color: #bee5eb;
+            color: #0c5460;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .log {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Тест Главы 8 - Этап 2</h1>
+        <p>Проверка новых сцен главы 8 (160-170) и их интеграции с системой</p>
+
+        <div class="test-section info">
+            <h3>Информация о тесте</h3>
+            <p>Этот тест проверяет:</p>
+            <ul>
+                <li>Наличие всех новых сцен (160-170)</li>
+                <li>Правильность структуры сцен</li>
+                <li>Интеграцию с системой отношений</li>
+                <li>Систему подарков и инвентаря</li>
+                <li>Переходы между сценами</li>
+            </ul>
+        </div>
+
+        <div class="test-section">
+            <h3>Проверка файлов сцен</h3>
+            <button onclick="checkSceneFiles()">Проверить файлы сцен</button>
+            <div id="sceneFilesResult" class="log"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>Проверка структуры сцен</h3>
+            <button onclick="checkSceneStructure()">Проверить структуру</button>
+            <div id="sceneStructureResult" class="log"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>Проверка системы отношений</h3>
+            <button onclick="checkRelationships()">Проверить отношения</button>
+            <div id="relationshipsResult" class="log"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>Проверка системы подарков</h3>
+            <button onclick="checkGifts()">Проверить подарки</button>
+            <div id="giftsResult" class="log"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>Проверка переходов</h3>
+            <button onclick="checkTransitions()">Проверить переходы</button>
+            <div id="transitionsResult" class="log"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>Полный тест</h3>
+            <button onclick="runFullTest()">Запустить полный тест</button>
+            <div id="fullTestResult" class="log"></div>
+        </div>
+    </div>
+
+    <script>
+        const scenes = [
+            'scene160', 'scene161', 'scene162', 'scene163', 'scene164',
+            'scene165', 'scene166', 'scene167', 'scene168', 'scene169', 'scene170'
+        ];
+
+        const characters = [
+            'anna', 'dima', 'alexandra', 'arseniy'
+        ];
+
+        const gifts = [
+            'rare_crystal', 'social_skills_book', 'rare_coins', 'precious_gems', 'magic_bag'
+        ];
+
+        function log(elementId, message, type = 'info') {
+            const element = document.getElementById(elementId);
+            const timestamp = new Date().toLocaleTimeString();
+            const className = type === 'error' ? 'error' : type === 'success' ? 'success' : 'info';
+            element.innerHTML += `<div class="${className}">[${timestamp}] ${message}</div>`;
+            element.scrollTop = element.scrollHeight;
+        }
+
+        async function checkSceneFiles() {
+            const result = document.getElementById('sceneFilesResult');
+            result.innerHTML = '';
+            
+            log('sceneFilesResult', 'Начинаю проверку файлов сцен...');
+            
+            for (const scene of scenes) {
+                try {
+                    const response = await fetch(`episodes/tutorial/scenes/${scene}.json`);
+                    if (response.ok) {
+                        const data = await response.json();
+                        log('sceneFilesResult', `✓ ${scene}.json найден и загружен`, 'success');
+                    } else {
+                        log('sceneFilesResult', `✗ ${scene}.json не найден`, 'error');
+                    }
+                } catch (error) {
+                    log('sceneFilesResult', `✗ Ошибка при загрузке ${scene}.json: ${error.message}`, 'error');
+                }
+            }
+            
+            log('sceneFilesResult', 'Проверка файлов завершена');
+        }
+
+        async function checkSceneStructure() {
+            const result = document.getElementById('sceneStructureResult');
+            result.innerHTML = '';
+            
+            log('sceneStructureResult', 'Начинаю проверку структуры сцен...');
+            
+            for (const scene of scenes) {
+                try {
+                    const response = await fetch(`episodes/tutorial/scenes/${scene}.json`);
+                    if (response.ok) {
+                        const data = await response.json();
+                        
+                        // Проверяем обязательные поля
+                        const requiredFields = ['id', 'chapterId', 'location', 'background', 'characters', 'dialogue', 'choices'];
+                        let isValid = true;
+                        
+                        for (const field of requiredFields) {
+                            if (!data[field]) {
+                                log('sceneStructureResult', `✗ ${scene}: отсутствует поле ${field}`, 'error');
+                                isValid = false;
+                            }
+                        }
+                        
+                        // Проверяем chapterId
+                        if (data.chapterId !== 8) {
+                            log('sceneStructureResult', `✗ ${scene}: неверный chapterId (${data.chapterId}, ожидается 8)`, 'error');
+                            isValid = false;
+                        }
+                        
+                        // Проверяем characters
+                        if (!Array.isArray(data.characters)) {
+                            log('sceneStructureResult', `✗ ${scene}: characters должен быть массивом`, 'error');
+                            isValid = false;
+                        }
+                        
+                        // Проверяем choices
+                        if (!Array.isArray(data.choices) || data.choices.length === 0) {
+                            log('sceneStructureResult', `✗ ${scene}: choices должен быть непустым массивом`, 'error');
+                            isValid = false;
+                        }
+                        
+                        if (isValid) {
+                            log('sceneStructureResult', `✓ ${scene}: структура корректна`, 'success');
+                        }
+                    }
+                } catch (error) {
+                    log('sceneStructureResult', `✗ Ошибка при проверке ${scene}: ${error.message}`, 'error');
+                }
+            }
+            
+            log('sceneStructureResult', 'Проверка структуры завершена');
+        }
+
+        async function checkRelationships() {
+            const result = document.getElementById('relationshipsResult');
+            result.innerHTML = '';
+            
+            log('relationshipsResult', 'Начинаю проверку системы отношений...');
+            
+            for (const scene of scenes) {
+                try {
+                    const response = await fetch(`episodes/tutorial/scenes/${scene}.json`);
+                    if (response.ok) {
+                        const data = await response.json();
+                        
+                        // Проверяем эффекты отношений в choices
+                        for (const choice of data.choices) {
+                            if (choice.effects && choice.effects.relationship) {
+                                for (const [character, value] of Object.entries(choice.effects.relationship)) {
+                                    if (characters.includes(character)) {
+                                        log('relationshipsResult', `✓ ${scene}: выбор влияет на отношения с ${character} (+${value})`, 'success');
+                                    } else {
+                                        log('relationshipsResult', `⚠ ${scene}: неизвестный персонаж ${character}`, 'info');
+                                    }
+                                }
+                            }
+                        }
+                    }
+                } catch (error) {
+                    log('relationshipsResult', `✗ Ошибка при проверке ${scene}: ${error.message}`, 'error');
+                }
+            }
+            
+            log('relationshipsResult', 'Проверка отношений завершена');
+        }
+
+        async function checkGifts() {
+            const result = document.getElementById('giftsResult');
+            result.innerHTML = '';
+            
+            log('giftsResult', 'Начинаю проверку системы подарков...');
+            
+            for (const scene of scenes) {
+                try {
+                    const response = await fetch(`episodes/tutorial/scenes/${scene}.json`);
+                    if (response.ok) {
+                        const data = await response.json();
+                        
+                        // Проверяем подарки в choices
+                        for (const choice of data.choices) {
+                            if (choice.effects && choice.effects.inventory && choice.effects.inventory.add) {
+                                for (const item of choice.effects.inventory.add) {
+                                    if (gifts.includes(item)) {
+                                        log('giftsResult', `✓ ${scene}: подарок ${item}`, 'success');
+                                    } else {
+                                        log('giftsResult', `⚠ ${scene}: неизвестный предмет ${item}`, 'info');
+                                    }
+                                }
+                            }
+                        }
+                    }
+                } catch (error) {
+                    log('giftsResult', `✗ Ошибка при проверке ${scene}: ${error.message}`, 'error');
+                }
+            }
+            
+            log('giftsResult', 'Проверка подарков завершена');
+        }
+
+        async function checkTransitions() {
+            const result = document.getElementById('transitionsResult');
+            result.innerHTML = '';
+            
+            log('transitionsResult', 'Начинаю проверку переходов между сценами...');
+            
+            const transitions = [];
+            
+            for (const scene of scenes) {
+                try {
+                    const response = await fetch(`episodes/tutorial/scenes/${scene}.json`);
+                    if (response.ok) {
+                        const data = await response.json();
+                        
+                        for (const choice of data.choices) {
+                            if (choice.nextScene) {
+                                transitions.push({
+                                    from: scene,
+                                    to: choice.nextScene,
+                                    choice: choice.text.substring(0, 30) + '...'
+                                });
+                            }
+                        }
+                    }
+                } catch (error) {
+                    log('transitionsResult', `✗ Ошибка при проверке ${scene}: ${error.message}`, 'error');
+                }
+            }
+            
+            // Проверяем последовательность переходов
+            for (let i = 0; i < transitions.length - 1; i++) {
+                const current = transitions[i];
+                const next = transitions[i + 1];
+                
+                if (current.to === next.from) {
+                    log('transitionsResult', `✓ Переход: ${current.from} → ${current.to}`, 'success');
+                } else {
+                    log('transitionsResult', `⚠ Разрыв в переходах: ${current.from} → ${current.to} ≠ ${next.from}`, 'info');
+                }
+            }
+            
+            log('transitionsResult', 'Проверка переходов завершена');
+        }
+
+        async function runFullTest() {
+            const result = document.getElementById('fullTestResult');
+            result.innerHTML = '';
+            
+            log('fullTestResult', 'Запуск полного теста главы 8 - этап 2...');
+            
+            // Запускаем все проверки
+            await checkSceneFiles();
+            await checkSceneStructure();
+            await checkRelationships();
+            await checkGifts();
+            await checkTransitions();
+            
+            log('fullTestResult', 'Полный тест завершен!', 'success');
+        }
+    </script>
+</body>
+</html> 

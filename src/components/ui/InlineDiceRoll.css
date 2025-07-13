@@ -1,0 +1,638 @@
+/* Встроенный компонент броска кубика */
+.inline-dice-roll-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(5px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.inline-dice-roll-container {
+  background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+  border-radius: 20px;
+  padding: 25px;
+  max-width: 450px;
+  width: 100%;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  border: 2px solid #3498db;
+  position: relative;
+  overflow: hidden;
+}
+
+.inline-dice-roll-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(45deg, transparent 30%, rgba(52, 152, 219, 0.1) 50%, transparent 70%);
+  animation: shimmer 3s infinite;
+  pointer-events: none;
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+/* Информация о проверке */
+.inline-check-info {
+  text-align: center;
+  margin-bottom: 25px;
+  color: white;
+}
+
+.inline-stat-info {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 10px;
+  font-size: 1.2em;
+}
+
+.inline-stat-info i {
+  font-size: 1.5em;
+  color: #3498db;
+}
+
+.inline-stat-name {
+  font-weight: bold;
+  color: #ecf0f1;
+}
+
+.inline-stat-value {
+  color: #f39c12;
+  font-weight: bold;
+}
+
+.inline-difficulty-info {
+  background: rgba(52, 152, 219, 0.2);
+  padding: 8px 16px;
+  border-radius: 20px;
+  display: inline-block;
+  margin-bottom: 15px;
+  border: 1px solid #3498db;
+}
+
+.inline-description {
+  font-style: italic;
+  color: #bdc3c7;
+  line-height: 1.4;
+}
+
+/* Контейнер кубика */
+.inline-dice-container {
+  text-align: center;
+  margin: 25px 0;
+  position: relative;
+}
+
+.inline-dice-value {
+  position: absolute;
+  bottom: -30px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #e74c3c;
+  color: white;
+  padding: 5px 15px;
+  border-radius: 15px;
+  font-weight: bold;
+  font-size: 1.1em;
+  box-shadow: 0 5px 15px rgba(231, 76, 60, 0.3);
+  border: 2px solid #c0392b;
+}
+
+/* Стили для d20 кубика - точно как в test_dice_mechanics.html */
+.inline-d20 {
+  width: 130px;
+  height: 130px;
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 0.5s ease;
+  margin: 0 auto;
+  perspective: 1000px;
+}
+
+.inline-d20.rolling {
+  animation: inlineRollDice 1.5s ease-out;
+}
+
+@keyframes inlineRollDice {
+  0% {
+    transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg);
+  }
+  25% {
+    transform: rotateX(720deg) rotateY(360deg) rotateZ(180deg);
+  }
+  50% {
+    transform: rotateX(1440deg) rotateY(720deg) rotateZ(360deg);
+  }
+  75% {
+    transform: rotateX(2160deg) rotateY(1080deg) rotateZ(540deg);
+  }
+  100% {
+    transform: rotateX(2520deg) rotateY(1260deg) rotateZ(630deg);
+  }
+}
+
+/* Стили для d20 додекаэдра - точно как в test_dice_mechanics.html */
+.inline-d20-dodecahedron {
+  width: 130px;
+  height: 130px;
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 0.5s ease;
+  --clr-primary: rgba(52, 152, 219, 0.75);
+  --clr-lighter: rgba(52, 152, 219, 0.85);
+  --clr-darker: rgba(52, 152, 219, 0.65);
+  --box-size: 130px;
+  --diameter: 65px;
+  --quarter: 32.5px;
+  --rotateX: -45deg;
+  --rotateY: 180deg;
+  --rotateZ: 180deg;
+}
+
+.inline-d20-dodecahedron .face {
+  --ends-angle: 53deg;
+  --middle-angle: -11deg;
+  --top-face-angle: calc(360deg / 5);
+  --face-width: calc(var(--box-size) * .5);
+  --face-height: calc(var(--face-width) * 2 * .86);
+  --face-color: var(--clr-lighter);
+  --translateZ-top: calc(var(--face-width) * .335);
+  --translateY-top: calc(var(--face-height) * -.15);
+  --translateZ-middle: calc(var(--face-width) * .75);
+  --translateY-middle: calc((var(--face-height) * .395) + var(--translateY-top));
+  --translateZ-bottom: var(--translateZ-top);
+  --translateY-bottom: calc((var(--face-height) * .395) + var(--translateY-middle));
+
+  background: transparent;
+  width: 0;
+  height: 0;
+  top: 50%;
+  left: 50%;
+  margin-top: calc(var(--face-height) * -.5);
+  margin-bottom: calc(var(--face-height) * -.5);
+  margin-left: calc(var(--face-width) * -.5);
+  margin-right: calc(var(--face-width) * -.5);
+  border-left: calc(var(--face-width) * .5) solid transparent;
+  border-right: calc(var(--face-width) * .5) solid transparent;
+  border-bottom: calc(var(--face-height) * .5) solid var(--face-color);
+  position: absolute;
+  transition: opacity 0.3s ease, visibility 0.3s ease, z-index 0.3s ease;
+  backface-visibility: hidden;
+}
+
+.inline-d20-dodecahedron .face.active {
+  border-bottom-color: #e74c3c;
+  box-shadow: 0 0 20px rgba(231, 76, 60, 0.5);
+}
+
+.inline-d20-dodecahedron .face::after {
+  position: absolute;
+  top: calc(var(--face-height) * 0.25);
+  left: calc(var(--face-width) * -1);
+  color: #2c3e50;
+  font-size: calc(var(--face-height) * .175);
+  text-align: center;
+  line-height: 1;
+  width: calc(var(--face-width) * 2);
+  height: var(--face-height);
+  font-weight: bold;
+  content: '';
+}
+
+.inline-d20-dodecahedron .face-1::after {
+  content: var(--dice-number, '20');
+}
+.inline-d20-dodecahedron .face-2::after {
+  content: var(--dice-number-2, '');
+}
+.inline-d20-dodecahedron .face-3::after {
+  content: var(--dice-number-3, '');
+}
+.inline-d20-dodecahedron .face-4::after {
+  content: var(--dice-number-4, '');
+}
+.inline-d20-dodecahedron .face-5::after {
+  content: var(--dice-number-5, '');
+}
+.inline-d20-dodecahedron .face-6::after {
+  content: var(--dice-number-6, '');
+}
+.inline-d20-dodecahedron .face-7::after {
+  content: var(--dice-number-7, '');
+}
+.inline-d20-dodecahedron .face-8::after {
+  content: var(--dice-number-8, '');
+}
+.inline-d20-dodecahedron .face-9::after {
+  content: var(--dice-number-9, '');
+}
+.inline-d20-dodecahedron .face-10::after {
+  content: var(--dice-number-10, '');
+}
+.inline-d20-dodecahedron .face-11::after {
+  content: var(--dice-number-11, '');
+}
+.inline-d20-dodecahedron .face-12::after {
+  content: var(--dice-number-12, '');
+}
+.inline-d20-dodecahedron .face-13::after {
+  content: var(--dice-number-13, '');
+}
+.inline-d20-dodecahedron .face-14::after {
+  content: var(--dice-number-14, '');
+}
+.inline-d20-dodecahedron .face-15::after {
+  content: var(--dice-number-15, '');
+}
+.inline-d20-dodecahedron .face-16::after {
+  content: var(--dice-number-16, '');
+}
+.inline-d20-dodecahedron .face-17::after {
+  content: var(--dice-number-17, '');
+}
+.inline-d20-dodecahedron .face-18::after {
+  content: var(--dice-number-18, '');
+}
+.inline-d20-dodecahedron .face-19::after {
+  content: var(--dice-number-19, '');
+}
+.inline-d20-dodecahedron .face-20::after {
+  content: var(--dice-number-20, '');
+}
+
+/* Генерация граней d20 - точно как в test_dice_mechanics.html */
+.inline-d20-dodecahedron .face-1 { transform: rotateY(calc(var(--top-face-angle) * -1 * 0)) translateZ(var(--translateZ-top)) translateY(var(--translateY-top)) rotateX(var(--ends-angle)); }
+.inline-d20-dodecahedron .face-2 { transform: rotateY(calc(var(--top-face-angle) * -1 * 1)) translateZ(var(--translateZ-top)) translateY(var(--translateY-top)) rotateX(var(--ends-angle)); }
+.inline-d20-dodecahedron .face-3 { transform: rotateY(calc(var(--top-face-angle) * -1 * 2)) translateZ(var(--translateZ-top)) translateY(var(--translateY-top)) rotateX(var(--ends-angle)); }
+.inline-d20-dodecahedron .face-4 { transform: rotateY(calc(var(--top-face-angle) * -1 * 3)) translateZ(var(--translateZ-top)) translateY(var(--translateY-top)) rotateX(var(--ends-angle)); }
+.inline-d20-dodecahedron .face-5 { transform: rotateY(calc(var(--top-face-angle) * -1 * 4)) translateZ(var(--translateZ-top)) translateY(var(--translateY-top)) rotateX(var(--ends-angle)); }
+.inline-d20-dodecahedron .face-6 { transform: rotateY(calc(var(--top-face-angle) * -1 * -5)) translateZ(var(--translateZ-middle)) translateY(var(--translateY-middle)) rotateZ(180deg) rotateX(var(--middle-angle)); }
+.inline-d20-dodecahedron .face-7 { transform: rotateY(calc(var(--top-face-angle) * -1 * -4)) translateZ(var(--translateZ-middle)) translateY(var(--translateY-middle)) rotateZ(180deg) rotateX(var(--middle-angle)); }
+.inline-d20-dodecahedron .face-8 { transform: rotateY(calc(var(--top-face-angle) * -1 * -3)) translateZ(var(--translateZ-middle)) translateY(var(--translateY-middle)) rotateZ(180deg) rotateX(var(--middle-angle)); }
+.inline-d20-dodecahedron .face-9 { transform: rotateY(calc(var(--top-face-angle) * -1 * -2)) translateZ(var(--translateZ-middle)) translateY(var(--translateY-middle)) rotateZ(180deg) rotateX(var(--middle-angle)); }
+.inline-d20-dodecahedron .face-10 { transform: rotateY(calc(var(--top-face-angle) * -1 * -1)) translateZ(var(--translateZ-middle)) translateY(var(--translateY-middle)) rotateZ(180deg) rotateX(var(--middle-angle)); }
+.inline-d20-dodecahedron .face-11 { transform: rotateY(calc(var(--top-face-angle) * 3 + (var(--top-face-angle) / 2))) translateZ(var(--translateZ-middle)) translateY(var(--translateY-middle)) rotateX(var(--middle-angle)); }
+.inline-d20-dodecahedron .face-12 { transform: rotateY(calc(var(--top-face-angle) * 4 + (var(--top-face-angle) / 2))) translateZ(var(--translateZ-middle)) translateY(var(--translateY-middle)) rotateX(var(--middle-angle)); }
+.inline-d20-dodecahedron .face-13 { transform: rotateY(calc(var(--top-face-angle) * 5 + (var(--top-face-angle) / 2))) translateZ(var(--translateZ-middle)) translateY(var(--translateY-middle)) rotateX(var(--middle-angle)); }
+.inline-d20-dodecahedron .face-14 { transform: rotateY(calc(var(--top-face-angle) * 6 + (var(--top-face-angle) / 2))) translateZ(var(--translateZ-middle)) translateY(var(--translateY-middle)) rotateX(var(--middle-angle)); }
+.inline-d20-dodecahedron .face-15 { transform: rotateY(calc(var(--top-face-angle) * 7 + (var(--top-face-angle) / 2))) translateZ(var(--translateZ-middle)) translateY(var(--translateY-middle)) rotateX(var(--middle-angle)); }
+.inline-d20-dodecahedron .face-16 { transform: rotateY(calc(var(--top-face-angle) * -2 + (var(--top-face-angle) / 2))) translateZ(var(--translateZ-bottom)) translateY(var(--translateY-bottom)) rotateZ(180deg) rotateX(var(--ends-angle)); }
+.inline-d20-dodecahedron .face-17 { transform: rotateY(calc(var(--top-face-angle) * -1 + (var(--top-face-angle) / 2))) translateZ(var(--translateZ-bottom)) translateY(var(--translateY-bottom)) rotateZ(180deg) rotateX(var(--ends-angle)); }
+.inline-d20-dodecahedron .face-18 { transform: rotateY(calc(var(--top-face-angle) * 0 + (var(--top-face-angle) / 2))) translateZ(var(--translateZ-bottom)) translateY(var(--translateY-bottom)) rotateZ(180deg) rotateX(var(--ends-angle)); }
+.inline-d20-dodecahedron .face-19 { transform: rotateY(calc(var(--top-face-angle) * 1 + (var(--top-face-angle) / 2))) translateZ(var(--translateZ-bottom)) translateY(var(--translateY-bottom)) rotateZ(180deg) rotateX(var(--ends-angle)); }
+.inline-d20-dodecahedron .face-20 { transform: rotateY(calc(var(--top-face-angle) * 2 + (var(--top-face-angle) / 2))) translateZ(var(--translateZ-bottom)) translateY(var(--translateY-bottom)) rotateZ(180deg) rotateX(var(--ends-angle)); }
+
+/* Кнопка броска */
+.inline-roll-button {
+  background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+  color: white;
+  border: none;
+  padding: 15px 30px;
+  font-size: 1.1em;
+  border-radius: 25px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 8px 16px rgba(52, 152, 219, 0.3);
+  width: 100%;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.inline-roll-button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 24px rgba(52, 152, 219, 0.4);
+  background: linear-gradient(135deg, #2980b9 0%, #1f5f8b 100%);
+}
+
+.inline-roll-button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.inline-roll-button.rolling {
+  background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+  animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+/* Результат броска */
+.inline-roll-result {
+  margin-top: 15px;
+  padding: 15px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 15px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.inline-result-header {
+  text-align: center;
+  margin-bottom: 15px;
+  padding: 12px;
+  border-radius: 10px;
+  color: white;
+}
+
+.inline-result-header.success {
+  background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+  border: 2px solid #27ae60;
+}
+
+.inline-result-header.danger {
+  background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+  border: 2px solid #e74c3c;
+}
+
+.inline-result-header.warning {
+  background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+  border: 2px solid #f39c12;
+}
+
+.inline-result-header h3 {
+  margin: 0 0 5px 0;
+  font-size: 1.2em;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.inline-result-header p {
+  margin: 0;
+  font-size: 0.95em;
+  opacity: 0.9;
+}
+
+/* Краткое резюме результата */
+.inline-result-summary {
+  margin-bottom: 15px;
+}
+
+.inline-summary-item {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 10px 15px;
+  border-radius: 8px;
+  text-align: center;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.inline-summary-item .summary-label {
+  font-size: 0.9em;
+  color: #bdc3c7;
+  font-weight: 500;
+}
+
+.inline-summary-item .summary-value {
+  font-size: 1.1em;
+  font-weight: bold;
+  color: #ecf0f1;
+}
+
+/* Кнопки действий */
+.inline-result-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+
+.inline-continue-button,
+.inline-reroll-button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  min-width: 100px;
+  font-size: 0.9em;
+}
+
+.inline-continue-button {
+  background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+  color: white;
+  box-shadow: 0 5px 15px rgba(39, 174, 96, 0.3);
+}
+
+.inline-continue-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(39, 174, 96, 0.4);
+  background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+}
+
+.inline-reroll-button {
+  background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+  color: white;
+  box-shadow: 0 5px 15px rgba(243, 156, 18, 0.3);
+}
+
+.inline-reroll-button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(243, 156, 18, 0.4);
+  background: linear-gradient(135deg, #e67e22 0%, #f39c12 100%);
+}
+
+.inline-reroll-button.disabled,
+.inline-reroll-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  background: linear-gradient(135deg, #95a5a6 0%, #7f8c8d 100%);
+  transform: none;
+}
+
+.inline-reroll-button.disabled:hover,
+.inline-reroll-button:disabled:hover {
+  transform: none;
+  box-shadow: 0 5px 15px rgba(243, 156, 18, 0.3);
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+  .inline-dice-roll-container {
+    padding: 15px;
+    margin: 10px;
+    max-width: 90vw;
+  }
+  
+  .inline-d20 {
+    width: 100px;
+    height: 100px;
+  }
+  
+  .inline-d20-dodecahedron {
+    width: 100px;
+    height: 100px;
+    --box-size: 100px;
+  }
+  
+  .inline-check-info {
+    margin-bottom: 20px;
+  }
+  
+  .inline-stat-info {
+    font-size: 1em;
+  }
+  
+  .inline-dice-container {
+    margin: 20px 0;
+  }
+  
+  .inline-roll-result {
+    margin-top: 12px;
+    padding: 12px;
+  }
+  
+  .inline-result-header {
+    margin-bottom: 12px;
+    padding: 10px;
+  }
+  
+  .inline-result-header h3 {
+    font-size: 1.1em;
+  }
+  
+  .inline-result-header p {
+    font-size: 0.9em;
+  }
+  
+  .inline-summary-item {
+    padding: 8px 12px;
+    flex-direction: column;
+    gap: 5px;
+  }
+  
+  .inline-summary-item .summary-label {
+    font-size: 0.85em;
+  }
+  
+  .inline-summary-item .summary-value {
+    font-size: 1em;
+  }
+  
+  .inline-result-actions {
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .inline-continue-button,
+  .inline-reroll-button {
+    width: 100%;
+    padding: 8px 16px;
+    font-size: 0.85em;
+    min-width: auto;
+  }
+  
+  .inline-roll-button {
+    padding: 12px 24px;
+    font-size: 1em;
+  }
+}
+
+/* Стили для бонусов питомцев */
+.inline-pet-bonuses {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 12px 0;
+  padding: 12px;
+  background: linear-gradient(135deg, rgba(255, 193, 7, 0.1), rgba(255, 152, 0, 0.1));
+  border: 1px solid rgba(255, 193, 7, 0.3);
+  border-radius: 8px;
+}
+
+.pet-bonus-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #f57c00;
+}
+
+.pet-bonus-item i {
+  font-size: 16px;
+  color: #ff9800;
+}
+
+.pet-stat-bonus {
+  color: #f57c00;
+  font-weight: 600;
+  font-size: 14px;
+  margin-left: 4px;
+}
+
+/* Детальная информация о бонусах */
+.inline-bonus-details {
+  margin-top: 12px;
+  padding: 12px;
+  background: rgba(255, 193, 7, 0.05);
+  border-radius: 8px;
+  border: 1px solid rgba(255, 193, 7, 0.2);
+}
+
+.bonus-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 12px;
+  color: #666;
+  margin-bottom: 8px;
+}
+
+.bonus-detail:last-child {
+  margin-bottom: 0;
+}
+
+.bonus-detail span {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.bonus-detail span:last-child {
+  font-weight: 600;
+  color: #f57c00;
+}
+
+/* Адаптивность для бонусов */
+@media (max-width: 768px) {
+  .inline-pet-bonuses {
+    padding: 8px;
+    gap: 6px;
+  }
+  
+  .pet-bonus-item {
+    font-size: 12px;
+  }
+  
+  .pet-bonus-item i {
+    font-size: 14px;
+  }
+  
+  .inline-bonus-details {
+    padding: 8px;
+  }
+  
+  .bonus-detail {
+    font-size: 11px;
+  }
+} 

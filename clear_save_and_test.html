@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Очистка сохранения и тест</title>
+</head>
+<body>
+    <h1>Очистка сохранения и тест отношений</h1>
+    
+    <div>
+        <h2>Текущие данные:</h2>
+        <div>
+            <h3>Отношения:</h3>
+            <pre id="relationships-data"></pre>
+        </div>
+        <div>
+            <h3>Сохранения эпизодов:</h3>
+            <pre id="episode-saves-data"></pre>
+        </div>
+    </div>
+    
+    <div>
+        <h2>Действия:</h2>
+        <button onclick="clearAllSaves()">Очистить все сохранения</button>
+        <button onclick="testRelationships()">Тест отношений</button>
+        <button onclick="refreshData()">Обновить данные</button>
+    </div>
+    
+    <script>
+        function clearAllSaves() {
+            // Очищаем все сохранения
+            localStorage.removeItem('gameRelationships');
+            localStorage.removeItem('episode_saves');
+            localStorage.removeItem('game_state');
+            
+            // Очищаем все ключи, связанные с сохранениями
+            const keysToRemove = [];
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                if (key && (key.includes('save') || key.includes('progress') || key.includes('relationship'))) {
+                    keysToRemove.push(key);
+                }
+            }
+            
+            keysToRemove.forEach(key => localStorage.removeItem(key));
+            
+            console.log('Все сохранения очищены');
+            refreshData();
+        }
+        
+        function testRelationships() {
+            // Создаем тестовые отношения
+            const testRelationships = {
+                relationships: {
+                    "1751719138468_dima_friendship": {
+                        characterId: "1751719138468",
+                        targetId: "dima",
+                        type: "friendship",
+                        value: 25,
+                        lastUpdated: Date.now()
+                    }
+                },
+                episodeId: "tutorial"
+            };
+            
+            localStorage.setItem('gameRelationships', JSON.stringify(testRelationships));
+            console.log('Созданы тестовые отношения:', testRelationships);
+            refreshData();
+        }
+        
+        function refreshData() {
+            // Показываем отношения
+            const relationships = localStorage.getItem('gameRelationships');
+            document.getElementById('relationships-data').textContent = 
+                relationships ? JSON.stringify(JSON.parse(relationships), null, 2) : 'Нет данных';
+            
+            // Показываем сохранения эпизодов
+            const episodeSaves = localStorage.getItem('episode_saves');
+            document.getElementById('episode-saves-data').textContent = 
+                episodeSaves ? JSON.stringify(JSON.parse(episodeSaves), null, 2) : 'Нет данных';
+        }
+        
+        // Инициализация
+        refreshData();
+    </script>
+</body>
+</html> 

@@ -1,0 +1,261 @@
+.episode-select-screen {
+  height: 100vh;
+  background: linear-gradient(135deg, #fdf2f8 0%, #fce7f3 50%, #fbcfe8 100%);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* Заголовок */
+.episode-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+  padding: 0 8px;
+}
+
+.episode-header h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #333;
+  margin: 0;
+  text-align: center;
+  flex: 1;
+}
+
+.back-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #fff;
+  border: 2px solid #ff8cc6;
+  color: #ff8cc6;
+  padding: 12px 16px;
+  border-radius: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.9rem;
+}
+
+.back-button:hover {
+  background: #ff8cc6;
+  color: #fff;
+  transform: translateY(-2px);
+}
+
+/* Поиск и фильтры */
+.episode-filters {
+  background: #fff;
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.search-container {
+  position: relative;
+  margin-bottom: 16px;
+}
+
+.search-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #999;
+  font-size: 1rem;
+}
+
+.search-input {
+  width: 100%;
+  padding: 12px 12px 12px 40px;
+  border: 2px solid #f0f0f0;
+  border-radius: 12px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  background: #fafafa;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: #ff8cc6;
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(255, 140, 198, 0.1);
+}
+
+.filter-container {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 150px;
+}
+
+.filter-group label {
+  font-weight: 600;
+  color: #333;
+  font-size: 0.9rem;
+}
+
+.filter-select {
+  padding: 8px 12px;
+  border: 2px solid #f0f0f0;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  background: #fafafa;
+  transition: all 0.3s ease;
+}
+
+.filter-select:focus {
+  outline: none;
+  border-color: #ff8cc6;
+  background: #fff;
+}
+
+/* Список эпизодов */
+.episodes-container {
+  flex: 1;
+  overflow: hidden;
+  min-height: 0;
+}
+
+.episodes-list {
+  height: 100%;
+  overflow-y: auto;
+  padding-right: 8px;
+  scrollbar-width: thin;
+  scrollbar-color: #ff8cc6 #f0f0f0;
+}
+
+.episodes-list::-webkit-scrollbar {
+  width: 8px;
+}
+
+.episodes-list::-webkit-scrollbar-track {
+  background: #f0f0f0;
+  border-radius: 4px;
+}
+
+.episodes-list::-webkit-scrollbar-thumb {
+  background: #ff8cc6;
+  border-radius: 4px;
+}
+
+.episodes-list::-webkit-scrollbar-thumb:hover {
+  background: #ff6b9d;
+}
+
+/* Сообщение об отсутствии эпизодов */
+.no-episodes {
+  text-align: center;
+  padding: 60px 20px;
+  color: #666;
+}
+
+.no-episodes i {
+  font-size: 3rem;
+  color: #ccc;
+  margin-bottom: 16px;
+}
+
+.no-episodes p {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin: 0 0 8px 0;
+  color: #333;
+}
+
+.no-episodes span {
+  font-size: 0.9rem;
+  color: #999;
+}
+
+
+
+/* Загрузка */
+.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  font-size: 1.2rem;
+  color: #666;
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+  .episode-select-screen {
+    padding: 16px;
+    height: 100vh;
+  }
+  
+  .episode-header {
+    margin-bottom: 20px;
+  }
+  
+  .episode-header h1 {
+    font-size: 1.6rem;
+  }
+  
+  .back-button {
+    padding: 10px 12px;
+    font-size: 0.8rem;
+  }
+  
+  .episode-filters {
+    padding: 16px;
+    margin-bottom: 20px;
+  }
+  
+  .filter-container {
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  .filter-group {
+    min-width: auto;
+  }
+  
+  .start-episode-button {
+    padding: 14px 24px;
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .episode-select-screen {
+    padding: 12px;
+    height: 100vh;
+  }
+  
+  .episode-header h1 {
+    font-size: 1.4rem;
+  }
+  
+  .episode-filters {
+    padding: 12px;
+  }
+  
+  .search-input {
+    padding: 10px 10px 10px 36px;
+    font-size: 0.9rem;
+  }
+  
+  .filter-select {
+    padding: 6px 10px;
+    font-size: 0.85rem;
+  }
+  
+  .start-episode-button {
+    padding: 12px 20px;
+    font-size: 0.9rem;
+  }
+} 

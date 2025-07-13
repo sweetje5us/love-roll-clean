@@ -1,0 +1,3341 @@
+{
+  "items": {
+    "consumable": {
+      "basic_health_potion": {
+        "id": "basic_health_potion",
+        "name": "Простое зелье здоровья",
+        "description": "Простое зелье для восстановления сил. Можно предложить уставшему человеку",
+        "type": "consumable",
+        "rarity": "common",
+        "price": {
+          "currency": "coins",
+          "amount": 15
+        },
+        "sellPrice": 7,
+        "canSell": true,
+        "sprite": "sprites/items/consumable/basic health potion.png"
+      },
+      "health_potion": {
+        "id": "health_potion",
+        "name": "Зелье здоровья",
+        "description": "Эффективное зелье для восстановления. Хороший подарок для больного",
+        "type": "consumable",
+        "rarity": "common",
+        "price": {
+          "currency": "coins",
+          "amount": 25
+        },
+        "sellPrice": 12,
+        "canSell": true,
+        "sprite": "sprites/items/consumable/health potion.png"
+      },
+      "basic_mana_potion": {
+        "id": "basic_mana_potion",
+        "name": "Простое зелье маны",
+        "description": "Простое зелье для восстановления энергии. Поможет уставшему магу",
+        "type": "consumable",
+        "rarity": "common",
+        "price": {
+          "currency": "coins",
+          "amount": 12
+        },
+        "sellPrice": 6,
+        "canSell": true,
+        "sprite": "sprites/items/consumable/basic mana potion.png"
+      },
+      "mana_potion": {
+        "id": "mana_potion",
+        "name": "Зелье маны",
+        "description": "Эффективное зелье для восстановления магической энергии. Ценный подарок для мага",
+        "type": "consumable",
+        "rarity": "common",
+        "price": {
+          "currency": "coins",
+          "amount": 20
+        },
+        "sellPrice": 10,
+        "canSell": true,
+        "sprite": "sprites/items/consumable/mana potion.png"
+      },
+      "strength_potion": {
+        "id": "strength_potion",
+        "name": "Зелье силы",
+        "description": "Зелье, дающее временную силу. Может помочь в сложной ситуации",
+        "type": "consumable",
+        "rarity": "rare",
+        "price": {
+          "currency": "coins",
+          "amount": 45
+        },
+        "sellPrice": 22,
+        "canSell": true,
+        "sprite": "sprites/items/consumable/strength potion.png"
+      },
+      "agility_potion": {
+        "id": "agility_potion",
+        "name": "Зелье ловкости",
+        "description": "Зелье, улучшающее ловкость. Полезно для акробатов и танцоров",
+        "type": "consumable",
+        "rarity": "rare",
+        "price": {
+          "currency": "coins",
+          "amount": 45
+        },
+        "sellPrice": 22,
+        "canSell": true,
+        "sprite": "sprites/items/consumable/agility potion.png"
+      },
+      "magic_potion": {
+        "id": "magic_potion",
+        "name": "Зелье магии",
+        "description": "Зелье, усиливающее магические способности. Дорогой подарок для мага",
+        "type": "consumable",
+        "rarity": "rare",
+        "price": {
+          "currency": "coins",
+          "amount": 50
+        },
+        "sellPrice": 25,
+        "canSell": true,
+        "sprite": "sprites/items/consumable/magic potion.png"
+      },
+      "resurrection_potion": {
+        "id": "resurrection_potion",
+        "name": "Зелье воскрешения",
+        "description": "Легендарное зелье, помогает перебросить плохой резульат кубика. Бесценный артефакт",
+        "type": "consumable",
+        "rarity": "mythical",
+        "price": {
+          "currency": "gems",
+          "amount": 25
+        },
+        "sellPrice": 0,
+        "canSell": false,
+        "sprite": "sprites/items/consumable/resurrection potion.png"
+      },
+      "golden_apple": {
+        "id": "golden_apple",
+        "name": "Золотое яблоко",
+        "description": "Магическое яблоко, способное исцелить любые недуги. Королевский подарок",
+        "type": "consumable",
+        "rarity": "legendary",
+        "price": {
+          "currency": "gems",
+          "amount": 50
+        },
+        "sellPrice": 0,
+        "canSell": false,
+        "sprite": "sprites/items/consumable/golden apple.png"
+      },
+      "antidote": {
+        "id": "antidote",
+        "name": "Противоядие",
+        "description": "Эффективное средство против ядов. Спасет жизнь отравленному",
+        "type": "consumable",
+        "rarity": "common",
+        "price": {
+          "currency": "coins",
+          "amount": 15
+        },
+        "sellPrice": 7,
+        "canSell": true,
+        "sprite": "sprites/items/consumable/antidote.png"
+      },
+      "apple": {
+        "id": "apple",
+        "name": "Яблоко",
+        "description": "Свежее сочное яблоко. Простой, но приятный подарок",
+        "type": "consumable",
+        "rarity": "common",
+        "price": {
+          "currency": "coins",
+          "amount": 15
+        },
+        "sellPrice": 7,
+        "canSell": true,
+        "sprite": "sprites/items/consumable/apple.png"
+      },
+      "basic_antidote": {
+        "id": "basic_antidote",
+        "name": "Простое противоядие",
+        "description": "Простое средство от легких отравлений. Базовый аптечный препарат",
+        "type": "consumable",
+        "rarity": "common",
+        "price": {
+          "currency": "coins",
+          "amount": 15
+        },
+        "sellPrice": 7,
+        "canSell": true,
+        "sprite": "sprites/items/consumable/basic antidote.png"
+      },
+      "basic_book": {
+        "id": "basic_book",
+        "name": "Простая книга",
+        "description": "Обычная книга с базовыми знаниями. Хороший подарок для любителя чтения",
+        "type": "consumable",
+        "rarity": "common",
+        "price": {
+          "currency": "coins",
+          "amount": 15
+        },
+        "sellPrice": 7,
+        "canSell": true,
+        "sprite": "sprites/items/consumable/basic book.png"
+      },
+      "basic_scroll": {
+        "id": "basic_scroll",
+        "name": "Простой свиток",
+        "description": "Свиток с элементарными заклинаниями. Интересен для начинающих магов",
+        "type": "consumable",
+        "rarity": "common",
+        "price": {
+          "currency": "coins",
+          "amount": 15
+        },
+        "sellPrice": 7,
+        "canSell": true,
+        "sprite": "sprites/items/consumable/basic scroll.png"
+      },
+      "candy_icon": {
+        "id": "candy_icon",
+        "name": "Конфета",
+        "description": "Сладкая конфета. Простой способ поднять настроение",
+        "type": "consumable",
+        "rarity": "common",
+        "price": {
+          "currency": "coins",
+          "amount": 15
+        },
+        "sellPrice": 7,
+        "canSell": true,
+        "sprite": "sprites/items/consumable/candy icon.png"
+      },
+      "chocolate": {
+        "id": "chocolate",
+        "name": "Шоколад",
+        "description": "Вкусный шоколад. Классический подарок для сладкоежек",
+        "type": "consumable",
+        "rarity": "common",
+        "price": {
+          "currency": "coins",
+          "amount": 15
+        },
+        "sellPrice": 7,
+        "canSell": true,
+        "sprite": "sprites/items/consumable/chocolate.png"
+      },
+      "cursed_potion": {
+        "id": "cursed_potion",
+        "name": "Проклятое зелье",
+        "description": "Опасное зелье с темной магией. Может навредить тому, кто его выпьет",
+        "type": "consumable",
+        "rarity": "mythical",
+        "price": {
+          "currency": "gems",
+          "amount": 30
+        },
+        "sellPrice": 0,
+        "canSell": false,
+        "sprite": "sprites/items/consumable/cursed potion.png"
+      },
+      "dark_mushroom": {
+        "id": "dark_mushroom",
+        "name": "Темный гриб",
+        "description": "Загадочный гриб, растущий в темных местах. Интересен для алхимиков",
+        "type": "consumable",
+        "rarity": "common",
+        "price": {
+          "currency": "coins",
+          "amount": 15
+        },
+        "sellPrice": 7,
+        "canSell": true,
+        "sprite": "sprites/items/consumable/dark mushroom.png"
+      },
+      "darkness_potion": {
+        "id": "darkness_potion",
+        "name": "Зелье тьмы",
+        "description": "Зелье, наполненное темной энергией. Опасно для обычных людей",
+        "type": "consumable",
+        "rarity": "mythical",
+        "price": {
+          "currency": "gems",
+          "amount": 30
+        },
+        "sellPrice": 0,
+        "canSell": false,
+        "sprite": "sprites/items/consumable/darkness potion.png"
+      },
+      "defense_potion": {
+        "id": "defense_potion",
+        "name": "Зелье защиты",
+        "description": "Зелье, дающее чувство защищенности. Полезно в опасных ситуациях",
+        "type": "consumable",
+        "rarity": "rare",
+        "price": {
+          "currency": "coins",
+          "amount": 25
+        },
+        "sellPrice": 12,
+        "canSell": true,
+        "sprite": "sprites/items/consumable/defense potion.png"
+      },
+      "dryed_nightshade": {
+        "id": "dryed_nightshade",
+        "name": "Сушеный паслен",
+        "description": "Высушенный ядовитый паслен. Используется в алхимии",
+        "type": "consumable",
+        "rarity": "common",
+        "price": {
+          "currency": "coins",
+          "amount": 15
+        },
+        "sellPrice": 7,
+        "canSell": true,
+        "sprite": "sprites/items/consumable/dryed nightshade.png"
+      },
+      "earth_potion": {
+        "id": "earth_potion",
+        "name": "Земляное зелье",
+        "description": "Зелье, наполненное силой земли. Дает ощущение стабильности",
+        "type": "consumable",
+        "rarity": "common",
+        "price": {
+          "currency": "coins",
+          "amount": 15
+        },
+        "sellPrice": 7,
+        "canSell": true,
+        "sprite": "sprites/items/consumable/earth potion.png"
+      },
+      "elven_dew": {
+        "id": "elven_dew",
+        "name": "Эльфийская роса",
+        "description": "Магическая роса из эльфийских лесов. Редкий ингредиент",
+        "type": "consumable",
+        "rarity": "common",
+        "price": {
+          "currency": "coins",
+          "amount": 15
+        },
+        "sellPrice": 7,
+        "canSell": true,
+        "sprite": "sprites/items/consumable/elven dew.png"
+      },
+      "fairy_pollen": {
+        "id": "fairy_pollen",
+        "name": "Пыльца фей",
+        "description": "Светящаяся пыльца с цветов фей. Магический ингредиент",
+        "type": "consumable",
+        "rarity": "common",
+        "price": {
+          "currency": "coins",
+          "amount": 15
+        },
+        "sellPrice": 7,
+        "canSell": true,
+        "sprite": "sprites/items/consumable/fairy pollen.png"
+      },
+      "fire_berry": {
+        "id": "fire_berry",
+        "name": "Огненная ягода",
+        "description": "Горячая ягода с огненной энергией. Осторожно - обжигает!",
+        "type": "consumable",
+        "rarity": "common",
+        "price": {
+          "currency": "coins",
+          "amount": 15
+        },
+        "sellPrice": 7,
+        "canSell": true,
+        "sprite": "sprites/items/consumable/fire berry.png"
+      },
+      "fire_potion": {
+        "id": "fire_potion",
+        "name": "Огненное зелье",
+        "description": "Зелье с огненной магией. Согревает изнутри",
+        "type": "consumable",
+        "rarity": "common",
+        "price": {
+          "currency": "coins",
+          "amount": 15
+        },
+        "sellPrice": 7,
+        "canSell": true,
+        "sprite": "sprites/items/consumable/fire potion.png"
+      },
+      "ghost_essence": {
+        "id": "ghost_essence",
+        "name": "Эссенция призрака",
+        "description": "Концентрированная энергия призрака. Жуткий ингредиент",
+        "type": "consumable",
+        "rarity": "common",
+        "price": {
+          "currency": "coins",
+          "amount": 15
+        },
+        "sellPrice": 7,
+        "canSell": true,
+        "sprite": "sprites/items/consumable/ghost essence.png"
+      },
+      "gingerbread": {
+        "id": "gingerbread",
+        "name": "Имбирный пряник",
+        "description": "Вкусный пряник с имбирем. Теплый и уютный подарок",
+        "type": "consumable",
+        "rarity": "common",
+        "price": {
+          "currency": "coins",
+          "amount": 15
+        },
+        "sellPrice": 7,
+        "canSell": true,
+        "sprite": "sprites/items/consumable/gingerbread.png"
+      },
+      "glowshroom": {
+        "id": "glowshroom",
+        "name": "Светящийся гриб",
+        "description": "Гриб, излучающий мягкий свет. Красивый и полезный",
+        "type": "consumable",
+        "rarity": "common",
+        "price": {
+          "currency": "coins",
+          "amount": 15
+        },
+        "sellPrice": 7,
+        "canSell": true,
+        "sprite": "sprites/items/consumable/glowshroom.png"
+      },
+      "ice_potion": {
+        "id": "ice_potion",
+        "name": "Ледяное зелье",
+        "description": "Зелье с ледяной магией. Охлаждает в жаркий день",
+        "type": "consumable",
+        "rarity": "common",
+        "price": {
+          "currency": "coins",
+          "amount": 15
+        },
+        "sellPrice": 7,
+        "canSell": true,
+        "sprite": "sprites/items/consumable/ice potion.png"
+      },
+      "light_potion": {
+        "id": "light_potion",
+        "name": "Зелье света",
+        "description": "Зелье со светлой магией. Прогоняет тьму и страхи",
+        "type": "consumable",
+        "rarity": "common",
+        "price": {
+          "currency": "coins",
+          "amount": 15
+        },
+        "sellPrice": 7,
+        "canSell": true,
+        "sprite": "sprites/items/consumable/light potion.png"
+      },
+      "luck_potion": {
+        "id": "luck_potion",
+        "name": "Зелье удачи",
+        "description": "Зелье, приносящее удачу. Поможет в важных делах",
+        "type": "consumable",
+        "rarity": "rare",
+        "price": {
+          "currency": "coins",
+          "amount": 25
+        },
+        "sellPrice": 12,
+        "canSell": true,
+        "sprite": "sprites/items/consumable/luck potion.png"
+      },
+      "medicinal_herb": {
+        "id": "medicinal_herb",
+        "name": "Лечебная трава",
+        "description": "Целебная трава с лечебными свойствами. Поможет при недомогании",
+        "type": "consumable",
+        "rarity": "common",
+        "price": {
+          "currency": "coins",
+          "amount": 15
+        },
+        "sellPrice": 7,
+        "canSell": true,
+        "sprite": "sprites/items/consumable/medicinal herb.png"
+      },
+      "milk_bottle": {
+        "id": "milk_bottle",
+        "name": "Бутылка молока",
+        "description": "Свежее молоко в бутылке. Питательный напиток",
+        "type": "consumable",
+        "rarity": "common",
+        "price": {
+          "currency": "coins",
+          "amount": 15
+        },
+        "sellPrice": 7,
+        "canSell": true,
+        "sprite": "sprites/items/consumable/milk bottle.png"
+      },
+      "moondust": {
+        "id": "moondust",
+        "name": "Лунная пыль",
+        "description": "Магическая пыль, собранная при свете луны. Мистический ингредиент",
+        "type": "consumable",
+        "rarity": "common",
+        "price": {
+          "currency": "coins",
+          "amount": 15
+        },
+        "sellPrice": 7,
+        "canSell": true,
+        "sprite": "sprites/items/consumable/moondust.png"
+      },
+      "poison_potion": {
+        "id": "poison_potion",
+        "name": "Ядовитое зелье",
+        "description": "Опасное зелье с ядом. Может быть смертельным",
+        "type": "consumable",
+        "rarity": "mythical",
+        "price": {
+          "currency": "gems",
+          "amount": 30
+        },
+        "sellPrice": 0,
+        "canSell": false,
+        "sprite": "sprites/items/consumable/poison potion.png"
+      },
+      "present": {
+        "id": "present",
+        "name": "Подарок",
+        "description": "Загадочный подарок с сюрпризом внутри. Всегда приятно получить",
+        "type": "consumable",
+        "rarity": "common",
+        "price": {
+          "currency": "coins",
+          "amount": 15
+        },
+        "sellPrice": 7,
+        "canSell": true,
+        "sprite": "sprites/items/consumable/present.png"
+      },
+      "regeneration_potion": {
+        "id": "regeneration_potion",
+        "name": "Зелье регенерации",
+        "description": "Зелье, ускоряющее восстановление. Поможет выздороветь быстрее",
+        "type": "consumable",
+        "rarity": "common",
+        "price": {
+          "currency": "coins",
+          "amount": 15
+        },
+        "sellPrice": 7,
+        "canSell": true,
+        "sprite": "sprites/items/consumable/regeneration potion.png"
+      },
+      "thunder_potion": {
+        "id": "thunder_potion",
+        "name": "Громовое зелье",
+        "description": "Зелье с электрической энергией. Бодрит и заряжает энергией",
+        "type": "consumable",
+        "rarity": "common",
+        "price": {
+          "currency": "coins",
+          "amount": 15
+        },
+        "sellPrice": 7,
+        "canSell": true,
+        "sprite": "sprites/items/consumable/thunder potion.png"
+      },
+      "water_berry": {
+        "id": "water_berry",
+        "name": "Водная ягода",
+        "description": "Сочная ягода, наполненная влагой. Утоляет жажду",
+        "type": "consumable",
+        "rarity": "common",
+        "price": {
+          "currency": "coins",
+          "amount": 15
+        },
+        "sellPrice": 7,
+        "canSell": true,
+        "sprite": "sprites/items/consumable/water berry.png"
+      },
+      "water_potion": {
+        "id": "water_potion",
+        "name": "Водное зелье",
+        "description": "Зелье с водной магией. Успокаивает и освежает",
+        "type": "consumable",
+        "rarity": "common",
+        "price": {
+          "currency": "coins",
+          "amount": 15
+        },
+        "sellPrice": 7,
+        "canSell": true,
+        "sprite": "sprites/items/consumable/water potion.png"
+      },
+      "will_potion": {
+        "id": "will_potion",
+        "name": "Зелье воли",
+        "description": "Зелье, укрепляющее силу воли. Поможет преодолеть трудности",
+        "type": "consumable",
+        "rarity": "rare",
+        "price": {
+          "currency": "coins",
+          "amount": 25
+        },
+        "sellPrice": 12,
+        "canSell": true,
+        "sprite": "sprites/items/consumable/will potion.png"
+      },
+      "wind_potion": {
+        "id": "wind_potion",
+        "name": "Ветреное зелье",
+        "description": "Зелье с силой ветра. Дает ощущение свободы и легкости",
+        "type": "consumable",
+        "rarity": "common",
+        "price": {
+          "currency": "coins",
+          "amount": 15
+        },
+        "sellPrice": 7,
+        "canSell": true,
+        "sprite": "sprites/items/consumable/wind potion.png"
+      }
+    },
+    "material": {
+      "bone": {
+        "id": "bone",
+        "name": "Кость",
+        "description": "Обычная кость животного. Используется в ремеслах",
+        "type": "material",
+        "rarity": "common",
+        "price": {
+          "currency": "coins",
+          "amount": 5
+        },
+        "sellPrice": 2,
+        "canSell": true,
+        "sprite": "sprites/items/materials/bone.png"
+      },
+      "fabric": {
+        "id": "fabric",
+        "name": "Ткань",
+        "description": "Качественная ткань для пошива одежды. Ценится портными",
+        "type": "material",
+        "rarity": "common",
+        "price": {
+          "currency": "coins",
+          "amount": 8
+        },
+        "sellPrice": 4,
+        "canSell": true,
+        "sprite": "sprites/items/materials/fabric.png"
+      },
+      "bronze_ingot": {
+        "id": "bronze_ingot",
+        "name": "Бронзовый слиток",
+        "description": "Прочный бронзовый слиток. Популярен у кузнецов",
+        "type": "material",
+        "rarity": "common",
+        "price": {
+          "currency": "coins",
+          "amount": 12
+        },
+        "sellPrice": 6,
+        "canSell": true,
+        "sprite": "sprites/items/materials/bronze ingot.png"
+      },
+      "silver_ingot": {
+        "id": "silver_ingot",
+        "name": "Серебряный слиток",
+        "description": "Драгоценный серебряный слиток. Используется в ювелирном деле",
+        "type": "material",
+        "rarity": "rare",
+        "price": {
+          "currency": "coins",
+          "amount": 35
+        },
+        "sellPrice": 17,
+        "canSell": true,
+        "sprite": "sprites/items/materials/silver ingot.png"
+      },
+      "gold_ingot": {
+        "id": "gold_ingot",
+        "name": "Золотой слиток",
+        "description": "Очень ценный золотой слиток. Королевский материал",
+        "type": "material",
+        "rarity": "rare",
+        "price": {
+          "currency": "coins",
+          "amount": 75
+        },
+        "sellPrice": 37,
+        "canSell": true,
+        "sprite": "sprites/items/materials/gold ingot.png"
+      },
+      "mythril_ingot": {
+        "id": "mythril_ingot",
+        "name": "Мифриловый слиток",
+        "description": "Легендарный мифриловый слиток. Материал для элитных изделий",
+        "type": "material",
+        "rarity": "mythical",
+        "price": {
+          "currency": "gems",
+          "amount": 15
+        },
+        "sellPrice": 0,
+        "canSell": false,
+        "sprite": "sprites/items/materials/mythril ingot.png"
+      },
+      "phoenix_feather": {
+        "id": "phoenix_feather",
+        "name": "Перо феникса",
+        "description": "Мистическое перо феникса. Бесценный артефакт",
+        "type": "material",
+        "rarity": "legendary",
+        "price": {
+          "currency": "gems",
+          "amount": 100
+        },
+        "sellPrice": 0,
+        "canSell": false,
+        "sprite": "sprites/items/materials/phoenix feather.png"
+      },
+      "ancient_tablet": {
+        "id": "ancient_tablet",
+        "name": "Древняя табличка",
+        "description": "Древний артефакт с загадочными письменами",
+        "type": "material",
+        "rarity": "legendary",
+        "price": {
+          "currency": "gems",
+          "amount": 100
+        },
+        "sellPrice": 0,
+        "canSell": false,
+        "sprite": "sprites/items/materials/ancient tablet.png"
+      },
+      "basilisk_scale": {
+        "id": "basilisk_scale",
+        "name": "Чешуя василиска",
+        "description": "Прочная чешуя мифического змея",
+        "type": "material",
+        "rarity": "common",
+        "price": {
+          "currency": "coins",
+          "amount": 10
+        },
+        "sellPrice": 5,
+        "canSell": true,
+        "sprite": "sprites/items/materials/basilisk scale.png"
+      },
+      "colorful_coral": {
+        "id": "colorful_coral",
+        "name": "Цветной коралл",
+        "description": "Яркий коралл из морских глубин",
+        "type": "material",
+        "rarity": "common",
+        "price": {
+          "currency": "coins",
+          "amount": 10
+        },
+        "sellPrice": 5,
+        "canSell": true,
+        "sprite": "sprites/items/materials/colorful coral.png"
+      },
+      "crab_claw": {
+        "id": "crab_claw",
+        "name": "Клешня краба",
+        "description": "Острая клешня морского краба",
+        "type": "material",
+        "rarity": "common",
+        "price": {
+          "currency": "coins",
+          "amount": 10
+        },
+        "sellPrice": 5,
+        "canSell": true,
+        "sprite": "sprites/items/materials/crab claw.png"
+      },
+      "earthbound_rock": {
+        "id": "earthbound_rock",
+        "name": "Земной камень",
+        "description": "Камень, наполненный силой земли",
+        "type": "material",
+        "rarity": "common",
+        "price": {
+          "currency": "coins",
+          "amount": 10
+        },
+        "sellPrice": 5,
+        "canSell": true,
+        "sprite": "sprites/items/materials/earthbound rock.png"
+      },
+      "enchanted_obsidian": {
+        "id": "enchanted_obsidian",
+        "name": "Зачарованный обсидиан",
+        "description": "Магический обсидиан с древними рунами",
+        "type": "material",
+        "rarity": "mythical",
+        "price": {
+          "currency": "gems",
+          "amount": 50
+        },
+        "sellPrice": 0,
+        "canSell": false,
+        "sprite": "sprites/items/materials/enchanted obsidian.png"
+      },
+      "griffin_wing": {
+        "id": "griffin_wing",
+        "name": "Крыло грифона",
+        "description": "Мощное крыло мифического грифона",
+        "type": "material",
+        "rarity": "rare",
+        "price": {
+          "currency": "coins",
+          "amount": 25
+        },
+        "sellPrice": 12,
+        "canSell": true,
+        "sprite": "sprites/items/materials/griffin wing.png"
+      },
+      "magestone": {
+        "id": "magestone",
+        "name": "Магический камень",
+        "description": "Камень, излучающий магическую энергию",
+        "type": "material",
+        "rarity": "mythical",
+        "price": {
+          "currency": "gems",
+          "amount": 50
+        },
+        "sellPrice": 0,
+        "canSell": false,
+        "sprite": "sprites/items/materials/magestone.png"
+      },
+      "mandrake_root": {
+        "id": "mandrake_root",
+        "name": "Корень мандрагоры",
+        "description": "Магический корень с целебными свойствами",
+        "type": "material",
+        "rarity": "common",
+        "price": {
+          "currency": "coins",
+          "amount": 10
+        },
+        "sellPrice": 5,
+        "canSell": true,
+        "sprite": "sprites/items/materials/mandrake root.png"
+      },
+      "moonlit_pearl": {
+        "id": "moonlit_pearl",
+        "name": "Лунная жемчужина",
+        "description": "Жемчужина, светящаяся лунным светом",
+        "type": "material",
+        "rarity": "mythical",
+        "price": {
+          "currency": "gems",
+          "amount": 50
+        },
+        "sellPrice": 0,
+        "canSell": false,
+        "sprite": "sprites/items/materials/moonlit pearl.png"
+      },
+      "ogre_toenail": {
+        "id": "ogre_toenail",
+        "name": "Ноготь огра",
+        "description": "Прочный ноготь большого огра",
+        "type": "material",
+        "rarity": "common",
+        "price": {
+          "currency": "coins",
+          "amount": 10
+        },
+        "sellPrice": 5,
+        "canSell": true,
+        "sprite": "sprites/items/materials/ogre toenail.png"
+      },
+      "parchment": {
+        "id": "parchment",
+        "name": "Пергамент",
+        "description": "Древний пергамент для записи заклинаний",
+        "type": "material",
+        "rarity": "common",
+        "price": {
+          "currency": "coins",
+          "amount": 10
+        },
+        "sellPrice": 5,
+        "canSell": true,
+        "sprite": "sprites/items/materials/parchment.png"
+      },
+      "shadow_root": {
+        "id": "shadow_root",
+        "name": "Теневой корень",
+        "description": "Корень, растущий в тенях",
+        "type": "material",
+        "rarity": "common",
+        "price": {
+          "currency": "coins",
+          "amount": 10
+        },
+        "sellPrice": 5,
+        "canSell": true,
+        "sprite": "sprites/items/materials/shadow root.png"
+      },
+      "silk": {
+        "id": "silk",
+        "name": "Шелк",
+        "description": "Мягкий и прочный шелк",
+        "type": "material",
+        "rarity": "common",
+        "price": {
+          "currency": "coins",
+          "amount": 10
+        },
+        "sellPrice": 5,
+        "canSell": true,
+        "sprite": "sprites/items/materials/silk.png"
+      },
+      "siren_scale": {
+        "id": "siren_scale",
+        "name": "Чешуя сирены",
+        "description": "Переливающаяся чешуя морской сирены",
+        "type": "material",
+        "rarity": "common",
+        "price": {
+          "currency": "coins",
+          "amount": 10
+        },
+        "sellPrice": 5,
+        "canSell": true,
+        "sprite": "sprites/items/materials/siren scale.png"
+      },
+      "slime_ball": {
+        "id": "slime_ball",
+        "name": "Слизневый шар",
+        "description": "Липкий шар из слизи",
+        "type": "material",
+        "rarity": "common",
+        "price": {
+          "currency": "coins",
+          "amount": 10
+        },
+        "sellPrice": 5,
+        "canSell": true,
+        "sprite": "sprites/items/materials/slime ball.png"
+      },
+      "sprite_wing": {
+        "id": "sprite_wing",
+        "name": "Крыло спрайта",
+        "description": "Нежное крыло лесного спрайта",
+        "type": "material",
+        "rarity": "common",
+        "price": {
+          "currency": "coins",
+          "amount": 10
+        },
+        "sellPrice": 5,
+        "canSell": true,
+        "sprite": "sprites/items/materials/sprite wing.png"
+      },
+      "sugar_cane": {
+        "id": "sugar_cane",
+        "name": "Сахарный тростник",
+        "description": "Сладкий тростник для приготовления сахара",
+        "type": "material",
+        "rarity": "common",
+        "price": {
+          "currency": "coins",
+          "amount": 10
+        },
+        "sellPrice": 5,
+        "canSell": true,
+        "sprite": "sprites/items/materials/sugar cane.png"
+      },
+      "troll_tooth": {
+        "id": "troll_tooth",
+        "name": "Зуб тролля",
+        "description": "Острый зуб большого тролля",
+        "type": "material",
+        "rarity": "common",
+        "price": {
+          "currency": "coins",
+          "amount": 10
+        },
+        "sellPrice": 5,
+        "canSell": true,
+        "sprite": "sprites/items/materials/troll tooth.png"
+      },
+      "wolf_fur": {
+        "id": "wolf_fur",
+        "name": "Волчья шкура",
+        "description": "Теплая шкура дикого волка",
+        "type": "material",
+        "rarity": "common",
+        "price": {
+          "currency": "coins",
+          "amount": 10
+        },
+        "sellPrice": 5,
+        "canSell": true,
+        "sprite": "sprites/items/materials/wolf fur.png"
+      }
+    },
+    "special": {
+      "fire_crystal": {
+        "id": "fire_crystal",
+        "name": "Огненный кристалл",
+        "description": "Магический кристалл с огненной энергией. Уникальный артефакт",
+        "type": "special",
+        "rarity": "rare",
+        "price": {
+          "currency": "gems",
+          "amount": 30
+        },
+        "sellPrice": 0,
+        "canSell": false,
+        "sprite": "sprites/items/special/fire crystal.png"
+      },
+      "ice_crystal": {
+        "id": "ice_crystal",
+        "name": "Ледяной кристалл",
+        "description": "Магический кристалл с ледяной энергией. Уникальный артефакт",
+        "type": "special",
+        "rarity": "rare",
+        "price": {
+          "currency": "gems",
+          "amount": 30
+        },
+        "sellPrice": 0,
+        "canSell": false,
+        "sprite": "sprites/items/special/ice crystal.png"
+      },
+      "light_crystal": {
+        "id": "light_crystal",
+        "name": "Кристалл света",
+        "description": "Магический кристалл со светлой энергией. Уникальный артефакт",
+        "type": "special",
+        "rarity": "mythical",
+        "price": {
+          "currency": "gems",
+          "amount": 75
+        },
+        "sellPrice": 0,
+        "canSell": false,
+        "sprite": "sprites/items/special/light crystal.png"
+      },
+      "darkness_crystal": {
+        "id": "darkness_crystal",
+        "name": "Кристалл тьмы",
+        "description": "Магический кристалл с темной энергией. Уникальный артефакт",
+        "type": "special",
+        "rarity": "mythical",
+        "price": {
+          "currency": "gems",
+          "amount": 75
+        },
+        "sellPrice": 0,
+        "canSell": false,
+        "sprite": "sprites/items/special/darkness crystal.png"
+      },
+      "holy_book": {
+        "id": "holy_book",
+        "name": "Святая книга",
+        "description": "Древний том священной магии. Уникальный артефакт",
+        "type": "special",
+        "rarity": "legendary",
+        "price": {
+          "currency": "gems",
+          "amount": 150
+        },
+        "sellPrice": 0,
+        "canSell": false,
+        "sprite": "sprites/items/special/holy book.png"
+      }
+    },
+    "pet": {
+      "slime": {
+        "id": "slime",
+        "name": "Слайм",
+        "description": "Милое слизистое создание",
+        "type": "pet",
+        "rarity": "common",
+        "price": {
+          "currency": "coins",
+          "amount": 100
+        },
+        "sellPrice": 0,
+        "canSell": false,
+        "sprite": "sprites/items/pets/slime.png",
+        "scary": false,
+        "can_get_in_scenes": true,
+        "special": {
+          "type": "money",
+          "increase": 15
+        }
+      },
+      "rat": {
+        "id": "rat",
+        "name": "Крыса",
+        "description": "Маленький грызун",
+        "type": "pet",
+        "rarity": "common",
+        "price": {
+          "currency": "coins",
+          "amount": 100
+        },
+        "sellPrice": 0,
+        "canSell": false,
+        "sprite": "sprites/items/pets/rat.png",
+        "scary": false,
+        "can_get_in_scenes": true,
+        "special": {
+          "type": "relation",
+          "increase": 10
+        }
+      },
+      "frog": {
+        "id": "frog",
+        "name": "Лягушка",
+        "description": "Зеленая квакушка",
+        "type": "pet",
+        "rarity": "common",
+        "price": {
+          "currency": "coins",
+          "amount": 100
+        },
+        "sellPrice": 0,
+        "canSell": false,
+        "sprite": "sprites/items/pets/frog.png",
+        "scary": false,
+        "can_get_in_scenes": true,
+        "special": {
+          "type": "money",
+          "increase": 25
+        }
+      },
+      "fish": {
+        "id": "fish",
+        "name": "Рыба",
+        "description": "Обычная рыбка",
+        "type": "pet",
+        "rarity": "common",
+        "price": {
+          "currency": "coins",
+          "amount": 100
+        },
+        "sellPrice": 0,
+        "canSell": false,
+        "sprite": "sprites/items/pets/fish.png",
+        "scary": false,
+        "can_get_in_scenes": true,
+        "special": {
+          "type": "reroll",
+          "count": 1
+        }
+      },
+      "sheep": {
+        "id": "sheep",
+        "name": "Овца",
+        "description": "Пушистая овечка",
+        "type": "pet",
+        "rarity": "common",
+        "price": {
+          "currency": "coins",
+          "amount": 100
+        },
+        "sellPrice": 0,
+        "canSell": false,
+        "sprite": "sprites/items/pets/sheep.png",
+        "scary": false,
+        "can_get_in_scenes": true,
+        "special": {
+          "type": "price",
+          "value": 200
+        }
+      },
+      "turtle": {
+        "id": "turtle",
+        "name": "Черепаха",
+        "description": "Медлительная черепаха",
+        "type": "pet",
+        "rarity": "common",
+        "price": {
+          "currency": "coins",
+          "amount": 100
+        },
+        "sellPrice": 0,
+        "canSell": false,
+        "sprite": "sprites/items/pets/turtle.png",
+        "scary": false,
+        "can_get_in_scenes": true,
+        "special": {
+          "type": "stat",
+          "stat_type": "charisma",
+          "bonus": 1
+        }
+      },
+      "crab": {
+        "id": "crab",
+        "name": "Краб",
+        "description": "Клешнистый краб",
+        "type": "pet",
+        "rarity": "common",
+        "price": {
+          "currency": "coins",
+          "amount": 100
+        },
+        "sellPrice": 0,
+        "canSell": false,
+        "sprite": "sprites/items/pets/crab.png",
+        "scary": false,
+        "can_get_in_scenes": true,
+        "special": {
+          "type": "stat",
+          "stat_type": "coldness",
+          "bonus": 1
+        }
+      },
+      "spider": {
+        "id": "spider",
+        "name": "Паук",
+        "description": "Восьминогий паук",
+        "type": "pet",
+        "rarity": "common",
+        "price": {
+          "currency": "coins",
+          "amount": 100
+        },
+        "sellPrice": 0,
+        "canSell": false,
+        "sprite": "sprites/items/pets/spider.png",
+        "scary": true,
+        "can_get_in_scenes": false,
+        "special": {
+          "type": "stat",
+          "stat_type": "sensitivity",
+          "bonus": 1
+        }
+      },
+      "snake": {
+        "id": "snake",
+        "name": "Змея",
+        "description": "Извивающаяся змея",
+        "type": "pet",
+        "rarity": "common",
+        "price": {
+          "currency": "coins",
+          "amount": 100
+        },
+        "sellPrice": 0,
+        "canSell": false,
+        "sprite": "sprites/items/pets/snake.png",
+        "scary": true,
+        "can_get_in_scenes": false,
+        "special": {
+          "type": "stat",
+          "stat_type": "cunning",
+          "bonus": 1
+        }
+      },
+      "bat": {
+        "id": "bat",
+        "name": "Летучая мышь",
+        "description": "Ночная летучая мышь",
+        "type": "pet",
+        "rarity": "common",
+        "price": {
+          "currency": "coins",
+          "amount": 100
+        },
+        "sellPrice": 0,
+        "canSell": false,
+        "sprite": "sprites/items/pets/bat.png",
+        "scary": true,
+        "can_get_in_scenes": false,
+        "special": {
+          "type": "stat",
+          "stat_type": "determination",
+          "bonus": 1
+        }
+      },
+      "monkey": {
+        "id": "monkey",
+        "name": "Обезьяна",
+        "description": "Игривая обезьянка",
+        "type": "pet",
+        "rarity": "common",
+        "price": {
+          "currency": "coins",
+          "amount": 100
+        },
+        "sellPrice": 0,
+        "canSell": false,
+        "sprite": "sprites/items/pets/monkey.png",
+        "scary": false,
+        "can_get_in_scenes": true,
+        "special": {
+          "type": "stat",
+          "stat_type": "intelligence",
+          "bonus": 1
+        }
+      },
+      "fox": {
+        "id": "fox",
+        "name": "Лиса",
+        "description": "Рыжая лиса",
+        "type": "pet",
+        "rarity": "common",
+        "price": {
+          "currency": "coins",
+          "amount": 100
+        },
+        "sellPrice": 0,
+        "canSell": false,
+        "sprite": "sprites/items/pets/fox.png",
+        "scary": false,
+        "can_get_in_scenes": true,
+        "special": {
+          "type": "relation",
+          "increase": 15
+        }
+      },
+      "wolf": {
+        "id": "wolf",
+        "name": "Волк",
+        "description": "Дикий волк",
+        "type": "pet",
+        "rarity": "common",
+        "price": {
+          "currency": "coins",
+          "amount": 100
+        },
+        "sellPrice": 0,
+        "canSell": false,
+        "sprite": "sprites/items/pets/wolf.png",
+        "scary": true,
+        "can_get_in_scenes": false,
+        "special": {
+          "type": "relation",
+          "increase": 25
+        }
+      },
+      "plant": {
+        "id": "plant",
+        "name": "Растение",
+        "description": "Живое растение",
+        "type": "pet",
+        "rarity": "common",
+        "price": {
+          "currency": "coins",
+          "amount": 100
+        },
+        "sellPrice": 0,
+        "canSell": false,
+        "sprite": "sprites/items/pets/plant.png",
+        "scary": false,
+        "can_get_in_scenes": true,
+        "special": {
+          "type": "money",
+          "increase": 50
+        }
+      },
+      "scallop": {
+        "id": "scallop",
+        "name": "Морской гребешок",
+        "description": "Морской моллюск",
+        "type": "pet",
+        "rarity": "common",
+        "price": {
+          "currency": "coins",
+          "amount": 100
+        },
+        "sellPrice": 0,
+        "canSell": false,
+        "sprite": "sprites/items/pets/scallop.png",
+        "scary": false,
+        "can_get_in_scenes": true,
+        "special": {
+          "type": "price",
+          "value": 200
+        }
+      },
+      "fairy": {
+        "id": "fairy",
+        "name": "Фея",
+        "description": "Магическое существо",
+        "type": "pet",
+        "rarity": "mythical",
+        "price": {
+          "currency": "gems",
+          "amount": 25
+        },
+        "sellPrice": 0,
+        "canSell": false,
+        "sprite": "sprites/items/pets/fairy.png",
+        "scary": false,
+        "can_get_in_scenes": true,
+        "special": {
+          "type": "stat",
+          "stat_type": "charisma",
+          "bonus": 2
+        }
+      },
+      "big_slime": {
+        "id": "big_slime",
+        "name": "Большой слайм",
+        "description": "Увеличенный слайм",
+        "type": "pet",
+        "rarity": "rare",
+        "price": {
+          "currency": "coins",
+          "amount": 120
+        },
+        "sellPrice": 0,
+        "canSell": false,
+        "sprite": "sprites/items/pets/big slime.png",
+        "scary": false,
+        "can_get_in_scenes": true,
+        "special": {
+          "type": "money",
+          "increase": 75
+        }
+      },
+      "fire_slime": {
+        "id": "fire_slime",
+        "name": "Огненный слайм",
+        "description": "Горящий слайм",
+        "type": "pet",
+        "rarity": "rare",
+        "price": {
+          "currency": "coins",
+          "amount": 136
+        },
+        "sellPrice": 0,
+        "canSell": false,
+        "sprite": "sprites/items/pets/fire slime.png",
+        "scary": false,
+        "can_get_in_scenes": true,
+        "special": {
+          "type": "relation",
+          "increase": 25
+        }
+      },
+      "nature_slime": {
+        "id": "nature_slime",
+        "name": "Природный слайм",
+        "description": "Зеленый слайм",
+        "type": "pet",
+        "rarity": "rare",
+        "price": {
+          "currency": "coins",
+          "amount": 126
+        },
+        "sellPrice": 0,
+        "canSell": false,
+        "sprite": "sprites/items/pets/nature slime.png",
+        "scary": false,
+        "can_get_in_scenes": true,
+        "special": {
+          "type": "money",
+          "increase": 50
+        }
+      },
+      "thunder_slime": {
+        "id": "thunder_slime",
+        "name": "Громовой слайм",
+        "description": "Электрический слайм",
+        "type": "pet",
+        "rarity": "rare",
+        "price": {
+          "currency": "coins",
+          "amount": 144
+        },
+        "sellPrice": 0,
+        "canSell": false,
+        "sprite": "sprites/items/pets/thunder slime.png",
+        "scary": false,
+        "can_get_in_scenes": true,
+        "special": {
+          "type": "reroll",
+          "count": 1
+        }
+      },
+      "frost_sprite": {
+        "id": "frost_sprite",
+        "name": "Ледяной дух",
+        "description": "Холодный дух",
+        "type": "pet",
+        "rarity": "rare",
+        "price": {
+          "currency": "coins",
+          "amount": 166
+        },
+        "sellPrice": 0,
+        "canSell": false,
+        "sprite": "sprites/items/pets/frost sprite.png",
+        "scary": false,
+        "can_get_in_scenes": true,
+        "special": {
+          "type": "price",
+          "value": 332
+        }
+      },
+      "fire_wisp": {
+        "id": "fire_wisp",
+        "name": "Огненный огонек",
+        "description": "Пламенный дух",
+        "type": "pet",
+        "rarity": "rare",
+        "price": {
+          "currency": "coins",
+          "amount": 156
+        },
+        "sellPrice": 0,
+        "canSell": false,
+        "sprite": "sprites/items/pets/fire wisp.png",
+        "scary": false,
+        "can_get_in_scenes": true,
+        "special": {
+          "type": "stat",
+          "stat_type": "coldness",
+          "bonus": 2
+        }
+      },
+      "whispering_wisp": {
+        "id": "whispering_wisp",
+        "name": "Шепчущий огонек",
+        "description": "Говорящий дух",
+        "type": "pet",
+        "rarity": "rare",
+        "price": {
+          "currency": "coins",
+          "amount": 180
+        },
+        "sellPrice": 0,
+        "canSell": false,
+        "sprite": "sprites/items/pets/whispering wisp.png",
+        "scary": false,
+        "can_get_in_scenes": true,
+        "special": {
+          "type": "stat",
+          "stat_type": "sensitivity",
+          "bonus": 2
+        }
+      },
+      "plant_sprite": {
+        "id": "plant_sprite",
+        "name": "Дух растения",
+        "description": "Растительный дух",
+        "type": "pet",
+        "rarity": "rare",
+        "price": {
+          "currency": "coins",
+          "amount": 136
+        },
+        "sellPrice": 0,
+        "canSell": false,
+        "sprite": "sprites/items/pets/plant sprite.png",
+        "scary": false,
+        "can_get_in_scenes": true,
+        "special": {
+          "type": "stat",
+          "stat_type": "cunning",
+          "bonus": 2
+        }
+      },
+      "fluffy_bear": {
+        "id": "fluffy_bear",
+        "name": "Пушистый медведь",
+        "description": "Мягкий медведь",
+        "type": "pet",
+        "rarity": "rare",
+        "price": {
+          "currency": "coins",
+          "amount": 196
+        },
+        "sellPrice": 0,
+        "canSell": false,
+        "sprite": "sprites/items/pets/fluffy bear.png",
+        "scary": false,
+        "can_get_in_scenes": true,
+        "special": {
+          "type": "stat",
+          "stat_type": "determination",
+          "bonus": 2
+        }
+      },
+      "horned_rabbit": {
+        "id": "horned_rabbit",
+        "name": "Рогатый кролик",
+        "description": "Кролик с рогами",
+        "type": "pet",
+        "rarity": "rare",
+        "price": {
+          "currency": "coins",
+          "amount": 166
+        },
+        "sellPrice": 0,
+        "canSell": false,
+        "sprite": "sprites/items/pets/horned rabbit.png",
+        "scary": false,
+        "can_get_in_scenes": true,
+        "special": {
+          "type": "stat",
+          "stat_type": "intelligence",
+          "bonus": 2
+        }
+      },
+      "tiger": {
+        "id": "tiger",
+        "name": "Тигр",
+        "description": "Полосатый хищник",
+        "type": "pet",
+        "rarity": "rare",
+        "price": {
+          "currency": "coins",
+          "amount": 210
+        },
+        "sellPrice": 0,
+        "canSell": false,
+        "sprite": "sprites/items/pets/tiger.png",
+        "scary": true,
+        "can_get_in_scenes": false,
+        "special": {
+          "type": "relation",
+          "increase": 35
+        }
+      },
+      "crocodile": {
+        "id": "crocodile",
+        "name": "Крокодил",
+        "description": "Зубастый крокодил",
+        "type": "pet",
+        "rarity": "rare",
+        "price": {
+          "currency": "coins",
+          "amount": 204
+        },
+        "sellPrice": 0,
+        "canSell": false,
+        "sprite": "sprites/items/pets/crocodile.png",
+        "scary": true,
+        "can_get_in_scenes": false,
+        "special": {
+          "type": "relation",
+          "increase": 25
+        }
+      },
+      "shark": {
+        "id": "shark",
+        "name": "Акула",
+        "description": "Морской хищник",
+        "type": "pet",
+        "rarity": "rare",
+        "price": {
+          "currency": "coins",
+          "amount": 226
+        },
+        "sellPrice": 0,
+        "canSell": false,
+        "sprite": "sprites/items/pets/shark.png",
+        "scary": true,
+        "can_get_in_scenes": false,
+        "special": {
+          "type": "money",
+          "increase": 50
+        }
+      },
+      "raven": {
+        "id": "raven",
+        "name": "Ворон",
+        "description": "Мудрый ворон",
+        "type": "pet",
+        "rarity": "rare",
+        "price": {
+          "currency": "coins",
+          "amount": 150
+        },
+        "sellPrice": 0,
+        "canSell": false,
+        "sprite": "sprites/items/pets/raven.png",
+        "scary": false,
+        "can_get_in_scenes": true,
+        "special": {
+          "type": "reroll",
+          "count": 1
+        }
+      },
+      "goblin": {
+        "id": "goblin",
+        "name": "Гоблин",
+        "description": "Маленький гоблин",
+        "type": "pet",
+        "rarity": "rare",
+        "price": {
+          "currency": "coins",
+          "amount": 136
+        },
+        "sellPrice": 0,
+        "canSell": false,
+        "sprite": "sprites/items/pets/goblin.png",
+        "scary": true,
+        "can_get_in_scenes": false,
+        "special": {
+          "type": "price",
+          "value": 272
+        }
+      },
+      "goblin_swordfighter": {
+        "id": "goblin_swordfighter",
+        "name": "Гоблин-мечник",
+        "description": "Вооруженный гоблин",
+        "type": "pet",
+        "rarity": "rare",
+        "price": {
+          "currency": "coins",
+          "amount": 180
+        },
+        "sellPrice": 0,
+        "canSell": false,
+        "sprite": "sprites/items/pets/goblin swordfighter.png",
+        "scary": true,
+        "can_get_in_scenes": false,
+        "special": {
+          "type": "stat",
+          "stat_type": "charisma",
+          "bonus": 2
+        }
+      },
+      "red_imp": {
+        "id": "red_imp",
+        "name": "Красный бес",
+        "description": "Огненный бес",
+        "type": "pet",
+        "rarity": "rare",
+        "price": {
+          "currency": "coins",
+          "amount": 136
+        },
+        "sellPrice": 0,
+        "canSell": false,
+        "sprite": "sprites/items/pets/red imp.png",
+        "scary": true,
+        "can_get_in_scenes": false,
+        "special": {
+          "type": "stat",
+          "stat_type": "coldness",
+          "bonus": 2
+        }
+      },
+      "black_imp": {
+        "id": "black_imp",
+        "name": "Черный бес",
+        "description": "Темный бес",
+        "type": "pet",
+        "rarity": "rare",
+        "price": {
+          "currency": "coins",
+          "amount": 150
+        },
+        "sellPrice": 0,
+        "canSell": false,
+        "sprite": "sprites/items/pets/black imp.png",
+        "scary": true,
+        "can_get_in_scenes": false,
+        "special": {
+          "type": "stat",
+          "stat_type": "sensitivity",
+          "bonus": 2
+        }
+      },
+      "golem": {
+        "id": "golem",
+        "name": "Голем",
+        "description": "Каменный голем",
+        "type": "pet",
+        "rarity": "rare",
+        "price": {
+          "currency": "coins",
+          "amount": 240
+        },
+        "sellPrice": 0,
+        "canSell": false,
+        "sprite": "sprites/items/pets/golem.png",
+        "scary": true,
+        "can_get_in_scenes": false,
+        "special": {
+          "type": "stat",
+          "stat_type": "cunning",
+          "bonus": 2
+        }
+      },
+      "clay_golem": {
+        "id": "clay_golem",
+        "name": "Глиняный голем",
+        "description": "Глиняный страж",
+        "type": "pet",
+        "rarity": "rare",
+        "price": {
+          "currency": "coins",
+          "amount": 210
+        },
+        "sellPrice": 0,
+        "canSell": false,
+        "sprite": "sprites/items/pets/clay golem.png",
+        "scary": true,
+        "can_get_in_scenes": false,
+        "special": {
+          "type": "stat",
+          "stat_type": "determination",
+          "bonus": 2
+        }
+      },
+      "automaton_fighter": {
+        "id": "automaton_fighter",
+        "name": "Автомат-боец",
+        "description": "Механический боец",
+        "type": "pet",
+        "rarity": "rare",
+        "price": {
+          "currency": "coins",
+          "amount": 256
+        },
+        "sellPrice": 0,
+        "canSell": false,
+        "sprite": "sprites/items/pets/automaton fighter.png",
+        "scary": true,
+        "can_get_in_scenes": false,
+        "special": {
+          "type": "stat",
+          "stat_type": "intelligence",
+          "bonus": 2
+        }
+      },
+      "cyber_minibot": {
+        "id": "cyber_minibot",
+        "name": "Кибер-миник",
+        "description": "Маленький робот",
+        "type": "pet",
+        "rarity": "rare",
+        "price": {
+          "currency": "coins",
+          "amount": 226
+        },
+        "sellPrice": 0,
+        "canSell": false,
+        "sprite": "sprites/items/pets/cyber minibot.png",
+        "scary": false,
+        "can_get_in_scenes": true,
+        "special": {
+          "type": "money",
+          "increase": 100
+        }
+      },
+      "cyber_unit": {
+        "id": "cyber_unit",
+        "name": "Кибер-юнит",
+        "description": "Боевой робот",
+        "type": "pet",
+        "rarity": "rare",
+        "price": {
+          "currency": "coins",
+          "amount": 270
+        },
+        "sellPrice": 0,
+        "canSell": false,
+        "sprite": "sprites/items/pets/cyber unit.png",
+        "scary": true,
+        "can_get_in_scenes": false,
+        "special": {
+          "type": "relation",
+          "increase": 25
+        }
+      },
+      "cyber_fighter": {
+        "id": "cyber_fighter",
+        "name": "Кибер-боец",
+        "description": "Робот-воин",
+        "type": "pet",
+        "rarity": "rare",
+        "price": {
+          "currency": "coins",
+          "amount": 286
+        },
+        "sellPrice": 0,
+        "canSell": false,
+        "sprite": "sprites/items/pets/cyber fighter.png",
+        "scary": true,
+        "can_get_in_scenes": false,
+        "special": {
+          "type": "money",
+          "increase": 50
+        }
+      },
+      "fire_robot": {
+        "id": "fire_robot",
+        "name": "Огненный робот",
+        "description": "Горящий робот",
+        "type": "pet",
+        "rarity": "rare",
+        "price": {
+          "currency": "coins",
+          "amount": 264
+        },
+        "sellPrice": 0,
+        "canSell": false,
+        "sprite": "sprites/items/pets/fire robot.png",
+        "scary": true,
+        "can_get_in_scenes": false,
+        "special": {
+          "type": "reroll",
+          "count": 1
+        }
+      },
+      "ice_robot": {
+        "id": "ice_robot",
+        "name": "Ледяной робот",
+        "description": "Холодный робот",
+        "type": "pet",
+        "rarity": "rare",
+        "price": {
+          "currency": "coins",
+          "amount": 256
+        },
+        "sellPrice": 0,
+        "canSell": false,
+        "sprite": "sprites/items/pets/ice robot.png",
+        "scary": true,
+        "can_get_in_scenes": false,
+        "special": {
+          "type": "price",
+          "value": 512
+        }
+      },
+      "jellyfish": {
+        "id": "jellyfish",
+        "name": "Медуза",
+        "description": "Прозрачная медуза",
+        "type": "pet",
+        "rarity": "rare",
+        "price": {
+          "currency": "coins",
+          "amount": 166
+        },
+        "sellPrice": 0,
+        "canSell": false,
+        "sprite": "sprites/items/pets/jellyfish.png",
+        "scary": false,
+        "can_get_in_scenes": true,
+        "special": {
+          "type": "stat",
+          "stat_type": "charisma",
+          "bonus": 2
+        }
+      },
+      "scorpion": {
+        "id": "scorpion",
+        "name": "Скорпион",
+        "description": "Ядовитый скорпион",
+        "type": "pet",
+        "rarity": "rare",
+        "price": {
+          "currency": "coins",
+          "amount": 196
+        },
+        "sellPrice": 0,
+        "canSell": false,
+        "sprite": "sprites/items/pets/scorpion.png",
+        "scary": true,
+        "can_get_in_scenes": false,
+        "special": {
+          "type": "stat",
+          "stat_type": "coldness",
+          "bonus": 2
+        }
+      },
+      "wasp": {
+        "id": "wasp",
+        "name": "Оса",
+        "description": "Жужжащая оса",
+        "type": "pet",
+        "rarity": "rare",
+        "price": {
+          "currency": "coins",
+          "amount": 136
+        },
+        "sellPrice": 0,
+        "canSell": false,
+        "sprite": "sprites/items/pets/wasp.png",
+        "scary": true,
+        "can_get_in_scenes": false,
+        "special": {
+          "type": "stat",
+          "stat_type": "sensitivity",
+          "bonus": 2
+        }
+      },
+      "salamander": {
+        "id": "salamander",
+        "name": "Саламандра",
+        "description": "Огненная саламандра",
+        "type": "pet",
+        "rarity": "rare",
+        "price": {
+          "currency": "coins",
+          "amount": 210
+        },
+        "sellPrice": 0,
+        "canSell": false,
+        "sprite": "sprites/items/pets/salamander.png",
+        "scary": false,
+        "can_get_in_scenes": true,
+        "special": {
+          "type": "stat",
+          "stat_type": "cunning",
+          "bonus": 2
+        }
+      },
+      "tortoise": {
+        "id": "tortoise",
+        "name": "Черепаха",
+        "description": "Большая черепаха",
+        "type": "pet",
+        "rarity": "rare",
+        "price": {
+          "currency": "coins",
+          "amount": 180
+        },
+        "sellPrice": 0,
+        "canSell": false,
+        "sprite": "sprites/items/pets/tortoise.png",
+        "scary": false,
+        "can_get_in_scenes": true,
+        "special": {
+          "type": "stat",
+          "stat_type": "determination",
+          "bonus": 2
+        }
+      },
+      "viper": {
+        "id": "viper",
+        "name": "Гадюка",
+        "description": "Ядовитая змея",
+        "type": "pet",
+        "rarity": "rare",
+        "price": {
+          "currency": "coins",
+          "amount": 226
+        },
+        "sellPrice": 0,
+        "canSell": false,
+        "sprite": "sprites/items/pets/viper.png",
+        "scary": true,
+        "can_get_in_scenes": false,
+        "special": {
+          "type": "stat",
+          "stat_type": "intelligence",
+          "bonus": 2
+        }
+      },
+      "shadow": {
+        "id": "shadow",
+        "name": "Тень",
+        "description": "Темная тень",
+        "type": "pet",
+        "rarity": "rare",
+        "price": {
+          "currency": "coins",
+          "amount": 240
+        },
+        "sellPrice": 0,
+        "canSell": false,
+        "sprite": "sprites/items/pets/shadow.png",
+        "scary": true,
+        "can_get_in_scenes": false,
+        "special": {
+          "type": "reroll",
+          "count": 2
+        }
+      },
+      "spirit": {
+        "id": "spirit",
+        "name": "Дух",
+        "description": "Бестелесный дух",
+        "type": "pet",
+        "rarity": "rare",
+        "price": {
+          "currency": "coins",
+          "amount": 256
+        },
+        "sellPrice": 0,
+        "canSell": false,
+        "sprite": "sprites/items/pets/spirit.png",
+        "scary": true,
+        "can_get_in_scenes": false,
+        "special": {
+          "type": "relation",
+          "increase": 25
+        }
+      },
+      "bogling": {
+        "id": "bogling",
+        "name": "Болотник",
+        "description": "Болотное существо",
+        "type": "pet",
+        "rarity": "rare",
+        "price": {
+          "currency": "coins",
+          "amount": 166
+        },
+        "sellPrice": 0,
+        "canSell": false,
+        "sprite": "sprites/items/pets/bogling.png",
+        "scary": true,
+        "can_get_in_scenes": false,
+        "special": {
+          "type": "money",
+          "increase": 50
+        }
+      },
+      "bogwine": {
+        "id": "bogwine",
+        "name": "Болотное вино",
+        "description": "Болотный дух",
+        "type": "pet",
+        "rarity": "rare",
+        "price": {
+          "currency": "coins",
+          "amount": 180
+        },
+        "sellPrice": 0,
+        "canSell": false,
+        "sprite": "sprites/items/pets/bogwine.png",
+        "scary": true,
+        "can_get_in_scenes": false,
+        "special": {
+          "type": "reroll",
+          "count": 1
+        }
+      },
+      "cumulus": {
+        "id": "cumulus",
+        "name": "Кучевое облако",
+        "description": "Облачный дух",
+        "type": "pet",
+        "rarity": "rare",
+        "price": {
+          "currency": "coins",
+          "amount": 196
+        },
+        "sellPrice": 0,
+        "canSell": false,
+        "sprite": "sprites/items/pets/cumulus.png",
+        "scary": false,
+        "can_get_in_scenes": true,
+        "special": {
+          "type": "price",
+          "value": 392
+        }
+      },
+      "glistening_fish": {
+        "id": "glistening_fish",
+        "name": "Блестящая рыба",
+        "description": "Сверкающая рыба",
+        "type": "pet",
+        "rarity": "rare",
+        "price": {
+          "currency": "coins",
+          "amount": 210
+        },
+        "sellPrice": 0,
+        "canSell": false,
+        "sprite": "sprites/items/pets/glistening fish.png",
+        "scary": false,
+        "can_get_in_scenes": true,
+        "special": {
+          "type": "stat",
+          "stat_type": "charisma",
+          "bonus": 2
+        }
+      },
+      "starfish_monster": {
+        "id": "starfish_monster",
+        "name": "Морская звезда",
+        "description": "Монстр-звезда",
+        "type": "pet",
+        "rarity": "rare",
+        "price": {
+          "currency": "coins",
+          "amount": 226
+        },
+        "sellPrice": 0,
+        "canSell": false,
+        "sprite": "sprites/items/pets/starfish monster.png",
+        "scary": false,
+        "can_get_in_scenes": true,
+        "special": {
+          "type": "stat",
+          "stat_type": "coldness",
+          "bonus": 2
+        }
+      },
+      "frog_monster": {
+        "id": "frog_monster",
+        "name": "Лягушка-монстр",
+        "description": "Увеличенная лягушка",
+        "type": "pet",
+        "rarity": "rare",
+        "price": {
+          "currency": "coins",
+          "amount": 240
+        },
+        "sellPrice": 0,
+        "canSell": false,
+        "sprite": "sprites/items/pets/frog monster.png",
+        "scary": true,
+        "can_get_in_scenes": false,
+        "special": {
+          "type": "stat",
+          "stat_type": "sensitivity",
+          "bonus": 2
+        }
+      },
+      "mushroom_monster": {
+        "id": "mushroom_monster",
+        "name": "Гриб-монстр",
+        "description": "Живой гриб",
+        "type": "pet",
+        "rarity": "rare",
+        "price": {
+          "currency": "coins",
+          "amount": 196
+        },
+        "sellPrice": 0,
+        "canSell": false,
+        "sprite": "sprites/items/pets/mushroom monster.png",
+        "scary": false,
+        "can_get_in_scenes": true,
+        "special": {
+          "type": "stat",
+          "stat_type": "cunning",
+          "bonus": 2
+        }
+      },
+      "cactus_monster": {
+        "id": "cactus_monster",
+        "name": "Кактус-монстр",
+        "description": "Колючий монстр",
+        "type": "pet",
+        "rarity": "rare",
+        "price": {
+          "currency": "coins",
+          "amount": 210
+        },
+        "sellPrice": 0,
+        "canSell": false,
+        "sprite": "sprites/items/pets/cactus monster.png",
+        "scary": false,
+        "can_get_in_scenes": true,
+        "special": {
+          "type": "stat",
+          "stat_type": "determination",
+          "bonus": 2
+        }
+      },
+      "plant_behemoth": {
+        "id": "plant_behemoth",
+        "name": "Растительный бегемот",
+        "description": "Гигантское растение",
+        "type": "pet",
+        "rarity": "rare",
+        "price": {
+          "currency": "coins",
+          "amount": 256
+        },
+        "sellPrice": 0,
+        "canSell": false,
+        "sprite": "sprites/items/pets/plant behemoth.png",
+        "scary": true,
+        "can_get_in_scenes": false,
+        "special": {
+          "type": "stat",
+          "stat_type": "intelligence",
+          "bonus": 2
+        }
+      },
+      "living_boulder": {
+        "id": "living_boulder",
+        "name": "Живой валун",
+        "description": "Оживший камень",
+        "type": "pet",
+        "rarity": "rare",
+        "price": {
+          "currency": "coins",
+          "amount": 270
+        },
+        "sellPrice": 0,
+        "canSell": false,
+        "sprite": "sprites/items/pets/living boulder.png",
+        "scary": true,
+        "can_get_in_scenes": false,
+        "special": {
+          "type": "price",
+          "value": 540
+        }
+      },
+      "tentacle_monster": {
+        "id": "tentacle_monster",
+        "name": "Монстр-щупальце",
+        "description": "Щупальцевидный монстр",
+        "type": "pet",
+        "rarity": "rare",
+        "price": {
+          "currency": "coins",
+          "amount": 286
+        },
+        "sellPrice": 0,
+        "canSell": false,
+        "sprite": "sprites/items/pets/tentacle monster.png",
+        "scary": true,
+        "can_get_in_scenes": false,
+        "special": {
+          "type": "relation",
+          "increase": 25
+        }
+      },
+      "sand_worm": {
+        "id": "sand_worm",
+        "name": "Песчаный червь",
+        "description": "Песочный червь",
+        "type": "pet",
+        "rarity": "rare",
+        "price": {
+          "currency": "coins",
+          "amount": 240
+        },
+        "sellPrice": 0,
+        "canSell": false,
+        "sprite": "sprites/items/pets/sand worm.png",
+        "scary": true,
+        "can_get_in_scenes": false,
+        "special": {
+          "type": "money",
+          "increase": 50
+        }
+      },
+      "snow_worm": {
+        "id": "snow_worm",
+        "name": "Снежный червь",
+        "description": "Ледяной червь",
+        "type": "pet",
+        "rarity": "rare",
+        "price": {
+          "currency": "coins",
+          "amount": 256
+        },
+        "sellPrice": 0,
+        "canSell": false,
+        "sprite": "sprites/items/pets/snow worm.png",
+        "scary": true,
+        "can_get_in_scenes": false,
+        "special": {
+          "type": "reroll",
+          "count": 1
+        }
+      },
+      "merfolk": {
+        "id": "merfolk",
+        "name": "Русалка",
+        "description": "Морская дева",
+        "type": "pet",
+        "rarity": "rare",
+        "price": {
+          "currency": "coins",
+          "amount": 300
+        },
+        "sellPrice": 0,
+        "canSell": false,
+        "sprite": "sprites/items/pets/merfolk.png",
+        "scary": false,
+        "can_get_in_scenes": true,
+        "special": {
+          "type": "price",
+          "value": 600
+        }
+      },
+      "dryad": {
+        "id": "dryad",
+        "name": "Дриада",
+        "description": "Лесная нимфа",
+        "type": "pet",
+        "rarity": "rare",
+        "price": {
+          "currency": "coins",
+          "amount": 286
+        },
+        "sellPrice": 0,
+        "canSell": false,
+        "sprite": "sprites/items/pets/dryad.png",
+        "scary": false,
+        "can_get_in_scenes": true,
+        "special": {
+          "type": "stat",
+          "stat_type": "charisma",
+          "bonus": 2
+        }
+      },
+      "harpy": {
+        "id": "harpy",
+        "name": "Гарпия",
+        "description": "Крылатая гарпия",
+        "type": "pet",
+        "rarity": "rare",
+        "price": {
+          "currency": "coins",
+          "amount": 330
+        },
+        "sellPrice": 0,
+        "canSell": false,
+        "sprite": "sprites/items/pets/harpy.png",
+        "scary": true,
+        "can_get_in_scenes": false,
+        "special": {
+          "type": "stat",
+          "stat_type": "coldness",
+          "bonus": 2
+        }
+      },
+      "gargoyle": {
+        "id": "gargoyle",
+        "name": "Гаргулья",
+        "description": "Каменная гаргулья",
+        "type": "pet",
+        "rarity": "rare",
+        "price": {
+          "currency": "coins",
+          "amount": 316
+        },
+        "sellPrice": 0,
+        "canSell": false,
+        "sprite": "sprites/items/pets/gargoyle.png",
+        "scary": true,
+        "can_get_in_scenes": false,
+        "special": {
+          "type": "stat",
+          "stat_type": "sensitivity",
+          "bonus": 2
+        }
+      },
+      "mummy": {
+        "id": "mummy",
+        "name": "Мумия",
+        "description": "Древняя мумия",
+        "type": "pet",
+        "rarity": "rare",
+        "price": {
+          "currency": "coins",
+          "amount": 270
+        },
+        "sellPrice": 0,
+        "canSell": false,
+        "sprite": "sprites/items/pets/mummy.png",
+        "scary": true,
+        "can_get_in_scenes": false,
+        "special": {
+          "type": "stat",
+          "stat_type": "cunning",
+          "bonus": 2
+        }
+      },
+      "troll": {
+        "id": "troll",
+        "name": "Тролль",
+        "description": "Большой тролль",
+        "type": "pet",
+        "rarity": "rare",
+        "price": {
+          "currency": "coins",
+          "amount": 360
+        },
+        "sellPrice": 0,
+        "canSell": false,
+        "sprite": "sprites/items/pets/troll.png",
+        "scary": true,
+        "can_get_in_scenes": false,
+        "special": {
+          "type": "stat",
+          "stat_type": "determination",
+          "bonus": 2
+        }
+      },
+      "cockatrice": {
+        "id": "cockatrice",
+        "name": "Кокатрис",
+        "description": "Петух-дракон",
+        "type": "pet",
+        "rarity": "rare",
+        "price": {
+          "currency": "coins",
+          "amount": 390
+        },
+        "sellPrice": 0,
+        "canSell": false,
+        "sprite": "sprites/items/pets/cockatrice.png",
+        "scary": true,
+        "can_get_in_scenes": false,
+        "special": {
+          "type": "stat",
+          "stat_type": "intelligence",
+          "bonus": 2
+        }
+      },
+      "basilisk": {
+        "id": "basilisk",
+        "name": "Василиск",
+        "description": "Король змей",
+        "type": "pet",
+        "rarity": "rare",
+        "price": {
+          "currency": "coins",
+          "amount": 420
+        },
+        "sellPrice": 0,
+        "canSell": false,
+        "sprite": "sprites/items/pets/basilisk.png",
+        "scary": true,
+        "can_get_in_scenes": false,
+        "special": {
+          "type": "relation",
+          "increase": 50
+        }
+      },
+      "cyclops": {
+        "id": "cyclops",
+        "name": "Циклоп",
+        "description": "Одноглазый великан",
+        "type": "pet",
+        "rarity": "rare",
+        "price": {
+          "currency": "coins",
+          "amount": 480
+        },
+        "sellPrice": 0,
+        "canSell": false,
+        "sprite": "sprites/items/pets/cyclops.png",
+        "scary": true,
+        "can_get_in_scenes": false,
+        "special": {
+          "type": "relation",
+          "increase": 25
+        }
+      },
+      "minos": {
+        "id": "minos",
+        "name": "Минос",
+        "description": "Быкоголовый воин",
+        "type": "pet",
+        "rarity": "rare",
+        "price": {
+          "currency": "coins",
+          "amount": 436
+        },
+        "sellPrice": 0,
+        "canSell": false,
+        "sprite": "sprites/items/pets/minos.png",
+        "scary": true,
+        "can_get_in_scenes": false,
+        "special": {
+          "type": "money",
+          "increase": 50
+        }
+      },
+      "tengu": {
+        "id": "tengu",
+        "name": "Тэнгу",
+        "description": "Японский демон",
+        "type": "pet",
+        "rarity": "rare",
+        "price": {
+          "currency": "coins",
+          "amount": 406
+        },
+        "sellPrice": 0,
+        "canSell": false,
+        "sprite": "sprites/items/pets/tengu.png",
+        "scary": true,
+        "can_get_in_scenes": false,
+        "special": {
+          "type": "reroll",
+          "count": 1
+        }
+      },
+      "abyssal_beast": {
+        "id": "abyssal_beast",
+        "name": "Бездонный зверь",
+        "description": "Существо из бездны",
+        "type": "pet",
+        "rarity": "legendary",
+        "price": {
+          "currency": "gems",
+          "amount": 600
+        },
+        "sellPrice": 0,
+        "canSell": false,
+        "sprite": "sprites/items/pets/abyssal beast.png",
+        "scary": true,
+        "can_get_in_scenes": false,
+        "special": {
+          "type": "price",
+          "value": 1200
+        }
+      },
+      "abyssal_dweller": {
+        "id": "abyssal_dweller",
+        "name": "Обитатель бездны",
+        "description": "Житель глубин",
+        "type": "pet",
+        "rarity": "rare",
+        "price": {
+          "currency": "coins",
+          "amount": 840
+        },
+        "sellPrice": 0,
+        "canSell": false,
+        "sprite": "sprites/items/pets/abyssal dweller.png",
+        "scary": true,
+        "can_get_in_scenes": false,
+        "special": {
+          "type": "stat",
+          "stat_type": "charisma",
+          "bonus": 2
+        }
+      },
+      "treant": {
+        "id": "treant",
+        "name": "Древень",
+        "description": "Древний страж леса",
+        "type": "pet",
+        "rarity": "legendary",
+        "price": {
+          "currency": "gems",
+          "amount": 700
+        },
+        "sellPrice": 0,
+        "canSell": false,
+        "sprite": "sprites/items/pets/treant.png",
+        "scary": false,
+        "can_get_in_scenes": true,
+        "special": {
+          "type": "stat",
+          "stat_type": "coldness",
+          "bonus": 2
+        }
+      },
+      "dragon": {
+        "id": "dragon",
+        "name": "Дракон",
+        "description": "Могущественное существо",
+        "type": "pet",
+        "rarity": "legendary",
+        "price": {
+          "currency": "gems",
+          "amount": 1000
+        },
+        "sellPrice": 0,
+        "canSell": false,
+        "sprite": "sprites/items/pets/dragon.png",
+        "scary": true,
+        "can_get_in_scenes": false,
+        "special": {
+          "type": "cube",
+          "modificator": 2
+        }
+      },
+      "griffin": {
+        "id": "griffin",
+        "name": "Грифон",
+        "description": "Крылатый грифон",
+        "type": "pet",
+        "rarity": "legendary",
+        "price": {
+          "currency": "gems",
+          "amount": 300
+        },
+        "sellPrice": 0,
+        "canSell": false,
+        "sprite": "sprites/items/pets/griffin.png",
+        "scary": false,
+        "can_get_in_scenes": true,
+        "special": {
+          "type": "relation",
+          "increase": 25
+        }
+      },
+      "gorgon": {
+        "id": "gorgon",
+        "name": "Горгона",
+        "description": "Змееволосая горгона",
+        "type": "pet",
+        "rarity": "legendary",
+        "price": {
+          "currency": "gems",
+          "amount": 340
+        },
+        "sellPrice": 0,
+        "canSell": false,
+        "sprite": "sprites/items/pets/gorgon.png",
+        "scary": true,
+        "can_get_in_scenes": false,
+        "special": {
+          "type": "money",
+          "increase": 50
+        }
+      },
+      "djinn": {
+        "id": "djinn",
+        "name": "Джинн",
+        "description": "Магический джинн",
+        "type": "pet",
+        "rarity": "legendary",
+        "price": {
+          "currency": "gems",
+          "amount": 360
+        },
+        "sellPrice": 0,
+        "canSell": false,
+        "sprite": "sprites/items/pets/djinn.png",
+        "scary": false,
+        "can_get_in_scenes": true,
+        "special": {
+          "type": "reroll",
+          "count": 1
+        }
+      },
+      "kraken": {
+        "id": "kraken",
+        "name": "Кракен",
+        "description": "Морское чудовище",
+        "type": "pet",
+        "rarity": "legendary",
+        "price": {
+          "currency": "gems",
+          "amount": 400
+        },
+        "sellPrice": 0,
+        "canSell": false,
+        "sprite": "sprites/items/pets/kraken.png",
+        "scary": true,
+        "can_get_in_scenes": false,
+        "special": {
+          "type": "price",
+          "value": 800
+        }
+      },
+      "reaper": {
+        "id": "reaper",
+        "name": "Жнец",
+        "description": "Жнец душ",
+        "type": "pet",
+        "rarity": "legendary",
+        "price": {
+          "currency": "gems",
+          "amount": 500
+        },
+        "sellPrice": 0,
+        "canSell": false,
+        "sprite": "sprites/items/pets/reaper.png",
+        "scary": true,
+        "can_get_in_scenes": false,
+        "special": {
+          "type": "stat",
+          "stat_type": "sensitivity",
+          "bonus": 2
+        }
+      },
+      "banshee": {
+        "id": "banshee",
+        "name": "Банши",
+        "description": "Плачущий дух",
+        "type": "pet",
+        "rarity": "legendary",
+        "price": {
+          "currency": "gems",
+          "amount": 440
+        },
+        "sellPrice": 0,
+        "canSell": false,
+        "sprite": "sprites/items/pets/banshee.png",
+        "scary": true,
+        "can_get_in_scenes": false,
+        "special": {
+          "type": "stat",
+          "stat_type": "cunning",
+          "bonus": 2
+        }
+      },
+      "wraith": {
+        "id": "wraith",
+        "name": "Призрак",
+        "description": "Темный призрак",
+        "type": "pet",
+        "rarity": "legendary",
+        "price": {
+          "currency": "gems",
+          "amount": 480
+        },
+        "sellPrice": 0,
+        "canSell": false,
+        "sprite": "sprites/items/pets/wraith.png",
+        "scary": true,
+        "can_get_in_scenes": false,
+        "special": {
+          "type": "stat",
+          "stat_type": "determination",
+          "bonus": 2
+        }
+      }
+    },
+    "clothing": {
+ 
+      "female_mature_casual2": {
+        "id": "female_mature_casual2",
+        "name": "Повседневная одежда 2",
+        "description": "Стильная повседневная одежда для женщин",
+        "type": "clothing",
+        "subtype": "dress",
+        "gender": "female",
+        "age": "2",
+        "rarity": "rare",
+        "price": {
+          "currency": "gems",
+          "amount": 25
+        },
+        "sellPrice": 0,
+        "canSell": false,
+        "sprite": "sprites/items/dress/dress/female_mature/casual2.png"
+      },
+      "female_mature_casual3": {
+        "id": "female_mature_casual3",
+        "name": "Повседневная одежда 3",
+        "description": "Элегантная повседневная одежда для женщин",
+        "type": "clothing",
+        "subtype": "dress",
+        "gender": "female",
+        "age": "2",
+        "rarity": "rare",
+        "price": {
+          "currency": "gems",
+          "amount": 30
+        },
+        "sellPrice": 0,
+        "canSell": false,
+        "sprite": "sprites/items/dress/dress/female_mature/casual3.png"
+      },
+      "female_mature_dress1": {
+        "id": "female_mature_dress1",
+        "name": "Платье 1",
+        "description": "Красивое платье для женщин",
+        "type": "clothing",
+        "subtype": "dress",
+        "gender": "female",
+        "age": "2",
+        "rarity": "rare",
+        "price": {
+          "currency": "gems",
+          "amount": 35
+        },
+        "sellPrice": 0,
+        "canSell": false,
+        "sprite": "sprites/items/dress/dress/female_mature/dress1.png"
+      },
+      "female_mature_summer_dress": {
+        "id": "female_mature_summer_dress",
+        "name": "Летнее платье",
+        "description": "Легкое летнее платье для женщин",
+        "type": "clothing",
+        "subtype": "dress",
+        "gender": "female",
+        "age": "2",
+        "rarity": "rare",
+        "price": {
+          "currency": "gems",
+          "amount": 40
+        },
+        "sellPrice": 0,
+        "canSell": false,
+        "sprite": "sprites/items/dress/dress/female_mature/summer_dress.png"
+      },
+      "male_casual4": {
+        "id": "male_casual4",
+        "name": "Повседневная одежда 4",
+        "description": "Стильная повседневная одежда для мужчин",
+        "type": "clothing",
+        "subtype": "dress",
+        "gender": "male",
+        "age": "1",
+        "rarity": "rare",
+        "price": {
+          "currency": "gems",
+          "amount": 25
+        },
+        "sellPrice": 0,
+        "canSell": false,
+        "sprite": "sprites/items/dress/dress/male/casual4.png"
+      },
+      "male_casual5": {
+        "id": "male_casual5",
+        "name": "Повседневная одежда 5",
+        "description": "Элегантная повседневная одежда для молодых мужчин",
+        "type": "clothing",
+        "subtype": "dress",
+        "gender": "male",
+        "age": "1",
+        "rarity": "rare",
+        "price": {
+          "currency": "gems",
+          "amount": 30
+        },
+        "sellPrice": 0,
+        "canSell": false,
+        "sprite": "sprites/items/dress/dress/male/casual5.png"
+      },
+      "male_casual6": {
+        "id": "male_casual6",
+        "name": "Повседневная одежда 6",
+        "description": "Современная повседневная одежда для молодых мужчин",
+        "type": "clothing",
+        "subtype": "dress",
+        "gender": "male",
+        "age": "1",
+        "rarity": "rare",
+        "price": {
+          "currency": "gems",
+          "amount": 35
+        },
+        "sellPrice": 0,
+        "canSell": false,
+        "sprite": "sprites/items/dress/dress/male/casual6.png"
+      },
+      "male_office1": {
+        "id": "male_office1",
+        "name": "Офисный костюм 1",
+        "description": "Деловой костюм для молодых мужчин",
+        "type": "clothing",
+        "subtype": "dress",
+        "gender": "male",
+        "age": "1",
+        "rarity": "rare",
+        "price": {
+          "currency": "gems",
+          "amount": 40
+        },
+        "sellPrice": 0,
+        "canSell": false,
+        "sprite": "sprites/items/dress/dress/male/office1.png"
+      },
+      "male_office2": {
+        "id": "male_office2",
+        "name": "Офисный костюм 2",
+        "description": "Классический деловой костюм для молодых мужчин",
+        "type": "clothing",
+        "subtype": "dress",
+        "gender": "male",
+        "age": "1",
+        "rarity": "rare",
+        "price": {
+          "currency": "gems",
+          "amount": 45
+        },
+        "sellPrice": 0,
+        "canSell": false,
+        "sprite": "sprites/items/dress/dress/male/office2.png"
+      },
+      "male_office3": {
+        "id": "male_office3",
+        "name": "Офисный костюм 3",
+        "description": "Современный деловой костюм для молодых мужчин",
+        "type": "clothing",
+        "subtype": "dress",
+        "gender": "male",
+        "age": "1",
+        "rarity": "rare",
+        "price": {
+          "currency": "gems",
+          "amount": 50
+        },
+        "sellPrice": 0,
+        "canSell": false,
+        "sprite": "sprites/items/dress/dress/male/office3.png"
+      },
+      "male_office4": {
+        "id": "male_office4",
+        "name": "Офисный костюм 4",
+        "description": "Премиум деловой костюм для молодых мужчин",
+        "type": "clothing",
+        "subtype": "dress",
+        "gender": "male",
+        "age": "1",
+        "rarity": "mythical",
+        "price": {
+          "currency": "gems",
+          "amount": 75
+        },
+        "sellPrice": 0,
+        "canSell": false,
+        "sprite": "sprites/items/dress/dress/male/office4.png"
+      },
+      "male_vest": {
+        "id": "male_vest",
+        "name": "Жилет",
+        "description": "Стильный жилет для молодых мужчин",
+        "type": "clothing",
+        "subtype": "dress",
+        "gender": "male",
+        "age": "1",
+        "rarity": "rare",
+        "price": {
+          "currency": "gems",
+          "amount": 30
+        },
+        "sellPrice": 0,
+        "canSell": false,
+        "sprite": "sprites/items/dress/dress/male/vest.png"
+      },
+      "male_mature_casual1": {
+        "id": "male_mature_casual1",
+        "name": "Повседневная одежда 1",
+        "description": "Комфортная повседневная одежда для молодых мужчин",
+        "type": "clothing",
+        "subtype": "dress",
+        "gender": "male",
+        "age": "2",
+        "rarity": "rare",
+        "price": {
+          "currency": "gems",
+          "amount": 25
+        },
+        "sellPrice": 0,
+        "canSell": false,
+        "sprite": "sprites/items/dress/dress/male_mature/casual1.png"
+      },
+      "male_mature_casual2": {
+        "id": "male_mature_casual2",
+        "name": "Повседневная одежда 2",
+        "description": "Стильная повседневная одежда для мужчин",
+        "type": "clothing",
+        "subtype": "dress",
+        "gender": "male",
+        "age": "2",
+        "rarity": "rare",
+        "price": {
+          "currency": "gems",
+          "amount": 30
+        },
+        "sellPrice": 0,
+        "canSell": false,
+        "sprite": "sprites/items/dress/dress/male_mature/casual2.png"
+      },
+      "male_mature_tshirt2": {
+        "id": "male_mature_tshirt2",
+        "name": "Футболка 2",
+        "description": "Современная футболка для мужчин",
+        "type": "clothing",
+        "subtype": "dress",
+        "gender": "male",
+        "age": "2",
+        "rarity": "rare",
+        "price": {
+          "currency": "gems",
+          "amount": 20
+        },
+        "sellPrice": 0,
+        "canSell": false,
+        "sprite": "sprites/items/dress/dress/male_mature/tshirt2.png"
+      },
+      "male_mature_vest": {
+        "id": "male_mature_vest",
+        "name": "Жилет",
+        "description": "Элегантный жилет для мужчин",
+        "type": "clothing",
+        "subtype": "dress",
+        "gender": "male",
+        "age": "2",
+        "rarity": "rare",
+        "price": {
+          "currency": "gems",
+          "amount": 35
+        },
+        "sellPrice": 0,
+        "canSell": false,
+        "sprite": "sprites/items/dress/dress/male_mature/vest.png"
+      },
+      "black_ribbon": {
+        "id": "black_ribbon",
+        "name": "Черная лента",
+        "description": "Элегантная черная лента для женщин",
+        "type": "clothing",
+        "subtype": "accessory",
+        "gender": "female",
+        "age": "2",
+        "rarity": "rare",
+        "price": {
+          "currency": "gems",
+          "amount": 15
+        },
+        "sellPrice": 0,
+        "canSell": false,
+        "sprite": "sprites/items/dress/accesories/black_ribbon.png"
+      },
+      "choker": {
+        "id": "choker",
+        "name": "Чокер",
+        "description": "Стильный чокер для женщин",
+        "type": "clothing",
+        "subtype": "accessory",
+        "gender": "female",
+        "age": "2",
+        "rarity": "rare",
+        "price": {
+          "currency": "gems",
+          "amount": 20
+        },
+        "sellPrice": 0,
+        "canSell": false,
+        "sprite": "sprites/items/dress/accesories/choker.png"
+      },
+      "ribbon": {
+        "id": "ribbon",
+        "name": "Лента",
+        "description": "Красивая лента для женщин",
+        "type": "clothing",
+        "subtype": "accessory",
+        "gender": "female",
+        "age": "2",
+        "rarity": "rare",
+        "price": {
+          "currency": "gems",
+          "amount": 15
+        },
+        "sellPrice": 0,
+        "canSell": false,
+        "sprite": "sprites/items/dress/accesories/ribbon.png"
+      },
+      "rose1": {
+        "id": "rose1",
+        "name": "Роза 1",
+        "description": "Красивая роза для женщин",
+        "type": "clothing",
+        "subtype": "accessory",
+        "gender": "female",
+        "age": "2",
+        "rarity": "rare",
+        "price": {
+          "currency": "gems",
+          "amount": 25
+        },
+        "sellPrice": 0,
+        "canSell": false,
+        "sprite": "sprites/items/dress/accesories/rose1.png"
+      },
+      "rose2": {
+        "id": "rose2",
+        "name": "Роза 2",
+        "description": "Элегантная роза для женщин",
+        "type": "clothing",
+        "subtype": "accessory",
+        "gender": "female",
+        "age": "2",
+        "rarity": "rare",
+        "price": {
+          "currency": "gems",
+          "amount": 25
+        },
+        "sellPrice": 0,
+        "canSell": false,
+        "sprite": "sprites/items/dress/accesories/rose2.png"
+      },
+      "white_ribbon": {
+        "id": "white_ribbon",
+        "name": "Белая лента для женщин",
+        "description": "Нежная белая лента",
+        "type": "clothing",
+        "subtype": "accessory",
+        "gender": "female",
+        "age": "2",
+        "rarity": "rare",
+        "price": {
+          "currency": "gems",
+          "amount": 15
+        },
+        "sellPrice": 0,
+        "canSell": false,
+        "sprite": "sprites/items/dress/accesories/white_ribbon.png"
+      },
+      "yellow_ribbon": {
+        "id": "yellow_ribbon",
+        "name": "Желтая лента для женщин",
+        "description": "Яркая желтая лента",
+        "type": "clothing",
+        "subtype": "accessory",
+        "gender": "female",
+        "age": "2",
+        "rarity": "rare",
+        "price": {
+          "currency": "gems",
+          "amount": 15
+        },
+        "sellPrice": 0,
+        "canSell": false,
+        "sprite": "sprites/items/dress/accesories/yellow_ribbon.png"
+      }
+    },
+    "chest": {
+      "basic_chest": {
+        "id": "basic_chest",
+        "name": "Обычный сундук",
+        "description": "Деревянный сундук с обычными предметами.",
+        "type": "chest",
+        "rarity": "common",
+        "price": {
+          "currency": "coins",
+          "amount": 100
+        },
+        "sellPrice": 0,
+        "canSell": false,
+        "sprite": "sprites/items/chests/basic chest.png"
+      },
+      "silver_chest": {
+        "id": "silver_chest",
+        "name": "Серебряный сундук",
+        "description": "Серебряный сундук с редкими сокровищами.",
+        "type": "chest",
+        "rarity": "rare",
+        "price": {
+          "currency": "gems",
+          "amount": 20
+        },
+        "sellPrice": 0,
+        "canSell": false,
+        "sprite": "sprites/items/chests/silver chest.png"
+      },
+      "gold_chest": {
+        "id": "gold_chest",
+        "name": "Золотой сундук",
+        "description": "Золотой сундук с мистическими артефактами.",
+        "type": "chest",
+        "rarity": "mythical",
+        "price": {
+          "currency": "gems",
+          "amount": 50
+        },
+        "sellPrice": 0,
+        "canSell": false,
+        "sprite": "sprites/items/chests/gold chest.png"
+      }
+    },
+
+    "key": {
+      "old_key": {
+        "id": "old_key",
+        "name": "Старый ключ",
+        "description": "Ржавый ключ для открытия обычных сундуков",
+        "type": "key",
+        "rarity": "common",
+        "price": {
+          "currency": "coins",
+          "amount": 25
+        },
+        "sellPrice": 12,
+        "canSell": true,
+        "sprite": "sprites/items/chests/old key.png",
+        "opensChest": "basic_chest"
+      },
+      "silver_key": {
+        "id": "silver_key",
+        "name": "Серебряный ключ",
+        "description": "Серебряный ключ для открытия серебряных сундуков",
+        "type": "key",
+        "rarity": "rare",
+        "price": {
+          "currency": "gems",
+          "amount": 5
+        },
+        "sellPrice": 0,
+        "canSell": false,
+        "sprite": "sprites/items/chests/silver key.png",
+        "opensChest": "silver_chest"
+      },
+      "gold_key": {
+        "id": "gold_key",
+        "name": "Золотой ключ",
+        "description": "Золотой ключ для открытия золотых сундуков",
+        "type": "key",
+        "rarity": "mythical",
+        "price": {
+          "currency": "gems",
+          "amount": 15
+        },
+        "sellPrice": 0,
+        "canSell": false,
+        "sprite": "sprites/items/chests/gold key.png",
+        "opensChest": "gold_chest"
+      }
+    }
+  },
+  "rarity": {
+    "common": {
+      "name": "Обычное",
+      "color": "#9ca3af",
+      "dropChance": 60
+    },
+    "rare": {
+      "name": "Редкое",
+      "color": "#3b82f6",
+      "dropChance": 25
+    },
+    "mythical": {
+      "name": "Мистическое",
+      "color": "#8b5cf6",
+      "dropChance": 10
+    },
+    "legendary": {
+      "name": "Невероятное",
+      "color": "#f59e0b",
+      "dropChance": 5
+    }
+  },
+  "types": {
+    "consumable": {
+      "name": "Расходуемое",
+      "color": "#10b981"
+    },
+    "material": {
+      "name": "Материал",
+      "color": "#6b7280"
+    },
+    "special": {
+      "name": "Особое",
+      "color": "#8b5cf6"
+    },
+    "pet": {
+      "name": "Питомец",
+      "color": "#f59e0b"
+    },
+    "clothing": {
+      "name": "Одежда",
+      "color": "#ec4899"
+    },
+    "chest": {
+      "name": "Сундук",
+      "color": "#f59e0b"
+    },
+    "key": {
+      "name": "Ключ",
+      "color": "#6b7280"
+    }
+  }
+}

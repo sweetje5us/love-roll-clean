@@ -1,0 +1,561 @@
+/* Основные стили экрана коллекции */
+.collection-screen {
+  width: 100% !important;
+  height: 100vh !important;
+  background: linear-gradient(135deg, #fff0f5 0%, #fce4ec 100%);
+  padding: 0 !important;
+  margin: 0 !important;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  overflow: hidden;
+  box-sizing: border-box;
+  position: relative;
+}
+
+.collection-screen * {
+  box-sizing: border-box;
+}
+
+.collection-container {
+  width: 100% !important;
+  height: 100vh !important;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* Заголовок и валюта */
+.collection-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  padding: 12px 16px;
+  background: linear-gradient(135deg, #fff0f5, #fce4ec);
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(255, 182, 193, 0.2);
+  border: 1px solid #ffdfea;
+}
+
+.collection-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #ff8cc6;
+  margin: 0;
+  text-align: center;
+  flex: 1;
+}
+
+.currency-container {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.currency-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 10px;
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  border: 1px solid #ffdfea;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.currency-icon {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.gold-icon {
+  background-image: url('../../../sprites/ui/shop/coin/frame0000.png');
+  animation: coinSpin 1s steps(14) infinite;
+}
+
+.gem-icon {
+  background-image: url('../../../sprites/ui/shop/gem/frame0000.png');
+  animation: gemSparkle 3s steps(7) infinite;
+}
+
+.gold-amount {
+  color: #f59e0b;
+}
+
+.gem-amount {
+  color: #3b82f6;
+}
+
+/* Кнопка назад */
+.collection-screen .back-button {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #ff8cc6, #ff6bb5);
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(255, 140, 198, 0.3);
+  z-index: 10;
+}
+
+.collection-screen .back-button:hover {
+  transform: scale(1.1);
+  box-shadow: 0 4px 12px rgba(255, 140, 198, 0.4);
+}
+
+/* Вкладки */
+.tabs-container {
+  display: flex;
+  background: white;
+  border-radius: 16px;
+  padding: 4px;
+  margin-bottom: 16px;
+  box-shadow: 0 2px 8px rgba(255, 182, 193, 0.2);
+  border: 1px solid #ffdfea;
+}
+
+.tab-btn {
+  flex: 1;
+  padding: 10px 12px;
+  border: none;
+  border-radius: 12px;
+  background: transparent;
+  color: #ff8cc6;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.tab-btn:hover {
+  background: rgba(255, 140, 198, 0.1);
+}
+
+.tab-btn.active {
+  background: linear-gradient(135deg, #ff8cc6, #ff6bb5);
+  color: white;
+  box-shadow: 0 2px 6px rgba(255, 140, 198, 0.3);
+}
+
+.tab-btn i {
+  font-size: 12px;
+}
+
+/* Содержимое вкладок */
+.tab-content {
+  padding: 16px 12px;
+  flex: 1;
+  overflow-y: auto;
+  min-height: 0; /* Важно для flexbox */
+  box-sizing: border-box;
+  padding-right: 16px;
+}
+
+/* Заглушки для вкладок */
+.placeholder-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  text-align: center;
+  color: #ff8cc6;
+}
+
+.placeholder-icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+  opacity: 0.6;
+}
+
+.placeholder-content h3 {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  color: #ff8cc6;
+}
+
+.placeholder-content p {
+  font-size: 16px;
+  color: #a8a8a8;
+  margin: 0;
+}
+
+/* Стили для вкладки инвентаря */
+.inventory-content {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Статистика инвентаря */
+.inventory-stats {
+  display: flex;
+  justify-content: space-around;
+  background: linear-gradient(135deg, #fff0f5, #fce4ec);
+  border-radius: 12px;
+  padding: 12px;
+  box-shadow: 0 2px 8px rgba(255, 182, 193, 0.2);
+  border: 1px solid #ffdfea;
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.stat-label {
+  font-size: 12px;
+  color: #ff8cc6;
+  font-weight: 600;
+}
+
+.stat-value {
+  font-size: 16px;
+  font-weight: 700;
+  color: #ff6bb5;
+}
+
+/* Фильтры и поиск */
+.inventory-filters {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.filter-group {
+  flex: 1;
+  min-width: 120px;
+}
+
+.filter-select, .search-input {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #ffdfea;
+  border-radius: 8px;
+  background: white;
+  color: #ff8cc6;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.filter-select:focus, .search-input:focus {
+  outline: none;
+  border-color: #ff8cc6;
+  box-shadow: 0 0 0 3px rgba(255, 140, 198, 0.1);
+}
+
+.search-input::placeholder {
+  color: #a8a8a8;
+}
+
+
+
+/* Сетка предметов */
+.items-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 12px;
+  padding-bottom: 20px;
+}
+
+/* Пустой инвентарь */
+.empty-inventory {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  text-align: center;
+  color: #a8a8a8;
+}
+
+.empty-inventory-icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+  opacity: 0.5;
+}
+
+.empty-inventory h3 {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #ff8cc6;
+}
+
+.empty-inventory p {
+  font-size: 14px;
+  margin: 0;
+  color: #a8a8a8;
+}
+
+/* Анимации для валюты */
+@keyframes coinSpin {
+  0% { background-image: url('../../../sprites/ui/shop/coin/frame0000.png'); }
+  7.14% { background-image: url('../../../sprites/ui/shop/coin/frame0001.png'); }
+  14.28% { background-image: url('../../../sprites/ui/shop/coin/frame0002.png'); }
+  21.42% { background-image: url('../../../sprites/ui/shop/coin/frame0003.png'); }
+  28.56% { background-image: url('../../../sprites/ui/shop/coin/frame0004.png'); }
+  35.7% { background-image: url('../../../sprites/ui/shop/coin/frame0005.png'); }
+  42.84% { background-image: url('../../../sprites/ui/shop/coin/frame0006.png'); }
+  49.98% { background-image: url('../../../sprites/ui/shop/coin/frame0007.png'); }
+  57.12% { background-image: url('../../../sprites/ui/shop/coin/frame0008.png'); }
+  64.26% { background-image: url('../../../sprites/ui/shop/coin/frame0009.png'); }
+  71.4% { background-image: url('../../../sprites/ui/shop/coin/frame0010.png'); }
+  78.54% { background-image: url('../../../sprites/ui/shop/coin/frame0011.png'); }
+  85.68% { background-image: url('../../../sprites/ui/shop/coin/frame0012.png'); }
+  92.82% { background-image: url('../../../sprites/ui/shop/coin/frame0013.png'); }
+  100% { background-image: url('../../../sprites/ui/shop/coin/frame0000.png'); }
+}
+
+@keyframes gemSparkle {
+  0% { background-image: url('../../../sprites/ui/shop/gem/frame0000.png'); }
+  14.28% { background-image: url('../../../sprites/ui/shop/gem/frame0001.png'); }
+  28.56% { background-image: url('../../../sprites/ui/shop/gem/frame0002.png'); }
+  42.84% { background-image: url('../../../sprites/ui/shop/gem/frame0003.png'); }
+  57.12% { background-image: url('../../../sprites/ui/shop/gem/frame0004.png'); }
+  71.4% { background-image: url('../../../sprites/ui/shop/gem/frame0005.png'); }
+  85.68% { background-image: url('../../../sprites/ui/shop/gem/frame0006.png'); }
+  100% { background-image: url('../../../sprites/ui/shop/gem/frame0000.png'); }
+}
+
+/* Адаптивность */
+@media (max-width: 480px) {
+  .collection-container {
+    padding: 0;
+  }
+  
+  .collection-header {
+    padding: 8px 12px;
+    margin-bottom: 12px;
+  }
+  
+  .tab-content {
+    padding: 12px 8px;
+  }
+  
+  .items-grid {
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 8px;
+  }
+  
+  .collection-screen .back-button {
+    width: 36px;
+    height: 36px;
+    font-size: 14px;
+  }
+  
+  .inventory-filters {
+    flex-direction: column;
+  }
+  
+  .filter-group {
+    min-width: auto;
+  }
+}
+
+@media (max-width: 700px) {
+  .items-grid {
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  }
+}
+
+/* Стили для вкладки персонажей */
+.characters-content {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  height: 100%;
+  overflow: hidden;
+}
+
+.characters-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: white;
+  border-radius: 16px;
+  padding: 16px;
+  box-shadow: 0 2px 8px rgba(255, 182, 193, 0.2);
+  border: 1px solid #ffdfea;
+}
+
+.characters-actions {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.add-exp-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #ffd700, #ffb347);
+  color: white;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(255, 215, 0, 0.3);
+}
+
+.add-exp-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 215, 0, 0.4);
+}
+
+.add-exp-btn i {
+  font-size: 12px;
+}
+
+.characters-stats {
+  display: flex;
+  gap: 16px;
+}
+
+.add-character-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #ff8cc6, #ff6bb5);
+  color: white;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(255, 140, 198, 0.3);
+}
+
+.add-character-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 140, 198, 0.4);
+}
+
+.add-character-btn i {
+  font-size: 12px;
+}
+
+.characters-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+  padding: 0;
+  flex: 1;
+  overflow-y: auto;
+  min-height: 0;
+  padding-bottom: 16px;
+}
+
+.empty-characters {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  text-align: center;
+  color: #ff8cc6;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(255, 182, 193, 0.2);
+  border: 1px solid #ffdfea;
+}
+
+.empty-characters-icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+  opacity: 0.6;
+}
+
+.empty-characters h3 {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  color: #ff8cc6;
+}
+
+.empty-characters p {
+  font-size: 16px;
+  color: #a8a8a8;
+  margin-bottom: 24px;
+  max-width: 300px;
+}
+
+.create-first-character-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #ff8cc6, #ff6bb5);
+  color: white;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(255, 140, 198, 0.3);
+}
+
+.create-first-character-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 140, 198, 0.4);
+}
+
+.create-first-character-btn i {
+  font-size: 14px;
+}
+
+/* Адаптивность для персонажей */
+@media (max-width: 480px) {
+  .characters-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+    flex: 1;
+    overflow-y: auto;
+    min-height: 0;
+  }
+
+  .characters-header {
+    flex-direction: column;
+    gap: 12px;
+    align-items: stretch;
+  }
+
+  .characters-actions {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .add-character-btn,
+  .add-exp-btn {
+    justify-content: center;
+  }
+} 

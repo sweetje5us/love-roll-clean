@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тест сохранения отношений</title>
+</head>
+<body>
+    <h1>Тест сохранения отношений</h1>
+    
+    <div>
+        <h2>Текущие отношения в localStorage:</h2>
+        <pre id="current-relationships"></pre>
+    </div>
+    
+    <div>
+        <h2>Сохранения эпизодов:</h2>
+        <pre id="episode-saves"></pre>
+    </div>
+    
+    <button onclick="testSaveRelationships()">Сохранить тестовые отношения</button>
+    <button onclick="testLoadRelationships()">Загрузить отношения</button>
+    <button onclick="clearAll()">Очистить все</button>
+    
+    <script>
+        function testSaveRelationships() {
+            // Сохраняем тестовые отношения в localStorage
+            const testRelationships = {
+                relationships: {
+                    "1751719138468_dima_friendship": {
+                        characterId: "1751719138468",
+                        targetId: "dima",
+                        type: "friendship",
+                        value: 50,
+                        lastUpdated: Date.now()
+                    },
+                    "1751719138468_eugene_friendship": {
+                        characterId: "1751719138468",
+                        targetId: "eugene",
+                        type: "friendship",
+                        value: 30,
+                        lastUpdated: Date.now()
+                    }
+                },
+                episodeId: "tutorial"
+            };
+            
+            localStorage.setItem('gameRelationships', JSON.stringify(testRelationships));
+            console.log('Сохранены тестовые отношения:', testRelationships);
+            updateDisplay();
+        }
+        
+        function testLoadRelationships() {
+            const saved = localStorage.getItem('gameRelationships');
+            console.log('Загружены отношения:', saved);
+            if (saved) {
+                const parsed = JSON.parse(saved);
+                console.log('Распарсенные отношения:', parsed);
+            }
+            updateDisplay();
+        }
+        
+        function clearAll() {
+            localStorage.removeItem('gameRelationships');
+            localStorage.removeItem('episode_saves');
+            console.log('Все данные очищены');
+            updateDisplay();
+        }
+        
+        function updateDisplay() {
+            // Показываем текущие отношения
+            const relationships = localStorage.getItem('gameRelationships');
+            document.getElementById('current-relationships').textContent = 
+                relationships ? JSON.stringify(JSON.parse(relationships), null, 2) : 'Нет данных';
+            
+            // Показываем сохранения эпизодов
+            const episodeSaves = localStorage.getItem('episode_saves');
+            document.getElementById('episode-saves').textContent = 
+                episodeSaves ? JSON.stringify(JSON.parse(episodeSaves), null, 2) : 'Нет данных';
+        }
+        
+        // Инициализация при загрузке
+        updateDisplay();
+    </script>
+</body>
+</html> 

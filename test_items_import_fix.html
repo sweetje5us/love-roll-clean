@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тест исправления импорта предметов</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .test-button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .test-button:hover {
+            background: #0056b3;
+        }
+        .result {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 4px;
+            background: #f8f9fa;
+            border-left: 4px solid #007bff;
+        }
+        .error {
+            border-left-color: #dc3545;
+            background: #f8d7da;
+        }
+        .success {
+            border-left-color: #28a745;
+            background: #d4edda;
+        }
+    </style>
+</head>
+<body>
+    <h1>Тест исправления импорта предметов</h1>
+    
+    <div class="test-section">
+        <h2>Тест 1: Проверка импорта items.json</h2>
+        <button class="test-button" onclick="testItemsImport()">Проверить импорт</button>
+        <div id="import-result" class="result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>Тест 2: Проверка имен предметов</h2>
+        <button class="test-button" onclick="testItemNames()">Проверить имена</button>
+        <div id="names-result" class="result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>Тест 3: Симуляция сцены 153</h2>
+        <button class="test-button" onclick="testScene153()">Симулировать сцену 153</button>
+        <div id="scene-result" class="result"></div>
+    </div>
+
+    <script type="module">
+        // Импортируем необходимые модули
+        import { EpisodeManager } from '../src/utils/episodeManager.js';
+        import itemsData from '../src/data/items.json';
+        
+        window.testItemsImport = function() {
+            const resultDiv = document.getElementById('import-result');
+            
+            try {
+                if (itemsData && itemsData.items) {
+                    const categories = Object.keys(itemsData.items);
+                    const totalItems = categories.reduce((sum, category) => {
+                        return sum + Object.keys(itemsData.items[category] || {}).length;
+                    }, 0);
+                    
+                    resultDiv.innerHTML = `
+                        <div class="success">
+                            <strong>✅ Импорт успешен!</strong><br>
+                            Категории: ${categories.join(', ')}<br>
+                            Всего предметов: ${totalItems}<br>
+                            Примеры предметов:<br>
+                            ${categories.slice(0, 3).map(cat => {
+                                const items = Object.keys(itemsData.items[cat] || {}).slice(0, 3);
+                                return `  ${cat}: ${items.join(', ')}`;
+                            }).join('<br>')}
+                        </div>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `
+                        <div class="error">
+                            <strong>❌ Ошибка импорта!</strong><br>
+                            itemsData: ${itemsData ? 'объект существует' : 'не существует'}<br>
+                            itemsData.items: ${itemsData?.items ? 'существует' : 'не существует'}
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="error">
+                        <strong>❌ Ошибка при проверке импорта!</strong><br>
+                        ${error.message}
+                    </div>
+                `;
+            }
+        };
+        
+        window.testItemNames = function() {
+            const resultDiv = document.getElementById('names-result');
+            
+            try {
+                const testItems = ['chocolate', 'apple', 'resurrection_potion', 'holy_book', 'fire_slime'];
+                const results = [];
+                
+                testItems.forEach(itemId => {
+                    let name = itemId; // по умолчанию
+                    
+                    // Ищем в импортированных данных
+                    if (itemsData && itemsData.items) {
+                        const categories = ['consumable', 'material', 'special', 'pet', 'clothing', 'chest', 'key'];
+                        
+                        for (const category of categories) {
+                            const categoryItems = itemsData.items[category];
+                            if (categoryItems && categoryItems[itemId]) {
+                                name = categoryItems[itemId].name || itemId;
+                                break;
+                            }
+                        }
+                    }
+                    
+                    results.push(`${itemId} → ${name}`);
+                });
+                
+                resultDiv.innerHTML = `
+                    <div class="success">
+                        <strong>✅ Проверка имен предметов:</strong><br>
+                        ${results.join('<br>')}
+                    </div>
+                `;
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="error">
+                        <strong>❌ Ошибка при проверке имен!</strong><br>
+                        ${error.message}
+                    </div>
+                `;
+            }
+        };
+        
+        window.testScene153 = function() {
+            const resultDiv = document.getElementById('scene-result');
+            
+            try {
+                // Создаем экземпляр EpisodeManager
+                const episodeManager = new EpisodeManager();
+                
+                // Симулируем получение предмета chocolate
+                const itemId = 'chocolate';
+                const itemName = episodeManager.getItemName(itemId);
+                
+                resultDiv.innerHTML = `
+                    <div class="success">
+                        <strong>✅ Симуляция сцены 153:</strong><br>
+                        Предмет: ${itemId}<br>
+                        Имя: ${itemName}<br>
+                        Ожидаемое уведомление: "Получен предмет "${itemName}""
+                    </div>
+                `;
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="error">
+                        <strong>❌ Ошибка при симуляции сцены!</strong><br>
+                        ${error.message}
+                    </div>
+                `;
+            }
+        };
+ 

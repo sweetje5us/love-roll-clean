@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тест редактирования персонажей из коллекции</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .test-case {
+            background: #f9f9f9;
+            padding: 15px;
+            margin: 10px 0;
+            border-left: 4px solid #007cba;
+        }
+        .expected {
+            color: #28a745;
+            font-weight: bold;
+        }
+        .actual {
+            color: #dc3545;
+            font-weight: bold;
+        }
+        .stat-display {
+            display: inline-block;
+            margin: 5px;
+            padding: 5px 10px;
+            background: #e9ecef;
+            border-radius: 4px;
+        }
+        .stat-controls {
+            margin: 10px 0;
+        }
+        .stat-button {
+            margin: 0 5px;
+            padding: 5px 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .stat-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .points-display {
+            font-size: 18px;
+            font-weight: bold;
+            color: #007cba;
+            margin: 10px 0;
+        }
+        .character-info {
+            background: #e3f2fd;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Тест редактирования персонажей из коллекции</h1>
+    
+    <div class="test-section">
+        <h2>Тест 1: Редактирование персонажа из коллекции</h2>
+        <div class="test-case">
+            <p><strong>Сценарий:</strong> Персонаж с харизмой 17, нераспределенных очков 0</p>
+            <p><strong>Ожидаемое поведение:</strong> НЕЛЬЗЯ уменьшить харизму ниже 17, нельзя увеличивать характеристики</p>
+            <div class="character-info">
+                <strong>Исходные характеристики:</strong> Харизма: 17, Холод: 10, Чувствительность: 12
+            </div>
+            <div class="points-display">Нераспределенные очки: <span id="points1">0</span></div>
+            <div>
+                <span class="stat-display">Харизма: <span id="charisma1">17</span></span>
+                <div class="stat-controls">
+                    <button class="stat-button" onclick="changeStatProtected('charisma1', -1, 17)" disabled>-</button>
+                    <button class="stat-button" onclick="changeStatProtected('charisma1', 1, 17)" disabled>+</button>
+                </div>
+            </div>
+            <div>
+                <span class="stat-display">Холод: <span id="coldness1">10</span></span>
+                <div class="stat-controls">
+                    <button class="stat-button" onclick="changeStatProtected('coldness1', -1, 10)" disabled>-</button>
+                    <button class="stat-button" onclick="changeStatProtected('coldness1', 1, 10)" disabled>+</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>Тест 2: Редактирование персонажа с нераспределенными очками</h2>
+        <div class="test-case">
+            <p><strong>Сценарий:</strong> Персонаж с харизмой 10, нераспределенных очков 4</p>
+            <p><strong>Ожидаемое поведение:</strong> Можно увеличивать характеристики, нельзя уменьшать ниже 10</p>
+            <div class="character-info">
+                <strong>Исходные характеристики:</strong> Харизма: 10, Холод: 10, Чувствительность: 10
+            </div>
+            <div class="points-display">Нераспределенные очки: <span id="points2">4</span></div>
+            <div>
+                <span class="stat-display">Харизма: <span id="charisma2">10</span></span>
+                <div class="stat-controls">
+                    <button class="stat-button" onclick="changeStatProtected('charisma2', -1, 10)" disabled>-</button>
+                    <button class="stat-button" onclick="changeStatProtected('charisma2', 1, 10)">+</button>
+                </div>
+            </div>
+            <div>
+                <span class="stat-display">Холод: <span id="coldness2">10</span></span>
+                <div class="stat-controls">
+                    <button class="stat-button" onclick="changeStatProtected('coldness2', -1, 10)" disabled>-</button>
+                    <button class="stat-button" onclick="changeStatProtected('coldness2', 1, 10)">+</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>Тест 3: Отмена изменений в текущей сессии</h2>
+        <div class="test-case">
+            <p><strong>Сценарий:</strong> Увеличили харизму с 10 до 14, затем хотим отменить</p>
+            <p><strong>Ожидаемое поведение:</strong> Можно уменьшить обратно до 10, но не ниже</p>
+            <div class="character-info">
+                <strong>Исходные характеристики:</strong> Харизма: 10, Холод: 10, Чувствительность: 10
+            </div>
+            <div class="points-display">Нераспределенные очки: <span id="points3">0</span></div>
+            <div>
+                <span class="stat-display">Харизма: <span id="charisma3">14</span></span>
+                <div class="stat-controls">
+                    <button class="stat-button" onclick="changeStatProtected('charisma3', -1, 10)">-</button>
+                    <button class="stat-button" onclick="changeStatProtected('charisma3', 1, 10)" disabled>+</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>Тест 4: Создание нового персонажа (для сравнения)</h2>
+        <div class="test-case">
+            <p><strong>Сценарий:</strong> Создание нового персонажа с 10 очками</p>
+            <p><strong>Ожидаемое поведение:</strong> Можно изменять характеристики от 8 до 20, используя только 10 очков</p>
+            <div class="points-display">Нераспределенные очки: <span id="points4">10</span></div>
+            <div>
+                <span class="stat-display">Харизма: <span id="charisma4">8</span></span>
+                <div class="stat-controls">
+                    <button class="stat-button" onclick="changeStat('charisma4', -1)">-</button>
+                    <button class="stat-button" onclick="changeStat('charisma4', 1)">+</button>
+                </div>
+            </div>
+            <div>
+                <span class="stat-display">Холод: <span id="coldness4">8</span></span>
+                <div class="stat-controls">
+                    <button class="stat-button" onclick="changeStat('coldness4', -1)">-</button>
+                    <button class="stat-button" onclick="changeStat('coldness4', 1)">+</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Функция для изменения характеристик (создание нового персонажа)
+        function changeStat(statId, change) {
+            const statElement = document.getElementById(statId);
+            const pointsElement = document.getElementById(statId.replace(/[a-zA-Z]+/, 'points'));
+            let currentValue = parseInt(statElement.textContent);
+            let currentPoints = parseInt(pointsElement.textContent);
+            
+            if (change > 0) {
+                // Увеличение характеристики
+                const cost = getStatCost(currentValue);
+                if (currentValue < 20 && currentPoints >= cost) {
+                    currentValue++;
+                    currentPoints -= cost;
+                }
+            } else {
+                // Уменьшение характеристики
+                if (currentValue > 8) {
+                    const newValue = currentValue - 1;
+                    const cost = getStatCost(newValue);
+                    currentValue = newValue;
+                    currentPoints += cost;
+                }
+            }
+            
+            statElement.textContent = currentValue;
+            pointsElement.textContent = currentPoints;
+        }
+
+        // Функция для изменения характеристик с защитой (редактирование существующего)
+        function changeStatProtected(statId, change, originalValue) {
+            const statElement = document.getElementById(statId);
+            const pointsElement = document.getElementById(statId.replace(/[a-zA-Z]+/, 'points'));
+            let currentValue = parseInt(statElement.textContent);
+            let currentPoints = parseInt(pointsElement.textContent);
+            
+            if (change > 0) {
+                // Увеличение характеристики
+                const cost = getStatCost(currentValue);
+                if (currentValue < 20 && currentPoints >= cost) {
+                    currentValue++;
+                    currentPoints -= cost;
+                }
+            } else {
+                // Уменьшение характеристики - только если текущее значение больше исходного
+                if (currentValue > originalValue && currentPoints > 0) {
+                    const newValue = currentValue - 1;
+                    const cost = getStatCost(newValue);
+                    currentValue = newValue;
+                    currentPoints += cost;
+                }
+            }
+            
+            statElement.textContent = currentValue;
+            pointsElement.textContent = currentPoints;
+        }
+
+        // Функция расчета стоимости характеристики
+        function getStatCost(currentValue) {
+            if (currentValue <= 15) return 1;
+            if (currentValue <= 20) return 2;
+            return 0;
+        }
+    </script>
+</body>
+</html> 

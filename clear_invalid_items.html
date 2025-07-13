@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Очистка инвентаря от несуществующих предметов</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 30px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #ff8cc6;
+        }
+        .button {
+            background: linear-gradient(135deg, #ff8cc6, #ff6bb5);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            margin: 10px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255, 140, 198, 0.3);
+        }
+        .button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 140, 198, 0.4);
+        }
+        .button:active {
+            transform: translateY(0);
+        }
+        .result {
+            margin-top: 20px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .error {
+            color: #ff6b6b;
+            font-weight: bold;
+        }
+        .success {
+            color: #51cf66;
+            font-weight: bold;
+        }
+        .warning {
+            color: #ffd43b;
+            font-weight: bold;
+        }
+        .info {
+            color: #74c0fc;
+            font-weight: bold;
+        }
+        pre {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 8px;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .stat-card {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .stat-number {
+            font-size: 24px;
+            font-weight: bold;
+            color: #ff8cc6;
+        }
+        .stat-label {
+            font-size: 14px;
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧹 Очистка инвентаря</h1>
+        
+        <p>Этот инструмент поможет очистить инвентарь от несуществующих предметов и исправить опечатки.</p>
+        
+        <div style="text-align: center;">
+            <button class="button" onclick="checkInventory()">🔍 Проверить инвентарь</button>
+            <button class="button" onclick="cleanInventory()">🧹 Очистить инвентарь</button>
+            <button class="button" onclick="fixResurrectionPotion()">🔧 Исправить опечатку ressurection_potion</button>
+        </div>
+        
+        <div id="result" class="result" style="display: none;"></div>
+    </div>
+
+    <script>
+        // Список существующих предметов из items.json
+        const validItems = [
+            // Consumable
+            'basic_health_potion', 'health_potion', 'basic_mana_potion', 'mana_potion',
+            'strength_potion', 'agility_potion', 'magic_potion', 'resurrection_potion',
+            'golden_apple', 'antidote', 'apple', 'basic_antidote', 'basic_book',
+            'basic_scroll', 'candy_icon', 'chocolate', 'cursed_potion', 'dark_mushroom',
+            'darkness_potion', 'defense_potion', 'dryed_nightshade', 'earth_potion',
+            'elven_dew', 'fairy_pollen', 'fire_berry', 'fire_potion', 'ghost_essence',
+            'gingerbread', 'glowshroom', 'ice_potion', 'light_potion', 'luck_potion',
+            'medicinal_herb', 'milk_bottle', 'moondust', 'poison_potion', 'present',
+            'regeneration_potion', 'thunder_potion', 'water_berry', 'water_potion',
+            'will_potion', 'wind_potion',
+            
+            // Material
+            'bone', 'fabric', 'bronze_ingot', 'silver_ingot', 'gold_ingot',
+            'mythril_ingot', 'phoenix_feather', 'ancient_tablet', 'basilisk_scale',
+            'colorful_coral', 'crab_claw', 'earthbound_rock', 'enchanted_obsidian',
+            'griffin_wing', 'magestone', 'mandrake_root', 'moonlit_pearl',
+            'ogre_toenail', 'parchment', 'shadow_root', 'silk', 'siren_scale',
+            'slime_ball', 'sprite_wing', 'sugar_cane', 'troll_tooth', 'wolf_fur',
+            
+            // Special
+            'fire_crystal', 'ice_crystal', 'light_crystal', 'darkness_crystal', 'holy_book',
+            'bear_trap', 'darkness_spellbook',
+            
+            // Chests and Keys
+            'basic_chest', 'silver_chest', 'gold_chest', 'old_key', 'silver_key', 'gold_key',
+            
+            // Pets
+            'slime', 'rat', 'frog', 'fish', 'sheep', 'turtle', 'crab', 'spider',
+            'snake', 'bat', 'monkey', 'fox', 'wolf', 'plant', 'scallop', 'fairy',
+            'big_slime', 'fire_slime', 'nature_slime', 'thunder_slime', 'frost_sprite',
+            'fire_wisp', 'will_o_wisp', 'whispering_wisp', 'plant_sprite', 'water_sprite',
+            'earth_sprite', 'wind_sprite', 'light_sprite', 'shadow_sprite', 'chaos_sprite',
+            'order_sprite', 'time_sprite', 'space_sprite', 'void_sprite', 'star_sprite',
+            'moon_sprite', 'sun_sprite', 'rainbow_sprite', 'storm_sprite', 'mist_sprite',
+            'fog_sprite', 'smoke_sprite', 'steam_sprite', 'bubble_sprite', 'spark_sprite',
+            'flame_sprite', 'ice_sprite', 'lightning_sprite', 'thunder_sprite', 'wind_sprite',
+            'earth_sprite', 'water_sprite', 'fire_sprite', 'nature_sprite', 'magic_sprite',
+            'spirit_sprite', 'ghost_sprite', 'phantom_sprite', 'specter_sprite', 'wraith_sprite',
+            'banshee_sprite', 'poltergeist_sprite', 'apparition_sprite', 'manifestation_sprite',
+            'incarnation_sprite', 'embodiment_sprite', 'personification_sprite', 'avatar_sprite',
+            'dragon', 'phoenix', 'unicorn', 'pegasus', 'griffin', 'kraken', 'reaper', 'banshee',
+            'baby_dragon', 'kitten', 'puppy', 'bogwine', 'cumulus', 'glistening_fish'
+        ];
+
+        function getInventory() {
+            const savedInventory = localStorage.getItem('game_inventory');
+            return savedInventory ? JSON.parse(savedInventory) : {};
+        }
+
+        function saveInventory(inventory) {
+            localStorage.setItem('game_inventory', JSON.stringify(inventory));
+        }
+
+        function checkInventory() {
+            const inventory = getInventory();
+            const invalidItems = [];
+            const validItemsCount = {};
+            let totalItems = 0;
+
+            for (const itemId in inventory) {
+                totalItems += inventory[itemId].quantity || 0;
+                
+                if (validItems.includes(itemId)) {
+                    validItemsCount[itemId] = inventory[itemId].quantity || 0;
+                } else {
+                    invalidItems.push({
+                        id: itemId,
+                        quantity: inventory[itemId].quantity || 0
+                    });
+                }
+            }
+
+            const resultDiv = document.getElementById('result');
+            resultDiv.style.display = 'block';
+            
+            let html = '<h3>📊 Результаты проверки инвентаря</h3>';
+            
+            // Статистика
+            html += '<div class="stats">';
+            html += `<div class="stat-card">
+                <div class="stat-number">${Object.keys(inventory).length}</div>
+                <div class="stat-label">Всего предметов в инвентаре</div>
+            </div>`;
+            html += `<div class="stat-card">
+                <div class="stat-number">${Object.keys(validItemsCount).length}</div>
+                <div class="stat-label">Валидных предметов</div>
+            </div>`;
+            html += `<div class="stat-card">
+                <div class="stat-number">${invalidItems.length}</div>
+                <div class="stat-label">Несуществующих предметов</div>
+            </div>`;
+            html += `<div class="stat-card">
+                <div class="stat-number">${totalItems}</div>
+                <div class="stat-label">Общее количество</div>
+            </div>`;
+            html += '</div>';
+
+            if (invalidItems.length > 0) {
+                html += '<div class="warning">⚠️ Найдены несуществующие предметы:</div>';
+                html += '<pre>' + JSON.stringify(invalidItems, null, 2) + '</pre>';
+            } else {
+                html += '<div class="success">✅ Все предметы в инвентаре существуют!</div>';
+            }
+
+            resultDiv.innerHTML = html;
+        }
+
+        function cleanInventory() {
+            const inventory = getInventory();
+            const cleanedInventory = {};
+            const removedItems = [];
+            let totalRemoved = 0;
+
+            for (const itemId in inventory) {
+                if (validItems.includes(itemId)) {
+                    cleanedInventory[itemId] = inventory[itemId];
+                } else {
+                    removedItems.push({
+                        id: itemId,
+                        quantity: inventory[itemId].quantity || 0
+                    });
+                    totalRemoved += inventory[itemId].quantity || 0;
+                }
+            }
+
+            saveInventory(cleanedInventory);
+
+            const resultDiv = document.getElementById('result');
+            resultDiv.style.display = 'block';
+            
+            let html = '<h3>🧹 Результаты очистки инвентаря</h3>';
+            
+            if (removedItems.length > 0) {
+                html += `<div class="success">✅ Удалено ${removedItems.length} несуществующих предметов (${totalRemoved} единиц)</div>`;
+                html += '<div class="info">Удаленные предметы:</div>';
+                html += '<pre>' + JSON.stringify(removedItems, null, 2) + '</pre>';
+            } else {
+                html += '<div class="success">✅ Несуществующих предметов не найдено!</div>';
+            }
+
+            resultDiv.innerHTML = html;
+        }
+
+        function fixResurrectionPotion() {
+            const inventory = getInventory();
+            let fixed = false;
+            let message = '';
+
+            // Проверяем наличие опечатки ressurection_potion
+            if (inventory['ressurection_potion']) {
+                const quantity = inventory['ressurection_potion'].quantity || 0;
+                
+                // Удаляем неправильный предмет
+                delete inventory['ressurection_potion'];
+                
+                // Добавляем правильный предмет
+                if (quantity > 0) {
+                    inventory['resurrection_potion'] = {
+                        quantity: quantity,
+                        lastAdded: new Date().toISOString()
+                    };
+                    fixed = true;
+                    message = `✅ Исправлена опечатка: ressurection_potion → resurrection_potion (${quantity} единиц)`;
+                }
+            } else {
+                message = 'ℹ️ Опечатка ressurection_potion не найдена в инвентаре';
+            }
+
+            saveInventory(inventory);
+
+            const resultDiv = document.getElementById('result');
+            resultDiv.style.display = 'block';
+            resultDiv.innerHTML = `<h3>🔧 Исправление опечатки</h3><div class="${fixed ? 'success' : 'info'}">${message}</div>`;
+        }
+    </script>
+</body>
+</html> 

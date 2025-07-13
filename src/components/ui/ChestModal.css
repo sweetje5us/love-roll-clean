@@ -1,0 +1,457 @@
+.chest-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.chest-modal {
+  background: linear-gradient(135deg, #fff0f5, #fce4ec);
+  border-radius: 20px;
+  max-width: 90vw;
+  max-height: 90vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  border: 2px solid #ffb6e6;
+  width: 90vw;
+  box-sizing: border-box;
+}
+
+.chest-modal-content,
+.rewards-modal-content {
+  padding: 24px;
+  width: 100%;
+  box-sizing: border-box;
+  overflow-x: hidden;
+  max-width: 100%;
+}
+
+/* Заголовок */
+.chest-header,
+.rewards-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 2px solid #ffdfea;
+}
+
+.chest-header h2,
+.rewards-header h2 {
+  margin: 0;
+  color: #ff8cc6;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 20px;
+  color: #ff8cc6;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+}
+
+.close-btn:hover {
+  background: #ffdfea;
+  transform: scale(1.1);
+}
+
+/* Информация о сундуке */
+.chest-info {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 24px;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 16px;
+  border: 1px solid #ffdfea;
+}
+
+.chest-image {
+  flex-shrink: 0;
+}
+
+.chest-image img {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+  border-radius: 12px;
+  background: white;
+  padding: 8px;
+  box-shadow: 0 4px 8px rgba(255, 182, 193, 0.2);
+}
+
+.chest-details {
+  flex: 1;
+}
+
+.chest-description {
+  margin: 0 0 12px 0;
+  color: #6d4a6e;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.chest-stats {
+  display: flex;
+  gap: 16px;
+  font-size: 12px;
+  color: #ff8cc6;
+  font-weight: 600;
+}
+
+/* Информация о ключе */
+.key-info {
+  background: linear-gradient(135deg, #e8f5e8, #d4edda);
+  border: 2px solid #28a745;
+  border-radius: 16px;
+  padding: 16px;
+  margin-bottom: 24px;
+  text-align: center;
+}
+
+.key-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.key-item img {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+}
+
+.key-item span {
+  font-weight: 600;
+  color: #28a745;
+}
+
+.key-info p {
+  margin: 0;
+  color: #155724;
+  font-size: 14px;
+}
+
+/* Предупреждение об отсутствии ключа */
+.no-key-warning {
+  background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+  border: 2px solid #ffc107;
+  border-radius: 16px;
+  padding: 16px;
+  margin-bottom: 24px;
+  text-align: center;
+}
+
+.no-key-warning i {
+  font-size: 24px;
+  color: #ffc107;
+  margin-bottom: 8px;
+}
+
+.no-key-warning p {
+  margin: 0;
+  color: #856404;
+  font-size: 14px;
+}
+
+/* Возможные награды */
+.possible-rewards {
+  margin-bottom: 24px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.possible-rewards h3 {
+  margin: 0 0 16px 0;
+  color: #ff8cc6;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.rewards-grid {
+  display: grid;
+  gap: 16px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.rarity-section {
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 12px;
+  padding: 12px;
+  border: 1px solid #ffdfea;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.rarity-section h4 {
+  margin: 0 0 8px 0;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.items-preview {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+  gap: 8px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.preview-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 8px;
+  background: white;
+  border-radius: 8px;
+  border: 1px solid #ffdfea;
+  width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+  word-wrap: break-word;
+}
+
+.preview-item img {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+  margin-bottom: 4px;
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.preview-item span {
+  font-size: 10px;
+  color: #6d4a6e;
+  line-height: 1.2;
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Кнопки действий */
+.chest-actions {
+  text-align: center;
+}
+
+.open-chest-btn {
+  background: linear-gradient(135deg, #ff8cc6, #ff6bb5);
+  border: none;
+  border-radius: 25px;
+  padding: 12px 32px;
+  color: white;
+  font-weight: bold;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(255, 140, 198, 0.3);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.open-chest-btn:hover:not(:disabled) {
+  background: linear-gradient(135deg, #ff6bb5, #ff5aa4);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(255, 140, 198, 0.4);
+}
+
+.open-chest-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.open-chest-btn.opening {
+  background: linear-gradient(135deg, #ffb6e6, #ff8cc6);
+}
+
+/* Экран наград */
+.rewards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.reward-item {
+  background: white;
+  border-radius: 16px;
+  padding: 16px;
+  text-align: center;
+  border: 3px solid;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease;
+  width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+  word-wrap: break-word;
+}
+
+.reward-item:hover {
+  transform: scale(1.05);
+}
+
+.reward-image {
+  margin-bottom: 12px;
+}
+
+.reward-image img {
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
+  border-radius: 8px;
+  background: #f8f9fa;
+  padding: 4px;
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.reward-info h4 {
+  margin: 0 0 4px 0;
+  font-size: 14px;
+  color: #333;
+  font-weight: bold;
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.reward-rarity {
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* Кнопка продолжить */
+.rewards-actions {
+  text-align: center;
+}
+
+.continue-btn {
+  background: linear-gradient(135deg, #28a745, #20c997);
+  border: none;
+  border-radius: 25px;
+  padding: 12px 32px;
+  color: white;
+  font-weight: bold;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+}
+
+.continue-btn:hover {
+  background: linear-gradient(135deg, #20c997, #17a2b8);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(40, 167, 69, 0.4);
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+  .chest-modal {
+    max-width: 95vw;
+    max-height: 95vh;
+    width: 95vw;
+  }
+  
+  .chest-modal-content,
+  .rewards-modal-content {
+    padding: 16px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  
+  .chest-info {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .chest-stats {
+    justify-content: center;
+  }
+  
+  .rewards-grid {
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 12px;
+    width: 100%;
+  }
+  
+  .items-preview {
+    grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .chest-modal {
+    max-width: 98vw;
+    width: 98vw;
+  }
+  
+  .chest-modal-content,
+  .rewards-modal-content {
+    padding: 12px;
+  }
+  
+  .chest-header h2,
+  .rewards-header h2 {
+    font-size: 18px;
+  }
+  
+  .rewards-grid {
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+    gap: 8px;
+    width: 100%;
+  }
+  
+  .items-preview {
+    grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
+    gap: 6px;
+    width: 100%;
+  }
+  
+  .reward-item {
+    padding: 8px;
+  }
+  
+  .reward-image img {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .preview-item {
+    padding: 6px;
+  }
+  
+  .preview-item img {
+    width: 24px;
+    height: 24px;
+  }
+  
+  .preview-item span {
+    font-size: 8px;
+  }
+} 

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тест исправления завершения эпизода</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .test-button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .test-button:hover {
+            background: #0056b3;
+        }
+        .result {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 4px;
+            background: #f8f9fa;
+            border-left: 4px solid #007bff;
+        }
+        .success {
+            border-left-color: #28a745;
+            background: #d4edda;
+        }
+        .error {
+            border-left-color: #dc3545;
+            background: #f8d7da;
+        }
+    </style>
+</head>
+<body>
+    <h1>Тест исправления завершения эпизода</h1>
+    
+    <div class="test-section">
+        <h2>Проверка исправления</h2>
+        <p>Исправления, которые были внесены:</p>
+        <ul>
+            <li>✅ Добавлен импорт SCREEN_TYPES в GameScreen.js</li>
+            <li>✅ Изменена функция handleEpisodeCompleteBackToMenu для использования navigateTo вместо goBack</li>
+            <li>✅ Теперь кнопка "Вернуться в меню" должна корректно переводить в главное меню</li>
+        </ul>
+        
+        <div class="result success">
+            <strong>Исправления применены!</strong><br>
+            Теперь при нажатии кнопки "Вернуться в меню" на экране завершения эпизода 
+            должен происходить корректный переход в главное меню.
+        </div>
+    </div>
+    
+    <div class="test-section">
+        <h2>Инструкции по тестированию</h2>
+        <ol>
+            <li>Запустите игру</li>
+            <li>Выберите персонажа и эпизод</li>
+            <li>Дойдите до конца эпизода (до сцены 170)</li>
+            <li>На экране завершения эпизода нажмите кнопку "Вернуться в меню"</li>
+            <li>Проверьте, что произошел переход в главное меню</li>
+        </ol>
+    </div>
+</body>
+</html> 

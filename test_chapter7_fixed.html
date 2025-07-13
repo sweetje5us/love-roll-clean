@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тест исправленной 7 главы</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f0f0f0;
+        }
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .success {
+            color: green;
+            background: #e6ffe6;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .error {
+            color: red;
+            background: #ffe6e6;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .info {
+            color: blue;
+            background: #e6f3ff;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .log {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+            font-family: monospace;
+            white-space: pre-wrap;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>Тест исправленной 7 главы</h1>
+        
+        <div class="test-section">
+            <h3>Исправления</h3>
+            <div class="info">
+                ✓ Добавлены ID ко всем выборам в сценах 7 главы<br>
+                ✓ Добавлен персонаж "anna" в основной конфиг<br>
+                ✓ Добавлена локация "pet_classroom" в конфиг<br>
+                ✓ Исправлен переход к 7 главе из 6 главы
+            </div>
+        </div>
+        
+        <div class="test-section">
+            <h3>Проверка выборов в сценах</h3>
+            <div id="choices-check-results"></div>
+            <button onclick="checkChoices()">Проверить выборы</button>
+        </div>
+        
+        <div class="test-section">
+            <h3>Создание тестового прогресса</h3>
+            <div id="progress-results"></div>
+            <button onclick="createChapter7Progress()">Создать прогресс для 7 главы</button>
+            <button onclick="createChapter6Progress()">Создать прогресс для 6 главы (для теста перехода)</button>
+        </div>
+        
+        <div class="test-section">
+            <h3>Проверка персонажей и локаций</h3>
+            <div id="config-results"></div>
+            <button onclick="checkConfig()">Проверить конфигурацию</button>
+        </div>
+        
+        <div class="test-section">
+            <h3>Лог операций</h3>
+            <div id="log" class="log"></div>
+            <button onclick="clearLog()">Очистить лог</button>
+        </div>
+    </div>
+
+    <script>
+        function log(message) {
+            const logElement = document.getElementById('log');
+            logElement.textContent += new Date().toLocaleTimeString() + ': ' + message + '\n';
+            logElement.scrollTop = logElement.scrollHeight;
+        }
+
+        function clearLog() {
+            document.getElementById('log').textContent = '';
+        }
+
+        async function checkChoices() {
+            const resultsDiv = document.getElementById('choices-check-results');
+            resultsDiv.innerHTML = '';
+            
+            log('Проверка выборов в сценах 7 главы...');
+            
+            const scenesToCheck = [
+                'scene120', 'scene121', 'scene122', 'scene123', 'scene123_reaction',
+                'scene124', 'scene125', 'scene126', 'scene127', 'scene128',
+                'scene129', 'scene130', 'scene131', 'scene132', 'scene133', 'scene134'
+            ];
+            
+            let allGood = true;
+            
+            for (const sceneId of scenesToCheck) {
+                try {
+                    const response = await fetch(`/episodes/tutorial/scenes/${sceneId}.json`);
+                    if (response.ok) {
+                        const sceneData = await response.json();
+                        
+                        if (sceneData.choices && Array.isArray(sceneData.choices)) {
+                            let sceneGood = true;
+                            sceneData.choices.forEach((choice, index) => {
+                                if (!choice.id) {
+                                    sceneGood = false;
+                                } else if (!choice.id.startsWith(sceneId)) {
+                                    sceneGood = false;
+                                }
+                            });
+                            
+                            if (sceneGood) {
+                                const div = document.createElement('div');
+                                div.className = 'success';
+                                div.textContent = `✓ ${sceneId}: ${sceneData.choices.length} выборов с правильными ID`;
+                                resultsDiv.appendChild(div);
+                                log(`${sceneId}: ${sceneData.choices.length} выборов с правильными ID`);
+                            } else {
+                                const div = document.createElement('div');
+                                div.className = 'error';
+                                div.textContent = `✗ ${sceneId}: выборы без ID или с неправильными ID`;
+                                resultsDiv.appendChild(div);
+                                log(`${sceneId}: выборы без ID или с неправильными ID`);
+                                allGood = false;
+                            }
+                        } else {
+                            const div = document.createElement('div');
+                            div.className = 'info';
+                            div.textContent = `- ${sceneId}: нет выборов`;
+                            resultsDiv.appendChild(div);
+                            log(`${sceneId}: нет выборов`);
+                        }
+                    } else {
+                        const div = document.createElement('div');
+                        div.className = 'error';
+                        div.textContent = `✗ ${sceneId} - ${response.status} ${response.statusText}`;
+                        resultsDiv.appendChild(div);
+                        log(`${sceneId} не найден: ${response.status}`);
+                        allGood = false;
+                    }
+                } catch (error) {
+                    const div = document.createElement('div');
+                    div.className = 'error';
+                    div.textContent = `✗ ${sceneId} - ${error.message}`;
+                    resultsDiv.appendChild(div);
+                    log(`Ошибка проверки ${sceneId}: ${error.message}`);
+                    allGood = false;
+                }
+            }
+            
+            if (allGood) {
+                log('Все выборы в сценах 7 главы имеют правильные ID');
+            } else {
+                log('Некоторые выборы в сценах 7 главы имеют проблемы');
+            }
+        }
+
+        function createChapter7Progress() {
+            try {
+                log('Создание тестового прогресса для 7 главы...');
+                
+                const testProgress = {
+                    episodeId: 'tutorial',
+                    currentChapter: 7,
+                    currentScene: 'scene120',
+                    completedChapters: [1, 2, 3, 4, 5, 6],
+                    playerChoices: {},
+                    importantChoices: {},
+                    progress: {
+                        relation_anna: 0
+                    },
+                    playerCharacterId: '1751735945156',
+                    lastPlayed: new Date().toISOString()
+                };
+                
+                localStorage.setItem('tutorial_progress', JSON.stringify(testProgress));
+                log('Создан тестовый прогресс для 7 главы');
+                log(`Текущая сцена: ${testProgress.currentScene}`);
+                log('Теперь запустите игру и проверьте 7 главу');
+                
+                const resultsDiv = document.getElementById('progress-results');
+                resultsDiv.innerHTML = '<div class="success">✓ Тестовый прогресс для 7 главы создан</div>';
+            } catch (error) {
+                log(`Ошибка создания прогресса: ${error.message}`);
+                const resultsDiv = document.getElementById('progress-results');
+                resultsDiv.innerHTML = `<div class="error">✗ Ошибка: ${error.message}</div>`;
+            }
+        }
+
+        function createChapter6Progress() {
+            try {
+                log('Создание тестового прогресса для 6 главы...');
+                
+                const testProgress = {
+                    episodeId: 'tutorial',
+                    currentChapter: 6,
+                    currentScene: 'scene113',
+                    completedChapters: [1, 2, 3, 4, 5],
+                    playerChoices: {},
+                    importantChoices: {},
+                    progress: {
+                        relation_nikolay: 50,
+                        relation_anna: 0
+                    },
+                    playerCharacterId: '1751735945156',
+                    lastPlayed: new Date().toISOString()
+                };
+                
+                localStorage.setItem('tutorial_progress', JSON.stringify(testProgress));
+                log('Создан тестовый прогресс для 6 главы');
+                log(`Текущая сцена: ${testProgress.currentScene}`);
+                log('Теперь запустите игру и нажмите "Спасибо за обучение!" для перехода к 7 главе');
+                
+                const resultsDiv = document.getElementById('progress-results');
+                resultsDiv.innerHTML = '<div class="success">✓ Тестовый прогресс для 6 главы создан</div>';
+            } catch (error) {
+                log(`Ошибка создания прогресса: ${error.message}`);
+                const resultsDiv = document.getElementById('progress-results');
+                resultsDiv.innerHTML = `<div class="error">✗ Ошибка: ${error.message}</div>`;
+            }
+        }
+
+        async function checkConfig() {
+            const resultsDiv = document.getElementById('config-results');
+            resultsDiv.innerHTML = '';
+            
+            log('Проверка конфигурации...');
+            
+            try {
+                // Проверяем основной конфиг
+                const response = await fetch('/episodes/tutorial/config.json');
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                const config = await response.json();
+                log('Основной конфиг загружен');
+                
+                // Проверяем наличие персонажа anna
+                const anna = config.characters.find(ch => ch.id === 'anna');
+                if (anna) {
+                    const div = document.createElement('div');
+                    div.className = 'success';
+                    div.textContent = `✓ Персонаж anna найден: ${anna.name} (${anna.role})`;
+                    resultsDiv.appendChild(div);
+                    log(`Персонаж anna: ${anna.name} (${anna.role})`);
+                } else {
+                    const div = document.createElement('div');
+                    div.className = 'error';
+                    div.textContent = '✗ Персонаж anna не найден в конфигурации';
+                    resultsDiv.appendChild(div);
+                    log('Персонаж anna не найден в конфигурации');
+                }
+                
+                // Проверяем наличие локации pet_classroom
+                const petClassroom = config.locations.find(loc => loc.id === 'pet_classroom');
+                if (petClassroom) {
+                    const div = document.createElement('div');
+                    div.className = 'success';
+                    div.textContent = `✓ Локация pet_classroom найдена: ${petClassroom.name}`;
+                    resultsDiv.appendChild(div);
+                    log(`Локация pet_classroom: ${petClassroom.name}`);
+                } else {
+                    const div = document.createElement('div');
+                    div.className = 'error';
+                    div.textContent = '✗ Локация pet_classroom не найдена в конфигурации';
+                    resultsDiv.appendChild(div);
+                    log('Локация pet_classroom не найдена в конфигурации');
+                }
+                
+                // Проверяем наличие 7 главы
+                const chapter7 = config.chapters.find(ch => ch.id === 7);
+                if (chapter7) {
+                    const div = document.createElement('div');
+                    div.className = 'success';
+                    div.textContent = `✓ Глава 7 найдена: ${chapter7.name}`;
+                    resultsDiv.appendChild(div);
+                    log(`Глава 7: ${chapter7.name}`);
+                } else {
+                    const div = document.createElement('div');
+                    div.className = 'error';
+                    div.textContent = '✗ Глава 7 не найдена в конфигурации';
+                    resultsDiv.appendChild(div);
+                    log('Глава 7 не найдена в конфигурации');
+                }
+                
+            } catch (error) {
+                const div = document.createElement('div');
+                div.className = 'error';
+                div.textContent = `✗ Ошибка проверки конфигурации: ${error.message}`;
+                resultsDiv.appendChild(div);
+                log(`Ошибка проверки конфигурации: ${error.message}`);
+            }
+        }
+
+        // Показываем текущий прогресс при загрузке
+        function showCurrentProgress() {
+            try {
+                const progress = localStorage.getItem('tutorial_progress');
+                if (progress) {
+                    const data = JSON.parse(progress);
+                    log(`Текущий прогресс: Глава ${data.currentChapter}, Сцена ${data.currentScene}`);
+                } else {
+                    log('Прогресс не найден');
+                }
+            } catch (error) {
+                log(`Ошибка чтения прогресса: ${error.message}`);
+            }
+        }
+
+        // Показываем текущий прогресс при загрузке
+        showCurrentProgress();
+    </script>
+</body>
+</html> 

@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тест фонов 4 главы</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f0f0f0;
+        }
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .background-test {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .background-image {
+            width: 100%;
+            max-width: 400px;
+            height: 250px;
+            object-fit: cover;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .error {
+            color: red;
+            background: #ffe6e6;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .success {
+            color: green;
+            background: #e6ffe6;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .scene-info {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>Тест фонов 4 главы</h1>
+        <p>Эта страница тестирует загрузку фонов для сцен 4 главы.</p>
+        
+        <div class="background-test">
+            <h3>Тест 1: Прямой путь к файлу</h3>
+            <div class="scene-info">
+                <strong>Файл:</strong> sprites/episodes/locations/school/school_class.png<br>
+                <strong>Ожидаемый результат:</strong> Изображение класса школы
+            </div>
+            <img 
+                src="sprites/episodes/locations/school/school_class.png" 
+                alt="School Class Background" 
+                class="background-image"
+                onload="this.nextElementSibling.innerHTML = '<div class=\'success\'>✅ Файл загружен успешно!</div>'"
+                onerror="this.nextElementSibling.innerHTML = '<div class=\'error\'>❌ Ошибка загрузки файла: ' + this.src + '</div>'"
+            >
+            <div></div>
+        </div>
+
+        <div class="background-test">
+            <h3>Тест 2: Фон через утилиту (school_class)</h3>
+            <div class="scene-info">
+                <strong>Имя фона:</strong> school_class<br>
+                <strong>Ожидаемый путь:</strong> /sprites/episodes/locations/school/school_class.png
+            </div>
+            <img 
+                src="/sprites/episodes/locations/school/school_class.png" 
+                alt="School Class Background (Mapped)" 
+                class="background-image"
+                onload="this.nextElementSibling.innerHTML = '<div class=\'success\'>✅ Фон загружен через маппинг!</div>'"
+                onerror="this.nextElementSibling.innerHTML = '<div class=\'error\'>❌ Ошибка загрузки фона через маппинг: ' + this.src + '</div>'"
+            >
+            <div></div>
+        </div>
+
+        <div class="background-test">
+            <h3>Тест 3: Другие фоны школы</h3>
+            <div class="scene-info">
+                <strong>Доступные фоны:</strong> school_building, school_corridor, school_rest_room
+            </div>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                <div>
+                    <strong>Школа (здание):</strong><br>
+                    <img 
+                        src="/sprites/episodes/locations/school/school_building.png" 
+                        alt="School Building" 
+                        style="width: 150px; height: 100px; object-fit: cover; border-radius: 5px;"
+                        onload="this.nextElementSibling.innerHTML = '✅'"
+                        onerror="this.nextElementSibling.innerHTML = '❌'"
+                    >
+                    <div></div>
+                </div>
+                <div>
+                    <strong>Коридор:</strong><br>
+                    <img 
+                        src="/sprites/episodes/locations/school/school_corridor.png" 
+                        alt="School Corridor" 
+                        style="width: 150px; height: 100px; object-fit: cover; border-radius: 5px;"
+                        onload="this.nextElementSibling.innerHTML = '✅'"
+                        onerror="this.nextElementSibling.innerHTML = '❌'"
+                    >
+                    <div></div>
+                </div>
+                <div>
+                    <strong>Туалет:</strong><br>
+                    <img 
+                        src="/sprites/episodes/locations/school/school_rest_room.png" 
+                        alt="School Rest Room" 
+                        style="width: 150px; height: 100px; object-fit: cover; border-radius: 5px;"
+                        onload="this.nextElementSibling.innerHTML = '✅'"
+                        onerror="this.nextElementSibling.innerHTML = '❌'"
+                    >
+                    <div></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="background-test">
+            <h3>Тест 4: Проверка сцен 4 главы</h3>
+            <div class="scene-info">
+                <strong>Сцены для проверки:</strong> scene60-scene75
+            </div>
+            <button onclick="testScene60()">Тест scene60</button>
+            <button onclick="testScene65()">Тест scene65</button>
+            <button onclick="testScene70()">Тест scene70</button>
+            <button onclick="testScene75()">Тест scene75</button>
+            <div id="scene-test-result"></div>
+        </div>
+
+        <div class="background-test">
+            <h3>Информация о проблеме</h3>
+            <div class="scene-info">
+                <strong>Проблема:</strong> В сценах 4 главы указан фон "school_class", но система не знала, как преобразовать это имя в путь к файлу.<br>
+                <strong>Решение:</strong> Создана утилита backgroundUtils.js с маппингом имен фонов в пути к файлам.<br>
+                <strong>Обновления:</strong> sceneManager.js теперь использует getBackgroundPath() для обработки фонов.
+            </div>
+        </div>
+    </div>
+
+    <script>
+        async function testScene(sceneId) {
+            try {
+                const response = await fetch(`public/episodes/tutorial/scenes/${sceneId}.json`);
+                const sceneData = await response.json();
+                
+                const resultDiv = document.getElementById('scene-test-result');
+                resultDiv.innerHTML = `
+                    <div class="scene-info">
+                        <strong>Сцена ${sceneId}:</strong><br>
+                        <strong>Chapter ID:</strong> ${sceneData.chapterId}<br>
+                        <strong>Location:</strong> ${sceneData.location}<br>
+                        <strong>Background:</strong> ${sceneData.background}<br>
+                        <strong>Ожидаемый путь:</strong> /sprites/episodes/locations/school/school_class.png
+                    </div>
+                `;
+                
+                // Тестируем загрузку фона
+                const img = new Image();
+                img.onload = function() {
+                    resultDiv.innerHTML += '<div class="success">✅ Фон сцены загружается успешно!</div>';
+                };
+                img.onerror = function() {
+                    resultDiv.innerHTML += '<div class="error">❌ Ошибка загрузки фона сцены</div>';
+                };
+                img.src = '/sprites/episodes/locations/school/school_class.png';
+                
+            } catch (error) {
+                document.getElementById('scene-test-result').innerHTML = 
+                    `<div class="error">❌ Ошибка загрузки сцены ${sceneId}: ${error.message}</div>`;
+            }
+        }
+
+        function testScene60() { testScene('scene60'); }
+        function testScene65() { testScene('scene65'); }
+        function testScene70() { testScene('scene70'); }
+        function testScene75() { testScene('scene75'); }
+    </script>
+</body>
+</html> 

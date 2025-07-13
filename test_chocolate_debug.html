@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Отладка проблемы с chocolate</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f0f0f0;
+        }
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .test-button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .test-button:hover {
+            background: #0056b3;
+        }
+        .log {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 10px;
+            max-height: 300px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 12px;
+        }
+        .log-entry {
+            margin: 2px 0;
+            padding: 2px 5px;
+            border-radius: 3px;
+        }
+        .log-info { background: #e3f2fd; }
+        .log-success { background: #e8f5e8; color: #2e7d32; }
+        .log-error { background: #ffebee; color: #c62828; }
+        .log-warning { background: #fff3e0; color: #ef6c00; }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>Отладка проблемы с отображением имени предмета "chocolate"</h1>
+        
+        <div class="test-section">
+            <h2>Тестирование функции getItemName</h2>
+            <button class="test-button" onclick="testGetItemName()">Тест getItemName</button>
+            <button class="test-button" onclick="testEpisodeManager()">Тест EpisodeManager</button>
+            <button class="test-button" onclick="testDialogueItemSystem()">Тест DialogueItemSystem</button>
+        </div>
+
+        <div class="test-section">
+            <h2>Проверка items.json</h2>
+            <button class="test-button" onclick="checkItemsJson()">Проверить items.json</button>
+        </div>
+
+        <div class="test-section">
+            <h2>Симуляция сцены 153</h2>
+            <button class="test-button" onclick="simulateScene153()">Симулировать сцену 153</button>
+        </div>
+
+        <div class="test-section">
+            <h2>Лог отладки</h2>
+            <div id="debugLog" class="log"></div>
+        </div>
+    </div>
+
+    <script>
+        // Функция логирования
+        function log(message, type = 'info') {
+            const logDiv = document.getElementById('debugLog');
+            const entry = document.createElement('div');
+            entry.className = `log-entry log-${type}`;
+            entry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            logDiv.appendChild(entry);
+            logDiv.scrollTop = logDiv.scrollHeight;
+        }
+
+        // Тестирование функции getItemName из EpisodeManager
+        async function testEpisodeManager() {
+            log('Тестирование EpisodeManager.getItemName...', 'info');
+            
+            try {
+                // Имитируем EpisodeManager
+                const itemsData = await fetch('../src/data/items.json').then(r => r.json());
+                
+                function getItemName(itemId) {
+                    // Проверяем все категории предметов
+                    const categories = ['consumable', 'material', 'special', 'pet', 'clothing', 'chest', 'key'];
+                    
+                    for (const category of categories) {
+                        const categoryItems = itemsData.items[category];
+                        if (categoryItems && categoryItems[itemId]) {
+                            const name = categoryItems[itemId].name || itemId;
+                            log(`Найден предмет в категории ${category}: ${itemId} -> ${name}`, 'success');
+                            return name;
+                        }
+                    }
+                    
+                    // Fallback на старые названия
+                    const itemNames = {
+                        'present': 'Подарок',
+                        'fairy': 'Фея',
+                        'apple': 'Яблоко',
+                        'chocolate': 'Шоколад'
+                    };
+                    
+                    const fallbackName = itemNames[itemId] || itemId;
+                    log(`Используется fallback для ${itemId}: ${fallbackName}`, 'warning');
+                    return fallbackName;
+                }
+                
+                // Тестируем разные предметы
+                const testItems = ['apple', 'chocolate', 'present', 'unknown_item'];
+                
+                testItems.forEach(itemId => {
+                    const name = getItemName(itemId);
+                    log(`getItemName("${itemId}") = "${name}"`, 'info');
+                });
+                
+            } catch (error) {
+                log(`Ошибка тестирования EpisodeManager: ${error.message}`, 'error');
+            }
+        }
+
+        // Тестирование функции getItemName из DialogueItemSystem
+        async function testDialogueItemSystem() {
+            log('Тестирование DialogueItemSystem.getItemName...', 'info');
+            
+            try {
+                // Имитируем DialogueItemSystem
+                const itemsData = await fetch('../src/data/items.json').then(r => r.json());
+                
+                function getItemName(itemId) {
+                    try {
+                        // Проверяем все категории предметов
+                        const categories = ['consumable', 'material', 'special', 'pet', 'clothing', 'chest', 'key'];
+                        
+                        for (const category of categories) {
+                            const categoryItems = itemsData.items[category];
+                            if (categoryItems && categoryItems[itemId]) {
+                                const name = categoryItems[itemId].name || itemId;
+                                log(`DialogueItemSystem: найден предмет в категории ${category}: ${itemId} -> ${name}`, 'success');
+                                return name;
+                            }
+                        }
+                    } catch (error) {
+                        log(`DialogueItemSystem: ошибка при загрузке items.json: ${error.message}`, 'error');
+                    }
+                    
+                    // Fallback на старые названия
+                    const itemNames = {
+                        'present': 'Подарок',
+                        'fairy': 'Фея',
+                        'apple': 'Яблоко',
+                        'chocolate': 'Шоколад'
+                    };
+                    
+                    const fallbackName = itemNames[itemId] || itemId;
+                    log(`DialogueItemSystem: используется fallback для ${itemId}: ${fallbackName}`, 'warning');
+                    return fallbackName;
+                }
+                
+                // Тестируем разные предметы
+                const testItems = ['apple', 'chocolate', 'present', 'unknown_item'];
+                
+                testItems.forEach(itemId => {
+                    const name = getItemName(itemId);
+                    log(`DialogueItemSystem.getItemName("${itemId}") = "${name}"`, 'info');
+                });
+                
+            } catch (error) {
+                log(`Ошибка тестирования DialogueItemSystem: ${error.message}`, 'error');
+            }
+        }
+
+        // Проверка items.json
+        async function checkItemsJson() {
+            log('Проверка items.json...', 'info');
+            
+            try {
+                const itemsData = await fetch('../src/data/items.json').then(r => r.json());
+                
+                // Ищем chocolate
+                const categories = ['consumable', 'material', 'special', 'pet', 'clothing', 'chest', 'key'];
+                
+                for (const category of categories) {
+                    const categoryItems = itemsData.items[category];
+                    if (categoryItems && categoryItems.chocolate) {
+                        log(`Найден chocolate в категории ${category}:`, 'success');
+                        log(`  id: ${categoryItems.chocolate.id}`, 'info');
+                        log(`  name: ${categoryItems.chocolate.name}`, 'info');
+                        log(`  description: ${categoryItems.chocolate.description}`, 'info');
+                        return;
+                    }
+                }
+                
+                log('chocolate не найден в items.json', 'error');
+                
+            } catch (error) {
+                log(`Ошибка загрузки items.json: ${error.message}`, 'error');
+            }
+        }
+
+        // Симуляция сцены 153
+        async function simulateScene153() {
+            log('Симуляция сцены 153...', 'info');
+            
+            try {
+                const sceneData = await fetch('episodes/tutorial/scenes/scene153.json').then(r => r.json());
+                log('Сцена 153 загружена', 'success');
+                
+                // Имитируем обработку эффектов
+                const itemsData = await fetch('../src/data/items.json').then(r => r.json());
+                
+                function getItemName(itemId) {
+                    // Проверяем все категории предметов
+                    const categories = ['consumable', 'material', 'special', 'pet', 'clothing', 'chest', 'key'];
+                    
+                    for (const category of categories) {
+                        const categoryItems = itemsData.items[category];
+                        if (categoryItems && categoryItems[itemId]) {
+                            return categoryItems[itemId].name || itemId;
+                        }
+                    }
+                    
+                    // Fallback на старые названия
+                    const itemNames = {
+                        'present': 'Подарок',
+                        'fairy': 'Фея',
+                        'apple': 'Яблоко',
+                        'chocolate': 'Шоколад'
+                    };
+                    
+                    return itemNames[itemId] || itemId;
+                }
+                
+                // Имитируем window.addNotification
+                window.addNotification = function(type, data) {
+                    log(`Уведомление: ${type} - ${data.message}`, 'success');
+                };
+                
+                // Обрабатываем выборы
+                sceneData.choices.forEach((choice, index) => {
+                    log(`Обработка выбора ${index + 1}: ${choice.text}`, 'info');
+                    
+                    if (choice.effects && choice.effects.items && choice.effects.items.add) {
+                        choice.effects.items.add.forEach(itemId => {
+                            const itemName = getItemName(itemId);
+                            log(`Добавление предмета: ${itemId} -> ${itemName}`, 'info');
+                            
+                            // Имитируем уведомление
+                            window.addNotification('item_received', {
+                                message: `Получен предмет "${itemName}"`,
+                                itemName: itemName
+                            });
+                        });
+                    }
+                });
+                
+            } catch (error) {
+                log(`Ошибка симуляции сцены 153: ${error.message}`, 'error');
+            }
+        }
+
+        // Простой тест getItemName
+        function testGetItemName() {
+            log('Простой тест getItemName...', 'info');
+            
+            // Имитируем старую функцию getItemName
+            function getItemName(itemId) {
+                const itemNames = {
+                    'present': 'Подарок',
+                    'fairy': 'Фея',
+                    'apple': 'Яблоко'
+                };
+                
+                const result = itemNames[itemId] || itemId;
+                log(`Старая getItemName("${itemId}") = "${result}"`, 'warning');
+                return result;
+            }
+            
+            // Тестируем chocolate
+            const name = getItemName('chocolate');
+            log(`Результат для chocolate: "${name}"`, 'info');
+        }
+
+        // Инициализация
+        log('Отладка проблемы с chocolate загружена', 'info');
+    </script>
+</body>
+</html> 

@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тест инициализации отношений</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .danger {
+            background: #dc3545;
+        }
+        .danger:hover {
+            background: #c82333;
+        }
+        .success {
+            background: #28a745;
+        }
+        .success:hover {
+            background: #218838;
+        }
+        pre {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+            white-space: pre-wrap;
+        }
+        .section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Тест инициализации отношений</h1>
+        
+        <div class="section">
+            <h2>Очистка сохранений</h2>
+            <p>Очистите все сохранения перед тестированием:</p>
+            <button class="danger" onclick="clearAllSaves()">Очистить все сохранения</button>
+            <button onclick="showCurrentSaves()">Показать текущие сохранения</button>
+        </div>
+
+        <div class="section">
+            <h2>Тестирование инициализации</h2>
+            <p>После очистки сохранений перейдите в игру и начните 3-ю главу с самого начала.</p>
+            <p>Проверьте, что отношения с Димой инициализируются со значением 50 (из конфигурации главы).</p>
+        </div>
+
+        <div class="section">
+            <h2>Результаты</h2>
+            <div id="results">
+                <p>Нажмите кнопки выше для выполнения действий</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function clearAllSaves() {
+            try {
+                // Очищаем все ключи localStorage, связанные с игрой
+                const keysToRemove = [];
+                for (let i = 0; i < localStorage.length; i++) {
+                    const key = localStorage.key(i);
+                    if (key && (key.includes('episode_') || key.includes('game_') || key.includes('relationships_') || key.includes('character_'))) {
+                        keysToRemove.push(key);
+                    }
+                }
+                
+                keysToRemove.forEach(key => {
+                    localStorage.removeItem(key);
+                    console.log(`Удален ключ: ${key}`);
+                });
+                
+                document.getElementById('results').innerHTML = `
+                    <div style="color: green;">
+                        <h3>✅ Сохранения очищены</h3>
+                        <p>Удалено ключей: ${keysToRemove.length}</p>
+                        <pre>${keysToRemove.join('\n')}</pre>
+                    </div>
+                `;
+                
+                console.log('Все сохранения очищены');
+            } catch (error) {
+                document.getElementById('results').innerHTML = `
+                    <div style="color: red;">
+                        <h3>❌ Ошибка при очистке</h3>
+                        <p>${error.message}</p>
+                    </div>
+                `;
+                console.error('Ошибка при очистке сохранений:', error);
+            }
+        }
+
+        function showCurrentSaves() {
+            try {
+                const gameKeys = [];
+                for (let i = 0; i < localStorage.length; i++) {
+                    const key = localStorage.key(i);
+                    if (key && (key.includes('episode_') || key.includes('game_') || key.includes('relationships_') || key.includes('character_'))) {
+                        const value = localStorage.getItem(key);
+                        gameKeys.push({ key, value });
+                    }
+                }
+                
+                if (gameKeys.length === 0) {
+                    document.getElementById('results').innerHTML = `
+                        <div style="color: blue;">
+                            <h3>ℹ️ Сохранения не найдены</h3>
+                            <p>Сохранений игры в localStorage не обнаружено.</p>
+                        </div>
+                    `;
+                } else {
+                    const savesList = gameKeys.map(item => 
+                        `${item.key}: ${item.value.length > 100 ? item.value.substring(0, 100) + '...' : item.value}`
+                    ).join('\n');
+                    
+                    document.getElementById('results').innerHTML = `
+                        <div style="color: orange;">
+                            <h3>📋 Найденные сохранения (${gameKeys.length})</h3>
+                            <pre>${savesList}</pre>
+                        </div>
+                    `;
+                }
+                
+                console.log('Текущие сохранения:', gameKeys);
+            } catch (error) {
+                document.getElementById('results').innerHTML = `
+                    <div style="color: red;">
+                        <h3>❌ Ошибка при чтении сохранений</h3>
+                        <p>${error.message}</p>
+                    </div>
+                `;
+                console.error('Ошибка при чтении сохранений:', error);
+            }
+        }
+
+        // Показываем текущие сохранения при загрузке страницы
+        window.onload = function() {
+            showCurrentSaves();
+        };
+    </script>
+</body>
+</html> 

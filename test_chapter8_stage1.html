@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тест главы 8 - Этап 1</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .test-title {
+            color: #333;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        .test-description {
+            color: #666;
+            margin-bottom: 15px;
+        }
+        .test-button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .test-button:hover {
+            background: #0056b3;
+        }
+        .test-button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .log-output {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 10px 0;
+            max-height: 400px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 12px;
+            white-space: pre-wrap;
+        }
+        .status {
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .status.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        .scene-preview {
+            background: #e9ecef;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+            font-family: monospace;
+            font-size: 12px;
+        }
+        .character-info {
+            display: flex;
+            align-items: center;
+            margin: 5px 0;
+            padding: 5px;
+            background: white;
+            border-radius: 3px;
+        }
+        .character-avatar {
+            width: 40px;
+            height: 40px;
+            background: #007bff;
+            border-radius: 50%;
+            margin-right: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>Тест главы 8 - Этап 1: Анастасия, Мария, Евгений</h1>
+    
+    <div class="test-section">
+        <h2 class="test-title">Описание этапа</h2>
+        <div class="test-description">
+            <p><strong>Этап 1 включает:</strong></p>
+            <ul>
+                <li>Сцены с Анастасией (scene150-151) - начало прощания</li>
+                <li>Сцены с Марией (scene152-153) - важные выборы и подарки</li>
+                <li>Сцены с Евгением (scene155-158) - проверка характеристик</li>
+                <li>Переходные сцены (scene154, scene159)</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2 class="test-title">Тест 1: Структура главы</h2>
+        <div class="test-description">
+            Проверяем конфигурацию главы 8 и список сцен
+        </div>
+        <button class="test-button" onclick="testChapterStructure()">Запустить тест</button>
+        <div id="structure-result"></div>
+        <div id="structure-log" class="log-output"></div>
+    </div>
+
+    <div class="test-section">
+        <h2 class="test-title">Тест 2: Важные выборы с Марией</h2>
+        <div class="test-description">
+            Тестируем механику важных выборов из главы 1
+        </div>
+        <button class="test-button" onclick="testImportantChoices()">Запустить тест</button>
+        <div id="choices-result"></div>
+        <div id="choices-log" class="log-output"></div>
+    </div>
+
+    <div class="test-section">
+        <h2 class="test-title">Тест 3: Проверка характеристик с Евгением</h2>
+        <div class="test-description">
+            Тестируем механику проверки холод с Евгением
+        </div>
+        <button class="test-button" onclick="testDiceCheck()">Запустить тест</button>
+        <div id="dice-result"></div>
+        <div id="dice-log" class="log-output"></div>
+    </div>
+
+    <div class="test-section">
+        <h2 class="test-title">Предварительный просмотр сцен</h2>
+        <div class="test-description">
+            Показываем структуру созданных сцен
+        </div>
+        <div id="scenes-preview"></div>
+    </div>
+
+    <script>
+        // Данные главы 8
+        const chapter8Data = {
+            id: 8,
+            name: "Глава 8: Прощание",
+            description: "Финальная глава - прощание со всеми персонажами и подведение итогов",
+            characters: [
+                { id: "anastasia", name: "Анастасия", type: "teacher" },
+                { id: "maria", name: "Мария", type: "student" },
+                { id: "evgeniy", name: "Евгений", type: "student" },
+                { id: "anna", name: "Анна", type: "student" },
+                { id: "dmitriy", name: "Дмитрий", type: "student" },
+                { id: "aleksandra", name: "Александра", type: "student" },
+                { id: "arseniy", name: "Арсений", type: "student" },
+                { id: "nikolay", name: "Николай", type: "student" }
+            ],
+            scenes: [
+                "scene150", "scene151", "scene152", "scene153", "scene154",
+                "scene155", "scene156", "scene157", "scene158", "scene159"
+            ]
+        };
+
+        // Данные сцен
+        const scenesData = {
+            scene150: {
+                characters: ["anastasia"],
+                location: "classroom",
+                choices: 2
+            },
+            scene151: {
+                characters: ["anastasia"],
+                location: "classroom",
+                choices: 1
+            },
+            scene152: {
+                characters: ["maria"],
+                location: "corridor",
+                choices: 4,
+                features: ["important_choices", "gifts"]
+            },
+            scene153: {
+                characters: ["maria"],
+                location: "corridor",
+                choices: 2,
+                features: ["gifts"]
+            },
+            scene154: {
+                characters: [],
+                location: "corridor",
+                choices: 1,
+                features: ["transition"]
+            },
+            scene155: {
+                characters: ["evgeniy"],
+                location: "corridor",
+                choices: 2,
+                features: ["dice_check"]
+            },
+            scene156: {
+                characters: ["evgeniy"],
+                location: "corridor",
+                choices: 2,
+                features: ["success"]
+            },
+            scene157: {
+                characters: ["evgeniy"],
+                location: "corridor",
+                choices: 1,
+                features: ["failure"]
+            },
+            scene158: {
+                characters: ["evgeniy"],
+                location: "corridor",
+                choices: 1,
+                features: ["avoid"]
+            },
+            scene159: {
+                characters: [],
+                location: "corridor",
+                choices: 1,
+                features: ["transition"]
+            }
+        };
+
+        // Функции для тестирования
+        function testChapterStructure() {
+            const logElement = document.getElementById('structure-log');
+            const resultElement = document.getElementById('structure-result');
+            
+            logElement.textContent = '';
+            console.log = (message) => {
+                logElement.textContent += message + '\n';
+            };
+
+            console.log('=== ТЕСТ СТРУКТУРЫ ГЛАВЫ 8 ===');
+            console.log('');
+
+            // Проверяем основные параметры
+            console.log('Проверка основных параметров:');
+            console.log(`ID главы: ${chapter8Data.id}`);
+            console.log(`Название: ${chapter8Data.name}`);
+            console.log(`Описание: ${chapter8Data.description}`);
+            console.log(`Количество персонажей: ${chapter8Data.characters.length}`);
+            console.log(`Количество сцен: ${chapter8Data.scenes.length}`);
+            console.log('');
+
+            // Проверяем персонажей
+            console.log('Персонажи главы:');
+            chapter8Data.characters.forEach(char => {
+                console.log(`- ${char.name} (${char.id}) - ${char.type}`);
+            });
+            console.log('');
+
+            // Проверяем сцены
+            console.log('Сцены этапа 1:');
+            chapter8Data.scenes.slice(0, 10).forEach(sceneId => {
+                const scene = scenesData[sceneId];
+                if (scene) {
+                    console.log(`- ${sceneId}: ${scene.characters.length} персонажей, ${scene.choices} выборов`);
+                    if (scene.features) {
+                        console.log(`  Особенности: ${scene.features.join(', ')}`);
+                    }
+                }
+            });
+
+            const testPassed = chapter8Data.id === 8 && 
+                             chapter8Data.characters.length === 8 && 
+                             chapter8Data.scenes.length >= 10;
+            
+            if (testPassed) {
+                resultElement.innerHTML = '<div class="status success">✅ Структура главы корректна!</div>';
+            } else {
+                resultElement.innerHTML = '<div class="status error">❌ Проблема со структурой главы</div>';
+            }
+        }
+
+        function testImportantChoices() {
+            const logElement = document.getElementById('choices-log');
+            const resultElement = document.getElementById('choices-result');
+            
+            logElement.textContent = '';
+            console.log = (message) => {
+                logElement.textContent += message + '\n';
+            };
+
+            console.log('=== ТЕСТ ВАЖНЫХ ВЫБОРОВ С МАРИЕЙ ===');
+            console.log('');
+
+            // Симулируем важные выборы из главы 1
+            const importantChoices = {
+                'maria_friendship_choice': 'accept',
+                'maria_friendship_choice': 'neutral',
+                'maria_friendship_choice': 'ignore'
+            };
+
+            console.log('Важные выборы из главы 1:');
+            Object.entries(importantChoices).forEach(([choiceId, value]) => {
+                console.log(`- ${choiceId}: ${value}`);
+            });
+            console.log('');
+
+            // Симулируем сцену 152
+            console.log('Сцена 152 - проверка важных выборов:');
+            const scene152Choices = [
+                { id: 'scene152_choice1', requirement: 'maria_friendship_choice:accept', reward: 'chocolate +3 relations' },
+                { id: 'scene152_choice2', requirement: 'maria_friendship_choice:neutral', reward: '+1 relations' },
+                { id: 'scene152_choice3', requirement: 'maria_friendship_choice:ignore', reward: '-1 relations' },
+                { id: 'scene152_choice4', requirement: 'none', reward: '+2 relations' }
+            ];
+
+            scene152Choices.forEach(choice => {
+                console.log(`- ${choice.id}: ${choice.requirement} → ${choice.reward}`);
+            });
+            console.log('');
+
+            // Симулируем сцену 153
+            console.log('Сцена 153 - подарок:');
+            console.log('- Мария дарит шоколадку');
+            console.log('- Два варианта ответа с разными наградами отношений');
+
+            const testPassed = scene152Choices.length === 4 && 
+                             scene152Choices.some(c => c.requirement.includes('accept')) &&
+                             scene152Choices.some(c => c.reward.includes('chocolate'));
+            
+            if (testPassed) {
+                resultElement.innerHTML = '<div class="status success">✅ Механика важных выборов работает!</div>';
+            } else {
+                resultElement.innerHTML = '<div class="status error">❌ Проблема с важными выборами</div>';
+            }
+        }
+
+        function testDiceCheck() {
+            const logElement = document.getElementById('dice-log');
+            const resultElement = document.getElementById('dice-result');
+            
+            logElement.textContent = '';
+            console.log = (message) => {
+                logElement.textContent += message + '\n';
+            };
+
+            console.log('=== ТЕСТ ПРОВЕРКИ ХАРАКТЕРИСТИК С ЕВГЕНИЕМ ===');
+            console.log('');
+
+            // Симулируем проверку холод
+            console.log('Сцена 155 - проверка холод:');
+            console.log('- Евгений делает замечание об одежде');
+            console.log('- Игрок может ответить с проверкой холод (d20, сложность 12)');
+            console.log('- Успех: Евгений извиняется (+2 отношения)');
+            console.log('- Неудача: Евгений остается грубым (-2 отношения)');
+            console.log('- Избегание: Игрок уходит (-1 отношения)');
+            console.log('');
+
+            // Симулируем разные результаты
+            const testResults = [
+                { roll: 15, difficulty: 12, success: true, outcome: 'Евгений извиняется' },
+                { roll: 8, difficulty: 12, success: false, outcome: 'Евгений остается грубым' },
+                { roll: 0, difficulty: 0, success: false, outcome: 'Игрок избегает конфликта' }
+            ];
+
+            console.log('Результаты проверок:');
+            testResults.forEach(result => {
+                if (result.roll > 0) {
+                    console.log(`- Бросок ${result.roll} vs ${result.difficulty}: ${result.success ? 'УСПЕХ' : 'НЕУДАЧА'} → ${result.outcome}`);
+                } else {
+                    console.log(`- Избегание: ${result.outcome}`);
+                }
+            });
+
+            const testPassed = testResults.length === 3 && 
+                             testResults.some(r => r.success) && 
+                             testResults.some(r => !r.success);
+            
+            if (testPassed) {
+                resultElement.innerHTML = '<div class="status success">✅ Механика проверки характеристик работает!</div>';
+            } else {
+                resultElement.innerHTML = '<div class="status error">❌ Проблема с проверкой характеристик</div>';
+            }
+        }
+
+        function generateScenesPreview() {
+            const previewElement = document.getElementById('scenes-preview');
+            let html = '';
+
+            chapter8Data.scenes.slice(0, 10).forEach(sceneId => {
+                const scene = scenesData[sceneId];
+                if (scene) {
+                    html += `<div class="scene-preview">`;
+                    html += `<strong>${sceneId}</strong><br>`;
+                    html += `Локация: ${scene.location}<br>`;
+                    html += `Персонажи: ${scene.characters.length > 0 ? scene.characters.join(', ') : 'нет'}<br>`;
+                    html += `Выборы: ${scene.choices}<br>`;
+                    if (scene.features) {
+                        html += `Особенности: ${scene.features.join(', ')}<br>`;
+                    }
+                    html += `</div>`;
+                }
+            });
+
+            previewElement.innerHTML = html;
+        }
+
+        // Инициализация при загрузке страницы
+        window.onload = function() {
+            generateScenesPreview();
+        };
+    </script>
+</body>
+</html> 

@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тест исправлений Главы 8</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .success {
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+        .info {
+            background-color: #d1ecf1;
+            border-color: #bee5eb;
+            color: #0c5460;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .log {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Тест исправлений Главы 8</h1>
+        <p>Проверка исправления формата dialogue в сценах главы 8</p>
+
+        <div class="test-section info">
+            <h3>Информация о тесте</h3>
+            <p>Этот тест проверяет:</p>
+            <ul>
+                <li>Правильность формата dialogue (должен быть массивом)</li>
+                <li>Наличие поля emotion в каждом диалоге</li>
+                <li>Совместимость с системой SceneManager</li>
+                <li>Возможность загрузки главы 8</li>
+            </ul>
+        </div>
+
+        <div class="test-section">
+            <h3>Проверка формата dialogue</h3>
+            <button onclick="checkDialogueFormat()">Проверить формат</button>
+            <div id="dialogueFormatResult" class="log"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>Проверка загрузки главы 8</h3>
+            <button onclick="checkChapter8Load()">Проверить загрузку</button>
+            <div id="chapter8LoadResult" class="log"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>Проверка первой сцены</h3>
+            <button onclick="checkScene150()">Проверить scene150</button>
+            <div id="scene150Result" class="log"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>Полный тест</h3>
+            <button onclick="runFullTest()">Запустить полный тест</button>
+            <div id="fullTestResult" class="log"></div>
+        </div>
+    </div>
+
+    <script>
+        const scenes = [
+            'scene150', 'scene151', 'scene152', 'scene153', 'scene154', 'scene155',
+            'scene156', 'scene157', 'scene158', 'scene159', 'scene160', 'scene161',
+            'scene162', 'scene163', 'scene164', 'scene165', 'scene166', 'scene167',
+            'scene168', 'scene169', 'scene170'
+        ];
+
+        function log(elementId, message, type = 'info') {
+            const element = document.getElementById(elementId);
+            const timestamp = new Date().toLocaleTimeString();
+            const className = type === 'error' ? 'error' : type === 'success' ? 'success' : 'info';
+            element.innerHTML += `<div class="${className}">[${timestamp}] ${message}</div>`;
+            element.scrollTop = element.scrollHeight;
+        }
+
+        async function checkDialogueFormat() {
+            const result = document.getElementById('dialogueFormatResult');
+            result.innerHTML = '';
+            
+            log('dialogueFormatResult', 'Начинаю проверку формата dialogue...');
+            
+            let allValid = true;
+            
+            for (const scene of scenes) {
+                try {
+                    const response = await fetch(`episodes/tutorial/scenes/${scene}.json`);
+                    if (response.ok) {
+                        const data = await response.json();
+                        
+                        // Проверяем, что dialogue является массивом
+                        if (!Array.isArray(data.dialogue)) {
+                            log('dialogueFormatResult', `✗ ${scene}: dialogue не является массивом`, 'error');
+                            allValid = false;
+                        } else {
+                            // Проверяем каждый элемент диалога
+                            let dialogueValid = true;
+                            for (let i = 0; i < data.dialogue.length; i++) {
+                                const dialogueItem = data.dialogue[i];
+                                if (!dialogueItem.speaker || !dialogueItem.text) {
+                                    log('dialogueFormatResult', `✗ ${scene}: диалог ${i} неполный`, 'error');
+                                    dialogueValid = false;
+                                }
+                                if (!dialogueItem.emotion) {
+                                    log('dialogueFormatResult', `⚠ ${scene}: диалог ${i} без emotion`, 'info');
+                                }
+                            }
+                            
+                            if (dialogueValid) {
+                                log('dialogueFormatResult', `✓ ${scene}: формат dialogue корректен`, 'success');
+                            } else {
+                                allValid = false;
+                            }
+                        }
+                    } else {
+                        log('dialogueFormatResult', `✗ ${scene}: файл не найден`, 'error');
+                        allValid = false;
+                    }
+                } catch (error) {
+                    log('dialogueFormatResult', `✗ Ошибка при проверке ${scene}: ${error.message}`, 'error');
+                    allValid = false;
+                }
+            }
+            
+            if (allValid) {
+                log('dialogueFormatResult', '✅ Все сцены имеют правильный формат dialogue!', 'success');
+            } else {
+                log('dialogueFormatResult', '❌ Обнаружены ошибки в формате dialogue', 'error');
+            }
+        }
+
+        async function checkChapter8Load() {
+            const result = document.getElementById('chapter8LoadResult');
+            result.innerHTML = '';
+            
+            log('chapter8LoadResult', 'Начинаю проверку загрузки главы 8...');
+            
+            try {
+                // Проверяем загрузку конфига главы
+                const chapterResponse = await fetch('episodes/tutorial/chapters/chapter8/config.json');
+                if (chapterResponse.ok) {
+                    const chapterData = await chapterResponse.json();
+                    log('chapter8LoadResult', `✓ Конфиг главы 8 загружен: ${chapterData.name}`, 'success');
+                    
+                    // Проверяем загрузку первой сцены
+                    if (chapterData.scenes && chapterData.scenes.length > 0) {
+                        const firstScene = chapterData.scenes[0];
+                        const sceneResponse = await fetch(`episodes/tutorial/scenes/${firstScene}.json`);
+                        if (sceneResponse.ok) {
+                            const sceneData = await sceneResponse.json();
+                            log('chapter8LoadResult', `✓ Первая сцена ${firstScene} загружена`, 'success');
+                            log('chapter8LoadResult', `✓ Формат dialogue: ${Array.isArray(sceneData.dialogue) ? 'массив' : 'объект'}`, 'info');
+                        } else {
+                            log('chapter8LoadResult', `✗ Не удалось загрузить первую сцену ${firstScene}`, 'error');
+                        }
+                    }
+                } else {
+                    log('chapter8LoadResult', '✗ Не удалось загрузить конфиг главы 8', 'error');
+                }
+            } catch (error) {
+                log('chapter8LoadResult', `✗ Ошибка при загрузке главы 8: ${error.message}`, 'error');
+            }
+        }
+
+        async function checkScene150() {
+            const result = document.getElementById('scene150Result');
+            result.innerHTML = '';
+            
+            log('scene150Result', 'Начинаю проверку scene150...');
+            
+            try {
+                const response = await fetch('episodes/tutorial/scenes/scene150.json');
+                if (response.ok) {
+                    const data = await response.json();
+                    
+                    log('scene150Result', `✓ scene150 загружена`, 'success');
+                    log('scene150Result', `✓ chapterId: ${data.chapterId}`, 'info');
+                    log('scene150Result', `✓ characters: ${data.characters.length} персонаж(ей)`, 'info');
+                    log('scene150Result', `✓ dialogue: ${Array.isArray(data.dialogue) ? 'массив' : 'объект'}`, 'info');
+                    log('scene150Result', `✓ choices: ${data.choices.length} выбор(ов)`, 'info');
+                    
+                    if (Array.isArray(data.dialogue)) {
+                        log('scene150Result', `✓ Формат dialogue корректен`, 'success');
+                        
+                        // Проверяем первый диалог
+                        const firstDialogue = data.dialogue[0];
+                        log('scene150Result', `✓ Первый диалог: ${firstDialogue.speaker} - "${firstDialogue.text.substring(0, 50)}..."`, 'info');
+                        log('scene150Result', `✓ Эмоция: ${firstDialogue.emotion || 'не указана'}`, 'info');
+                    } else {
+                        log('scene150Result', `✗ Формат dialogue некорректен`, 'error');
+                    }
+                } else {
+                    log('scene150Result', '✗ Не удалось загрузить scene150', 'error');
+                }
+            } catch (error) {
+                log('scene150Result', `✗ Ошибка при проверке scene150: ${error.message}`, 'error');
+            }
+        }
+
+        async function runFullTest() {
+            const result = document.getElementById('fullTestResult');
+            result.innerHTML = '';
+            
+            log('fullTestResult', 'Запуск полного теста исправлений главы 8...');
+            
+            // Запускаем все проверки
+            await checkDialogueFormat();
+            await checkChapter8Load();
+            await checkScene150();
+            
+            log('fullTestResult', 'Полный тест завершен!', 'success');
+        }
+    </script>
+</body>
+</html> 

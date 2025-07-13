@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тест загрузки items.json</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f0f0f0;
+        }
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .test-button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .test-button:hover {
+            background: #0056b3;
+        }
+        .log {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 10px;
+            max-height: 400px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 12px;
+        }
+        .log-entry {
+            margin: 2px 0;
+            padding: 2px 5px;
+            border-radius: 3px;
+        }
+        .log-info { background: #e3f2fd; }
+        .log-success { background: #e8f5e8; color: #2e7d32; }
+        .log-error { background: #ffebee; color: #c62828; }
+        .log-warning { background: #fff3e0; color: #ef6c00; }
+        .item-result {
+            margin: 5px 0;
+            padding: 5px;
+            background: #f8f9fa;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>Тест загрузки items.json и получения названий предметов</h1>
+        
+        <div class="test-section">
+            <h2>Тестирование загрузки items.json</h2>
+            <button class="test-button" onclick="testItemsLoading()">Тест загрузки items.json</button>
+            <button class="test-button" onclick="testGetItemNames()">Тест получения названий</button>
+            <button class="test-button" onclick="testSpecificItems()">Тест конкретных предметов</button>
+        </div>
+
+        <div class="test-section">
+            <h2>Результаты тестирования</h2>
+            <div id="testResults"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>Лог отладки</h2>
+            <div id="debugLog" class="log"></div>
+        </div>
+    </div>
+
+    <script>
+        // Функция логирования
+        function log(message, type = 'info') {
+            const logDiv = document.getElementById('debugLog');
+            const entry = document.createElement('div');
+            entry.className = `log-entry log-${type}`;
+            entry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            logDiv.appendChild(entry);
+            logDiv.scrollTop = logDiv.scrollHeight;
+        }
+
+        // Функция добавления результата
+        function addResult(title, content, type = 'info') {
+            const resultsDiv = document.getElementById('testResults');
+            const resultDiv = document.createElement('div');
+            resultDiv.className = `item-result log-${type}`;
+            resultDiv.innerHTML = `<strong>${title}:</strong> ${content}`;
+            resultsDiv.appendChild(resultDiv);
+        }
+
+        // Тестирование загрузки items.json
+        async function testItemsLoading() {
+            log('Начинаем тестирование загрузки items.json...', 'info');
+            
+            const paths = [
+                '/src/data/items.json',
+                './src/data/items.json',
+                '../src/data/items.json',
+                'src/data/items.json'
+            ];
+            
+            for (const path of paths) {
+                try {
+                    log(`Пробуем загрузить: ${path}`, 'info');
+                    const response = await fetch(path);
+                    
+                    if (response.ok) {
+                        const data = await response.json();
+                        log(`✓ Успешно загружен ${path}`, 'success');
+                        log(`  Количество категорий: ${Object.keys(data.items || {}).length}`, 'info');
+                        
+                        // Показываем категории
+                        if (data.items) {
+                            const categories = Object.keys(data.items);
+                            log(`  Категории: ${categories.join(', ')}`, 'info');
+                            
+                            // Показываем количество предметов в каждой категории
+                            categories.forEach(category => {
+                                const itemCount = Object.keys(data.items[category] || {}).length;
+                                log(`  ${category}: ${itemCount} предметов`, 'info');
+                            });
+                        }
+                        
+                        addResult('Загрузка items.json', `Успешно загружен по пути ${path}`, 'success');
+                        return data;
+                    } else {
+                        log(`✗ Ошибка загрузки ${path}: ${response.status} ${response.statusText}`, 'error');
+                    }
+                } catch (error) {
+                    log(`✗ Ошибка при загрузке ${path}: ${error.message}`, 'error');
+                }
+            }
+            
+            addResult('Загрузка items.json', 'Не удалось загрузить ни по одному пути', 'error');
+            return null;
+        }
+
+        // Тестирование получения названий предметов
+        async function testGetItemNames() {
+            log('Тестирование получения названий предметов...', 'info');
+            
+            const itemsData = await testItemsLoading();
+            if (!itemsData) {
+                log('Не удалось загрузить items.json для тестирования', 'error');
+                return;
+            }
+            
+            // Функция получения названия предмета
+            function getItemName(itemId) {
+                const categories = ['consumable', 'material', 'special', 'pet', 'clothing', 'chest', 'key'];
+                
+                for (const category of categories) {
+                    const categoryItems = itemsData.items[category];
+                    if (categoryItems && categoryItems[itemId]) {
+                        return categoryItems[itemId].name || itemId;
+                    }
+                }
+                return itemId; // Возвращаем ID, если предмет не найден
+            }
+            
+            // Тестируем разные предметы
+            const testItems = [
+                'apple', 'chocolate', 'present', 'fairy', 'resurrection_potion', 
+                'holy_book', 'unknown_item', 'fire_slime', 'rat'
+            ];
+            
+            log('Результаты получения названий:', 'info');
+            testItems.forEach(itemId => {
+                const name = getItemName(itemId);
+                const result = name === itemId ? 'ID (не найден)' : name;
+                log(`  ${itemId} -> ${result}`, name === itemId ? 'warning' : 'success');
+                addResult(`Предмет ${itemId}`, result, name === itemId ? 'warning' : 'success');
+            });
+        }
+
+        // Тестирование конкретных предметов
+        async function testSpecificItems() {
+            log('Тестирование конкретных предметов...', 'info');
+            
+            const itemsData = await testItemsLoading();
+            if (!itemsData) {
+                log('Не удалось загрузить items.json для тестирования', 'error');
+                return;
+            }
+            
+            // Проверяем конкретные предметы, которые вызывали проблемы
+            const problemItems = ['chocolate', 'resurrection_potion', 'holy_book'];
+            
+            problemItems.forEach(itemId => {
+                log(`Проверяем предмет: ${itemId}`, 'info');
+                
+                // Ищем в каждой категории
+                const categories = ['consumable', 'material', 'special', 'pet', 'clothing', 'chest', 'key'];
+                let found = false;
+                
+                for (const category of categories) {
+                    const categoryItems = itemsData.items[category];
+                    if (categoryItems && categoryItems[itemId]) {
+                        const item = categoryItems[itemId];
+                        log(`  ✓ Найден в категории ${category}:`, 'success');
+                        log(`    ID: ${item.id}`, 'info');
+                        log(`    Название: ${item.name}`, 'info');
+                        log(`    Описание: ${item.description}`, 'info');
+                        found = true;
+                        break;
+                    }
+                }
+                
+                if (!found) {
+                    log(`  ✗ Предмет ${itemId} не найден ни в одной категории`, 'error');
+                }
+            });
+        }
+
+        // Инициализация
+        log('Тест загрузки items.json загружен', 'info');
+        log('Нажмите кнопки выше для тестирования', 'info');
+    </script>
+</body>
+</html> 

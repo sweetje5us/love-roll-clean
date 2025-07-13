@@ -1,0 +1,213 @@
+.character-select-screen {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 24px 12px 64px 12px;
+    height: 100vh;
+    background: #fff0f5;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  
+  .character-select-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 24px;
+  }
+  
+  .back-button {
+    background: #ff8cc6;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  
+  .back-button:hover {
+    background: #ff6bb5;
+  }
+  
+  .change-character-btn {
+    background: #ffb3d9;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  
+  .change-character-btn:hover {
+    background: #ff8cc6;
+  }
+  
+  .character-select-header h1 {
+    font-size: 2rem;
+    color: #ff8cc6;
+    margin: 0;
+    flex: 1;
+    text-align: center;
+  }
+  
+  .add-character-btn, .create-first-character-btn {
+    background: #ff8cc6;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 18px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .add-character-btn:hover, .create-first-character-btn:hover {
+    background: #ff6bb5;
+  }
+  
+  .character-select-list {
+    flex: 1;
+    overflow-y: auto;
+    min-height: 0;
+    padding-bottom: 20px;
+  }
+  
+  .characters-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 20px;
+  }
+  
+  .character-select-card {
+    border: 2px solid transparent;
+    border-radius: 16px;
+    transition: border 0.2s;
+    cursor: pointer;
+  }
+  .character-select-card.selected {
+    border: 2px solid #ff8cc6;
+    box-shadow: 0 0 0 4px #ffe4f3;
+  }
+  
+  .character-select-actions {
+    display: flex;
+    justify-content: center;
+    margin-top: 24px;
+    position: sticky;
+    bottom: 0;
+    background: #fff0f5;
+    padding: 16px 0 0 0;
+  }
+  
+  .select-btn {
+    background: #ff8cc6;
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    padding: 12px 32px;
+    font-size: 1.2rem;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(255, 140, 198, 0.12);
+    transition: background 0.2s;
+  }
+  .select-btn:hover {
+    background: #ff6bb5;
+  }
+  
+  .empty-characters {
+    text-align: center;
+    color: #aaa;
+    margin-top: 48px;
+  }
+  .empty-characters-icon {
+    font-size: 48px;
+    margin-bottom: 12px;
+    color: #ff8cc6;
+  }
+  
+  .selected-character-info {
+    background: #fff;
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 24px;
+    box-shadow: 0 2px 8px rgba(255, 140, 198, 0.1);
+  }
+  
+  .selected-character-info h3 {
+    color: #ff8cc6;
+    margin: 0 0 16px 0;
+    font-size: 1.2rem;
+  }
+  
+  .character-preview-container {
+    display: flex;
+    justify-content: center;
+  }
+  
+  .character-preview-container .character-card {
+    max-width: 300px;
+    transform: scale(0.9);
+  }
+  
+  @media (max-width: 600px) {
+    .character-select-screen {
+      padding: 16px 8px 64px 8px;
+      height: 100vh;
+      overflow: hidden;
+    }
+    .characters-grid {
+      grid-template-columns: 1fr;
+      gap: 14px;
+    }
+    .character-select-header {
+      flex-direction: column;
+      gap: 12px;
+      align-items: flex-start;
+    }
+    .character-select-header h1 {
+      text-align: left;
+      font-size: 1.5rem;
+    }
+    .character-select-list {
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      min-height: 0;
+      padding-bottom: 16px;
+    }
+    .character-select-actions {
+      padding: 12px 0 0 0;
+    }
+    .select-btn {
+      width: 100%;
+      font-size: 1rem;
+      padding: 12px 0;
+    }
+    .selected-character-info {
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+    .character-preview-container .character-card {
+      max-width: 100%;
+      transform: scale(0.8);
+    }
+    .back-button, .change-character-btn {
+      padding: 6px 10px;
+      font-size: 0.9rem;
+    }
+  }
+  

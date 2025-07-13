@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тест системы фильтрации эпизодов</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .feature-list {
+            list-style: none;
+            padding: 0;
+        }
+        .feature-list li {
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .feature-list li:last-child {
+            border-bottom: none;
+        }
+        .feature-list li::before {
+            content: "✅ ";
+            color: #28a745;
+            font-weight: bold;
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: white;
+            margin-left: 8px;
+        }
+        .status-new {
+            background: #3b82f6;
+        }
+        .status-available {
+            background: #10b981;
+        }
+        .status-completed {
+            background: #22c55e;
+        }
+        .status-locked {
+            background: #6b7280;
+        }
+    </style>
+</head>
+<body>
+    <h1>Тест системы фильтрации эпизодов</h1>
+    
+    <div class="test-section">
+        <h2>Новые функции</h2>
+        <ul class="feature-list">
+            <li><strong>Метка завершенности эпизода</strong> - отображается зеленая метка "Завершен" на карточке эпизода</li>
+            <li><strong>Фильтр по статусу</strong> - возможность фильтровать эпизоды по статусу:
+                <span class="status-badge status-new">Новые</span>
+                <span class="status-badge status-available">Доступные</span>
+                <span class="status-badge status-completed">Завершенные</span>
+            </li>
+            <li><strong>Автоматическое определение статуса</strong> - система автоматически определяет статус эпизода на основе сохранений</li>
+            <li><strong>Комбинированные фильтры</strong> - можно комбинировать фильтры по типу, возрасту и статусу</li>
+        </ul>
+    </div>
+    
+    <div class="test-section">
+        <h2>Логика фильтрации</h2>
+        <ul class="feature-list">
+            <li><strong>Новые</strong> - эпизоды, которые разблокированы, не завершены и не имеют сохранений</li>
+            <li><strong>Доступные</strong> - эпизоды, которые разблокированы и не завершены (включая те, что имеют сохранения)</li>
+            <li><strong>Завершенные</strong> - эпизоды, которые полностью пройдены</li>
+            <li><strong>Все эпизоды</strong> - показывает все эпизоды независимо от статуса</li>
+        </ul>
+    </div>
+    
+    <div class="test-section">
+        <h2>Инструкции по тестированию</h2>
+        <ol>
+            <li>Запустите игру и перейдите к выбору эпизода</li>
+            <li>Проверьте, что на карточке эпизода "Обучение" отображается метка "Завершен" (если эпизод пройден)</li>
+            <li>Попробуйте использовать фильтр "Завершенные" - должен показаться только завершенный эпизод</li>
+            <li>Попробуйте фильтр "Новые" - должен показаться эпизод, если он не имеет сохранений</li>
+            <li>Попробуйте фильтр "Доступные" - должен показаться эпизод, если он не завершен</li>
+            <li>Проверьте комбинирование фильтров (тип + статус + возраст)</li>
+        </ol>
+    </div>
+    
+    <div class="test-section">
+        <h2>Технические детали</h2>
+        <ul class="feature-list">
+            <li>Используется функция <code>isEpisodeCompleted()</code> для определения завершенности</li>
+            <li>Используется функция <code>getEpisodeSave()</code> для определения наличия сохранений</li>
+            <li>Данные о статусе добавляются при загрузке эпизодов</li>
+            <li>Фильтрация происходит в реальном времени при изменении фильтров</li>
+        </ul>
+    </div>
+</body>
+</html> 

@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Финальный тест исправления переходов между главами</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .success {
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
+        }
+        .warning {
+            background-color: #fff3cd;
+            border-color: #ffeaa7;
+            color: #856404;
+        }
+        .error {
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+        .info {
+            background-color: #d1ecf1;
+            border-color: #bee5eb;
+            color: #0c5460;
+        }
+        .step {
+            margin: 10px 0;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-left: 4px solid #007bff;
+        }
+        .log {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 10px;
+            margin: 10px 0;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        button:disabled {
+            background-color: #6c757d;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Финальный тест исправления переходов между главами</h1>
+        
+        <div class="test-section info">
+            <h3>Что было исправлено в финальной версии:</h3>
+            <ul>
+                <li><strong>Автоматический переход:</strong> Убран автоматический переход от главы 2 к главе 3</li>
+                <li><strong>Двойная загрузка:</strong> Исправлена двойная загрузка глав при переходах</li>
+                <li><strong>Прямая загрузка:</strong> Теперь главы загружаются напрямую без переинициализации</li>
+            </ul>
+        </div>
+
+        <div class="test-section">
+            <h3>Инструкции по тестированию:</h3>
+            
+            <div class="step">
+                <strong>Шаг 1:</strong> Откройте игру и перейдите к главе 1
+            </div>
+            
+            <div class="step">
+                <strong>Шаг 2:</strong> Дойдите до конца главы 1 и выберите переход к следующей главе
+            </div>
+            
+            <div class="step">
+                <strong>Шаг 3:</strong> Проверьте, что глава 2 загружается только один раз
+            </div>
+            
+            <div class="step">
+                <strong>Шаг 4:</strong> Пройдите главу 2 до конца и перейдите к главе 3
+            </div>
+            
+            <div class="step">
+                <strong>Шаг 5:</strong> Убедитесь, что нет автоматических переходов между главами
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h3>Что проверять в консоли:</h3>
+            
+            <div class="log">
+                ✅ <strong>Правильно:</strong>
+                EpisodeManager.nextChapter - прогресс обновлен для главы: 2
+                EpisodeManager.loadChapter - начало выполнения (только один раз)
+                EpisodeManager.loadChapter - chapterData загружена
+                
+                ❌ <strong>Неправильно (было раньше):</strong>
+                EpisodeManager.nextChapter - прогресс обновлен для главы: 2
+                EpisodeManager.nextChapter - прогресс обновлен для главы: 3 (автоматически!)
+                EpisodeManager.loadChapter - начало выполнения (дважды)
+                EpisodeManager.loadChapter - chapterData загружена (дважды)
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h3>Проверка исправлений:</h3>
+            
+            <div class="step success">
+                <strong>✅ Автоматический переход:</strong> 
+                <p>Теперь нет автоматического перехода от главы 2 к главе 3. Каждый переход должен происходить только по выбору пользователя.</p>
+            </div>
+            
+            <div class="step success">
+                <strong>✅ Двойная загрузка:</strong> 
+                <p>Теперь <code>handleEndCreditsComplete()</code> загружает главу напрямую через <code>loadChapter()</code>, а не через <code>initGame()</code>.</p>
+            </div>
+            
+            <div class="step success">
+                <strong>✅ Прямая загрузка:</strong> 
+                <p>Главы загружаются напрямую без переинициализации всего эпизода, что исключает дублирование.</p>
+            </div>
+        </div>
+
+        <div class="test-section warning">
+            <h3>Ожидаемые результаты:</h3>
+            <ul>
+                <li>Переходы между главами происходят только по выбору пользователя</li>
+                <li>Каждая глава загружается только один раз</li>
+                <li>В консоли нет дублирующих логов загрузки</li>
+                <li>Нет автоматических переходов между главами</li>
+                <li>Титры конца главы показываются корректно</li>
+            </ul>
+        </div>
+
+        <div class="test-section">
+            <h3>Ссылки для тестирования:</h3>
+            <p><a href="http://localhost:3000" target="_blank">Открыть игру</a></p>
+            <p><a href="http://localhost:3000/test_chapter_transitions_fix.html" target="_blank">Предыдущий тест</a></p>
+        </div>
+    </div>
+</body>
+</html> 

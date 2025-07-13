@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тест системы начисления опыта</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #4a5568;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .test-section {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .test-section h2 {
+            color: #2d3748;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .test-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .test-button {
+            background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
+            color: white;
+            border: none;
+            padding: 15px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .test-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .test-button.success {
+            background: linear-gradient(135deg, #4ade80, #22c55e);
+        }
+
+        .test-button.critical {
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+        }
+
+        .test-button.failure {
+            background: linear-gradient(135deg, #f87171, #ef4444);
+        }
+
+        .character-info {
+            background: linear-gradient(135deg, #fd79a8 0%, #e84393 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .experience-bar {
+            background: rgba(255, 255, 255, 0.2);
+            height: 20px;
+            border-radius: 10px;
+            margin: 10px 0;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .experience-fill {
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            height: 100%;
+            border-radius: 10px;
+            transition: width 0.5s ease;
+            position: relative;
+        }
+
+        .experience-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-weight: bold;
+            font-size: 0.9em;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+        }
+
+        .log-section {
+            background: rgba(0, 0, 0, 0.05);
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .log-section h3 {
+            color: #2d3748;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .log-entry {
+            background: rgba(255, 255, 255, 0.8);
+            padding: 10px;
+            border-radius: 8px;
+            margin: 5px 0;
+            border-left: 4px solid #4ade80;
+            font-family: monospace;
+            font-size: 0.9em;
+        }
+
+        .log-entry.success {
+            border-left-color: #22c55e;
+        }
+
+        .log-entry.critical {
+            border-left-color: #f59e0b;
+        }
+
+        .log-entry.failure {
+            border-left-color: #ef4444;
+        }
+
+        .notification-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            pointer-events: none;
+        }
+
+        .notification {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            padding: 12px 16px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            margin-bottom: 10px;
+            pointer-events: auto;
+            display: flex;
+            align-items: center;
+            max-width: 300px;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        .notification::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            border-radius: 2px;
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+        }
+
+        .notification-icon {
+            margin-right: 12px;
+            font-size: 18px;
+            color: #f59e0b;
+        }
+
+        .notification-content {
+            flex: 1;
+        }
+
+        .notification-text {
+            font-weight: 500;
+            color: #1f2937;
+            margin-bottom: 2px;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-value {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #2d3748;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 0.9em;
+            color: #718096;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎯 Тест системы начисления опыта</h1>
+
+        <div class="character-info">
+            <h3>Персонаж: Игрок</h3>
+            <div class="experience-bar">
+                <div class="experience-fill" id="experienceFill" style="width: 0%"></div>
+                <div class="experience-text" id="experienceText">0/100 XP</div>
+            </div>
+            <div>Уровень: <span id="characterLevel">1</span></div>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-value" id="totalExperience">0</div>
+                <div class="stat-label">Всего опыта</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="successCount">0</div>
+                <div class="stat-label">Успешных бросков</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="criticalCount">0</div>
+                <div class="stat-label">Критических успехов</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="failureCount">0</div>
+                <div class="stat-label">Неудач</div>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h2>Тестирование бросков кубиков</h2>
+            <div class="test-buttons">
+                <button class="test-button success" onclick="testSuccess()">
+                    🎯 Тест успеха (+50 XP)
+                </button>
+                <button class="test-button critical" onclick="testCriticalSuccess()">
+                    ⭐ Тест критического успеха (+100 XP)
+                </button>
+                <button class="test-button failure" onclick="testFailure()">
+                    ❌ Тест неудачи (0 XP)
+                </button>
+                <button class="test-button" onclick="testRandomRoll()">
+                    🎲 Случайный бросок
+                </button>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h2>Управление</h2>
+            <div class="test-buttons">
+                <button class="test-button" onclick="resetCharacter()">
+                    🔄 Сбросить персонажа
+                </button>
+                <button class="test-button" onclick="addExperience(25)">
+                    ➕ Добавить 25 XP
+                </button>
+                <button class="test-button" onclick="addExperience(75)">
+                    ➕ Добавить 75 XP
+                </button>
+            </div>
+        </div>
+
+        <div class="log-section">
+            <h3>Лог событий</h3>
+            <div id="eventLog"></div>
+        </div>
+    </div>
+
+    <div class="notification-container" id="notificationContainer"></div>
+
+    <script>
+        // Состояние персонажа
+        let character = {
+            level: 1,
+            experience: 0,
+            totalExperience: 0,
+            successCount: 0,
+            criticalCount: 0,
+            failureCount: 0
+        };
+
+        // Константы
+        const XP_PER_LEVEL = 100;
+        const SUCCESS_XP = 50;
+        const CRITICAL_XP = 100;
+
+        // Инициализация
+        document.addEventListener('DOMContentLoaded', function() {
+            updateDisplay();
+            addLogEntry('Система инициализирована', 'info');
+        });
+
+        // Функция тестирования успеха
+        function testSuccess() {
+            addExperience(SUCCESS_XP);
+            character.successCount++;
+            addLogEntry(`Успешный бросок! +${SUCCESS_XP} XP`, 'success');
+            showNotification(`+${SUCCESS_XP} опыта (Успех!)`, 'success');
+        }
+
+        // Функция тестирования критического успеха
+        function testCriticalSuccess() {
+            addExperience(CRITICAL_XP);
+            character.criticalCount++;
+            addLogEntry(`Критический успех! +${CRITICAL_XP} XP`, 'critical');
+            showNotification(`+${CRITICAL_XP} опыта (Критический успех!)`, 'critical');
+        }
+
+        // Функция тестирования неудачи
+        function testFailure() {
+            character.failureCount++;
+            addLogEntry('Неудачный бросок. Опыт не начислен.', 'failure');
+            showNotification('Неудача - опыт не начислен', 'failure');
+        }
+
+        // Функция случайного броска
+        function testRandomRoll() {
+            const roll = Math.floor(Math.random() * 20) + 1;
+            const difficulty = 10;
+            const modifier = Math.floor((15 - 10) / 2); // Предполагаем характеристику 15
+            const total = roll + modifier;
+            
+            if (roll === 20) {
+                testCriticalSuccess();
+                addLogEntry(`Случайный бросок: ${roll} + ${modifier} = ${total} (Критический успех!)`, 'critical');
+            } else if (roll === 1) {
+                testFailure();
+                addLogEntry(`Случайный бросок: ${roll} + ${modifier} = ${total} (Критическая неудача!)`, 'failure');
+            } else if (total >= difficulty) {
+                testSuccess();
+                addLogEntry(`Случайный бросок: ${roll} + ${modifier} = ${total} (Успех!)`, 'success');
+            } else {
+                testFailure();
+                addLogEntry(`Случайный бросок: ${roll} + ${modifier} = ${total} (Неудача)`, 'failure');
+            }
+        }
+
+        // Функция добавления опыта
+        function addExperience(amount) {
+            character.experience += amount;
+            character.totalExperience += amount;
+            
+            // Проверяем повышение уровня
+            while (character.experience >= XP_PER_LEVEL) {
+                character.experience -= XP_PER_LEVEL;
+                character.level++;
+                addLogEntry(`🎉 Повышение уровня! Новый уровень: ${character.level}`, 'critical');
+                showNotification(`🎉 Уровень ${character.level}!`, 'critical');
+            }
+            
+            updateDisplay();
+        }
+
+        // Функция сброса персонажа
+        function resetCharacter() {
+            character = {
+                level: 1,
+                experience: 0,
+                totalExperience: 0,
+                successCount: 0,
+                criticalCount: 0,
+                failureCount: 0
+            };
+            updateDisplay();
+            addLogEntry('Персонаж сброшен', 'info');
+        }
+
+        // Функция обновления отображения
+        function updateDisplay() {
+            const progress = (character.experience / XP_PER_LEVEL) * 100;
+            
+            document.getElementById('experienceFill').style.width = `${progress}%`;
+            document.getElementById('experienceText').textContent = `${character.experience}/${XP_PER_LEVEL} XP`;
+            document.getElementById('characterLevel').textContent = character.level;
+            document.getElementById('totalExperience').textContent = character.totalExperience;
+            document.getElementById('successCount').textContent = character.successCount;
+            document.getElementById('criticalCount').textContent = character.criticalCount;
+            document.getElementById('failureCount').textContent = character.failureCount;
+        }
+
+        // Функция добавления записи в лог
+        function addLogEntry(message, type = 'info') {
+            const log = document.getElementById('eventLog');
+            const entry = document.createElement('div');
+            entry.className = `log-entry ${type}`;
+            entry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            
+            log.appendChild(entry);
+            log.scrollTop = log.scrollHeight;
+            
+            // Ограничиваем количество записей
+            while (log.children.length > 50) {
+                log.removeChild(log.firstChild);
+            }
+        }
+
+        // Функция показа уведомления
+        function showNotification(message, type = 'info') {
+            const container = document.getElementById('notificationContainer');
+            const notification = document.createElement('div');
+            notification.className = 'notification';
+            
+            const icon = document.createElement('div');
+            icon.className = 'notification-icon';
+            icon.innerHTML = type === 'critical' ? '⭐' : type === 'success' ? '🎯' : type === 'failure' ? '❌' : 'ℹ️';
+            
+            const content = document.createElement('div');
+            content.className = 'notification-content';
+            
+            const text = document.createElement('div');
+            text.className = 'notification-text';
+            text.textContent = message;
+            
+            content.appendChild(text);
+            notification.appendChild(icon);
+            notification.appendChild(content);
+            container.appendChild(notification);
+            
+            // Автоматически удаляем через 3 секунды
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.parentNode.removeChild(notification);
+                }
+            }, 3000);
+        }
+
+        // Имитация системы уведомлений для тестирования
+        window.addNotification = function(type, data) {
+            console.log('window.addNotification вызвана:', { type, data });
+            showNotification(data.message, type === 'experience_gained' ? 'success' : 'info');
+        };
+    </script>
+</body>
+</html> 

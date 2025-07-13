@@ -1,0 +1,499 @@
+/* Модальное окно броска кубика */
+.dice-roll-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(5px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.dice-roll-modal {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 20px;
+  padding: 30px;
+  max-width: 600px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  color: white;
+}
+
+.dice-roll-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  padding-bottom: 15px;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.dice-roll-header h2 {
+  margin: 0;
+  font-size: 1.8em;
+  font-weight: bold;
+}
+
+.close-button {
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: white;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.close-button:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: scale(1.1);
+}
+
+.dice-roll-content {
+  text-align: center;
+}
+
+/* Информация о проверке */
+.check-info {
+  margin-bottom: 30px;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 15px;
+}
+
+.stat-info {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 15px;
+  font-size: 1.2em;
+}
+
+.stat-info i {
+  font-size: 1.5em;
+  color: #ffd700;
+}
+
+.stat-name {
+  font-weight: bold;
+}
+
+.stat-value {
+  color: #ffd700;
+  font-weight: bold;
+}
+
+.difficulty-info {
+  margin-bottom: 15px;
+  font-size: 1.1em;
+  color: #ffd700;
+}
+
+.description {
+  font-style: italic;
+  opacity: 0.9;
+}
+
+/* Контейнер кубика */
+.dice-container {
+  position: relative;
+  margin: 30px 0;
+}
+
+/* d20 кубик - точно как в test_dice_mechanics.html */
+.d20 {
+  width: 200px;
+  height: 200px;
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 0.5s ease;
+  margin: 0 auto;
+  perspective: 1500px;
+  backface-visibility: hidden;
+}
+
+.d20.rolling {
+  animation: rollDice 1.5s ease-out;
+}
+
+/* Скрываем лишние части граней во время анимации */
+.d20.rolling .d20-dodecahedron .face {
+  opacity: 0.8;
+  filter: blur(0.5px);
+}
+
+.d20.rolling .d20-dodecahedron .face.active {
+  opacity: 1;
+  filter: none;
+}
+
+/* d20 додекаэдр - точно как в test_dice_mechanics.html */
+.d20-dodecahedron {
+  width: 200px;
+  height: 200px;
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 0.5s ease;
+  --clr-primary: rgba(186, 218, 85, 0.75);
+  --clr-lighter: rgba(186, 218, 85, 0.85);
+  --clr-darker: rgba(186, 218, 85, 0.65);
+  --box-size: 200px;
+  --diameter: 100px;
+  --quarter: 50px;
+  --rotateX: -45deg;
+  --rotateY: 180deg;
+  --rotateZ: 180deg;
+  backface-visibility: hidden;
+}
+
+@keyframes rollDice {
+  0% {
+    transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg);
+  }
+  25% {
+    transform: rotateX(720deg) rotateY(360deg) rotateZ(180deg);
+  }
+  50% {
+    transform: rotateX(1440deg) rotateY(720deg) rotateZ(360deg);
+  }
+  75% {
+    transform: rotateX(2160deg) rotateY(1080deg) rotateZ(540deg);
+  }
+  100% {
+    transform: rotateX(2520deg) rotateY(1260deg) rotateZ(630deg);
+  }
+}
+
+.d20-dodecahedron .face {
+  --ends-angle: 53deg;
+  --middle-angle: -11deg;
+  --top-face-angle: calc(360deg / 5);
+  --face-width: calc(var(--box-size) * .5);
+  --face-height: calc(var(--face-width) * 2 * .86);
+  --face-color: var(--clr-lighter);
+  --translateZ-top: calc(var(--face-width) * .335);
+  --translateY-top: calc(var(--face-height) * -.15);
+  --translateZ-middle: calc(var(--face-width) * .75);
+  --translateY-middle: calc((var(--face-height) * .395) + var(--translateY-top));
+  --translateZ-bottom: var(--translateZ-top);
+  --translateY-bottom: calc((var(--face-height) * .395) + var(--translateY-middle));
+
+  background: transparent;
+  width: 0;
+  height: 0;
+  top: 50%;
+  left: 50%;
+  margin-top: calc(var(--face-height) * -.5);
+  margin-bottom: calc(var(--face-height) * -.5);
+  margin-left: calc(var(--face-width) * -.5);
+  margin-right: calc(var(--face-width) * -.5);
+  border-left: calc(var(--face-width) * .5) solid transparent;
+  border-right: calc(var(--face-width) * .5) solid transparent;
+  border-bottom: calc(var(--face-height) * .5) solid var(--face-color);
+  position: absolute;
+  transition: opacity 0.3s ease, visibility 0.3s ease, z-index 0.3s ease;
+  backface-visibility: hidden;
+  transform-style: preserve-3d;
+}
+
+.d20-dodecahedron .face.active {
+  border-bottom-color: #ff6b6b;
+  box-shadow: 0 0 20px rgba(255, 107, 107, 0.5);
+}
+
+.d20-dodecahedron .face::after {
+  position: absolute;
+  top: calc(var(--face-height) * 0.25);
+  left: calc(var(--face-width) * -1);
+  color: black;
+  font-size: calc(var(--face-height) * .175);
+  text-align: center;
+  line-height: 1;
+  width: calc(var(--face-width) * 2);
+  height: var(--face-height);
+  font-weight: bold;
+  content: ''; /* Убираем числа с граней */
+}
+
+.d20-dodecahedron .face-1::after {
+  content: var(--dice-number, '20'); /* Отображаем выпавшее число */
+}
+
+.d20-dodecahedron .face-2::after {
+  content: var(--dice-number-2, ''); /* Соседнее значение */
+}
+
+.d20-dodecahedron .face-3::after {
+  content: var(--dice-number-3, ''); /* Соседнее значение */
+}
+
+.d20-dodecahedron .face-4::after {
+  content: var(--dice-number-4, ''); /* Соседнее значение */
+}
+
+.d20-dodecahedron .face-5::after {
+  content: var(--dice-number-5, ''); /* Соседнее значение */
+}
+
+.d20-dodecahedron .face-6::after {
+  content: var(--dice-number-6, ''); /* Соседнее значение */
+}
+
+.d20-dodecahedron .face-7::after {
+  content: var(--dice-number-7, ''); /* Соседнее значение */
+}
+
+.d20-dodecahedron .face-8::after {
+  content: var(--dice-number-8, ''); /* Соседнее значение */
+}
+
+.d20-dodecahedron .face-9::after {
+  content: var(--dice-number-9, ''); /* Соседнее значение */
+}
+
+.d20-dodecahedron .face-10::after {
+  content: var(--dice-number-10, ''); /* Соседнее значение */
+}
+
+.d20-dodecahedron .face-11::after {
+  content: var(--dice-number-11, ''); /* Соседнее значение */
+}
+
+.d20-dodecahedron .face-12::after {
+  content: var(--dice-number-12, ''); /* Соседнее значение */
+}
+
+.d20-dodecahedron .face-13::after {
+  content: var(--dice-number-13, ''); /* Соседнее значение */
+}
+
+.d20-dodecahedron .face-14::after {
+  content: var(--dice-number-14, ''); /* Соседнее значение */
+}
+
+.d20-dodecahedron .face-15::after {
+  content: var(--dice-number-15, ''); /* Соседнее значение */
+}
+
+.d20-dodecahedron .face-16::after {
+  content: var(--dice-number-16, ''); /* Соседнее значение */
+}
+
+.d20-dodecahedron .face-17::after {
+  content: var(--dice-number-17, ''); /* Соседнее значение */
+}
+
+.d20-dodecahedron .face-18::after {
+  content: var(--dice-number-18, ''); /* Соседнее значение */
+}
+
+.d20-dodecahedron .face-19::after {
+  content: var(--dice-number-19, ''); /* Соседнее значение */
+}
+
+.d20-dodecahedron .face-20::after {
+  content: var(--dice-number-20, ''); /* Соседнее значение */
+}
+
+/* Генерация граней d20 - точно как в test_dice_mechanics.html */
+.d20-dodecahedron .face-1 { transform: rotateY(calc(var(--top-face-angle) * -1 * 0)) translateZ(var(--translateZ-top)) translateY(var(--translateY-top)) rotateX(var(--ends-angle)); }
+.d20-dodecahedron .face-2 { transform: rotateY(calc(var(--top-face-angle) * -1 * 1)) translateZ(var(--translateZ-top)) translateY(var(--translateY-top)) rotateX(var(--ends-angle)); }
+.d20-dodecahedron .face-3 { transform: rotateY(calc(var(--top-face-angle) * -1 * 2)) translateZ(var(--translateZ-top)) translateY(var(--translateY-top)) rotateX(var(--ends-angle)); }
+.d20-dodecahedron .face-4 { transform: rotateY(calc(var(--top-face-angle) * -1 * 3)) translateZ(var(--translateZ-top)) translateY(var(--translateY-top)) rotateX(var(--ends-angle)); }
+.d20-dodecahedron .face-5 { transform: rotateY(calc(var(--top-face-angle) * -1 * 4)) translateZ(var(--translateZ-top)) translateY(var(--translateY-top)) rotateX(var(--ends-angle)); }
+.d20-dodecahedron .face-6 { transform: rotateY(calc(var(--top-face-angle) * -1 * -5)) translateZ(var(--translateZ-middle)) translateY(var(--translateY-middle)) rotateZ(180deg) rotateX(var(--middle-angle)); }
+.d20-dodecahedron .face-7 { transform: rotateY(calc(var(--top-face-angle) * -1 * -4)) translateZ(var(--translateZ-middle)) translateY(var(--translateY-middle)) rotateZ(180deg) rotateX(var(--middle-angle)); }
+.d20-dodecahedron .face-8 { transform: rotateY(calc(var(--top-face-angle) * -1 * -3)) translateZ(var(--translateZ-middle)) translateY(var(--translateY-middle)) rotateZ(180deg) rotateX(var(--middle-angle)); }
+.d20-dodecahedron .face-9 { transform: rotateY(calc(var(--top-face-angle) * -1 * -2)) translateZ(var(--translateZ-middle)) translateY(var(--translateY-middle)) rotateZ(180deg) rotateX(var(--middle-angle)); }
+.d20-dodecahedron .face-10 { transform: rotateY(calc(var(--top-face-angle) * -1 * -1)) translateZ(var(--translateZ-middle)) translateY(var(--translateY-middle)) rotateZ(180deg) rotateX(var(--middle-angle)); }
+.d20-dodecahedron .face-11 { transform: rotateY(calc(var(--top-face-angle) * 3 + (var(--top-face-angle) / 2))) translateZ(var(--translateZ-middle)) translateY(var(--translateY-middle)) rotateX(var(--middle-angle)); }
+.d20-dodecahedron .face-12 { transform: rotateY(calc(var(--top-face-angle) * 4 + (var(--top-face-angle) / 2))) translateZ(var(--translateZ-middle)) translateY(var(--translateY-middle)) rotateX(var(--middle-angle)); }
+.d20-dodecahedron .face-13 { transform: rotateY(calc(var(--top-face-angle) * 5 + (var(--top-face-angle) / 2))) translateZ(var(--translateZ-middle)) translateY(var(--translateY-middle)) rotateX(var(--middle-angle)); }
+.d20-dodecahedron .face-14 { transform: rotateY(calc(var(--top-face-angle) * 6 + (var(--top-face-angle) / 2))) translateZ(var(--translateZ-middle)) translateY(var(--translateY-middle)) rotateX(var(--middle-angle)); }
+.d20-dodecahedron .face-15 { transform: rotateY(calc(var(--top-face-angle) * 7 + (var(--top-face-angle) / 2))) translateZ(var(--translateZ-middle)) translateY(var(--translateY-middle)) rotateX(var(--middle-angle)); }
+.d20-dodecahedron .face-16 { transform: rotateY(calc(var(--top-face-angle) * -2 + (var(--top-face-angle) / 2))) translateZ(var(--translateZ-bottom)) translateY(var(--translateY-bottom)) rotateZ(180deg) rotateX(var(--ends-angle)); }
+.d20-dodecahedron .face-17 { transform: rotateY(calc(var(--top-face-angle) * -1 + (var(--top-face-angle) / 2))) translateZ(var(--translateZ-bottom)) translateY(var(--translateY-bottom)) rotateZ(180deg) rotateX(var(--ends-angle)); }
+.d20-dodecahedron .face-18 { transform: rotateY(calc(var(--top-face-angle) * 0 + (var(--top-face-angle) / 2))) translateZ(var(--translateZ-bottom)) translateY(var(--translateY-bottom)) rotateZ(180deg) rotateX(var(--ends-angle)); }
+.d20-dodecahedron .face-19 { transform: rotateY(calc(var(--top-face-angle) * 1 + (var(--top-face-angle) / 2))) translateZ(var(--translateZ-bottom)) translateY(var(--translateY-bottom)) rotateZ(180deg) rotateX(var(--ends-angle)); }
+.d20-dodecahedron .face-20 { transform: rotateY(calc(var(--top-face-angle) * 2 + (var(--top-face-angle) / 2))) translateZ(var(--translateZ-bottom)) translateY(var(--translateY-bottom)) rotateZ(180deg) rotateX(var(--ends-angle)); }
+
+.dice-value {
+  margin-top: 20px;
+  font-size: 2em;
+  font-weight: bold;
+  color: #ffd700;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.roll-button {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  padding: 15px 30px;
+  font-size: 1.2em;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+  margin: 10px;
+}
+
+.roll-button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+}
+
+.roll-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.roll-button.rolling {
+  animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+.roll-result {
+  margin-top: 30px;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 15px;
+}
+
+.result-header {
+  margin-bottom: 20px;
+  padding: 15px;
+  border-radius: 10px;
+  text-align: center;
+}
+
+.result-header.success {
+  background: linear-gradient(135deg, #4ade80, #22c55e);
+}
+
+.result-header.warning {
+  background: linear-gradient(135deg, #fbbf24, #f59e0b);
+}
+
+.result-header.danger {
+  background: linear-gradient(135deg, #f87171, #ef4444);
+}
+
+.result-header h3 {
+  margin: 0 0 10px 0;
+  font-size: 1.5em;
+  font-weight: bold;
+}
+
+.result-header p {
+  margin: 0;
+  opacity: 0.9;
+}
+
+.result-details {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.detail-item {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 15px;
+  border-radius: 10px;
+  text-align: center;
+}
+
+.detail-item .label {
+  display: block;
+  font-size: 0.9em;
+  opacity: 0.8;
+  margin-bottom: 5px;
+}
+
+.detail-item .value {
+  display: block;
+  font-size: 1.3em;
+  font-weight: bold;
+  color: #ffd700;
+}
+
+.result-actions {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.continue-button,
+.reroll-button {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 25px;
+  font-size: 1em;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.continue-button {
+  background: linear-gradient(135deg, #4ade80, #22c55e);
+  color: white;
+}
+
+.continue-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px rgba(34, 197, 94, 0.3);
+}
+
+.reroll-button {
+  background: linear-gradient(135deg, #fbbf24, #f59e0b);
+  color: white;
+}
+
+.reroll-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px rgba(245, 158, 11, 0.3);
+}
+
+@media (max-width: 768px) {
+  .dice-roll-modal {
+    margin: 10px;
+    padding: 20px;
+  }
+
+  .d20 {
+    width: 150px;
+    height: 150px;
+  }
+
+  .d20-dodecahedron {
+    width: 150px;
+    height: 150px;
+    --box-size: 150px;
+  }
+
+  .result-actions {
+    flex-direction: column;
+  }
+
+  .result-details {
+    grid-template-columns: 1fr;
+  }
+} 

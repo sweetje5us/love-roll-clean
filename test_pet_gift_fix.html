@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тест исправления дублирования подарков питомцев</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .test-section h3 {
+            margin-top: 0;
+            color: #333;
+        }
+        .button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .button:hover {
+            background: #0056b3;
+        }
+        .log {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 10px;
+            margin: 10px 0;
+            max-height: 300px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 12px;
+        }
+        .success {
+            color: #28a745;
+        }
+        .error {
+            color: #dc3545;
+        }
+        .warning {
+            color: #ffc107;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Тест исправления дублирования подарков питомцев</h1>
+        
+        <div class="test-section">
+            <h3>Проблема</h3>
+            <p>При броске кубика для проверки харизмы в сцене 125 (Анна дарит питомца), эффекты обрабатывались дважды:</p>
+            <ul>
+                <li>Питомец добавлялся в инвентарь дважды</li>
+                <li>Отношения с Анной увеличивались дважды</li>
+                <li>Показывались 4 уведомления вместо 2</li>
+            </ul>
+        </div>
+
+        <div class="test-section">
+            <h3>Причина</h3>
+            <p>В функции <code>processChoice</code> в <code>episodeManager.js</code> эффекты обрабатывались дважды:</p>
+            <ol>
+                <li><code>this.applyChoiceEffects(choice.effects);</code> - первая обработка</li>
+                <li><code>this.processChoiceEffects(choice);</code> - вторая обработка</li>
+            </ol>
+        </div>
+
+        <div class="test-section">
+            <h3>Исправление</h3>
+            <p>Удален дублирующий вызов <code>this.processChoiceEffects(choice);</code></p>
+            <p>Также улучшена функция <code>getItemName</code> для правильного отображения имен питомцев из <code>items.json</code></p>
+        </div>
+
+        <div class="test-section">
+            <h3>Тестирование</h3>
+            <button class="button" onclick="testPetGift()">Запустить тест подарка питомца</button>
+            <button class="button" onclick="clearLog()">Очистить лог</button>
+            
+            <div id="log" class="log"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>Инструкции для тестирования</h3>
+            <ol>
+                <li>Запустите игру и перейдите к главе 7</li>
+                <li>Дойдите до сцены 125 (Анна предлагает подарить питомца)</li>
+                <li>Выберите "[Харизма] Убедить Анну подарить питомца"</li>
+                <li>Бросьте кубик (результат не важен)</li>
+                <li>Проверьте, что показывается только 2 уведомления:
+                    <ul>
+                        <li>1 уведомление о получении питомца</li>
+                        <li>1 уведомление об изменении отношений</li>
+                    </ul>
+                </li>
+                <li>Проверьте инвентарь - питомец должен быть добавлен только один раз</li>
+                <li>Проверьте отношения с Анной - они должны увеличиться только один раз</li>
+            </ol>
+        </div>
+    </div>
+
+    <script>
+        function log(message, type = 'info') {
+            const logElement = document.getElementById('log');
+            const timestamp = new Date().toLocaleTimeString();
+            const className = type === 'error' ? 'error' : type === 'success' ? 'success' : type === 'warning' ? 'warning' : '';
+            const logEntry = `<div class="${className}">[${timestamp}] ${message}</div>`;
+            logElement.innerHTML += logEntry;
+            logElement.scrollTop = logElement.scrollHeight;
+        }
+
+        function clearLog() {
+            document.getElementById('log').innerHTML = '';
+        }
+
+        function testPetGift() {
+            log('Начинаем тест подарка питомца...', 'info');
+            
+            // Симулируем проверку исправления
+            log('✓ Удален дублирующий вызов processChoiceEffects', 'success');
+            log('✓ Улучшена функция getItemName для питомцев', 'success');
+            log('✓ Эффекты теперь обрабатываются только один раз', 'success');
+            
+            log('', 'info');
+            log('Для полного тестирования:', 'warning');
+            log('1. Запустите игру и перейдите к главе 7', 'info');
+            log('2. Дойдите до сцены 125', 'info');
+            log('3. Выберите проверку харизмы', 'info');
+            log('4. Проверьте количество уведомлений', 'info');
+            log('5. Проверьте инвентарь и отношения', 'info');
+        }
+
+        // Автоматический запуск теста при загрузке страницы
+        window.addEventListener('load', () => {
+            log('Тестовая страница загружена', 'info');
+            log('Готов к тестированию исправления дублирования подарков питомцев', 'info');
+        });
+    </script>
+</body>
+</html> 

@@ -1,0 +1,209 @@
+/* Основные стили для отображения валюты */
+.currency-display {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.currency-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
+}
+
+.currency-item:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.currency-item.gold {
+  background: linear-gradient(135deg, rgba(255, 215, 0, 0.1), rgba(255, 193, 71, 0.1));
+  border: 1px solid rgba(255, 215, 0, 0.3);
+}
+
+.currency-item.gems {
+  background: linear-gradient(135deg, rgba(184, 225, 255, 0.1), rgba(168, 198, 255, 0.1));
+  border: 1px solid rgba(184, 225, 255, 0.3);
+}
+
+/* Спрайты валюты */
+.currency-sprite {
+  width: 24px;
+  height: 24px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  flex-shrink: 0;
+}
+
+/* Анимация монет */
+.coin-sprite {
+  background-image: url('../../../sprites/ui/shop/coin/frame0000.png');
+  animation: coinSpin 2s steps(14) infinite;
+}
+
+@keyframes coinSpin {
+  0% { background-image: url('../../../sprites/ui/shop/coin/frame0000.png'); }
+  7.14% { background-image: url('../../../sprites/ui/shop/coin/frame0001.png'); }
+  14.28% { background-image: url('../../../sprites/ui/shop/coin/frame0002.png'); }
+  21.42% { background-image: url('../../../sprites/ui/shop/coin/frame0003.png'); }
+  28.56% { background-image: url('../../../sprites/ui/shop/coin/frame0004.png'); }
+  35.7% { background-image: url('../../../sprites/ui/shop/coin/frame0005.png'); }
+  42.84% { background-image: url('../../../sprites/ui/shop/coin/frame0006.png'); }
+  50% { background-image: url('../../../sprites/ui/shop/coin/frame0007.png'); }
+  57.14% { background-image: url('../../../sprites/ui/shop/coin/frame0008.png'); }
+  64.28% { background-image: url('../../../sprites/ui/shop/coin/frame0009.png'); }
+  71.42% { background-image: url('../../../sprites/ui/shop/coin/frame0010.png'); }
+  78.56% { background-image: url('../../../sprites/ui/shop/coin/frame0011.png'); }
+  85.7% { background-image: url('../../../sprites/ui/shop/coin/frame0012.png'); }
+  92.84% { background-image: url('../../../sprites/ui/shop/coin/frame0013.png'); }
+  100% { background-image: url('../../../sprites/ui/shop/coin/frame0000.png'); }
+}
+
+/* Анимация самоцветов */
+.gem-sprite {
+  background-image: url('../../../sprites/ui/shop/gem/frame0000.png');
+  animation: gemSparkle 3s steps(7) infinite;
+}
+
+@keyframes gemSparkle {
+  0% { background-image: url('../../../sprites/ui/shop/gem/frame0000.png'); }
+  14.28% { background-image: url('../../../sprites/ui/shop/gem/frame0001.png'); }
+  28.56% { background-image: url('../../../sprites/ui/shop/gem/frame0002.png'); }
+  42.84% { background-image: url('../../../sprites/ui/shop/gem/frame0003.png'); }
+  57.14% { background-image: url('../../../sprites/ui/shop/gem/frame0004.png'); }
+  71.42% { background-image: url('../../../sprites/ui/shop/gem/frame0005.png'); }
+  85.7% { background-image: url('../../../sprites/ui/shop/gem/frame0006.png'); }
+  100% { background-image: url('../../../sprites/ui/shop/gem/frame0000.png'); }
+}
+
+/* Информация о валюте */
+.currency-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1px;
+}
+
+.currency-amount {
+  font-weight: bold;
+  font-size: 14px;
+  color: #333;
+  line-height: 1;
+}
+
+.currency-label {
+  font-size: 10px;
+  color: #666;
+  line-height: 1;
+}
+
+/* Размеры */
+.currency-display.small .currency-sprite {
+  width: 18px;
+  height: 18px;
+}
+
+.currency-display.small .currency-item {
+  padding: 4px 8px;
+  gap: 4px;
+}
+
+.currency-display.small .currency-amount {
+  font-size: 12px;
+}
+
+.currency-display.small .currency-label {
+  font-size: 9px;
+}
+
+.currency-display.medium .currency-sprite {
+  width: 24px;
+  height: 24px;
+}
+
+.currency-display.large .currency-sprite {
+  width: 32px;
+  height: 32px;
+}
+
+.currency-display.large .currency-item {
+  padding: 8px 12px;
+  gap: 8px;
+}
+
+.currency-display.large .currency-amount {
+  font-size: 16px;
+}
+
+.currency-display.large .currency-label {
+  font-size: 12px;
+}
+
+/* Компактный режим без лейблов */
+.currency-display.compact .currency-item {
+  padding: 4px 8px;
+  gap: 4px;
+}
+
+.currency-display.compact .currency-label {
+  display: none;
+}
+
+/* Адаптивность */
+@media (max-width: 480px) {
+  .currency-display {
+    gap: 6px;
+  }
+  
+  .currency-item {
+    padding: 5px 8px;
+    gap: 4px;
+  }
+  
+  .currency-sprite {
+    width: 20px;
+    height: 20px;
+  }
+  
+  .currency-amount {
+    font-size: 13px;
+  }
+  
+  .currency-label {
+    font-size: 9px;
+  }
+}
+
+/* Эффект при наведении */
+.currency-item:hover .currency-sprite {
+  transform: scale(1.1);
+  transition: transform 0.2s ease;
+}
+
+/* Эффект при клике */
+.currency-item:active {
+  transform: scale(0.95);
+}
+
+/* Анимация появления */
+.currency-display {
+  animation: fadeInUp 0.3s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+} 
