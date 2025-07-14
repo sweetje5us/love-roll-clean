@@ -11,15 +11,15 @@
   align-items: center;
   justify-content: center;
   z-index: 1000;
-  padding: 20px;
+  padding: 12px;
 }
 
 .character-edit-modal {
   background: #fff;
-  border-radius: 20px;
+  border-radius: 16px;
   width: 100%;
-  max-width: 800px;
-  max-height: 90vh;
+  max-width: 700px;
+  max-height: 85vh;
   display: flex;
   flex-direction: column;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
@@ -31,26 +31,26 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 20px 24px;
+  padding: 16px 20px;
   background: linear-gradient(135deg, #fff0f5, #fce4ec);
   border-bottom: 1px solid #ffdfea;
 }
 
 .modal-header h2 {
-  font-size: 24px;
+  font-size: 20px;
   font-weight: 700;
   color: #ff8cc6;
   margin: 0;
 }
 
 .close-button {
-  width: 40px;
-  height: 40px;
+  width: 36px;
+  height: 36px;
   border: none;
   border-radius: 50%;
   background: linear-gradient(135deg, #ff8cc6, #ff6bb5);
   color: white;
-  font-size: 16px;
+  font-size: 14px;
   cursor: pointer;
   transition: all 0.2s ease;
   display: flex;
@@ -68,7 +68,7 @@
   display: flex;
   background: #fff;
   border-bottom: 1px solid #ffdfea;
-  padding: 0 8px;
+  padding: 0 4px;
 }
 
 .modal-tabs .tab-button {
@@ -77,25 +77,25 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 12px 8px;
+  padding: 8px 4px;
   border: none;
   background: transparent;
   color: #a8a8a8;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
   border-bottom: 3px solid transparent;
-  min-height: 60px;
+  min-height: 50px;
 }
 
 .modal-tabs .tab-button i {
-  font-size: 18px;
-  margin-bottom: 4px;
+  font-size: 16px;
+  margin-bottom: 2px;
 }
 
 .modal-tabs .tab-button span {
-  font-size: 11px;
+  font-size: 10px;
   line-height: 1.2;
 }
 
@@ -123,8 +123,8 @@
   display: flex;
   flex-direction: column;
   height: 100%;
-  padding: 16px;
-  gap: 20px;
+  padding: 12px;
+  gap: 16px;
 }
 
 /* Настройки персонажа */
@@ -132,19 +132,19 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 12px;
   overflow-y: auto;
-  padding-bottom: 20px;
+  padding-bottom: 16px;
 }
 
 .setting-group {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
 }
 
 .setting-label {
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 700;
   color: #ff8cc6;
   margin: 0;
@@ -153,10 +153,10 @@
 /* Поле ввода имени */
 .name-input {
   width: 100%;
-  padding: 12px 16px;
+  padding: 10px 12px;
   border: 2px solid #ffdfea;
-  border-radius: 12px;
-  font-size: 16px;
+  border-radius: 10px;
+  font-size: 14px;
   background: #fff;
   color: #333;
   transition: all 0.2s ease;
@@ -175,7 +175,7 @@
 /* Кнопки опций */
 .option-buttons {
   display: flex;
-  gap: 8px;
+  gap: 6px;
 }
 
 .option-button {
@@ -183,13 +183,13 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  padding: 12px 16px;
+  gap: 6px;
+  padding: 10px 12px;
   border: 2px solid #ffdfea;
-  border-radius: 12px;
+  border-radius: 10px;
   background: #fff;
   color: #666;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -210,22 +210,22 @@
 
 /* Редактор характеристик */
 .stats-editor {
-  padding: 16px;
+  padding: 12px;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 16px;
 }
 
 .stats-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding-bottom: 16px;
+  padding-bottom: 12px;
   border-bottom: 1px solid #ffdfea;
 }
 
 .stats-header h3 {
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 700;
   color: #ff8cc6;
   margin: 0;
@@ -234,15 +234,15 @@
 .points-counter {
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: 14px;
+  gap: 6px;
+  font-size: 12px;
   color: #666;
 }
 
 .points-value {
   font-weight: 700;
   color: #ff8cc6;
-  font-size: 16px;
+  font-size: 14px;
 }
 
 .points-value.complete {
@@ -253,39 +253,44 @@
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 12px;
-  color: #22c55e;
-  background: rgba(34, 197, 94, 0.1);
-  padding: 4px 8px;
-  border-radius: 6px;
+  font-size: 11px;
+  color: #10b981;
+  background: #ecfdf5;
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: 1px solid #a7f3d0;
+}
+
+.pet-bonus-info i {
+  font-size: 11px;
 }
 
 .stats-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
 .stat-item {
   display: flex;
-  align-items: center;
   justify-content: space-between;
-  padding: 12px 16px;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.8), rgba(255, 240, 245, 0.8));
-  border: 1px solid #ffdfea;
-  border-radius: 12px;
+  align-items: center;
+  padding: 12px;
+  background: white;
+  border: 2px solid #ffdfea;
+  border-radius: 10px;
   transition: all 0.2s ease;
 }
 
 .stat-item:hover {
   border-color: #ff8cc6;
-  box-shadow: 0 2px 8px rgba(255, 140, 198, 0.1);
+  box-shadow: 0 4px 8px rgba(255, 140, 198, 0.1);
 }
 
 .stat-info {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   flex: 1;
 }
 
@@ -299,139 +304,212 @@
 .stat-name {
   font-size: 14px;
   font-weight: 600;
-  color: #333;
+  color: #374151;
+  flex: 1;
   cursor: help;
+  transition: color 0.2s ease;
+}
+
+.stat-name:hover {
+  color: #ff8cc6;
 }
 
 .stat-value-container {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 8px;
-  margin-left: auto;
+  gap: 2px;
 }
 
 .stat-value {
   font-size: 16px;
   font-weight: 700;
   color: #ff8cc6;
-  display: flex;
-  align-items: center;
-  gap: 4px;
+  background: #fff0f5;
+  padding: 4px 10px;
+  border-radius: 6px;
+  min-width: 36px;
+  text-align: center;
 }
 
 .pet-stat-bonus {
-  font-size: 12px;
-  color: #22c55e;
+  font-size: 11px;
   font-weight: 600;
+  color: #10b981;
+  background: #ecfdf5;
+  padding: 2px 6px;
+  border-radius: 4px;
+  min-width: 26px;
+  text-align: center;
 }
 
 .stat-bonus {
-  font-size: 12px;
-  color: #666;
+  font-size: 11px;
   font-weight: 600;
-  background: rgba(255, 140, 198, 0.1);
+  color: #666;
+  background: #f3f4f6;
   padding: 2px 6px;
   border-radius: 4px;
+  min-width: 26px;
+  text-align: center;
 }
 
 .stat-controls {
   display: flex;
-  gap: 8px;
+  gap: 6px;
 }
 
 .stat-button {
   width: 32px;
   height: 32px;
-  border: 1px solid #ffdfea;
-  border-radius: 6px;
-  background: #fff;
+  border: 2px solid #ffdfea;
+  background: white;
   color: #ff8cc6;
-  font-size: 12px;
+  border-radius: 6px;
   cursor: pointer;
-  transition: all 0.2s ease;
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: all 0.2s ease;
+  font-size: 12px;
 }
 
 .stat-button:hover:not(.disabled) {
-  background: #ff8cc6;
-  color: white;
   border-color: #ff8cc6;
-  transform: scale(1.1);
+  background: #fff0f5;
+  transform: scale(1.05);
 }
 
 .stat-button.disabled {
-  opacity: 0.5;
+  opacity: 0.4;
   cursor: not-allowed;
+  border-color: #e5e7eb;
+  color: #9ca3af;
 }
 
-/* Редактор питомцев */
+.stat-button.disabled:hover {
+  transform: none;
+  border-color: #e5e7eb;
+  background: white;
+}
+
+.stats-info {
+  background: #fff0f5;
+  border: 2px solid #ffdfea;
+  border-radius: 10px;
+  padding: 12px;
+  margin-top: 12px;
+  font-size: 12px;
+}
+
+.stats-info p {
+  margin: 0 0 8px 0;
+  font-weight: 600;
+  color: #ff8cc6;
+}
+
+.stats-info ul {
+  margin: 0;
+  padding-left: 16px;
+}
+
+.stats-info li {
+  margin-bottom: 4px;
+  color: #666;
+}
+
+/* Стили для вкладки питомца */
 .pet-editor {
-  padding: 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
+  padding: 12px;
+  height: 100%;
+  overflow-y: auto;
 }
 
 .pet-section {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 16px;
 }
 
 .pet-section h3 {
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 700;
   color: #ff8cc6;
-  margin: 0;
+  margin: 0 0 12px 0;
+  text-align: center;
 }
 
+/* Текущий питомец */
 .current-pet {
-  padding: 16px;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.8), rgba(255, 240, 245, 0.8));
-  border: 1px solid #ffdfea;
-  border-radius: 12px;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 16px;
 }
 
 .selected-pet {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 12px;
+  padding: 12px;
+  background: #fff0f5;
+  border: 2px solid #ffdfea;
+  border-radius: 12px;
+  max-width: 300px;
+  width: 100%;
 }
 
 .pet-sprite {
-  width: 80px;
-  height: 80px;
+  width: 60px;
+  height: 60px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(255, 140, 198, 0.1);
-  border-radius: 12px;
+  background: #fff;
+  border-radius: 8px;
   border: 2px solid #ffdfea;
+  position: relative;
+  flex-shrink: 0;
+  overflow: hidden;
 }
 
 .pet-sprite img {
-  max-width: 100%;
-  max-height: 100%;
+  width: 100%;
+  height: 100%;
   object-fit: contain;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.pet-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  color: #a8a8a8;
+  font-size: 24px;
+  position: absolute;
+  top: 0;
+  left: 0;
 }
 
 .pet-info {
   flex: 1;
+  min-width: 0;
 }
 
 .pet-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
 }
 
 .pet-header h4 {
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 700;
-  color: #333;
+  color: #ff8cc6;
   margin: 0;
 }
 
@@ -440,34 +518,44 @@
   height: 24px;
   border: none;
   border-radius: 50%;
-  background: #ff4757;
+  background: #ef4444;
   color: white;
   font-size: 10px;
   cursor: pointer;
-  transition: all 0.2s ease;
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: all 0.2s ease;
 }
 
 .remove-pet-button:hover {
-  background: #ff3742;
+  background: #dc2626;
   transform: scale(1.1);
-  box-shadow: 0 2px 8px rgba(255, 71, 87, 0.3);
+}
+
+.pet-special {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
 }
 
 .special-ability {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 6px 12px;
-  border-radius: 8px;
-  font-size: 12px;
+  gap: 4px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 11px;
   font-weight: 600;
+  white-space: nowrap;
 }
 
 .special-icon {
-  font-size: 14px;
+  font-size: 10px;
+}
+
+.special-text {
+  font-size: 10px;
 }
 
 .empty-pet-slot {
@@ -476,38 +564,44 @@
   align-items: center;
   justify-content: center;
   gap: 8px;
-  padding: 32px;
-  color: #a8a8a8;
-  font-size: 14px;
+  padding: 20px;
+  background: #f9fafb;
+  border: 2px dashed #d1d5db;
+  border-radius: 12px;
+  color: #9ca3af;
+  font-size: 12px;
+  font-weight: 600;
+  min-height: 80px;
 }
 
 .empty-pet-slot i {
   font-size: 24px;
 }
 
+/* Сетка питомцев */
 .pets-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-  gap: 12px;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: 8px;
 }
 
 .pet-card {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
-  padding: 12px;
+  padding: 8px;
   background: #fff;
   border: 2px solid #ffdfea;
-  border-radius: 12px;
+  border-radius: 10px;
   cursor: pointer;
   transition: all 0.2s ease;
+  text-align: center;
 }
 
 .pet-card:hover {
   border-color: #ff8cc6;
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(255, 140, 198, 0.2);
+  box-shadow: 0 4px 8px rgba(255, 140, 198, 0.2);
 }
 
 .pet-card.selected {
@@ -517,31 +611,53 @@
 }
 
 .pet-card-sprite {
-  width: 60px;
-  height: 60px;
+  width: 50px;
+  height: 50px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(255, 140, 198, 0.1);
-  border-radius: 8px;
+  margin-bottom: 6px;
+  background: #f9fafb;
+  border-radius: 6px;
+  border: 1px solid #e5e7eb;
+  overflow: hidden;
+  position: relative;
 }
 
 .pet-card-sprite img {
-  max-width: 100%;
-  max-height: 100%;
+  width: 100%;
+  height: 100%;
   object-fit: contain;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.pet-card-sprite .pet-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  color: #a8a8a8;
+  font-size: 16px;
+  position: absolute;
+  top: 0;
+  left: 0;
 }
 
 .pet-card-info {
-  text-align: center;
-  width: 100%;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
 .pet-card-info h5 {
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 600;
-  margin: 0 0 4px 0;
-  color: inherit;
+  margin: 0;
+  line-height: 1.2;
 }
 
 .pet-card-special {
@@ -556,105 +672,552 @@
   width: 20px;
   height: 20px;
   border-radius: 50%;
-  font-size: 10px;
+  font-size: 8px;
 }
 
 .no-pets-message {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 20px;
+  color: #9ca3af;
   text-align: center;
-  padding: 32px;
-  color: #a8a8a8;
 }
 
 .no-pets-message i {
-  font-size: 32px;
-  margin-bottom: 12px;
+  font-size: 24px;
 }
 
 .no-pets-message p {
-  margin: 4px 0;
-  font-size: 14px;
+  font-size: 12px;
+  margin: 0;
 }
 
 /* Кнопки действий */
 .modal-actions {
   display: flex;
   gap: 12px;
-  padding: 20px 24px;
-  background: #fff;
+  padding: 16px 20px;
   border-top: 1px solid #ffdfea;
+  background: #fff;
 }
 
 .cancel-button,
 .save-button {
   flex: 1;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  padding: 12px 24px;
-  border: none;
-  border-radius: 12px;
-  font-size: 16px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
 }
 
 .cancel-button {
   background: #f3f4f6;
   color: #666;
+  border: 2px solid #e5e7eb;
 }
 
 .cancel-button:hover {
   background: #e5e7eb;
+  color: #374151;
   transform: translateY(-1px);
 }
 
 .save-button {
   background: linear-gradient(135deg, #ff8cc6, #ff6bb5);
   color: white;
+  box-shadow: 0 4px 16px rgba(255, 140, 198, 0.3);
 }
 
 .save-button:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(255, 140, 198, 0.3);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255, 140, 198, 0.4);
 }
 
-/* Адаптивность */
+/* Адаптивность для мобильных устройств */
 @media (max-width: 768px) {
+  .character-edit-modal-overlay {
+    padding: 8px;
+  }
+  
   .character-edit-modal {
-    max-width: 100%;
-    max-height: 95vh;
-    margin: 10px;
+    max-height: 90vh;
+    border-radius: 12px;
   }
   
   .modal-header {
-    padding: 16px 20px;
+    padding: 12px 16px;
   }
   
   .modal-header h2 {
-    font-size: 20px;
+    font-size: 18px;
+  }
+  
+  .close-button {
+    width: 32px;
+    height: 32px;
+    font-size: 12px;
+  }
+  
+  .modal-tabs .tab-button {
+    padding: 6px 2px;
+    min-height: 44px;
+    font-size: 10px;
+  }
+  
+  .modal-tabs .tab-button i {
+    font-size: 14px;
+  }
+  
+  .modal-tabs .tab-button span {
+    font-size: 9px;
   }
   
   .modal-content {
-    padding: 12px;
+    max-height: calc(90vh - 120px);
   }
   
-  .stats-grid {
-    grid-template-columns: 1fr;
+  .character-editor {
+    padding: 8px;
+    gap: 12px;
+  }
+  
+  .character-settings {
+    gap: 10px;
+  }
+  
+  .setting-label {
+    font-size: 12px;
+  }
+  
+  .name-input {
+    padding: 8px 10px;
+    font-size: 13px;
+  }
+  
+  .option-button {
+    padding: 8px 10px;
+    font-size: 12px;
+  }
+  
+  .stats-editor {
+    padding: 8px;
+    gap: 12px;
+  }
+  
+  .stats-header h3 {
+    font-size: 14px;
+  }
+  
+  .points-counter {
+    font-size: 11px;
+  }
+  
+  .points-value {
+    font-size: 12px;
+  }
+  
+  .stat-item {
+    padding: 10px;
+  }
+  
+  .stat-info i {
+    font-size: 16px;
+  }
+  
+  .stat-name {
+    font-size: 13px;
+  }
+  
+  .stat-value {
+    font-size: 14px;
+    padding: 3px 8px;
+  }
+  
+  .stat-button {
+    width: 28px;
+    height: 28px;
+    font-size: 11px;
+  }
+  
+  .pet-editor {
+    padding: 8px;
+  }
+  
+  .pet-section h3 {
+    font-size: 14px;
+  }
+  
+  .selected-pet {
+    padding: 10px;
+    gap: 10px;
+  }
+  
+  .pet-sprite {
+    width: 50px;
+    height: 50px;
+  }
+  
+  .pet-header h4 {
+    font-size: 13px;
   }
   
   .pets-grid {
-    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+    gap: 6px;
+  }
+  
+  .pet-card {
+    padding: 6px;
+  }
+  
+  .pet-card-sprite {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .pet-card-sprite .pet-placeholder {
+    font-size: 14px;
+  }
+  
+  .pet-card-info h5 {
+    font-size: 10px;
   }
   
   .modal-actions {
-    padding: 16px 20px;
+    padding: 12px 16px;
+    gap: 8px;
   }
   
   .cancel-button,
   .save-button {
-    padding: 10px 20px;
+    padding: 10px 16px;
+    font-size: 13px;
+  }
+}
+
+/* Адаптивность для веб-версии */
+@media (min-width: 769px) {
+  .character-edit-modal-overlay {
+    padding: 20px;
+  }
+  
+  .character-edit-modal {
+    max-width: 800px;
+    max-height: 85vh;
+    border-radius: 20px;
+  }
+  
+  .modal-header {
+    padding: 20px 24px;
+  }
+  
+  .modal-header h2 {
+    font-size: 24px;
+  }
+  
+  .close-button {
+    width: 40px;
+    height: 40px;
+    font-size: 16px;
+  }
+  
+  .modal-tabs .tab-button {
+    padding: 12px 8px;
+    min-height: 60px;
+    font-size: 12px;
+  }
+  
+  .modal-tabs .tab-button i {
+    font-size: 18px;
+  }
+  
+  .modal-tabs .tab-button span {
+    font-size: 11px;
+  }
+  
+  .character-editor {
+    padding: 20px;
+    gap: 20px;
+  }
+  
+  .character-settings {
+    gap: 16px;
+  }
+  
+  .setting-label {
     font-size: 14px;
+  }
+  
+  .name-input {
+    padding: 12px 16px;
+    font-size: 16px;
+  }
+  
+  .option-button {
+    padding: 12px 16px;
+    font-size: 14px;
+  }
+  
+  .stats-editor {
+    padding: 20px;
+    gap: 20px;
+  }
+  
+  .stats-header h3 {
+    font-size: 20px;
+  }
+  
+  .points-counter {
+    font-size: 16px;
+  }
+  
+  .points-value {
+    font-size: 16px;
+  }
+  
+  .stat-item {
+    padding: 16px;
+  }
+  
+  .stat-info i {
+    font-size: 20px;
+  }
+  
+  .stat-name {
+    font-size: 16px;
+  }
+  
+  .stat-value {
+    font-size: 18px;
+    padding: 6px 12px;
+  }
+  
+  .stat-button {
+    width: 36px;
+    height: 36px;
+    font-size: 14px;
+  }
+  
+  .pet-editor {
+    padding: 20px;
+  }
+  
+  .pet-section h3 {
+    font-size: 18px;
+  }
+  
+  .selected-pet {
+    padding: 16px;
+    gap: 16px;
+  }
+  
+  .pet-sprite {
+    width: 80px;
+    height: 80px;
+  }
+  
+  .pet-header h4 {
+    font-size: 16px;
+  }
+  
+  .pets-grid {
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 12px;
+  }
+  
+  .pet-card {
+    padding: 12px;
+  }
+  
+  .pet-card-sprite {
+    width: 60px;
+    height: 60px;
+  }
+  
+  .pet-card-sprite .pet-placeholder {
+    font-size: 18px;
+  }
+  
+  .pet-card-info h5 {
+    font-size: 12px;
+  }
+  
+  .modal-actions {
+    padding: 20px 24px;
+    gap: 16px;
+  }
+  
+  .cancel-button,
+  .save-button {
+    padding: 16px 24px;
+    font-size: 16px;
+  }
+}
+
+/* Специальные стили для мобильного веб-представления */
+@media (max-width: 480px) and (orientation: landscape) {
+  .character-edit-modal-overlay {
+    padding: 4px;
+  }
+  
+  .character-edit-modal {
+    max-height: 95vh;
+    border-radius: 8px;
+  }
+  
+  .modal-header {
+    padding: 8px 12px;
+  }
+  
+  .modal-header h2 {
+    font-size: 14px;
+  }
+  
+  .close-button {
+    width: 28px;
+    height: 28px;
+    font-size: 10px;
+  }
+  
+  .modal-tabs .tab-button {
+    padding: 4px 2px;
+    min-height: 36px;
+    font-size: 9px;
+  }
+  
+  .modal-tabs .tab-button i {
+    font-size: 12px;
+  }
+  
+  .modal-tabs .tab-button span {
+    font-size: 8px;
+  }
+  
+  .character-editor {
+    padding: 6px;
+    gap: 8px;
+  }
+  
+  .character-settings {
+    gap: 8px;
+  }
+  
+  .setting-label {
+    font-size: 11px;
+  }
+  
+  .name-input {
+    padding: 6px 8px;
+    font-size: 12px;
+  }
+  
+  .option-button {
+    padding: 6px 8px;
+    font-size: 11px;
+  }
+  
+  .stats-editor {
+    padding: 6px;
+    gap: 8px;
+  }
+  
+  .stats-header h3 {
+    font-size: 12px;
+  }
+  
+  .points-counter {
+    font-size: 10px;
+  }
+  
+  .points-value {
+    font-size: 10px;
+  }
+  
+  .stat-item {
+    padding: 8px;
+  }
+  
+  .stat-info i {
+    font-size: 14px;
+  }
+  
+  .stat-name {
+    font-size: 11px;
+  }
+  
+  .stat-value {
+    font-size: 12px;
+    padding: 2px 6px;
+  }
+  
+  .stat-button {
+    width: 24px;
+    height: 24px;
+    font-size: 10px;
+  }
+  
+  .pet-editor {
+    padding: 6px;
+  }
+  
+  .pet-section h3 {
+    font-size: 12px;
+  }
+  
+  .selected-pet {
+    padding: 8px;
+    gap: 8px;
+  }
+  
+  .pet-sprite {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .pet-header h4 {
+    font-size: 11px;
+  }
+  
+  .pets-grid {
+    grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+    gap: 4px;
+  }
+  
+  .pet-card {
+    padding: 4px;
+  }
+  
+  .pet-card-sprite {
+    width: 30px;
+    height: 30px;
+  }
+  
+  .pet-card-sprite .pet-placeholder {
+    font-size: 12px;
+  }
+  
+  .pet-card-info h5 {
+    font-size: 9px;
+  }
+  
+  .modal-actions {
+    padding: 8px 12px;
+    gap: 6px;
+  }
+  
+  .cancel-button,
+  .save-button {
+    padding: 8px 12px;
+    font-size: 11px;
   }
 } 

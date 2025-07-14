@@ -11,27 +11,44 @@
   
   .character-select-header {
     display: flex;
-    align-items: center;
     justify-content: space-between;
+    align-items: center;
     margin-bottom: 24px;
+    padding: 12px 16px;
+    background: linear-gradient(135deg, #fff0f5, #fce4ec);
+    border-radius: 16px;
+    box-shadow: 0 2px 8px rgba(255, 182, 193, 0.2);
+    border: 1px solid #ffdfea;
+    position: relative;
   }
   
-  .back-button {
-    background: #ff8cc6;
-    color: #fff;
+  .character-select-screen .back-button {
+    position: static !important;
+    top: auto !important;
+    left: auto !important;
+    width: 36px;
+    height: 36px;
     border: none;
-    border-radius: 8px;
-    padding: 8px 12px;
-    font-size: 1rem;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #ff8cc6, #ff6bb5) !important;
+    color: #fff !important;
+    font-size: 14px;
     cursor: pointer;
-    transition: background 0.2s;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 6px rgba(255, 182, 193, 0.3);
     display: flex;
     align-items: center;
-    gap: 6px;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-right: 12px;
+    padding: 0;
+    z-index: auto;
   }
   
-  .back-button:hover {
-    background: #ff6bb5;
+  .character-select-screen .back-button:hover {
+    background: linear-gradient(135deg, #ff6bb5, #ff5aa4) !important;
+    transform: scale(1.05);
+    box-shadow: 0 4px 8px rgba(255, 182, 193, 0.4);
   }
   
   .change-character-btn {
@@ -54,29 +71,39 @@
   }
   
   .character-select-header h1 {
-    font-size: 2rem;
+    font-size: 20px;
+    font-weight: 700;
     color: #ff8cc6;
     margin: 0;
-    flex: 1;
     text-align: center;
+    flex: 1;
   }
   
   .add-character-btn, .create-first-character-btn {
-    background: #ff8cc6;
+    background: linear-gradient(135deg, #ff8cc6, #ff6bb5);
     color: #fff;
     border: none;
-    border-radius: 8px;
-    padding: 8px 18px;
-    font-size: 1rem;
+    border-radius: 12px;
+    padding: 8px 16px;
+    font-size: 14px;
     font-weight: 600;
     cursor: pointer;
-    transition: background 0.2s;
+    transition: all 0.2s ease;
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
+    box-shadow: 0 2px 6px rgba(255, 140, 198, 0.3);
+    flex-shrink: 0;
   }
+  
   .add-character-btn:hover, .create-first-character-btn:hover {
-    background: #ff6bb5;
+    background: linear-gradient(135deg, #ff6bb5, #ff5aa4);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(255, 140, 198, 0.4);
+  }
+  
+  .add-character-btn i, .create-first-character-btn i {
+    font-size: 12px;
   }
   
   .character-select-list {
@@ -87,10 +114,11 @@
   }
   
   .characters-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-    gap: 20px;
-  }
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+  align-items: start;
+}
   
   .character-select-card {
     border: 2px solid transparent;
@@ -172,16 +200,37 @@
     }
     .characters-grid {
       grid-template-columns: 1fr;
-      gap: 14px;
+      gap: 16px;
+      align-items: start;
     }
     .character-select-header {
-      flex-direction: column;
-      gap: 12px;
-      align-items: flex-start;
+      flex-direction: row;
+      gap: 8px;
+      align-items: center;
+      padding: 12px 16px;
+      justify-content: space-between;
     }
     .character-select-header h1 {
-      text-align: left;
-      font-size: 1.5rem;
+      text-align: center;
+      font-size: 18px;
+      order: 0;
+      flex: 1;
+      margin: 0 8px;
+    }
+    .character-select-screen .back-button {
+      order: 0;
+      width: 32px;
+      height: 32px;
+      font-size: 12px;
+      margin-right: 0;
+      flex-shrink: 0;
+    }
+    .add-character-btn {
+      order: 0;
+      width: auto;
+      flex-shrink: 0;
+      padding: 6px 12px;
+      font-size: 12px;
     }
     .character-select-list {
       overflow-y: auto;
@@ -205,9 +254,115 @@
       max-width: 100%;
       transform: scale(0.8);
     }
-    .back-button, .change-character-btn {
+    .change-character-btn {
       padding: 6px 10px;
       font-size: 0.9rem;
+    }
+    
+    .create-first-character-btn {
+      padding: 12px 20px;
+      font-size: 14px;
+    }
+    
+    .add-character-btn i {
+      font-size: 10px;
+    }
+    
+    .create-first-character-btn i {
+      font-size: 12px;
+    }
+  }
+  
+  /* Стили для очень маленьких экранов */
+  @media (max-width: 480px) {
+    .character-select-header {
+      padding: 10px 12px;
+      gap: 6px;
+    }
+    
+    .character-select-header h1 {
+      font-size: 16px;
+      margin: 0 4px;
+    }
+    
+    .character-select-screen .back-button {
+      width: 28px;
+      height: 28px;
+      font-size: 10px;
+    }
+    
+    .add-character-btn {
+      padding: 5px 10px;
+      font-size: 11px;
+    }
+    
+    .add-character-btn i {
+      font-size: 9px;
+    }
+  }
+  
+  /* Стили для веб-версии */
+  @media (min-width: 768px) {
+    .character-select-screen {
+      max-width: 1200px;
+      padding: 32px 24px 80px 24px;
+    }
+    
+    .character-select-header {
+      margin-bottom: 32px;
+      padding: 20px 24px;
+      border-radius: 20px;
+    }
+    
+    .character-select-header h1 {
+      font-size: 28px;
+    }
+    
+    .character-select-screen .back-button {
+      width: 40px;
+      height: 40px;
+      font-size: 16px;
+    }
+    
+    .add-character-btn {
+      padding: 12px 20px;
+      font-size: 16px;
+    }
+    
+    .add-character-btn i {
+      font-size: 14px;
+    }
+    
+    .characters-grid {
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 24px;
+      align-items: start;
+    }
+    
+    .select-btn {
+      padding: 16px 40px;
+      font-size: 1.3rem;
+    }
+    
+    .empty-characters {
+      margin-top: 64px;
+    }
+    
+    .empty-characters-icon {
+      font-size: 64px;
+    }
+    
+    .empty-characters h3 {
+      font-size: 1.8rem;
+    }
+    
+    .empty-characters p {
+      font-size: 1.1rem;
+    }
+    
+    .create-first-character-btn {
+      padding: 16px 24px;
+      font-size: 1.1rem;
     }
   }
   

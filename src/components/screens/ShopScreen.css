@@ -37,6 +37,7 @@
   border-radius: 16px;
   box-shadow: 0 2px 8px rgba(255, 182, 193, 0.2);
   border: 1px solid #ffdfea;
+  position: relative;
 }
 
 .shop-title {
@@ -203,42 +204,184 @@
 
 /* Карусель скидочных предложений */
 .discount-carousel {
-  background: linear-gradient(135deg, #ffb6e6, #b8e1ff);
-  border-radius: 16px;
+  background: #ff8cc6;
+  border-radius: 12px;
   padding: 16px;
   margin-bottom: 16px;
-  position: relative;
-  overflow: hidden;
-  box-shadow: 0 2px 8px rgba(255, 182, 193, 0.10);
-}
-
-.carousel-header {
+  box-shadow: 0 2px 8px rgba(255, 140, 198, 0.2);
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 12px;
+  flex-direction: column;
 }
 
-.carousel-header h3 {
-  font-size: 16px;
-  font-weight: bold;
-  margin: 0;
+.carousel-container {
+  position: relative;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 12px;
+  min-height: 80px;
+  margin-bottom: 8px;
+  flex: 1;
+}
+
+.carousel-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 24px;
+  height: 24px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.8);
+  color: #ff8cc6;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.carousel-btn:hover:not(:disabled) {
+  background: #fff;
+}
+
+.carousel-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.carousel-btn.prev {
+  left: 4px;
+}
+
+.carousel-btn.next {
+  right: 4px;
+}
+
+.carousel-content {
+  display: flex;
+  transition: transform 0.3s ease;
+}
+
+.carousel-item {
+  min-width: 100%;
+  display: none;
+}
+
+.carousel-item.active {
+  display: block;
+}
+
+.carousel-item-content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.carousel-item-image {
+  width: 48px;
+  height: 48px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.carousel-item-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 6px;
+}
+
+.carousel-item-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 18px;
+}
+
+.carousel-item-info {
+  flex: 1;
   color: #fff;
+}
+
+.carousel-item-info h4 {
+  font-size: 14px;
+  font-weight: 600;
+  margin: 0 0 2px 0;
+  line-height: 1.2;
+}
+
+.carousel-item-info p {
+  font-size: 11px;
+  margin: 0 0 8px 0;
+  opacity: 0.9;
+  line-height: 1.2;
+}
+
+.carousel-item-price {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.carousel-item-price .original-price {
+  font-size: 12px;
+  text-decoration: line-through;
+  opacity: 0.6;
+}
+
+.carousel-item-price .discount-price {
+  font-size: 14px;
+  font-weight: 700;
+  color: #ffeb3b;
+}
+
+.carousel-item .buy-btn.special {
+  background: #ff4757;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 12px;
+  color: #fff;
+  font-weight: 600;
+  font-size: 11px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.carousel-item .buy-btn.special:hover {
+  background: #ff3742;
 }
 
 .carousel-indicators {
   display: flex;
-  gap: 6px;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 0;
+  margin-top: 8px;
+  position: relative;
+  z-index: 1;
+  width: 100%;
 }
 
 .indicator {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
   border-radius: 50%;
-  border: none;
-  background: rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.5);
   cursor: pointer;
   transition: all 0.2s ease;
+  border: none;
+  padding: 0;
 }
 
 .indicator.active {
@@ -246,194 +389,65 @@
   transform: scale(1.2);
 }
 
-.carousel-container {
-  position: relative;
-  display: flex;
-  align-items: center;
-  gap: 12px;
+.indicator:hover {
+  background: rgba(255, 255, 255, 0.8);
 }
 
-.carousel-btn {
-  width: 32px;
-  height: 32px;
-  border: none;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.2);
-  color: #fff;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.2s ease;
-  z-index: 2;
-}
-
-.carousel-btn:hover:not(:disabled) {
-  background: rgba(255, 255, 255, 0.3);
-  transform: scale(1.1);
-}
-
-.carousel-btn:disabled {
-  opacity: 0.3;
-  cursor: not-allowed;
-}
-
-.carousel-content {
-  flex: 1;
-  position: relative;
-  height: 120px;
-}
-
-.carousel-item {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  pointer-events: none;
-}
-
-.carousel-item.active {
-  pointer-events: auto;
-}
-
-.carousel-item-content {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  width: 100%;
-}
-
-.carousel-item-image {
-  width: 60px;
-  height: 60px;
-  border-radius: 8px;
-  background: rgba(255, 255, 255, 0.1);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-}
-
-.carousel-item-image img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  padding: 4px;
-}
-
-.carousel-item-placeholder {
-  display: none;
-  width: 100%;
-  height: 100%;
-  align-items: center;
-  justify-content: center;
-  color: rgba(255, 255, 255, 0.6);
-  font-size: 24px;
-}
-
-.carousel-item-info {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.carousel-item-info h4 {
-  font-size: 14px;
-  font-weight: bold;
-  color: #fff;
-  margin: 0;
-}
-
-.carousel-item-info p {
-  font-size: 11px;
-  color: rgba(255, 255, 255, 0.8);
-  margin: 0;
-  line-height: 1.2;
-}
-
-.carousel-item-price {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  margin-top: 4px;
-}
-
-.carousel-item-price .original-price {
-  font-size: 11px;
-  color: rgba(255, 255, 255, 0.6);
-  text-decoration: line-through;
-}
-
-.carousel-item-price .discount-price {
-  font-size: 14px;
-  font-weight: bold;
-  color: #fff;
-}
-
-/* Специальное предложение (старый стиль для совместимости) */
+/* Специальные предложения */
 .special-offer {
-  background: linear-gradient(135deg, #ffb6e6, #b8e1ff);
+  background: linear-gradient(135deg, #ff6b9a, #ff8fab);
   border-radius: 16px;
   padding: 16px;
   margin-bottom: 16px;
+  color: #fff;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 2px 8px rgba(255, 182, 193, 0.10);
 }
 
 .offer-badge {
   position: absolute;
   top: -8px;
   right: -8px;
-  background: linear-gradient(135deg, #ff6b6b, #ff8e8e);
-  color: #fff;
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  background: #ffeb3b;
+  color: #333;
+  font-size: 10px;
   font-weight: bold;
-  font-size: 12px;
-  box-shadow: 0 2px 8px rgba(255, 107, 107, 0.15);
+  padding: 4px 8px;
+  border-radius: 12px;
+  transform: rotate(15deg);
 }
 
 .offer-content h3 {
   font-size: 16px;
   font-weight: bold;
-  margin: 0 0 6px 0;
-  color: #fff;
+  margin: 0 0 8px 0;
 }
 
 .offer-content p {
   font-size: 12px;
   margin: 0 0 12px 0;
-  color: rgba(255,255,255,0.9);
+  opacity: 0.9;
 }
 
 .offer-item {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  gap: 12px;
 }
 
 .offer-icon {
   width: 48px;
   height: 48px;
-  background: rgba(255,255,255,0.2);
   border-radius: 12px;
+  background: rgba(255, 255, 255, 0.2);
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-right: 12px;
+  flex-shrink: 0;
 }
 
 .offer-icon i {
-  font-size: 24px;
+  font-size: 20px;
   color: #fff;
 }
 
@@ -445,7 +459,6 @@
   font-size: 14px;
   font-weight: bold;
   margin: 0 0 4px 0;
-  color: #fff;
 }
 
 .offer-price {
@@ -456,37 +469,37 @@
 
 .original-price {
   font-size: 12px;
-  color: rgba(255,255,255,0.7);
   text-decoration: line-through;
+  opacity: 0.7;
 }
 
 .discount-price {
   font-size: 14px;
   font-weight: bold;
-  color: #fff;
+  color: #ffeb3b;
 }
 
 /* Сетка товаров */
 .items-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
   gap: 12px;
-  margin-top: 20px;
 }
 
 .item-card {
   background: #fff;
   border-radius: 16px;
   padding: 12px;
-  box-shadow: 0 2px 8px rgba(255, 182, 193, 0.08);
-  border: 1px solid #fce4ec;
+  box-shadow: 0 2px 8px rgba(255, 182, 193, 0.1);
+  border: 1px solid #ffdfea;
   transition: all 0.2s ease;
   position: relative;
+  overflow: hidden;
 }
 
 .item-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(255, 182, 193, 0.15);
+  box-shadow: 0 4px 12px rgba(255, 182, 193, 0.2);
 }
 
 .item-card:active {
@@ -495,82 +508,75 @@
 
 .discount-badge {
   position: absolute;
-  top: -6px;
-  right: -6px;
-  background: linear-gradient(135deg, #ff6b6b, #ff8e8e);
+  top: 8px;
+  right: 8px;
+  background: #ff4757;
   color: #fff;
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  font-size: 10px;
   font-weight: bold;
-  font-size: 11px;
-  box-shadow: 0 2px 6px rgba(255, 107, 107, 0.2);
-  z-index: 2;
+  padding: 2px 6px;
+  border-radius: 8px;
+  z-index: 1;
 }
 
 .item-icon {
-  width: 100%;
-  height: 64px;
+  width: 48px;
+  height: 48px;
   border-radius: 12px;
+  background: #f8f9fa;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 8px;
-  position: relative;
+  margin: 0 auto 8px auto;
 }
 
 .item-icon i {
-  font-size: 28px;
-  color: #fff;
+  font-size: 20px;
+  color: #ff8cc6;
 }
 
 .item-name {
-  font-size: 13px;
-  font-weight: bold;
-  margin-bottom: 4px;
+  font-size: 12px;
+  font-weight: 600;
   color: #333;
+  margin: 0 0 4px 0;
+  text-align: center;
   line-height: 1.2;
 }
 
 .item-description {
-  font-size: 11px;
+  font-size: 10px;
   color: #666;
-  margin-bottom: 8px;
+  margin: 0 0 8px 0;
+  text-align: center;
   line-height: 1.2;
 }
 
 .item-price {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
+  gap: 4px;
   margin-bottom: 8px;
 }
 
 .original-price {
-  font-size: 11px;
-  color: #999;
+  font-size: 10px;
   text-decoration: line-through;
-  margin-right: 4px;
+  color: #999;
 }
 
 .current-price {
-  font-size: 13px;
+  font-size: 12px;
   font-weight: bold;
   color: #ff8cc6;
 }
 
 .item-quantity {
-  font-size: 11px;
+  font-size: 10px;
   color: #666;
-  text-align: right;
-  font-weight: bold;
-  background: rgba(255, 140, 198, 0.1);
-  padding: 2px 6px;
-  border-radius: 4px;
-  display: inline-block;
+  text-align: center;
+  margin-bottom: 8px;
 }
 
 .buy-btn, .sell-btn {
@@ -582,7 +588,6 @@
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
-  text-align: center;
 }
 
 .buy-btn {
@@ -595,24 +600,23 @@
 }
 
 .buy-btn.special {
-  background: linear-gradient(135deg, #ffd166, #ffc233);
-  color: #fff;
+  background: linear-gradient(135deg, #ff4757, #ff3742);
 }
 
 .buy-btn.special:hover {
-  background: linear-gradient(135deg, #ffc233, #ffb300);
+  background: linear-gradient(135deg, #ff3742, #ff2f3a);
 }
 
 .sell-btn {
-  background: linear-gradient(135deg, #ff6b6b, #ff5252);
+  background: linear-gradient(135deg, #6c757d, #5a6268);
   color: #fff;
 }
 
 .sell-btn:hover {
-  background: linear-gradient(135deg, #ff5252, #ff4444);
+  background: linear-gradient(135deg, #5a6268, #495057);
 }
 
-/* Заголовок инвентаря */
+/* Инвентарь */
 .inventory-header {
   display: flex;
   justify-content: space-between;
@@ -633,8 +637,9 @@
 }
 
 .inventory-stats {
-  font-size: 12px;
-  color: #a8c6ff;
+  display: flex;
+  gap: 12px;
+  margin-bottom: 16px;
 }
 
 .inventory-filters {
@@ -644,13 +649,12 @@
 }
 
 .inventory-filter-select {
-  flex: 1;
-  padding: 8px;
+  padding: 6px 10px;
   border: 1px solid #ffdfea;
   border-radius: 8px;
-  background: white;
-  color: #6d4a6e;
+  background: #fff;
   font-size: 12px;
+  color: #333;
 }
 
 .inventory-filter-select:focus {
@@ -661,108 +665,104 @@
 
 .empty-inventory {
   text-align: center;
-  padding: 32px;
-  color: #6d4a6e;
+  padding: 40px 20px;
+  color: #666;
 }
 
 .empty-inventory-icon {
   font-size: 48px;
-  color: #ffdfea;
+  color: #ddd;
   margin-bottom: 16px;
 }
 
 .empty-inventory h3 {
-  font-size: 20px;
-  font-weight: bold;
-  margin-bottom: 8px;
-  color: #ff8cc6;
+  font-size: 16px;
+  margin: 0 0 8px 0;
 }
 
 .empty-inventory p {
-  color: #a8c6ff;
-  font-size: 14px;
+  font-size: 12px;
+  margin: 0;
 }
 
-/* Секции пополнения */
+/* Пополнение */
 .topup-section {
-  background: #fff;
+  background: #f8f9fa;
   border-radius: 16px;
   padding: 16px;
   margin-bottom: 16px;
-  box-shadow: 0 2px 8px rgba(255, 182, 193, 0.08);
 }
 
 .topup-section h2 {
   font-size: 16px;
   font-weight: bold;
-  color: #ff8cc6;
+  color: #333;
   margin: 0 0 12px 0;
   display: flex;
   align-items: center;
+  gap: 8px;
 }
 
 .topup-section h2 i {
-  margin-right: 8px;
-  font-size: 18px;
+  color: #ff8cc6;
 }
 
 .progress-bar {
-  height: 6px;
-  border-radius: 3px;
-  background-color: #f0e6ed;
+  width: 100%;
+  height: 8px;
+  background: #e9ecef;
+  border-radius: 4px;
   overflow: hidden;
   margin-bottom: 12px;
 }
 
 .progress-fill {
   height: 100%;
-  background: linear-gradient(90deg, #b8e1ff, #a8c6ff);
+  background: linear-gradient(135deg, #ff8cc6, #ff6bb5);
   transition: width 0.3s ease;
-  border-radius: 3px;
 }
 
 .daily-rewards {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
+  display: flex;
   gap: 8px;
-  margin-bottom: 12px;
+  margin-bottom: 16px;
 }
 
 .daily-reward {
+  flex: 1;
   text-align: center;
-  position: relative;
 }
 
 .reward-icon {
-  width: 32px;
-  height: 32px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
+  background: #e9ecef;
   display: flex;
   align-items: center;
   justify-content: center;
   margin: 0 auto 4px auto;
-  background: #f0e6ed;
   transition: all 0.2s ease;
   position: relative;
 }
 
 .reward-icon.claimed {
-  background: linear-gradient(135deg, #10b981, #059669);
-  color: white;
+  background: #28a745;
+  color: #fff;
 }
 
 .reward-icon.can-claim {
-  background: linear-gradient(135deg, #ffd700, #ffed4e);
+  background: #ffc107;
+  color: #333;
   animation: pulse 2s infinite;
 }
 
 .reward-icon i {
-  font-size: 14px;
-  color: #666;
+  font-size: 16px;
 }
 
 .reward-icon.claimed i {
-  color: white;
+  color: #fff;
 }
 
 .reward-icon.can-claim i {
@@ -770,28 +770,23 @@
 }
 
 .daily-reward.claimed .reward-icon {
-  background: linear-gradient(135deg, #10b981, #059669);
+  background: #28a745;
 }
 
 .daily-reward.today .reward-icon {
-  border: 2px solid #ffd700;
+  border: 2px solid #ff8cc6;
 }
 
 .daily-reward span {
   font-size: 10px;
   color: #666;
   display: block;
-  margin-bottom: 2px;
 }
 
 .reward-amount {
-  font-size: 9px;
-  color: #ff8cc6;
-  font-weight: bold;
-  text-align: center;
-  line-height: 1.2;
-  max-width: 100%;
-  word-wrap: break-word;
+  font-size: 8px;
+  color: #999;
+  margin-top: 2px;
 }
 
 @keyframes pulse {
@@ -802,37 +797,38 @@
 
 .claim-btn {
   width: 100%;
-  padding: 10px;
+  padding: 8px 12px;
   border: none;
-  border-radius: 12px;
-  background: linear-gradient(135deg, #ff8cc6, #ff6bb5);
+  border-radius: 8px;
+  background: linear-gradient(135deg, #28a745, #20c997);
   color: #fff;
+  font-size: 12px;
   font-weight: 600;
-  font-size: 14px;
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
 .claim-btn:hover:not(:disabled) {
-  background: linear-gradient(135deg, #ff6bb5, #ff5aa4);
-  transform: translateY(-1px);
+  background: linear-gradient(135deg, #20c997, #17a2b8);
 }
 
 .claim-btn.disabled {
-  background: linear-gradient(135deg, #9ca3af, #6b7280);
+  background: #6c757d;
   cursor: not-allowed;
-  opacity: 0.7;
 }
 
 .claim-btn.disabled:hover {
-  transform: none;
+  background: #6c757d;
 }
 
 .ad-reward {
+  background: #fff;
+  border-radius: 12px;
+  padding: 12px;
+  margin-bottom: 12px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  margin-bottom: 12px;
+  gap: 12px;
 }
 
 .ad-info h3 {
@@ -849,36 +845,31 @@
 }
 
 .ad-rewards {
-  text-align: right;
+  display: flex;
+  gap: 8px;
 }
 
 .ad-rewards div:first-child {
-  font-size: 13px;
+  color: #f59e0b;
   font-weight: bold;
-  color: #ff8cc6;
-  margin-bottom: 2px;
 }
 
 .ad-rewards div:last-child {
-  font-size: 13px;
+  color: #3b82f6;
   font-weight: bold;
-  color: #a8c6ff;
 }
 
 .watch-ad-btn {
-  width: 100%;
-  padding: 10px;
-  border: none;
-  border-radius: 12px;
   background: linear-gradient(135deg, #10b981, #059669);
+  border: none;
+  border-radius: 8px;
+  padding: 6px 12px;
   color: #fff;
+  font-size: 11px;
   font-weight: 600;
-  font-size: 14px;
   cursor: pointer;
   transition: all 0.2s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  white-space: nowrap;
 }
 
 .watch-ad-btn i {
@@ -951,9 +942,7 @@
 
 /* Кнопка назад */
 .shop-screen .back-button {
-  position: absolute;
-  top: 12px;
-  left: 12px;
+  position: static;
   width: 36px;
   height: 36px;
   border: none;
@@ -964,10 +953,11 @@
   cursor: pointer;
   transition: all 0.2s ease;
   box-shadow: 0 2px 6px rgba(255, 182, 193, 0.3);
-  z-index: 100;
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
+  margin-right: 12px;
 }
 
 .shop-screen .back-button:hover {
@@ -1002,8 +992,453 @@
   font-size: 10px;
 }
 
-/* Адаптивность */
+/* Стили для веб-версии (ПК) */
+@media (min-width: 768px) {
+  .shop-container {
+    max-width: 1200px;
+    margin: 0 auto !important;
+    padding: 20px !important;
+    height: calc(100vh - 40px) !important;
+  }
+
+  .shop-header {
+    padding: 20px 24px;
+    margin-bottom: 24px;
+    border-radius: 20px;
+  }
+
+  .shop-title {
+    font-size: 28px;
+  }
+
+  .currency-item {
+    padding: 10px 16px;
+    font-size: 16px;
+  }
+
+  .currency-icon {
+    width: 20px;
+    height: 20px;
+  }
+
+  .tabs-container {
+    padding: 6px;
+    margin-bottom: 24px;
+    border-radius: 20px;
+  }
+
+  .tab-btn {
+    padding: 14px 20px;
+    font-size: 16px;
+    border-radius: 16px;
+  }
+
+  .tab-btn i {
+    font-size: 14px;
+  }
+
+  .tab-content {
+    padding: 24px 20px;
+  }
+
+  .categories-container {
+    gap: 12px;
+    margin-bottom: 24px;
+    padding-bottom: 8px;
+  }
+
+  .category-btn {
+    padding: 12px 20px;
+    font-size: 14px;
+    border-radius: 20px;
+  }
+
+  .discount-carousel {
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 16px;
+  }
+
+  .carousel-container {
+    padding: 16px;
+    min-height: 100px;
+    margin-bottom: 12px;
+  }
+
+  .carousel-btn {
+    width: 32px;
+    height: 32px;
+    font-size: 14px;
+  }
+
+  .carousel-btn.prev {
+    left: 8px;
+  }
+
+  .carousel-btn.next {
+    right: 8px;
+  }
+
+  .carousel-content {
+    min-height: 160px;
+  }
+
+  .carousel-item {
+    padding: 28px;
+  }
+
+  .carousel-item-content {
+    gap: 16px;
+  }
+
+  .carousel-item-image {
+    width: 64px;
+    height: 64px;
+    border-radius: 12px;
+  }
+
+  .carousel-item-placeholder {
+    font-size: 24px;
+  }
+
+  .carousel-item-info h4 {
+    font-size: 16px;
+  }
+
+  .carousel-item-info p {
+    font-size: 13px;
+  }
+
+  .carousel-item-price .original-price {
+    font-size: 14px;
+  }
+
+  .carousel-item-price .discount-price {
+    font-size: 16px;
+  }
+
+  .carousel-item .buy-btn.special {
+    padding: 8px 16px;
+    font-size: 13px;
+    border-radius: 8px;
+  }
+
+  .carousel-indicators {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 0;
+    margin-top: 10px;
+    position: relative;
+    z-index: 1;
+    width: 100%;
+  }
+
+  .indicator {
+    width: 8px;
+    height: 8px;
+  }
+
+  .special-offer {
+    padding: 24px;
+    margin-bottom: 24px;
+    border-radius: 20px;
+  }
+
+  .offer-content h3 {
+    font-size: 20px;
+  }
+
+  .offer-content p {
+    font-size: 14px;
+  }
+
+  .offer-icon {
+    width: 64px;
+    height: 64px;
+  }
+
+  .offer-icon i {
+    font-size: 24px;
+  }
+
+  .offer-details h4 {
+    font-size: 16px;
+  }
+
+  .items-grid {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 20px;
+  }
+
+  .item-card {
+    padding: 20px;
+    border-radius: 20px;
+  }
+
+  .item-icon {
+    width: 64px;
+    height: 64px;
+    margin-bottom: 12px;
+  }
+
+  .item-icon i {
+    font-size: 24px;
+  }
+
+  .item-name {
+    font-size: 14px;
+    margin-bottom: 6px;
+  }
+
+  .item-description {
+    font-size: 12px;
+    margin-bottom: 12px;
+  }
+
+  .item-price {
+    margin-bottom: 12px;
+  }
+
+  .original-price {
+    font-size: 12px;
+  }
+
+  .current-price {
+    font-size: 14px;
+  }
+
+  .item-quantity {
+    font-size: 12px;
+    margin-bottom: 12px;
+  }
+
+  .buy-btn, .sell-btn {
+    padding: 10px 12px;
+    font-size: 13px;
+    border-radius: 12px;
+  }
+
+  .inventory-header h2 {
+    font-size: 24px;
+  }
+
+  .inventory-slots {
+    font-size: 14px;
+  }
+
+  .inventory-filter-select {
+    padding: 10px 14px;
+    font-size: 14px;
+    border-radius: 12px;
+  }
+
+  .topup-section {
+    padding: 24px;
+    border-radius: 20px;
+  }
+
+  .topup-section h2 {
+    font-size: 20px;
+  }
+
+  .daily-rewards {
+    gap: 12px;
+  }
+
+  .reward-icon {
+    width: 56px;
+    height: 56px;
+  }
+
+  .reward-icon i {
+    font-size: 20px;
+  }
+
+  .daily-reward span {
+    font-size: 12px;
+  }
+
+  .reward-amount {
+    font-size: 10px;
+  }
+
+  .claim-btn {
+    padding: 12px 16px;
+    font-size: 14px;
+    border-radius: 12px;
+  }
+
+  .ad-reward {
+    padding: 20px;
+    border-radius: 16px;
+  }
+
+  .ad-info h3 {
+    font-size: 16px;
+  }
+
+  .ad-info p {
+    font-size: 13px;
+  }
+
+  .watch-ad-btn {
+    padding: 10px 16px;
+    font-size: 13px;
+    border-radius: 12px;
+  }
+
+  .purchase-packages {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+  }
+
+  .package-card {
+    padding: 20px;
+    border-radius: 16px;
+  }
+
+  .package-icon {
+    width: 64px;
+    height: 64px;
+  }
+
+  .package-icon i {
+    font-size: 24px;
+  }
+
+  .package-card h3 {
+    font-size: 16px;
+  }
+
+  .package-card p {
+    font-size: 13px;
+  }
+
+  .package-btn {
+    padding: 10px 12px;
+    font-size: 13px;
+    border-radius: 12px;
+  }
+
+  .shop-screen .back-button {
+    width: 48px;
+    height: 48px;
+    font-size: 18px;
+    margin-right: 16px;
+  }
+
+  .add-test-items-btn {
+    padding: 12px 20px;
+    font-size: 14px;
+    border-radius: 16px;
+  }
+
+  .add-test-items-btn i {
+    font-size: 12px;
+  }
+
+  .rotation-info {
+    margin-bottom: 16px;
+  }
+
+  .rotation-text {
+    font-size: 14px;
+    padding: 8px 16px;
+    border-radius: 16px;
+  }
+}
+
+/* Адаптивность для мобильных устройств */
 @media (max-width: 480px) {
+  .discount-carousel {
+    padding: 12px;
+    margin-bottom: 12px;
+    border-radius: 10px;
+  }
+
+  .carousel-container {
+    padding: 16px;
+    min-height: 200px;
+    margin-bottom: 8px;
+  }
+
+  .carousel-btn {
+    width: 20px;
+    height: 20px;
+    font-size: 10px;
+  }
+
+  .carousel-btn.prev {
+    left: 2px;
+  }
+
+  .carousel-btn.next {
+    right: 2px;
+  }
+
+  .carousel-item-content {
+    gap: 16px;
+  }
+
+  .carousel-item-image {
+    width: 90px;
+    height: 90px;
+    border-radius: 12px;
+  }
+
+  .carousel-item-placeholder {
+    font-size: 36px;
+  }
+
+  .carousel-item-info h4 {
+    font-size: 18px;
+    margin-bottom: 6px;
+  }
+
+  .carousel-item-info p {
+    font-size: 14px;
+    margin-bottom: 16px;
+    line-height: 1.3;
+  }
+
+  .carousel-item-price {
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+
+  .carousel-item-price .original-price {
+    font-size: 14px;
+  }
+
+  .carousel-item-price .discount-price {
+    font-size: 18px;
+  }
+
+  .carousel-item .buy-btn.special {
+    padding: 10px 18px;
+    font-size: 14px;
+    border-radius: 10px;
+  }
+
+  .carousel-indicators {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 4px;
+    padding: 8px 0;
+    margin-top: 8px;
+    position: relative;
+    z-index: 1;
+    width: 100%;
+  }
+
+  .indicator {
+    width: 6px;
+    height: 6px;
+  }
+
   .shop-container {
     width: 100% !important;
     height: 100vh !important;
@@ -1035,11 +1470,10 @@
   }
   
   .shop-screen .back-button {
-    top: 16px;
-    left: 16px;
     width: 44px;
     height: 44px;
     font-size: 16px;
+    margin-right: 10px;
   }
   
   .purchase-packages {

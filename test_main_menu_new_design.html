@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Love & Roll - Новый дизайн главного меню</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Poppins:wght@300;400;600&display=swap');
+        
+        :root {
+            --primary: #FF9BD2;
+            --secondary: #D63484;
+            --accent: #F8F4EC;
+            --dark: #402B3A;
+            --gold: #FFD700;
+            --gem: #40A2D8;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #FFF5E0 0%, #FFD1E3 100%);
+            min-height: 100vh;
+            color: var(--dark);
+            overflow-x: hidden;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .main-menu {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            z-index: 10;
+            background: linear-gradient(135deg, #FFF5E0 0%, #FFD1E3 100%);
+            padding: 20px;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+            color: var(--dark);
+            overflow-x: hidden;
+        }
+
+        /* Анимированный фон с кубиками */
+        .animated-background {
+            position: fixed;
+            inset: 0;
+            overflow: hidden;
+            z-index: 0;
+        }
+
+        .dice-bg {
+            position: absolute;
+            background: white;
+            opacity: 0.2;
+            border-radius: 8px;
+            animation: rotate 10s linear infinite;
+        }
+
+        .dice-1 {
+            top: 10%;
+            left: 5%;
+            width: 32px;
+            height: 32px;
+        }
+
+        .dice-2 {
+            top: 25%;
+            right: 8%;
+            width: 40px;
+            height: 40px;
+            animation-delay: -2s;
+        }
+
+        .dice-3 {
+            bottom: 20%;
+            left: 25%;
+            width: 24px;
+            height: 24px;
+            animation-delay: -4s;
+        }
+
+        .dice-4 {
+            bottom: 33%;
+            right: 25%;
+            width: 48px;
+            height: 48px;
+            animation-delay: -6s;
+        }
+
+        .dice-5 {
+            top: 75%;
+            left: 33%;
+            width: 36px;
+            height: 36px;
+            animation-delay: -8s;
+        }
+
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Эффект дождя */
+        .rain-container {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .raindrop {
+            position: absolute;
+            width: 2px;
+            background: linear-gradient(to bottom, transparent, #40A2D8);
+            border-radius: 0 0 2px 2px;
+            animation: falling linear infinite;
+        }
+
+        @keyframes falling {
+            0% {
+                transform: translateY(-10vh);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.6;
+            }
+            90% {
+                opacity: 0.6;
+            }
+            100% {
+                transform: translateY(110vh);
+                opacity: 0;
+            }
+        }
+
+        .main-menu-container {
+            width: 100%;
+            max-width: 400px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            position: relative;
+            z-index: 10;
+            gap: 2rem;
+        }
+
+        /* Валюты в верхней части */
+        .main-menu-currency {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            z-index: 20;
+            position: fixed;
+            top: 1rem;
+            left: 0;
+            padding: 0 1rem;
+        }
+
+        .currency-gold,
+        .currency-gem {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            border-radius: 20px;
+            color: white;
+            font-weight: 600;
+            font-size: 14px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .currency-gold {
+            background: linear-gradient(135deg, #FFD700 0%, #DAA520 100%);
+            box-shadow: 0 2px 4px rgba(218, 165, 32, 0.4);
+        }
+
+        .currency-gem {
+            background: linear-gradient(135deg, #40A2D8 0%, #3A4F7A 100%);
+            box-shadow: 0 2px 4px rgba(58, 79, 122, 0.4);
+        }
+
+        .currency-gold i,
+        .currency-gem i {
+            margin-right: 8px;
+        }
+
+        .currency-gold:hover,
+        .currency-gem:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Заголовок */
+        .main-menu-title-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            flex-grow: 1;
+            text-align: center;
+        }
+
+        .main-menu-title {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2.5rem, 8vw, 4rem);
+            font-weight: 700;
+            color: #ff6b9a;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+            margin: 0 0 8px 0;
+            line-height: 1.1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .title-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 60px;
+            height: 60px;
+            font-size: 2rem;
+            color: #ff6b9a;
+        }
+
+        .dice-roll {
+            animation: diceRoll 1.5s ease-in-out infinite;
+        }
+
+        .ampersand {
+            font-family: inherit;
+            font-size: 2.5rem;
+            font-weight: 700;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes diceRoll {
+            0% { transform: rotate(0deg) scale(1); }
+            25% { transform: rotate(90deg) scale(0.9); }
+            50% { transform: rotate(180deg) scale(0.8); }
+            75% { transform: rotate(270deg) scale(0.9); }
+            100% { transform: rotate(360deg) scale(1); }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .main-menu-subtitle {
+            font-size: 14px;
+            color: #666;
+            font-style: italic;
+            margin: 0;
+        }
+
+        /* Кнопки меню */
+        .main-menu-buttons {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-top: 1rem;
+            position: fixed;
+            bottom: 2rem;
+            left: 0;
+            right: 0;
+            margin: 0 auto;
+            max-width: 400px;
+            padding: 0 1rem;
+            z-index: 15;
+        }
+
+        .menu-btn {
+            width: 100%;
+            padding: 1rem 1.5rem;
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-size: 1.125rem;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            min-height: 60px;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .menu-btn::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                to bottom right,
+                rgba(255,255,255,0.3) 0%,
+                rgba(255,255,255,0) 60%
+            );
+            transform: rotate(30deg);
+            transition: all 0.5s ease;
+        }
+
+        .menu-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+        }
+
+        .menu-btn:hover::before {
+            left: 100%;
+        }
+
+        .menu-btn i {
+            margin-right: 12px;
+            font-size: 1.25rem;
+        }
+
+        .menu-btn:active {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        /* Конфетти */
+        .confetti-container {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 20;
+        }
+
+        .confetti-piece {
+            position: absolute;
+            border-radius: 50%;
+            transition: all 0.03s linear;
+        }
+    </style>
+</head>
+<body>
+    <div class="main-menu">
+        <!-- Анимированный фон с кубиками -->
+        <div class="animated-background">
+            <div class="dice-bg dice-1"></div>
+            <div class="dice-bg dice-2"></div>
+            <div class="dice-bg dice-3"></div>
+            <div class="dice-bg dice-4"></div>
+            <div class="dice-bg dice-5"></div>
+        </div>
+
+        <!-- Эффект дождя -->
+        <div class="rain-container" id="rain-container"></div>
+
+        <div class="main-menu-container">
+            <!-- Валюты в верхней части -->
+            <div class="main-menu-currency">
+                <div class="currency-gold">
+                    <i class="fas fa-coins"></i>
+                    <span>1,250</span>
+                </div>
+                <div class="currency-gem">
+                    <i class="fas fa-gem"></i>
+                    <span>35</span>
+                </div>
+            </div>
+
+            <!-- Заголовок с анимированным кубиком -->
+            <div class="main-menu-title-container">
+                <h1 class="main-menu-title">
+                    Love{' '}
+                    <span class="title-icon">
+                        <i class="fas fa-dice-d20 dice-roll" id="title-icon"></i>
+                    </span>{' '}
+                    Roll
+                </h1>
+                <p class="main-menu-subtitle">Ваша история зависит от броска кубика</p>
+            </div>
+            
+            <!-- Меню -->
+            <div class="main-menu-buttons">
+                <button class="menu-btn" style="background: linear-gradient(to right, #FF9BD2, #D63484);" onclick="createConfetti(event)">
+                    <i class="fas fa-play"></i>
+                    <span>Начать игру</span>
+                </button>
+                
+                <button class="menu-btn" style="background: linear-gradient(to right, #40A2D8, #3A4F7A);" onclick="createConfetti(event)">
+                    <i class="fas fa-store"></i>
+                    <span>Магазин</span>
+                </button>
+                
+                <button class="menu-btn" style="background: linear-gradient(to right, #9BD6E5, #5D9B9B);" onclick="createConfetti(event)">
+                    <i class="fas fa-book-open"></i>
+                    <span>Коллекция</span>
+                </button>
+                
+                <button class="menu-btn" style="background: linear-gradient(to right, #A0A0A0, #606060);" onclick="createConfetti(event)">
+                    <i class="fas fa-cog"></i>
+                    <span>Настройки</span>
+                </button>
+            </div>
+            
+            <!-- Копирайт -->
+        </div>
+
+        <!-- Конфетти -->
+        <div class="confetti-container" id="confetti-container"></div>
+    </div>
+
+    <script>
+        // Создание эффекта дождя
+        const rainContainer = document.getElementById('rain-container');
+        const rainCount = 100;
+        
+        for (let i = 0; i < rainCount; i++) {
+            const drop = document.createElement('div');
+            drop.className = 'raindrop';
+            drop.style.left = `${Math.random() * 100}vw`;
+            drop.style.animationDuration = `${0.5 + Math.random() * 1.5}s`;
+            drop.style.animationDelay = `${Math.random() * 0.5}s`;
+            drop.style.opacity = Math.random() * 0.3 + 0.3;
+            drop.style.height = `${Math.random() * 10 + 10}px`;
+            rainContainer.appendChild(drop);
+        }
+
+        // Анимация иконки в заголовке
+        const icons = ['fa-dice-d20', 'fa-heart', 'fa-font'];
+        let currentIcon = 0;
+        const titleIcon = document.getElementById('title-icon');
+        
+        setInterval(() => {
+            currentIcon = (currentIcon + 1) % icons.length;
+            if (icons[currentIcon] === 'fa-font') {
+                titleIcon.className = 'ampersand';
+                titleIcon.textContent = '&';
+            } else {
+                titleIcon.className = `fas ${icons[currentIcon]} dice-roll`;
+                titleIcon.textContent = '';
+            }
+        }, 3000);
+
+        // Эффект конфетти при клике
+        function createConfetti(event) {
+            const container = document.getElementById('confetti-container');
+            const colors = ['#FF9BD2', '#D63484', '#40A2D8', '#FFD700', '#F8F4EC'];
+            
+            for (let i = 0; i < 20; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti-piece';
+                confetti.style.left = `${event.clientX}px`;
+                confetti.style.top = `${event.clientY}px`;
+                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.width = `${Math.random() * 8 + 4}px`;
+                confetti.style.height = `${Math.random() * 8 + 4}px`;
+                
+                container.appendChild(confetti);
+                
+                const angle = Math.random() * Math.PI * 2;
+                const velocity = 5 + Math.random() * 5;
+                const rotation = Math.random() * 360;
+                
+                let posX = event.clientX;
+                let posY = event.clientY;
+                let opacity = 1;
+                
+                const anim = setInterval(() => {
+                    posX += Math.cos(angle) * velocity;
+                    posY += Math.sin(angle) * velocity + 0.5; // гравитация
+                    opacity -= 0.02;
+                    
+                    confetti.style.left = `${posX}px`;
+                    confetti.style.top = `${posY}px`;
+                    confetti.style.opacity = opacity;
+                    confetti.style.transform = `rotate(${rotation}deg)`;
+                    
+                    if (opacity <= 0) {
+                        clearInterval(anim);
+                        confetti.remove();
+                    }
+                }, 30);
+            }
+        }
+    </script>
+</body>
+</html> 

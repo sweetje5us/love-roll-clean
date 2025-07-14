@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тест исправлений экрана выбора персонажа</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Имитация глобальных стилей */
+        .back-button {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            border-radius: 50px;
+            padding: 12px 20px;
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .back-button:hover {
+            background: rgba(255, 255, 255, 1);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+        }
+        
+        /* Стили экрана выбора персонажа */
+        .character-select-screen {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 24px 12px 64px 12px;
+            height: 100vh;
+            background: #fff0f5;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        
+        .character-select-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            padding: 12px 16px;
+            background: linear-gradient(135deg, #fff0f5, #fce4ec);
+            border-radius: 16px;
+            box-shadow: 0 2px 8px rgba(255, 182, 193, 0.2);
+            border: 1px solid #ffdfea;
+            position: relative;
+        }
+        
+        .character-select-screen .back-button {
+            position: static !important;
+            top: auto !important;
+            left: auto !important;
+            width: 36px;
+            height: 36px;
+            border: none;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ff8cc6, #ff6bb5) !important;
+            color: #fff !important;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 6px rgba(255, 182, 193, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            margin-right: 12px;
+            padding: 0;
+            z-index: auto;
+        }
+        
+        .character-select-screen .back-button:hover {
+            background: linear-gradient(135deg, #ff6bb5, #ff5aa4) !important;
+            transform: scale(1.05);
+            box-shadow: 0 4px 8px rgba(255, 182, 193, 0.4);
+        }
+        
+        .character-select-header h1 {
+            font-size: 20px;
+            font-weight: 700;
+            color: #ff8cc6;
+            margin: 0;
+            text-align: center;
+            flex: 1;
+        }
+        
+        .add-character-btn {
+            background: linear-gradient(135deg, #ff8cc6, #ff6bb5);
+            color: #fff;
+            border: none;
+            border-radius: 12px;
+            padding: 8px 16px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 2px 6px rgba(255, 140, 198, 0.3);
+            flex-shrink: 0;
+        }
+        
+        .add-character-btn:hover {
+            background: linear-gradient(135deg, #ff6bb5, #ff5aa4);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(255, 140, 198, 0.4);
+        }
+        
+        .add-character-btn i {
+            font-size: 12px;
+        }
+        
+        /* Мобильные стили */
+        @media (max-width: 600px) {
+            .character-select-screen {
+                padding: 16px 8px 64px 8px;
+                height: 100vh;
+                overflow: hidden;
+            }
+            
+            .character-select-header {
+                flex-direction: row;
+                gap: 8px;
+                align-items: center;
+                padding: 12px 16px;
+                justify-content: space-between;
+            }
+            
+            .character-select-header h1 {
+                text-align: center;
+                font-size: 18px;
+                order: 0;
+                flex: 1;
+                margin: 0 8px;
+            }
+            
+            .character-select-screen .back-button {
+                order: 0;
+                width: 32px;
+                height: 32px;
+                font-size: 12px;
+                margin-right: 0;
+                flex-shrink: 0;
+            }
+            
+            .add-character-btn {
+                order: 0;
+                width: auto;
+                flex-shrink: 0;
+                padding: 6px 12px;
+                font-size: 12px;
+            }
+            
+            .add-character-btn i {
+                font-size: 10px;
+            }
+        }
+        
+        /* Стили для очень маленьких экранов */
+        @media (max-width: 480px) {
+            .character-select-header {
+                padding: 10px 12px;
+                gap: 6px;
+            }
+            
+            .character-select-header h1 {
+                font-size: 16px;
+                margin: 0 4px;
+            }
+            
+            .character-select-screen .back-button {
+                width: 28px;
+                height: 28px;
+                font-size: 10px;
+            }
+            
+            .add-character-btn {
+                padding: 5px 10px;
+                font-size: 11px;
+            }
+            
+            .add-character-btn i {
+                font-size: 9px;
+            }
+        }
+        
+        /* Веб-версия */
+        @media (min-width: 768px) {
+            .character-select-screen {
+                max-width: 1200px;
+                padding: 32px 24px 80px 24px;
+            }
+            
+            .character-select-header {
+                margin-bottom: 32px;
+                padding: 20px 24px;
+                border-radius: 20px;
+            }
+            
+            .character-select-header h1 {
+                font-size: 28px;
+            }
+            
+            .character-select-screen .back-button {
+                width: 40px;
+                height: 40px;
+                font-size: 16px;
+            }
+            
+            .add-character-btn {
+                padding: 12px 20px;
+                font-size: 16px;
+            }
+            
+            .add-character-btn i {
+                font-size: 14px;
+            }
+        }
+        
+        /* Демо контент */
+        .demo-content {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ff8cc6;
+            font-size: 18px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="character-select-screen">
+        <div class="character-select-header">
+            <button class="back-button">
+                <i class="fas fa-arrow-left"></i>
+            </button>
+            <h1>Выбор персонажа</h1>
+            <button class="add-character-btn">
+                <i class="fas fa-plus"></i> Создать персонажа
+            </button>
+        </div>
+        
+        <div class="demo-content">
+            <div>
+                <h3>Исправления верхней части экрана:</h3>
+                <ul style="text-align: left; max-width: 400px; margin: 0 auto;">
+                    <li>✅ Кнопка "назад" - круглая с градиентом</li>
+                    <li>✅ Заголовок по центру</li>
+                    <li>✅ Кнопка "создать персонажа" справа</li>
+                    <li>✅ Адаптивное расположение в мобильной версии</li>
+                    <li>✅ Правильное позиционирование в контейнере</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Демонстрация функциональности
+        document.querySelector('.back-button').addEventListener('click', () => {
+            alert('Кнопка "Назад" работает!');
+        });
+        
+        document.querySelector('.add-character-btn').addEventListener('click', () => {
+            alert('Кнопка "Создать персонажа" работает!');
+        });
+    </script>
+</body>
+</html> 

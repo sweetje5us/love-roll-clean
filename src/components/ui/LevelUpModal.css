@@ -10,14 +10,15 @@
   justify-content: center;
   z-index: 9999;
   backdrop-filter: blur(5px);
+  padding: 12px;
 }
 
 .level-up-modal {
   background: white;
-  border-radius: 20px;
-  max-width: 800px;
+  border-radius: 16px;
+  max-width: 700px;
   width: 90%;
-  max-height: 90vh;
+  max-height: 85vh;
   overflow-y: auto;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
   border: 3px solid #ffdfea;
@@ -27,8 +28,8 @@
 .level-up-header {
   background: linear-gradient(135deg, #ff8cc6, #ff6bb5);
   color: white;
-  padding: 24px;
-  border-radius: 17px 17px 0 0;
+  padding: 20px;
+  border-radius: 13px 13px 0 0;
   text-align: center;
 }
 
@@ -36,12 +37,12 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 15px;
-  margin-bottom: 16px;
+  gap: 12px;
+  margin-bottom: 12px;
 }
 
 .level-up-title i {
-  font-size: 32px;
+  font-size: 28px;
   color: #ffd700;
   animation: pulse 2s infinite;
 }
@@ -54,15 +55,15 @@
 .level-up-title h2 {
   color: white;
   margin: 0;
-  font-size: 28px;
+  font-size: 24px;
   font-weight: bold;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .level-up-info p {
   color: rgba(255, 255, 255, 0.9);
-  margin: 8px 0;
-  font-size: 16px;
+  margin: 6px 0;
+  font-size: 14px;
 }
 
 .level-up-info strong {
@@ -72,23 +73,23 @@
 
 /* Редактор характеристик в стиле CharacterCreatorScreen */
 .stats-editor {
-  padding: 20px;
+  padding: 16px;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 16px;
 }
 
 .stats-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding-bottom: 16px;
+  padding-bottom: 12px;
   border-bottom: 2px solid #ffdfea;
 }
 
 .stats-header h3 {
   color: #ff8cc6;
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 700;
   margin: 0;
 }
@@ -96,39 +97,67 @@
 .points-counter {
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: 16px;
+  gap: 6px;
+  font-size: 14px;
   font-weight: 600;
 }
 
 .points-value {
   background: #ff8cc6;
   color: white;
-  padding: 6px 12px;
-  border-radius: 20px;
-  min-width: 30px;
+  padding: 4px 10px;
+  border-radius: 16px;
+  min-width: 26px;
   text-align: center;
   font-weight: 700;
+  font-size: 13px;
 }
 
 .points-value.complete {
   background: #10b981;
 }
 
+.pet-bonus-info {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: #10b981;
+  background: #ecfdf5;
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: 1px solid #a7f3d0;
+}
+
+.pet-bonus-info i {
+  font-size: 11px;
+}
+
+.pet-stat-bonus {
+  font-size: 11px;
+  font-weight: 600;
+  color: #10b981;
+  background: #ecfdf5;
+  padding: 2px 6px;
+  border-radius: 4px;
+  min-width: 26px;
+  text-align: center;
+}
+
 .stats-grid {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
 }
 
 .stat-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 16px;
+  padding: 12px;
   background: white;
   border: 2px solid #ffdfea;
-  border-radius: 12px;
+  border-radius: 10px;
   transition: all 0.2s ease;
 }
 
@@ -140,19 +169,19 @@
 .stat-info {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   flex: 1;
 }
 
 .stat-info i {
-  font-size: 20px;
+  font-size: 18px;
   color: #ff8cc6;
-  width: 24px;
+  width: 20px;
   text-align: center;
 }
 
 .stat-name {
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 600;
   color: #374151;
   flex: 1;
@@ -172,45 +201,45 @@
 }
 
 .stat-value {
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 700;
   color: #ff8cc6;
   background: #fff0f5;
-  padding: 6px 12px;
-  border-radius: 8px;
-  min-width: 40px;
+  padding: 4px 10px;
+  border-radius: 6px;
+  min-width: 36px;
   text-align: center;
 }
 
 .stat-bonus {
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 600;
   color: #666;
   background: #f3f4f6;
   padding: 2px 6px;
   border-radius: 4px;
-  min-width: 30px;
+  min-width: 26px;
   text-align: center;
 }
 
 .stat-controls {
   display: flex;
-  gap: 8px;
+  gap: 6px;
 }
 
 .stat-button {
-  width: 36px;
-  height: 36px;
+  width: 32px;
+  height: 32px;
   border: 2px solid #ffdfea;
   background: white;
   color: #ff8cc6;
-  border-radius: 8px;
+  border-radius: 6px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: all 0.2s ease;
-  font-size: 14px;
+  font-size: 12px;
 }
 
 .stat-button:hover:not(.disabled) {
@@ -235,167 +264,357 @@
 .stats-info {
   background: #fff0f5;
   border: 2px solid #ffdfea;
-  border-radius: 12px;
-  padding: 16px;
-  margin-top: 16px;
+  border-radius: 10px;
+  padding: 12px;
+  margin-top: 12px;
+  font-size: 12px;
 }
 
 .stats-info p {
-  margin: 0 0 12px 0;
+  margin: 0 0 8px 0;
   font-weight: 600;
   color: #ff8cc6;
 }
 
 .stats-info ul {
   margin: 0;
-  padding-left: 20px;
-  color: #666;
+  padding-left: 16px;
 }
 
 .stats-info li {
-  margin: 4px 0;
-  font-size: 14px;
-}
-
-/* Стили для бонусов от питомцев */
-.pet-bonus-info {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 12px;
-  background: linear-gradient(135deg, #fef3c7, #fde68a);
-  border: 1px solid #f59e0b;
-  border-radius: 8px;
-  color: #92400e;
-  font-size: 14px;
-  font-weight: 600;
-  margin-top: 8px;
-}
-
-.pet-bonus-info i {
-  color: #f59e0b;
-}
-
-.pet-stat-bonus {
-  color: #10b981;
-  font-size: 14px;
-  font-weight: 600;
-  margin-left: 4px;
+  margin-bottom: 4px;
+  color: #666;
 }
 
 .level-up-actions {
   display: flex;
-  gap: 15px;
-  justify-content: center;
-  padding: 20px;
-  border-top: 2px solid #ffdfea;
+  gap: 12px;
+  padding: 16px 20px;
+  border-top: 1px solid #ffdfea;
+  background: #fff;
 }
 
 .cancel-btn, .confirm-btn {
-  padding: 12px 30px;
+  flex: 1;
+  padding: 12px 20px;
   border: none;
-  border-radius: 12px;
-  font-size: 16px;
-  font-weight: 600;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 700;
   cursor: pointer;
   transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
 }
 
 .cancel-btn {
-  background: #e5e7eb;
-  color: #374151;
+  background: #f3f4f6;
+  color: #666;
+  border: 2px solid #e5e7eb;
 }
 
 .cancel-btn:hover {
-  background: #d1d5db;
-  transform: translateY(-2px);
+  background: #e5e7eb;
+  color: #374151;
+  transform: translateY(-1px);
 }
 
 .confirm-btn {
   background: linear-gradient(135deg, #ff8cc6, #ff6bb5);
   color: white;
-  box-shadow: 0 2px 8px rgba(255, 140, 198, 0.3);
+  box-shadow: 0 4px 16px rgba(255, 140, 198, 0.3);
 }
 
 .confirm-btn:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(255, 140, 198, 0.4);
+  box-shadow: 0 6px 20px rgba(255, 140, 198, 0.4);
 }
 
 .confirm-btn:disabled {
   opacity: 0.5;
   cursor: not-allowed;
   transform: none;
-  box-shadow: none;
+  box-shadow: 0 2px 8px rgba(255, 140, 198, 0.2);
 }
 
-/* Адаптивность */
+/* Адаптивность для мобильных устройств */
 @media (max-width: 768px) {
-  .level-up-modal {
-    width: 95%;
-    max-height: 95vh;
+  .level-up-modal-overlay {
+    padding: 8px;
   }
   
-  .level-up-title h2 {
+  .level-up-modal {
+    max-height: 90vh;
+    border-radius: 12px;
+  }
+  
+  .level-up-header {
+    padding: 16px;
+    border-radius: 10px 10px 0 0;
+  }
+  
+  .level-up-title {
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+  
+  .level-up-title i {
     font-size: 24px;
   }
   
-  .stats-header {
-    flex-direction: column;
+  .level-up-title h2 {
+    font-size: 20px;
+  }
+  
+  .level-up-info p {
+    font-size: 13px;
+  }
+  
+  .stats-editor {
+    padding: 12px;
     gap: 12px;
-    align-items: flex-start;
+  }
+  
+  .stats-header {
+    padding-bottom: 10px;
   }
   
   .stats-header h3 {
-    font-size: 18px;
+    font-size: 16px;
   }
   
   .points-counter {
+    font-size: 12px;
+  }
+  
+  .points-value {
+    padding: 3px 8px;
+    font-size: 12px;
+  }
+  
+  .stat-item {
+    padding: 10px;
+  }
+  
+  .stat-info i {
+    font-size: 16px;
+  }
+  
+  .stat-name {
+    font-size: 13px;
+  }
+  
+  .stat-value {
+    font-size: 14px;
+    padding: 3px 8px;
+  }
+  
+  .stat-controls {
+    gap: 4px;
+  }
+  
+  .stat-button {
+    width: 28px;
+    height: 28px;
+    font-size: 11px;
+  }
+  
+  .level-up-actions {
+    padding: 12px 16px;
+    gap: 8px;
+  }
+  
+  .cancel-btn, .confirm-btn {
+    padding: 10px 16px;
+    font-size: 13px;
+  }
+}
+
+/* Адаптивность для веб-версии */
+@media (min-width: 769px) {
+  .level-up-modal-overlay {
+    padding: 20px;
+  }
+  
+  .level-up-modal {
+    max-width: 800px;
+    max-height: 85vh;
+    border-radius: 20px;
+  }
+  
+  .level-up-header {
+    padding: 24px;
+    border-radius: 17px 17px 0 0;
+  }
+  
+  .level-up-title {
+    gap: 15px;
+    margin-bottom: 16px;
+  }
+  
+  .level-up-title i {
+    font-size: 32px;
+  }
+  
+  .level-up-title h2 {
+    font-size: 28px;
+  }
+  
+  .level-up-info p {
+    font-size: 16px;
+  }
+  
+  .stats-editor {
+    padding: 20px;
+    gap: 20px;
+  }
+  
+  .stats-header {
+    padding-bottom: 16px;
+  }
+  
+  .stats-header h3 {
+    font-size: 20px;
+  }
+  
+  .points-counter {
+    font-size: 16px;
+  }
+  
+  .points-value {
+    padding: 6px 12px;
     font-size: 14px;
   }
   
   .stat-item {
-    padding: 12px;
-    flex-direction: column;
-    gap: 12px;
-    align-items: stretch;
+    padding: 16px;
   }
   
-  .stat-info {
-    justify-content: space-between;
+  .stat-info i {
+    font-size: 20px;
   }
   
-  .stat-controls {
-    justify-content: center;
-  }
-  
-  .stat-button {
-    width: 40px;
-    height: 40px;
+  .stat-name {
     font-size: 16px;
-  }
-  
-  .stat-value-container {
-    gap: 1px;
   }
   
   .stat-value {
-    font-size: 16px;
-    padding: 4px 10px;
+    font-size: 18px;
+    padding: 6px 12px;
   }
   
-  .stat-bonus {
-    font-size: 11px;
-    padding: 1px 4px;
+  .stat-controls {
+    gap: 8px;
+  }
+  
+  .stat-button {
+    width: 36px;
+    height: 36px;
+    font-size: 14px;
   }
   
   .level-up-actions {
-    flex-direction: column;
-    gap: 10px;
+    padding: 20px 24px;
+    gap: 16px;
   }
   
   .cancel-btn, .confirm-btn {
-    padding: 14px;
-    font-size: 15px;
+    padding: 16px 24px;
+    font-size: 16px;
+  }
+}
+
+/* Специальные стили для мобильного веб-представления */
+@media (max-width: 480px) and (orientation: landscape) {
+  .level-up-modal-overlay {
+    padding: 4px;
+  }
+  
+  .level-up-modal {
+    max-height: 95vh;
+    border-radius: 8px;
+  }
+  
+  .level-up-header {
+    padding: 12px;
+    border-radius: 6px 6px 0 0;
+  }
+  
+  .level-up-title {
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+  
+  .level-up-title i {
+    font-size: 20px;
+  }
+  
+  .level-up-title h2 {
+    font-size: 16px;
+  }
+  
+  .level-up-info p {
+    font-size: 11px;
+  }
+  
+  .stats-editor {
+    padding: 8px;
+    gap: 8px;
+  }
+  
+  .stats-header {
+    padding-bottom: 8px;
+  }
+  
+  .stats-header h3 {
+    font-size: 14px;
+  }
+  
+  .points-counter {
+    font-size: 10px;
+  }
+  
+  .points-value {
+    padding: 2px 6px;
+    font-size: 10px;
+  }
+  
+  .stat-item {
+    padding: 8px;
+  }
+  
+  .stat-info i {
+    font-size: 14px;
+  }
+  
+  .stat-name {
+    font-size: 11px;
+  }
+  
+  .stat-value {
+    font-size: 12px;
+    padding: 2px 6px;
+  }
+  
+  .stat-controls {
+    gap: 3px;
+  }
+  
+  .stat-button {
+    width: 24px;
+    height: 24px;
+    font-size: 10px;
+  }
+  
+  .level-up-actions {
+    padding: 8px 12px;
+    gap: 6px;
+  }
+  
+  .cancel-btn, .confirm-btn {
+    padding: 8px 12px;
+    font-size: 11px;
   }
 } 

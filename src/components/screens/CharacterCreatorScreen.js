@@ -1028,7 +1028,7 @@ const CharacterCreatorScreen = () => {
                         className={`pet-card ${characterData.pet.id === pet.id ? 'selected' : ''}`}
                         onClick={() => handlePetSelect(pet.id)}
                       >
-                        <div className="pet-card-image">
+                        <div className="pet-card-sprite">
                           <img 
                             src={pet.sprite} 
                             alt={pet.name}

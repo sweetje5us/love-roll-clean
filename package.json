@@ -15,7 +15,8 @@
     "dev": "node scripts/dev.js",
     "electron-dev-simple": "npm start & timeout 5 && electron .",
     "electron-pack": "npm run build && electron-builder",
-    "dist": "npm run build && npx electron-builder --publish=never"
+    "dist": "npm run build && npx electron-builder --publish=never",
+    "vercel-build": "react-scripts build"
   },
   "dependencies": {
     "framer-motion": "^10.0.0",

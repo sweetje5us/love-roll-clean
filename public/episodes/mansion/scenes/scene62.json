@@ -14,14 +14,20 @@
     },
     {
       "speaker": "dimetrio",
-      "text": "",
+      "text": "Всем спасибо что пришли",
       "emotion": "happy"
     },
     {
       "speaker": "dimetrio",
-      "text": "",
+      "text": "Сегодня мой день рождения",
+      "emotion": "happy"
+    },
+    {
+      "speaker": "dimetrio",
+      "text": "Гуляйте, пейте, ешьте.",
       "emotion": "happy"
     }
+    
   ],
   "choices": [
     

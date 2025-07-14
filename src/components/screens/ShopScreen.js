@@ -191,6 +191,12 @@ const ShopScreen = () => {
       <div className="shop-container">
         {/* Заголовок и валюта */}
         <div className="shop-header">
+          <button 
+            className="back-button"
+            onClick={goBack}
+          >
+            <i className="fas fa-arrow-left"></i>
+          </button>
           <h1 className="shop-title">Магазин</h1>
           <div className="currency-container">
             <div className="currency-item">
@@ -269,19 +275,6 @@ const ShopScreen = () => {
             {/* Карусель скидочных предложений */}
             {discountItems.length > 0 && (
               <div className="discount-carousel">
-                <div className="carousel-header">
-                  <h3>🔥 Горячие предложения!</h3>
-                  <div className="carousel-indicators">
-                    {discountItems.map((_, index) => (
-                      <button
-                        key={index}
-                        className={`indicator ${index === currentDiscountIndex ? 'active' : ''}`}
-                        onClick={() => setCurrentDiscountIndex(index)}
-                      />
-                    ))}
-                  </div>
-                </div>
-                
                 <div className="carousel-container">
                   <button 
                     className="carousel-btn prev"
@@ -318,7 +311,7 @@ const ShopScreen = () => {
                               }}
                             />
                             <div className="carousel-item-placeholder">
-                              <i className="fas fa-gift"></i>
+                              
                             </div>
                           </div>
                           <div className="carousel-item-info">
@@ -357,6 +350,16 @@ const ShopScreen = () => {
                     <i className="fas fa-chevron-right"></i>
                   </button>
                 </div>
+                
+                <div className="carousel-indicators">
+                  {discountItems.map((_, index) => (
+                    <button
+                      key={index}
+                      className={`indicator ${index === currentDiscountIndex ? 'active' : ''}`}
+                      onClick={() => setCurrentDiscountIndex(index)}
+                    />
+                  ))}
+                </div>
               </div>
             )}
 
@@ -393,22 +396,7 @@ const ShopScreen = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3 }}
           >
-            <div className="inventory-header">
-              <h2>Ваш инвентарь</h2>
-              <div className="inventory-stats">
-                Предметов: {inventoryStats.totalItems} | Уникальных: {inventoryStats.uniqueItems}
-              </div>
-              <button 
-                className="add-test-items-btn"
-                onClick={() => {
-                  addTestItems();
-                  alert('Тестовые предметы добавлены!');
-                }}
-              >
-                <i className="fas fa-plus"></i>
-                Добавить тестовые предметы
-              </button>
-            </div>
+
 
             {/* Фильтры инвентаря */}
             <div className="inventory-filters">
@@ -552,15 +540,7 @@ const ShopScreen = () => {
           </motion.div>
         )}
 
-        {/* Кнопка возврата */}
-        <motion.button
-          className="back-button"
-          onClick={goBack}
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.9 }}
-        >
-          <i className="fas fa-arrow-left"></i>
-        </motion.button>
+
       </div>
 
       {/* Модальное окно сундука */}

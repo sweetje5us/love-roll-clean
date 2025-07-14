@@ -1,10 +1,10 @@
 /* Основные стили экрана коллекции */
 .collection-screen {
-  width: 100% !important;
-  height: 100vh !important;
+  width: 100%;
+  height: 100vh;
   background: linear-gradient(135deg, #fff0f5 0%, #fce4ec 100%);
-  padding: 0 !important;
-  margin: 0 !important;
+  padding: 0;
+  margin: 0;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   overflow: hidden;
   box-sizing: border-box;
@@ -16,14 +16,14 @@
 }
 
 .collection-container {
-  width: 100% !important;
-  height: 100vh !important;
+  width: 100%;
+  height: 100vh;
   background: #fff;
   display: flex;
   flex-direction: column;
   position: relative;
-  margin: 0 !important;
-  padding: 0 !important;
+  margin: 0;
+  padding: 0;
 }
 
 /* Заголовок и валюта */
@@ -37,6 +37,7 @@
   border-radius: 16px;
   box-shadow: 0 2px 8px rgba(255, 182, 193, 0.2);
   border: 1px solid #ffdfea;
+  position: relative;
 }
 
 .collection-title {
@@ -96,26 +97,27 @@
 
 /* Кнопка назад */
 .collection-screen .back-button {
-  position: relative;
-  width: 40px;
-  height: 40px;
+  position: static;
+  width: 36px;
+  height: 36px;
   border: none;
   border-radius: 50%;
   background: linear-gradient(135deg, #ff8cc6, #ff6bb5);
-  color: white;
-  font-size: 16px;
+  color: #fff;
+  font-size: 14px;
   cursor: pointer;
   transition: all 0.2s ease;
+  box-shadow: 0 2px 6px rgba(255, 182, 193, 0.3);
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 2px 8px rgba(255, 140, 198, 0.3);
-  z-index: 10;
+  flex-shrink: 0;
+  margin-right: 12px;
 }
 
 .collection-screen .back-button:hover {
-  transform: scale(1.1);
-  box-shadow: 0 4px 12px rgba(255, 140, 198, 0.4);
+  background: linear-gradient(135deg, #ff6bb5, #ff5aa4);
+  transform: scale(1.05);
 }
 
 /* Вкладки */
@@ -365,6 +367,7 @@
     width: 36px;
     height: 36px;
     font-size: 14px;
+    margin-right: 10px;
   }
   
   .inventory-filters {
@@ -472,6 +475,7 @@
   overflow-y: auto;
   min-height: 0;
   padding-bottom: 16px;
+  align-items: start;
 }
 
 .empty-characters {
@@ -537,10 +541,11 @@
 @media (max-width: 480px) {
   .characters-grid {
     grid-template-columns: 1fr;
-    gap: 12px;
+    gap: 16px;
     flex: 1;
     overflow-y: auto;
     min-height: 0;
+    align-items: start;
   }
 
   .characters-header {
@@ -554,8 +559,138 @@
     gap: 8px;
   }
 
-  .add-character-btn,
-  .add-exp-btn {
+  .add-character-btn {
     justify-content: center;
+  }
+}
+
+/* Адаптивность для веб-версии */
+@media (min-width: 768px) {
+  .collection-screen {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .collection-container {
+    max-width: 1200px;
+    width: 100%;
+    height: calc(100vh - 40px);
+    border-radius: 20px;
+    box-shadow: 0 4px 20px rgba(255, 182, 193, 0.3);
+  }
+
+  .collection-header {
+    padding: 20px 24px;
+    margin-bottom: 24px;
+    border-radius: 20px;
+  }
+
+  .collection-title {
+    font-size: 24px;
+  }
+
+  .currency-item {
+    padding: 8px 14px;
+    font-size: 16px;
+  }
+
+  .currency-icon {
+    width: 18px;
+    height: 18px;
+  }
+
+  .tabs-container {
+    margin-bottom: 20px;
+  }
+
+  .tab-btn {
+    padding: 12px 16px;
+    font-size: 16px;
+  }
+
+  .tab-btn i {
+    font-size: 14px;
+  }
+
+  .tab-content {
+    padding: 20px 16px;
+  }
+
+  .items-grid {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 20px;
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+
+  .characters-grid {
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 20px;
+    max-width: 1000px;
+    margin: 0 auto;
+    align-items: start;
+  }
+
+  .characters-header {
+    padding: 16px;
+    margin-bottom: 16px;
+  }
+
+  .characters-stats {
+    gap: 24px;
+  }
+
+  .add-character-btn {
+    padding: 12px 20px;
+    font-size: 16px;
+  }
+
+  .add-character-btn i {
+    font-size: 14px;
+  }
+
+  .inventory-filters {
+    max-width: 1000px;
+    margin: 0 auto 20px auto;
+  }
+
+  .filter-group {
+    min-width: 200px;
+  }
+
+  .filter-select,
+  .search-input {
+    padding: 12px 16px;
+    font-size: 16px;
+  }
+
+  .empty-inventory,
+  .empty-characters {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 80px 40px;
+  }
+
+  .empty-inventory h3,
+  .empty-characters h3 {
+    font-size: 28px;
+  }
+
+  .empty-inventory p,
+  .empty-characters p {
+    font-size: 18px;
+  }
+
+  .create-first-character-btn {
+    padding: 16px 24px;
+    font-size: 18px;
+  }
+
+  .collection-screen .back-button {
+    width: 48px;
+    height: 48px;
+    font-size: 18px;
+    margin-right: 16px;
   }
 } 

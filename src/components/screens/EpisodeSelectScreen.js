@@ -159,18 +159,20 @@ const EpisodeSelectScreen = ({ onBack }) => {
   if (!episodesData) {
     return (
       <div className="episode-select-screen">
-        <div className="loading">Загрузка эпизодов...</div>
+        <div className="episode-container">
+          <div className="loading">Загрузка эпизодов...</div>
+        </div>
       </div>
     );
   }
 
   return (
     <div className="episode-select-screen">
+      <div className="episode-container">
       {/* Заголовок */}
       <div className="episode-header">
         <button className="back-button" onClick={onBack}>
           <i className="fas fa-arrow-left"></i>
-          <span>Назад</span>
         </button>
         <h1>Выберите эпизод</h1>
       </div>
@@ -283,6 +285,7 @@ const EpisodeSelectScreen = ({ onBack }) => {
         onClose={handleCloseModal}
         onStartEpisode={handleStartEpisode}
       />
+      </div>
     </div>
   );
 };

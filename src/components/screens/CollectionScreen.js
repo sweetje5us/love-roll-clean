@@ -111,17 +111,7 @@ const CollectionScreen = () => {
     });
   };
 
-  // Функция для добавления опыта первому персонажу (для тестирования)
-  const handleAddExperienceToFirst = () => {
-    const characters = getAllCharacters();
-    if (characters.length > 0) {
-      const firstCharacter = characters[0];
-      console.log(`Добавляем 500 опыта персонажу ${firstCharacter.name}`);
-      addExperience(firstCharacter.id, 500);
-    } else {
-      alert('Нет персонажей для добавления опыта');
-    }
-  };
+
 
   // Получаем список персонажей
   const characters = getAllCharacters();
@@ -182,7 +172,7 @@ const CollectionScreen = () => {
           {/* Вкладка персонажи */}
           {activeTab === 'characters' && (
             <div className="characters-content">
-              {/* Заголовок и кнопки */}
+              {/* Заголовок и кнопка */}
               <div className="characters-header">
                 <div className="characters-stats">
                   <div className="stat-item">
@@ -190,25 +180,13 @@ const CollectionScreen = () => {
                     <span className="stat-value">{characters.length}</span>
                   </div>
                 </div>
-                <div className="characters-actions">
-                  {characters.length > 0 && (
-                    <button 
-                      className="add-exp-btn"
-                      onClick={handleAddExperienceToFirst}
-                      title="Добавить 500 опыта первому персонажу (тест)"
-                    >
-                      <i className="fas fa-star"></i>
-                      +500 опыта
-                    </button>
-                  )}
-                  <button 
-                    className="add-character-btn"
-                    onClick={handleCreateCharacter}
-                  >
-                    <i className="fas fa-plus"></i>
-                    Создать персонажа
-                  </button>
-                </div>
+                <button 
+                  className="add-character-btn"
+                  onClick={handleCreateCharacter}
+                >
+                  <i className="fas fa-plus"></i>
+                  Создать персонажа
+                </button>
               </div>
 
               {/* Список персонажей */}
