@@ -81,9 +81,9 @@ export async function getAvailableEmotions(gender, age, eyeColor = 'pink_eyes') 
     // Определяем путь к папке с эмоциями
     let emotionPath;
     if (age === 'mature' || age === '2') {
-      emotionPath = `sprites/characters/emotion/${gender}_mature/${eyeColor}`;
+      emotionPath = `${process.env.PUBLIC_URL}/sprites/characters/emotion/${gender}_mature/${eyeColor}`;
     } else {
-      emotionPath = `sprites/characters/emotion/${gender}/${eyeColor}`;
+      emotionPath = `${process.env.PUBLIC_URL}/sprites/characters/emotion/${gender}/${eyeColor}`;
     }
     
     // Проверяем доступность каждой эмоции
@@ -209,9 +209,9 @@ export async function getSuitableEmotion(requestedEmotion, gender, age, eyeColor
 export function getEmotionSpritePath(emotion, gender, age, eyeColor = 'pink_eyes') {
   let emotionPath;
   if (age === 'mature' || age === '2') {
-    emotionPath = `sprites/characters/emotion/${gender}_mature/${eyeColor}`;
+    emotionPath = `${process.env.PUBLIC_URL}/sprites/characters/emotion/${gender}_mature/${eyeColor}`;
   } else {
-    emotionPath = `sprites/characters/emotion/${gender}/${eyeColor}`;
+    emotionPath = `${process.env.PUBLIC_URL}/sprites/characters/emotion/${gender}/${eyeColor}`;
   }
   
   return `${emotionPath}/${emotion}.png`;

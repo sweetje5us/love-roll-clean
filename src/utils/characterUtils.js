@@ -261,7 +261,7 @@ export const buildCharacterSprite = (characterData, inventory = null) => {
     const hairBehindPath = characterSprites.hair_behind[type]?.[appearance.hairBehind]?.[appearance.hairColor];
     if (hairBehindPath) {
       layers.push({
-        src: `sprites/characters/${hairBehindPath}`,
+        src: `${process.env.PUBLIC_URL}/sprites/characters/${hairBehindPath}`,
         zIndex: 0
       });
     }
@@ -271,7 +271,7 @@ export const buildCharacterSprite = (characterData, inventory = null) => {
   const bodyData = characterSprites.base_body[type];
   if (bodyData) {
     layers.push({
-      src: `sprites/characters/${bodyData.file}`,
+      src: `${process.env.PUBLIC_URL}/sprites/characters/${bodyData.file}`,
       zIndex: 1,
       size: bodyData.size
     });
@@ -282,7 +282,7 @@ export const buildCharacterSprite = (characterData, inventory = null) => {
   const emotionPath = characterSprites.emotion[type]?.pink_eyes?.[emotionToUse];
   if (emotionPath) {
     layers.push({
-      src: `sprites/characters/${emotionPath}`,
+      src: `${process.env.PUBLIC_URL}/sprites/characters/${emotionPath}`,
       zIndex: 2
     });
   }
@@ -291,7 +291,7 @@ export const buildCharacterSprite = (characterData, inventory = null) => {
   if (gender === 'female' && appearance.bush && characterSprites.bush[type]?.[appearance.bush]) {
     const bushPath = characterSprites.bush[type][appearance.bush];
     layers.push({
-      src: `sprites/characters/${bushPath}`,
+      src: `${process.env.PUBLIC_URL}/sprites/characters/${bushPath}`,
       zIndex: 3
     });
   }
@@ -312,7 +312,7 @@ export const buildCharacterSprite = (characterData, inventory = null) => {
   
   if (dressPath) {
     layers.push({
-      src: `sprites/characters/${dressPath}`,
+      src: `${process.env.PUBLIC_URL}/sprites/characters/${dressPath}`,
       zIndex: 4
     });
   }
@@ -321,7 +321,7 @@ export const buildCharacterSprite = (characterData, inventory = null) => {
   const hairPath = characterSprites.hairs[type]?.[appearance.hairStyle]?.[appearance.hairColor];
   if (hairPath) {
     layers.push({
-      src: `sprites/characters/${hairPath}`,
+      src: `${process.env.PUBLIC_URL}/sprites/characters/${hairPath}`,
       zIndex: 5
     });
   }
@@ -343,7 +343,7 @@ export const buildCharacterSprite = (characterData, inventory = null) => {
     
     if (accessoryPath) {
       layers.push({
-        src: `sprites/characters/${accessoryPath}`,
+        src: `${process.env.PUBLIC_URL}/sprites/characters/${accessoryPath}`,
         zIndex: 6
       });
     }

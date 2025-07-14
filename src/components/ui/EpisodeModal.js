@@ -67,7 +67,7 @@ const EpisodeModal = ({ episode, episodeData, isOpen, onClose, onStartEpisode })
                     src={getEpisodePreview(episode.id, episode.preview)} 
                     alt={episode.name}
                     onError={(e) => {
-                      e.target.src = 'sprites/episodes/locations/school/school_building.png';
+                      e.target.src = `${process.env.PUBLIC_URL}/sprites/episodes/locations/school/school_building.png`;
                     }}
                   />
                 </div>

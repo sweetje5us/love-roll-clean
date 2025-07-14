@@ -1344,9 +1344,11 @@ const GameScreen = () => {
   if (gameState.isLoading) {
     return (
       <div className="game-screen loading">
-        <div className="loading-spinner">
-          <i className="fas fa-spinner fa-spin"></i>
-          <p>Загрузка игры...</p>
+        <div className="game-container">
+          <div className="loading-spinner">
+            <i className="fas fa-spinner fa-spin"></i>
+            <p>Загрузка игры...</p>
+          </div>
         </div>
       </div>
     );
@@ -1355,14 +1357,16 @@ const GameScreen = () => {
   if (gameState.error) {
     return (
       <div className="game-screen error">
-        <div className="error-message">
-          <i className="fas fa-exclamation-triangle"></i>
-          <h3>Ошибка загрузки</h3>
-          <p>{gameState.error}</p>
-          <button onClick={handleBackToMenu} className="back-button">
-            <i className="fas fa-arrow-left"></i>
-            Вернуться в меню
-          </button>
+        <div className="game-container">
+          <div className="error-message">
+            <i className="fas fa-exclamation-triangle"></i>
+            <h3>Ошибка загрузки</h3>
+            <p>{gameState.error}</p>
+            <button onClick={handleBackToMenu} className="back-button">
+              <i className="fas fa-arrow-left"></i>
+              Вернуться в меню
+            </button>
+          </div>
         </div>
       </div>
     );
@@ -1371,9 +1375,11 @@ const GameScreen = () => {
   if (!gameState.isLoaded) {
     return (
       <div className="game-screen loading">
-        <div className="loading-spinner">
-          <i className="fas fa-spinner fa-spin"></i>
-          <p>Загрузка игры...</p>
+        <div className="game-container">
+          <div className="loading-spinner">
+            <i className="fas fa-spinner fa-spin"></i>
+            <p>Загрузка игры...</p>
+          </div>
         </div>
       </div>
     );
@@ -1387,6 +1393,7 @@ const GameScreen = () => {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
     >
+      <div className="game-container">
       {/* Верхняя панель UI */}
       <div className="game-top-panel">
         {/* Блок персонажа */}
@@ -1471,7 +1478,7 @@ const GameScreen = () => {
           ) : (
             // Фон по умолчанию для сцены обучения
             <img 
-              src="sprites/episodes/locations/school/school_building.png" 
+              src={`${process.env.PUBLIC_URL}/sprites/episodes/locations/school/school_building.png`} 
               alt="School Background" 
               style={{ width: '100%', height: '100%', objectFit: 'cover' }}
               onError={(e) => {
@@ -1726,6 +1733,7 @@ const GameScreen = () => {
         effects={episodeCompleteState.effects}
         onBackToMenu={handleEpisodeCompleteBackToMenu}
       />
+      </div>
     </motion.div>
   );
 };

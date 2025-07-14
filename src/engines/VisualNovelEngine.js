@@ -42,15 +42,15 @@ class VisualNovelEngine {
     this.characters.set('hero', {
       name: 'Главный герой',
       sprites: {
-        normal: 'sprites/characters/hero_normal.png',
-        happy: 'sprites/characters/hero_happy.png',
-        sad: 'sprites/characters/hero_sad.png'
+        normal: `${process.env.PUBLIC_URL}/sprites/characters/hero_normal.png`,
+        happy: `${process.env.PUBLIC_URL}/sprites/characters/hero_happy.png`,
+        sad: `${process.env.PUBLIC_URL}/sprites/characters/hero_sad.png`
       }
     });
 
     // Пример загрузки фонов
-    this.backgrounds.set('school', 'sprites/episodes/locations/school/school_class.png');
-    this.backgrounds.set('cafe', 'sprites/episodes/locations/caffe/caffe_inside.jfif');
+    this.backgrounds.set('school', `${process.env.PUBLIC_URL}/sprites/episodes/locations/school/school_class.png`);
+    this.backgrounds.set('cafe', `${process.env.PUBLIC_URL}/sprites/episodes/locations/caffe/caffe_inside.jfif`);
   }
 
   // Загрузка сценария

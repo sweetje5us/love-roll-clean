@@ -30,7 +30,7 @@ const EpisodeCard = ({ episode, episodeData, types, ageRatings, onOpenModal }) =
             alt={episode.name}
             className="episode-image"
             onError={(e) => {
-              e.target.src = 'sprites/episodes/locations/school/school_building.png'; // fallback
+              e.target.src = `${process.env.PUBLIC_URL}/sprites/episodes/locations/school/school_building.png`; // fallback
             }}
           />
         ) : (

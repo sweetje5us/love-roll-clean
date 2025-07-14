@@ -59,7 +59,7 @@ const EpisodeSelectScreen = ({ onBack }) => {
           id: 'tutorial',
           name: 'Обучение',
           description: 'Познакомьтесь с основами игры',
-          preview: 'sprites/episodes/locations/school/school_building.png',
+          preview: `${process.env.PUBLIC_URL}/sprites/episodes/locations/school/school_building.png`,
           type: 'tutorial',
           ageRating: '0+',
           duration: '15-20 минут',

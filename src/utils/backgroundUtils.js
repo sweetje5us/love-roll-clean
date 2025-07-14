@@ -5,21 +5,21 @@
 // Маппинг имен фонов в пути к файлам
 const backgroundMapping = {
   // Школа
-  'school_class': 'sprites/episodes/locations/school/school_class.png',
-  'school_corridor': 'sprites/episodes/locations/school/school_corridor.png',
-  'school_building': 'sprites/episodes/locations/school/school_building.png',
-  'school_rest_room': 'sprites/episodes/locations/school/school_rest_room.png',
+  'school_class': `${process.env.PUBLIC_URL}/sprites/episodes/locations/school/school_class.png`,
+  'school_corridor': `${process.env.PUBLIC_URL}/sprites/episodes/locations/school/school_corridor.png`,
+  'school_building': `${process.env.PUBLIC_URL}/sprites/episodes/locations/school/school_building.png`,
+  'school_rest_room': `${process.env.PUBLIC_URL}/sprites/episodes/locations/school/school_rest_room.png`,
   
   // Кафе
-  'caffe_inside': 'sprites/episodes/locations/caffe/caffe_inside.jfif',
-  'caffe_building': 'sprites/episodes/locations/caffe/caffe_building.jfif',
+  'caffe_inside': `${process.env.PUBLIC_URL}/sprites/episodes/locations/caffe/caffe_inside.jfif`,
+  'caffe_building': `${process.env.PUBLIC_URL}/sprites/episodes/locations/caffe/caffe_building.jfif`,
   
   // Особняк
-  'mansion_inside': 'sprites/episodes/locations/mansion/mansion_inside.png',
-  'attic_inside_day': 'sprites/episodes/locations/mansion/attic_inside_day.png',
-  'attic_inside_night': 'sprites/episodes/locations/mansion/attic_inside_night.png',
-  'mansion_garden': 'sprites/episodes/locations/mansion/mansion_garden.png',
-  'mansion_entrance': 'sprites/episodes/locations/mansion/mansion_entrance.png'
+  'mansion_inside': `${process.env.PUBLIC_URL}/sprites/episodes/locations/mansion/mansion_inside.png`,
+  'attic_inside_day': `${process.env.PUBLIC_URL}/sprites/episodes/locations/mansion/attic_inside_day.png`,
+  'attic_inside_night': `${process.env.PUBLIC_URL}/sprites/episodes/locations/mansion/attic_inside_night.png`,
+  'mansion_garden': `${process.env.PUBLIC_URL}/sprites/episodes/locations/mansion/mansion_garden.png`,
+  'mansion_entrance': `${process.env.PUBLIC_URL}/sprites/episodes/locations/mansion/mansion_entrance.png`
 };
 
 /**
@@ -34,18 +34,18 @@ export function getBackgroundPath(backgroundName) {
   
   // Если уже полный путь, возвращаем как есть
   if (backgroundName.startsWith('sprites/') || backgroundName.startsWith('/sprites/')) {
-    return backgroundName.startsWith('/') ? backgroundName : `/${backgroundName}`;
+    return backgroundName.startsWith('/') ? backgroundName : `${process.env.PUBLIC_URL}/${backgroundName}`;
   }
   
   // Ищем в маппинге
   const mappedPath = backgroundMapping[backgroundName];
   if (mappedPath) {
-    return `/${mappedPath}`;
+    return mappedPath;
   }
   
   // Если не найден в маппинге, пробуем стандартный путь
   console.warn(`Фон "${backgroundName}" не найден в маппинге, используем стандартный путь`);
-  return `/${backgroundName}`;
+  return `${process.env.PUBLIC_URL}/${backgroundName}`;
 }
 
 /**

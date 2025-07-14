@@ -413,7 +413,7 @@ const CharacterEditModal = ({ isOpen, onClose, characterId, onCharacterUpdate })
     const clearImageCache = () => {
       const images = document.querySelectorAll('img');
       images.forEach(img => {
-        if (img.src.includes('sprites/characters/')) {
+        if (img.src.includes(`${process.env.PUBLIC_URL}/sprites/characters/`)) {
           const originalSrc = img.src;
           img.src = '';
           setTimeout(() => {
@@ -930,7 +930,7 @@ const CharacterEditModal = ({ isOpen, onClose, characterId, onCharacterUpdate })
                         <div className="selected-pet">
                           <div className="pet-sprite">
                             <img 
-                              src={`sprites/items/pets/${getSelectedPet()?.id}.png`} 
+                              src={`${process.env.PUBLIC_URL}/sprites/items/pets/${getSelectedPet()?.id}.png`} 
                               alt={getSelectedPet()?.name}
                               onError={(e) => {
                                 console.warn(`Ошибка загрузки спрайта питомца: ${e.target.src}`);
@@ -1005,7 +1005,7 @@ const CharacterEditModal = ({ isOpen, onClose, characterId, onCharacterUpdate })
                         >
                           <div className="pet-card-sprite">
                             <img 
-                              src={`sprites/items/pets/${pet.id}.png`} 
+                              src={`${process.env.PUBLIC_URL}/sprites/items/pets/${pet.id}.png`} 
                               alt={pet.name}
                               onError={(e) => {
                                 console.warn(`Ошибка загрузки спрайта питомца: ${e.target.src}`);
