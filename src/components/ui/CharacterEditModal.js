@@ -344,8 +344,22 @@ const CharacterEditModal = ({ isOpen, onClose, characterId, onCharacterUpdate })
   };
 
   const handleSave = () => {
+    // Полная валидация персонажа
+    const errors = [];
+    
     if (characterData.name.trim() === '') {
-      alert('Введите имя персонажа');
+      errors.push('Имя персонажа обязательно');
+    }
+    
+    // Проверка питомца
+    if (!characterData.pet.id) {
+      errors.push('Питомец обязателен');
+    }
+    
+    // Показываем алерт с ошибками, если они есть
+    if (errors.length > 0) {
+      const errorMessage = errors.join('\n');
+      alert(`Ошибки при редактировании персонажа:\n\n${errorMessage}`);
       return;
     }
 

@@ -187,6 +187,10 @@ const CharacterCreatorScreen = () => {
       ...prev,
       name: e.target.value
     }));
+    // Очищаем ошибки валидации при изменении имени
+    if (validationErrors.length > 0) {
+      setValidationErrors([]);
+    }
   };
 
   // Обработчики пола и возраста (скрыты при редактировании персонажа)
@@ -286,6 +290,11 @@ const CharacterCreatorScreen = () => {
       }));
       setStatPoints(prev => prev + cost);
     }
+    
+    // Очищаем ошибки валидации при изменении характеристик
+    if (validationErrors.length > 0) {
+      setValidationErrors([]);
+    }
   };
 
   // Функции для работы с питомцами
@@ -339,6 +348,11 @@ const CharacterCreatorScreen = () => {
         name: '' // Сбрасываем имя при смене питомца
       }
     }));
+    
+    // Очищаем ошибки валидации при выборе питомца
+    if (validationErrors.length > 0) {
+      setValidationErrors([]);
+    }
   };
 
   const handlePetNameChange = (e) => {
@@ -349,6 +363,11 @@ const CharacterCreatorScreen = () => {
         name: e.target.value
       }
     }));
+    
+    // Очищаем ошибки валидации при изменении имени питомца
+    if (validationErrors.length > 0) {
+      setValidationErrors([]);
+    }
   };
 
   const getSelectedPet = () => {
@@ -361,6 +380,10 @@ const CharacterCreatorScreen = () => {
     
     if (!validation.isValid) {
       setValidationErrors(validation.errors);
+      
+      // Показываем алерт с ошибками
+      const errorMessage = validation.errors.join('\n');
+      alert(`Ошибки при создании персонажа:\n\n${errorMessage}`);
       return;
     }
 
@@ -1075,6 +1098,23 @@ const CharacterCreatorScreen = () => {
             </div>
           )}
         </div>
+
+        {/* Отображение ошибок валидации */}
+        {validationErrors.length > 0 && (
+          <div className="validation-errors">
+            <div className="error-header">
+              <i className="fas fa-exclamation-triangle"></i>
+              <span>Ошибки валидации:</span>
+            </div>
+            <ul className="error-list">
+              {validationErrors.map((error, index) => (
+                <li key={index} className="error-item">
+                  {error}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
 
         {/* Кнопка сохранения (общая для всех вкладок) */}
         <div className="save-section">
