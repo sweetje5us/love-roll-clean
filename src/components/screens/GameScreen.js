@@ -4,6 +4,7 @@ import { useScreen, SCREEN_TYPES } from '../../contexts/ScreenContext';
 import { useCharacters } from '../../contexts/CharacterContext';
 import { useInventory } from '../../contexts/InventoryContext';
 import { useRelationships } from '../../contexts/RelationshipsContext';
+import { getStaticPath } from '../../utils/pathUtils';
 import episodeManager from '../../utils/episodeManager';
 import sceneManager from '../../utils/sceneManager';
 import CharacterPreview from '../ui/CharacterPreview';
@@ -1478,7 +1479,7 @@ const GameScreen = () => {
           ) : (
             // Фон по умолчанию для сцены обучения
             <img 
-              src={`${process.env.PUBLIC_URL}/sprites/episodes/locations/school/school_building.png`} 
+              src={getStaticPath('sprites/episodes/locations/school/school_building.png')} 
               alt="School Background" 
               style={{ width: '100%', height: '100%', objectFit: 'cover' }}
               onError={(e) => {

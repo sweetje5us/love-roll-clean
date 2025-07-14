@@ -1,4 +1,6 @@
 // Базовый движок для визуальных новелл
+import { getStaticPath } from '../utils/pathUtils';
+
 class VisualNovelEngine {
   constructor() {
     this.currentScene = null;
@@ -42,15 +44,15 @@ class VisualNovelEngine {
     this.characters.set('hero', {
       name: 'Главный герой',
       sprites: {
-        normal: `${process.env.PUBLIC_URL}/sprites/characters/hero_normal.png`,
-        happy: `${process.env.PUBLIC_URL}/sprites/characters/hero_happy.png`,
-        sad: `${process.env.PUBLIC_URL}/sprites/characters/hero_sad.png`
+        normal: getStaticPath('sprites/characters/hero_normal.png'),
+        happy: getStaticPath('sprites/characters/hero_happy.png'),
+        sad: getStaticPath('sprites/characters/hero_sad.png')
       }
     });
 
     // Пример загрузки фонов
-    this.backgrounds.set('school', `${process.env.PUBLIC_URL}/sprites/episodes/locations/school/school_class.png`);
-    this.backgrounds.set('cafe', `${process.env.PUBLIC_URL}/sprites/episodes/locations/caffe/caffe_inside.jfif`);
+    this.backgrounds.set('school', getStaticPath('sprites/episodes/locations/school/school_class.png'));
+    this.backgrounds.set('cafe', getStaticPath('sprites/episodes/locations/caffe/caffe_inside.jfif'));
   }
 
   // Загрузка сценария

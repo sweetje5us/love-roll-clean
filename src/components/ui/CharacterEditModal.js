@@ -8,6 +8,7 @@ import Tooltip from './Tooltip';
 import { getAvailableOptions, getAvailablePaidOptions, getOptionDisplayName, getPaidClothingItems } from '../../utils/characterUtils';
 import { getPetSpecialColor, getPetSpecialIcon } from '../../utils/petUtils';
 import { getPetSpecialText } from '../../utils/itemUtils';
+import { getStaticPath } from '../../utils/pathUtils';
 import itemsData from '../../data/items.json';
 import './CharacterEditModal.css';
 
@@ -413,7 +414,7 @@ const CharacterEditModal = ({ isOpen, onClose, characterId, onCharacterUpdate })
     const clearImageCache = () => {
       const images = document.querySelectorAll('img');
       images.forEach(img => {
-        if (img.src.includes(`${process.env.PUBLIC_URL}/sprites/characters/`)) {
+        if (img.src.includes('/sprites/characters/')) {
           const originalSrc = img.src;
           img.src = '';
           setTimeout(() => {
@@ -930,7 +931,7 @@ const CharacterEditModal = ({ isOpen, onClose, characterId, onCharacterUpdate })
                         <div className="selected-pet">
                           <div className="pet-sprite">
                             <img 
-                              src={`${process.env.PUBLIC_URL}/sprites/items/pets/${getSelectedPet()?.id}.png`} 
+                              src={getStaticPath(`sprites/items/pets/${getSelectedPet()?.id}.png`)} 
                               alt={getSelectedPet()?.name}
                               onError={(e) => {
                                 console.warn(`Ошибка загрузки спрайта питомца: ${e.target.src}`);
@@ -1005,7 +1006,7 @@ const CharacterEditModal = ({ isOpen, onClose, characterId, onCharacterUpdate })
                         >
                           <div className="pet-card-sprite">
                             <img 
-                              src={`${process.env.PUBLIC_URL}/sprites/items/pets/${pet.id}.png`} 
+                              src={getStaticPath(`sprites/items/pets/${pet.id}.png`)} 
                               alt={pet.name}
                               onError={(e) => {
                                 console.warn(`Ошибка загрузки спрайта питомца: ${e.target.src}`);

@@ -2,24 +2,26 @@
  * Утилиты для работы с фонами локаций
  */
 
+import { getStaticPath } from './pathUtils';
+
 // Маппинг имен фонов в пути к файлам
 const backgroundMapping = {
   // Школа
-  'school_class': `${process.env.PUBLIC_URL}/sprites/episodes/locations/school/school_class.png`,
-  'school_corridor': `${process.env.PUBLIC_URL}/sprites/episodes/locations/school/school_corridor.png`,
-  'school_building': `${process.env.PUBLIC_URL}/sprites/episodes/locations/school/school_building.png`,
-  'school_rest_room': `${process.env.PUBLIC_URL}/sprites/episodes/locations/school/school_rest_room.png`,
+  'school_class': getStaticPath('sprites/episodes/locations/school/school_class.png'),
+  'school_corridor': getStaticPath('sprites/episodes/locations/school/school_corridor.png'),
+  'school_building': getStaticPath('sprites/episodes/locations/school/school_building.png'),
+  'school_rest_room': getStaticPath('sprites/episodes/locations/school/school_rest_room.png'),
   
   // Кафе
-  'caffe_inside': `${process.env.PUBLIC_URL}/sprites/episodes/locations/caffe/caffe_inside.jfif`,
-  'caffe_building': `${process.env.PUBLIC_URL}/sprites/episodes/locations/caffe/caffe_building.jfif`,
+  'caffe_inside': getStaticPath('sprites/episodes/locations/caffe/caffe_inside.jfif'),
+  'caffe_building': getStaticPath('sprites/episodes/locations/caffe/caffe_building.jfif'),
   
   // Особняк
-  'mansion_inside': `${process.env.PUBLIC_URL}/sprites/episodes/locations/mansion/mansion_inside.png`,
-  'attic_inside_day': `${process.env.PUBLIC_URL}/sprites/episodes/locations/mansion/attic_inside_day.png`,
-  'attic_inside_night': `${process.env.PUBLIC_URL}/sprites/episodes/locations/mansion/attic_inside_night.png`,
-  'mansion_garden': `${process.env.PUBLIC_URL}/sprites/episodes/locations/mansion/mansion_garden.png`,
-  'mansion_entrance': `${process.env.PUBLIC_URL}/sprites/episodes/locations/mansion/mansion_entrance.png`
+  'mansion_inside': getStaticPath('sprites/episodes/locations/mansion/mansion_inside.png'),
+  'attic_inside_day': getStaticPath('sprites/episodes/locations/mansion/attic_inside_day.png'),
+  'attic_inside_night': getStaticPath('sprites/episodes/locations/mansion/attic_inside_night.png'),
+  'mansion_garden': getStaticPath('sprites/episodes/locations/mansion/mansion_garden.png'),
+  'mansion_entrance': getStaticPath('sprites/episodes/locations/mansion/mansion_entrance.png')
 };
 
 /**
@@ -34,7 +36,7 @@ export function getBackgroundPath(backgroundName) {
   
   // Если уже полный путь, возвращаем как есть
   if (backgroundName.startsWith('sprites/') || backgroundName.startsWith('/sprites/')) {
-    return backgroundName.startsWith('/') ? backgroundName : `${process.env.PUBLIC_URL}/${backgroundName}`;
+    return backgroundName.startsWith('/') ? backgroundName : getStaticPath(backgroundName);
   }
   
   // Ищем в маппинге
@@ -45,7 +47,7 @@ export function getBackgroundPath(backgroundName) {
   
   // Если не найден в маппинге, пробуем стандартный путь
   console.warn(`Фон "${backgroundName}" не найден в маппинге, используем стандартный путь`);
-  return `${process.env.PUBLIC_URL}/${backgroundName}`;
+  return getStaticPath(backgroundName);
 }
 
 /**

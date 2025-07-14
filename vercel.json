@@ -11,6 +11,22 @@
   ],
   "routes": [
     {
+      "src": "/static/(.*)",
+      "dest": "/static/$1"
+    },
+    {
+      "src": "/sprites/(.*)",
+      "dest": "/sprites/$1"
+    },
+    {
+      "src": "/episodes/(.*)",
+      "dest": "/episodes/$1"
+    },
+    {
+      "src": "/episodes.json",
+      "dest": "/episodes.json"
+    },
+    {
       "src": "/(.*)",
       "dest": "/index.html"
     }

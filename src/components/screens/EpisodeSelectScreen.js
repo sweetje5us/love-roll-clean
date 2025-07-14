@@ -5,6 +5,7 @@ import EpisodeCard from '../ui/EpisodeCard';
 import EpisodeModal from '../ui/EpisodeModal';
 import { loadAllEpisodeConfigs, searchEpisodes, filterEpisodesByType } from '../../utils/episodeUtils';
 import { getEpisodeSave, isEpisodeCompleted } from '../../utils/saveUtils';
+import { getStaticPath } from '../../utils/pathUtils';
 import './EpisodeSelectScreen.css';
 
 const EpisodeSelectScreen = ({ onBack }) => {
@@ -59,7 +60,7 @@ const EpisodeSelectScreen = ({ onBack }) => {
           id: 'tutorial',
           name: 'Обучение',
           description: 'Познакомьтесь с основами игры',
-          preview: `${process.env.PUBLIC_URL}/sprites/episodes/locations/school/school_building.png`,
+          preview: getStaticPath('sprites/episodes/locations/school/school_building.png'),
           type: 'tutorial',
           ageRating: '0+',
           duration: '15-20 минут',

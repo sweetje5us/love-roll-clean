@@ -1,4 +1,5 @@
 import characterSprites from '../data/character_sprites.json';
+import { getCharacterSpritePath } from './pathUtils';
 
 /**
  * Универсальный менеджер спрайтов для персонажей в эпизодах
@@ -40,7 +41,7 @@ class SpriteManager {
       const hairBehindPath = characterSprites.hair_behind[type]?.[appearance.hairBehind]?.[appearance.hairColor];
       if (hairBehindPath) {
         layers.push({
-          src: `${process.env.PUBLIC_URL}/sprites/characters/${hairBehindPath}`,
+          src: getCharacterSpritePath(hairBehindPath),
           zIndex: 0
         });
       }
@@ -50,7 +51,7 @@ class SpriteManager {
     const bodyData = characterSprites.base_body[type];
     if (bodyData) {
       layers.push({
-        src: `${process.env.PUBLIC_URL}/sprites/characters/${bodyData.file}`,
+        src: getCharacterSpritePath(bodyData.file),
         zIndex: 1,
         size: bodyData.size
       });
@@ -60,7 +61,7 @@ class SpriteManager {
     const emotionPath = characterSprites.emotion[type]?.pink_eyes?.[emotion];
     if (emotionPath) {
       layers.push({
-        src: `${process.env.PUBLIC_URL}/sprites/characters/${emotionPath}`,
+        src: getCharacterSpritePath(emotionPath),
         zIndex: 2
       });
     }
@@ -68,10 +69,10 @@ class SpriteManager {
     // 3. Смущение (только для женских персонажей в определённых сценах)
     if (gender === 'female' && showBush && appearance.bush && characterSprites.bush[type]?.[appearance.bush]) {
       const bushPath = characterSprites.bush[type][appearance.bush];
-      layers.push({
-        src: `${process.env.PUBLIC_URL}/sprites/characters/${bushPath}`,
-        zIndex: 3
-      });
+              layers.push({
+          src: getCharacterSpritePath(bushPath),
+          zIndex: 3
+        });
     }
 
     // 4. Одежда
@@ -91,7 +92,7 @@ class SpriteManager {
 
     if (dressPath) {
       layers.push({
-        src: `${process.env.PUBLIC_URL}/sprites/characters/${dressPath}`,
+        src: getCharacterSpritePath(dressPath),
         zIndex: 4
       });
     }
@@ -99,10 +100,10 @@ class SpriteManager {
     // 5. Причёска
     const hairPath = characterSprites.hairs[type]?.[appearance.hairStyle]?.[appearance.hairColor];
     if (hairPath) {
-              layers.push({
-          src: `${process.env.PUBLIC_URL}/sprites/characters/${hairPath}`,
-          zIndex: 5
-        });
+      layers.push({
+        src: getCharacterSpritePath(hairPath),
+        zIndex: 5
+      });
     }
 
     // 6. Аксессуары (если есть)
@@ -118,7 +119,7 @@ class SpriteManager {
 
       if (accessoryPath) {
         layers.push({
-          src: `${process.env.PUBLIC_URL}/sprites/characters/${accessoryPath}`,
+          src: getCharacterSpritePath(accessoryPath),
           zIndex: 6
         });
       } else {
@@ -232,7 +233,7 @@ class SpriteManager {
         const hairBehindPath = characterSprites.hair_behind[type]?.[appearance.hairBehind]?.[appearance.hairColor];
         if (hairBehindPath) {
           layers.push({
-            src: `${process.env.PUBLIC_URL}/sprites/characters/${hairBehindPath}`,
+            src: getCharacterSpritePath(hairBehindPath),
             zIndex: 0
           });
         }
@@ -242,7 +243,7 @@ class SpriteManager {
       const bodyData = characterSprites.base_body[type];
       if (bodyData) {
         layers.push({
-          src: `${process.env.PUBLIC_URL}/sprites/characters/${bodyData.file}`,
+          src: getCharacterSpritePath(bodyData.file),
           zIndex: 1,
           size: bodyData.size
         });
@@ -252,7 +253,7 @@ class SpriteManager {
       const emotionPath = characterSprites.emotion[type]?.pink_eyes?.[emotion];
       if (emotionPath) {
         layers.push({
-          src: `${process.env.PUBLIC_URL}/sprites/characters/${emotionPath}`,
+          src: getCharacterSpritePath(emotionPath),
           zIndex: 2
         });
       }
@@ -274,7 +275,7 @@ class SpriteManager {
 
       if (dressPath) {
         layers.push({
-          src: `${process.env.PUBLIC_URL}/sprites/characters/${dressPath}`,
+          src: getCharacterSpritePath(dressPath),
           zIndex: 4
         });
       }
@@ -283,7 +284,7 @@ class SpriteManager {
       const hairPath = characterSprites.hairs[type]?.[appearance?.hairStyle]?.[appearance?.hairColor];
       if (hairPath) {
         layers.push({
-          src: `${process.env.PUBLIC_URL}/sprites/characters/${hairPath}`,
+          src: getCharacterSpritePath(hairPath),
           zIndex: 5
         });
       }
@@ -301,7 +302,7 @@ class SpriteManager {
 
         if (accessoryPath) {
           layers.push({
-            src: `${process.env.PUBLIC_URL}/sprites/characters/${accessoryPath}`,
+            src: getCharacterSpritePath(accessoryPath),
             zIndex: 6
           });
         } else {

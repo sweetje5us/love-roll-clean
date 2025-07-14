@@ -2,6 +2,7 @@ import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { getEpisodeSave, getCompletedChapters, isEpisodeCompleted } from '../../utils/saveUtils';
 import { getEpisodePreview, getEpisodeStats } from '../../utils/episodeUtils';
+import { getStaticPath } from '../../utils/pathUtils';
 import './EpisodeModal.css';
 
 const EpisodeModal = ({ episode, episodeData, isOpen, onClose, onStartEpisode }) => {
@@ -67,7 +68,7 @@ const EpisodeModal = ({ episode, episodeData, isOpen, onClose, onStartEpisode })
                     src={getEpisodePreview(episode.id, episode.preview)} 
                     alt={episode.name}
                     onError={(e) => {
-                      e.target.src = `${process.env.PUBLIC_URL}/sprites/episodes/locations/school/school_building.png`;
+                      e.target.src = getStaticPath('sprites/episodes/locations/school/school_building.png');
                     }}
                   />
                 </div>

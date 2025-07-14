@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Love & Roll Visual Novel - Mobile Game",
   "main": "public/electron.js",
-  "homepage": "/",
+  "homepage": "./",
   "scripts": {
     "start": "react-scripts start",
     "start-alt": "node start.js",

@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { getEpisodePreview } from '../../utils/episodeUtils';
+import { getStaticPath } from '../../utils/pathUtils';
 import './EpisodeCard.css';
 
 const EpisodeCard = ({ episode, episodeData, types, ageRatings, onOpenModal }) => {
@@ -30,7 +31,7 @@ const EpisodeCard = ({ episode, episodeData, types, ageRatings, onOpenModal }) =
             alt={episode.name}
             className="episode-image"
             onError={(e) => {
-              e.target.src = `${process.env.PUBLIC_URL}/sprites/episodes/locations/school/school_building.png`; // fallback
+              e.target.src = getStaticPath('sprites/episodes/locations/school/school_building.png'); // fallback
             }}
           />
         ) : (
