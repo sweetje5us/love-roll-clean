@@ -27,7 +27,7 @@
       {
         "id": "choice2",
         "text": "Пройти к чердаку",
-        "nextScene": "scene52"
+        "nextScene": "scene54_check"
       },
       {
         "id": "choice3",

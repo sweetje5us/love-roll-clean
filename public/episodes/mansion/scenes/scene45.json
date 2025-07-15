@@ -1,0 +1,68 @@
+{
+  "id": "scene32",
+  "name": "Добро пожаловать в игру",
+  "background": "sprites/episodes/locations/mansion/mansion_second_floor_11zon.png",
+  "characters": [
+
+   
+  ],
+  "dialogue": [
+    {
+      "speaker": "narrator",
+      "text": "Вы подошли к дверям гостевой спальни второго этажа",
+      "emotion": "happy"
+    },
+    {
+      "speaker": "narrator",
+      "text": "Из-за двери слышен громкий храп",
+      "emotion": "happy"
+    }
+  ],
+  "choices": [
+      {
+        "id": "bakhshi_check",
+        "text": "[Решительность] Постучать в дверь",
+        "nextScene": "scene45_1",
+        "important": true,
+        "value": "true",
+        "description": "Попытка открыть дверь",
+        "consequences": ["выбор 1"],
+        "requirements": {
+          "importantChoice": {
+            "bakhshi_check": null
+          }
+        },
+        "diceCheck": {
+          "stat": "sensitivity",
+          "difficulty": 14,
+          "description": "Громко постучать в дверь",
+          "results": {
+            "critical_success": "scene45_2",
+            "success": "scene45_1",
+            "failure": "scene45_3",
+            "critical_failure": "scene45_4"
+          }
+        }
+      },
+      {
+        "id": "choice1",
+        "text": "Открыть дверь",
+        "nextScene": "scene45_meeting",
+        "requirements": {
+          "importantChoice": {
+            "bakhshi_meet": true
+          }
+        }
+      },
+      {
+        "id": "choice3",
+        "text": "Вернуться",
+        "nextScene": "scene32"
+      }
+  ],
+  "requirements": {},
+  "rewards": {
+    "experience": 0,
+    "coins": 0
+  }
+} 

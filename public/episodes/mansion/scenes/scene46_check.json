@@ -1,0 +1,53 @@
+{
+  "id": "scene46_1",
+  "name": "Добро пожаловать в игру",
+  "background": "sprites/episodes/locations/mansion/mansion_room_camin_11zon.png",
+  "characters": [
+
+   
+  ],
+  "dialogue": [
+        {
+      "speaker": "narrator",
+      "text": "Дополнительные действия",
+      "emotion": "angry"
+    }
+  ],
+  "choices": [
+    {
+      "id": "mooduck_check",
+      "text": "[Харизма] Может вам чем-то помочь?",
+      "important": true,
+      "value": "true",
+      "description": "Попытка помочь Василию Мадуку",
+      "consequences": ["выбор 1"],
+      "requirements": {
+        "importantChoice": {
+          "mooduck_check": null
+        }
+      },
+      "diceCheck": {
+        "stat": "charisma",
+        "difficulty": 12,
+        "description": "Попытка помочь Василию Мадуку",
+        "results": {
+          "critical_success": "scene46_2",
+          "success": "scene46_1",
+          "failure": "scene46_3",
+          "critical_failure": "scene46_4"
+        }
+      },
+      "nextScene": "scene46_1"
+    },
+   {
+    "id": "choice2",
+    "text": "Вернуться назад",
+    "nextScene": "scene44"
+   }
+  ],
+  "requirements": {},
+  "rewards": {
+    "experience": 0,
+    "coins": 0
+  }
+} 

@@ -68,7 +68,12 @@ const EpisodeModal = ({ episode, episodeData, isOpen, onClose, onStartEpisode })
                     src={getEpisodePreview(episode.id, episode.preview)} 
                     alt={episode.name}
                     onError={(e) => {
-                      e.target.src = getStaticPath('sprites/episodes/locations/school/school_building.png');
+                      // Используем разные fallback изображения в зависимости от типа эпизода
+                      if (episode.type === 'detective') {
+                        e.target.src = getStaticPath('sprites/episodes/locations/mansion/mansion_inside.png');
+                      } else {
+                        e.target.src = getStaticPath('sprites/episodes/locations/school/school_building.png');
+                      }
                     }}
                   />
                 </div>

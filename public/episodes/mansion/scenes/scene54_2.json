@@ -27,7 +27,7 @@
           {
             "id": "choice1",
             "text": "Кто здесь?",
-            "nextScene": "scene56_1"
+            "nextScene": "scene56_meeting"
           },
         {
           "id": "choice2",

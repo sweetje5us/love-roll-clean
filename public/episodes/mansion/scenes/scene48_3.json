@@ -1,0 +1,37 @@
+{
+  "id": "scene36_1",
+  "name": "Добро пожаловать в игру",
+  "background": "sprites/episodes/locations/mansion/guest_room_bedroom_11zon.png",
+  "characters": [
+
+   
+  ],
+  "dialogue": [
+
+    {
+      "speaker": "player",
+      "text": "Все будет хорошо, вы можете поделиться переживаниями",
+      "emotion": "happy"
+    },
+    {
+      "speaker": "nadson",
+      "text": "Вы думаете я стану делиться с первым встречным?",
+      "emotion": "happy"
+    }
+  ],
+  "choices": [
+    
+    {
+      "id": "choice1",
+      "text": "Простите, я пойду",
+      "nextScene": "scene32"
+     
+    }
+      
+  ],
+  "requirements": {},
+  "rewards": {
+    "experience": 0,
+    "coins": 0
+  }
+} 

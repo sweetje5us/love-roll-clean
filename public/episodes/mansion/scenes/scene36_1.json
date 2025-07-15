@@ -16,51 +16,19 @@
       "speaker": "narrator",
       "text": "Вы видите девушку, которая считает в слух",
       "emotion": "happy"
-    },
-    {
-      "speaker": "dulapeepa",
-      "text": "Ой! Вы меня напугали",
-      "emotion": "angry"
-    },
-    {
-      "speaker": "dulapeepa",
-      "text": "А мы тут играем в прятки!",
-      "emotion": "angry"
     }
     
   ],
   "choices": [
     
       {
-        "id": "choice1",
-        "text": "[Решительность] Кто мы?",
-        "diceCheck": {
-          "stat": "determination",
-          "difficulty": 12,
-          "description": "Попытка открыть дверь",
-          "results": {
-            "critical_success": "scene47_2",
-            "success": "scene47_1",
-            "failure": "scene47_3",
-            "critical_failure": "scene47_4"
-          }
-        },
-        "nextScene": "scene47_1"
-      },
-     
-      {
         "id": "dulapeepa_meet",
         "text": "Представиться, и спросить где ее Родители",
-        "nextScene": "scene40",
+        "nextScene": "scene36_meeting",
         "important": true,
   "value": "true",
   "description": "Знакомство с Дулапеепой",
   "consequences": ["выбор 1"]
-      },
-      {
-        "id": "choice3",
-        "text": "Ты случайно ничего не знаешь о господине Диметрио?",
-        "nextScene": "scene42"
       }
   ],
   "requirements": {},

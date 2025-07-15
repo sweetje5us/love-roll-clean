@@ -1,0 +1,42 @@
+{
+  "id": "scene16",
+  "name": "Добро пожаловать в игру",
+  "background": "sprites/episodes/locations/mansion/mansion_room_with_people_11zon.png",
+  "characters": [
+
+   
+  ],
+  "dialogue": [
+    {
+      "speaker": "dan",
+      "text": "Привет!",
+      "emotion": "happy"
+    },
+    {
+      "speaker": "dan",
+      "text": "Спасибо что смогли приехать",
+      "emotion": "happy"
+    }
+  ],
+  "choices": [
+      {
+        "id": "dan_meet",
+        "text": "Кто вы?",
+        "nextScene": "scene16",
+        "effects": {
+          "relationship": {
+            "dan": 10
+          }
+        },
+        "important": true,
+  "value": "true",
+  "description": "Знакомство с Даном",
+  "consequences": ["выбор 1"]
+      }
+  ],
+  "requirements": {},
+  "rewards": {
+    "experience": 0,
+    "coins": 0
+  }
+} 

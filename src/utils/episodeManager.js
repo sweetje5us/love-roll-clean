@@ -1016,9 +1016,27 @@ class EpisodeManager {
           for (const [choiceId, expectedValue] of Object.entries(value)) {
             const actualValue = this.importantChoices.get(choiceId)?.value;
             console.log(`Проверка ${choiceId}: ожидается ${expectedValue}, получено ${actualValue}`);
-            if (actualValue !== expectedValue) {
-              console.log(`Требование не выполнено: ${choiceId}`);
-              return false;
+            
+            // Специальная обработка для проверки отсутствия важного выбора
+            if (expectedValue === "" || expectedValue === null || expectedValue === "missing") {
+              // Если ожидается пустая строка, null или "missing", то важный выбор не должен быть сделан
+              if (actualValue !== null && actualValue !== undefined) {
+                console.log(`Требование не выполнено: ${choiceId} - выбор не должен быть сделан, но он есть (${actualValue})`);
+                return false;
+              }
+            } else if (typeof expectedValue === 'string' && expectedValue.startsWith('!')) {
+              // Отрицание: если ожидается "!value", то важный выбор не должен быть равен "value"
+              const targetValue = expectedValue.substring(1);
+              if (actualValue === targetValue) {
+                console.log(`Требование не выполнено: ${choiceId} - выбор не должен быть равен ${targetValue}`);
+                return false;
+              }
+            } else {
+              // Обычная проверка точного совпадения
+              if (actualValue !== expectedValue) {
+                console.log(`Требование не выполнено: ${choiceId} - значения не совпадают (ожидается ${expectedValue}, получено ${actualValue})`);
+                return false;
+              }
             }
           }
           console.log(`Все требования важных выборов выполнены`);

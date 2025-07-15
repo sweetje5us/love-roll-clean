@@ -1,0 +1,68 @@
+{
+  "id": "scene32",
+  "name": "Добро пожаловать в игру",
+  "background": "sprites/episodes/locations/mansion/mansion_second_floor_11zon.png",
+  "characters": [
+
+   
+  ],
+  "dialogue": [
+    {
+      "speaker": "narrator",
+      "text": "Вы подошли к дверям главной спальни",
+      "emotion": "happy"
+    },
+    {
+      "speaker": "narrator",
+      "text": "Из-за двери слышен женский плач",
+      "emotion": "happy"
+    }
+  ],
+  "choices": [
+      {
+        "id": "second_floor_bedroom_check",
+        "text": "[Чувствительность] Открыть дверь",
+        "nextScene": "scene49_1",
+        "important": true,
+        "value": "true",
+        "description": "Попытка открыть дверь",
+        "consequences": ["выбор 1"],
+        "requirements": {
+          "importantChoice": {
+            "second_floor_bedroom_check": null
+          }
+        },
+        "diceCheck": {
+          "stat": "sensitivity",
+          "difficulty": 14,
+          "description": "Попытка открыть дверь",
+          "results": {
+            "critical_success": "scene43_2",
+            "success": "scene43_1",
+            "failure": "scene43_3",
+            "critical_failure": "scene43_4"
+          }
+        }
+      },
+      {
+        "id": "choice1",
+        "text": "Открыть дверь",
+        "nextScene": "scene43_meeting",
+        "requirements": {
+          "importantChoice": {
+            "nadson_meet": true
+          }
+        }
+      },
+      {
+        "id": "choice3",
+        "text": "Вернуться",
+        "nextScene": "scene32"
+      }
+  ],
+  "requirements": {},
+  "rewards": {
+    "experience": 0,
+    "coins": 0
+  }
+} 

@@ -21,14 +21,32 @@
   "choices": [    
     
       {
-        "id": "dulapeepa_meet",
+        "id": "choice1",
         "text": "Хорошо, пойду его искать",
         "nextScene": "scene26",
-        
+        "requirements": {
+          "importantChoice": {
+            "svet_meet": null
+          }
+        }
+      },
+      {
+        "id": "dulapeepa_found",
+        "text": "Я нашел Мишу, он на чердаке",
+        "nextScene": "scene47_found",
         "important": true,
-  "value": "true",
-  "description": "Знакомство с Дулапеепой",
-  "consequences": ["выбор 1"]
+        "value": "true",
+        "description": "Поиск Миши",
+        "consequences": ["выбор 1"],
+        "requirements": {
+          "importantChoice": {
+            "svet_meet": "true"
+          }
+        },
+        "relationships": {
+          "dulapeepa": 20,
+          "svet": -20
+        }
       }
   ],
   "requirements": {},

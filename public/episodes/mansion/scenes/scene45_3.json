@@ -1,0 +1,29 @@
+{
+  "id": "scene32",
+  "name": "Добро пожаловать в игру",
+  "background": "sprites/episodes/locations/mansion/mansion_second_floor_11zon.png",
+  "characters": [
+
+   
+  ],
+  "dialogue": [
+    {
+      "speaker": "narrator",
+      "text": "Дверь никто не открывает",
+      "emotion": "happy"
+    }
+  ],
+  "choices": [
+
+      {
+        "id": "choice1",
+        "text": "Вернуться",
+        "nextScene": "scene32"
+      }
+  ],
+  "requirements": {},
+  "rewards": {
+    "experience": 0,
+    "coins": 0
+  }
+} 

@@ -1,0 +1,48 @@
+{
+  "id": "scene32",
+  "name": "Добро пожаловать в игру",
+  "background": "sprites/episodes/locations/mansion/mansion_second_floor_11zon.png",
+  "characters": [
+
+   
+  ],
+  "dialogue": [
+    {
+      "speaker": "narrator",
+      "text": "Дверь никто не открывает",
+      "emotion": "happy"
+    },
+    {
+      "speaker": "narrator",
+      "text": "Шум привлек внимание охранника",
+      "emotion": "happy"
+    },
+    {
+      "speaker": "artess_god",
+      "text": "Вы доставляете слишком много хлопот",
+      "emotion": "happy"
+    },
+    {
+      "speaker": "artess_god",
+      "text": "Я вас выведу отсюда",
+      "emotion": "happy"
+    }
+  ],
+  "choices": [
+
+      {
+        "id": "choice1",
+        "text": "Уйти",
+        "nextScene": "scene26",
+        "relationships": {
+          "artess_god": -10,
+          "bakshi": -10
+        }
+      }
+  ],
+  "requirements": {},
+  "rewards": {
+    "experience": 0,
+    "coins": 0
+  }
+} 

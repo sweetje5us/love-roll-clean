@@ -1,0 +1,51 @@
+{
+  "id": "scene36_1",
+  "name": "Добро пожаловать в игру",
+  "background": "sprites/episodes/locations/mansion/guest_room_bedroom_11zon.png",
+  "characters": [
+
+   
+  ],
+  "dialogue": [
+    {
+      "speaker": "nadson",
+      "text": "Сегодня здесь много гостей",
+      "emotion": "happy"
+    },
+    {
+      "speaker": "nadson",
+      "text": "всех и не упомнишь",
+      "emotion": "happy"
+    },
+    
+    {
+      "speaker": "nadson",
+      "text": "Хотя об одном из гостей я не перестаю думать, а знаете почему?",
+      "emotion": "happy"
+    },
+    {
+      "speaker": "narrator",
+      "text": "Вы слышите храп за стенкой? Этот гость даже не будучи на виду привлекает к себе внимание",
+      "emotion": "happy"
+    }
+  ],
+  "choices": [
+    
+
+      {
+        "id": "choice1",
+        "text": "Дополнительные действия",
+        "nextScene": "scene48_check"
+      },
+      {
+        "id": "choice2",
+        "text": "Уйти",
+        "nextScene": "scene32"
+      }
+  ],
+  "requirements": {},
+  "rewards": {
+    "experience": 0,
+    "coins": 0
+  }
+} 

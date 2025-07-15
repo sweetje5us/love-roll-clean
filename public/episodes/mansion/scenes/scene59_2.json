@@ -1,0 +1,29 @@
+{
+    "id": "scene59_2",
+    "name": "Открытие двери (провал)",
+    "background": "sprites/episodes/locations/mansion/attic_inside_day.png",
+    "characters": [
+  
+     
+    ],
+    "dialogue": [
+      {
+        "speaker": "svet",
+        "text": "Я не стану так делать! я останусь тут",
+        "emotion": "happy"
+      }
+    ],
+    "choices": [
+      {
+        "id": "choice1",
+        "text": "уйти",
+        "nextScene": "scene32"
+      }
+    ],
+
+    "requirements": {},
+    "rewards": {
+      "experience": 0,
+      "coins": 0
+    }
+  } 

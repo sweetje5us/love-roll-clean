@@ -37,7 +37,7 @@
       {
         "id": "choice1",
         "text": "Спасибо, на этом все.",
-        "nextScene": "scene23",
+        "nextScene": "scene17_full_meeting",
         "effects": {
           "relationship": {
             "oleg": 10
@@ -46,19 +46,8 @@
       },
       {
         "id": "choice2",
-        "text": "[Харизма] Расскажите о господине Диметрио",
-        "diceCheck": {
-          "stat": "charisma",
-          "difficulty": 15,
-          "description": "Попытка обмануть Николая, сказав что знаешь систему",
-          "results": {
-            "critical_success": "scene29_2",
-            "success": "scene29_1",
-            "failure": "scene29_3",
-            "critical_failure": "scene29_4"
-          }
-        },
-        "nextScene": "scene29_3"
+        "text": "Дополнительные действия",
+        "nextScene": "scene29_check"
       },
       {
         "id": "choice3",

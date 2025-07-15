@@ -1,0 +1,29 @@
+{
+    "id": "scene58",
+    "name": "Открытие двери (успех)",
+    "background": "sprites/episodes/locations/mansion/attic_inside_day.png",
+    "characters": [
+  
+     
+    ],
+    "dialogue": [
+      {
+        "speaker": "svet",
+        "text": "Отлично, ну и куда спрятаться?",
+        "emotion": "happy"
+      }
+    ],
+    "choices": [
+      {
+        "id": "choice1",
+        "text": "В комнату с камином",
+        "nextScene": "scene59_1"
+      }
+    ],
+
+    "requirements": {},
+    "rewards": {
+      "experience": 0,
+      "coins": 0
+    }
+  } 

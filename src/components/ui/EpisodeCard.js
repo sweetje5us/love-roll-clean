@@ -31,7 +31,12 @@ const EpisodeCard = ({ episode, episodeData, types, ageRatings, onOpenModal }) =
             alt={episode.name}
             className="episode-image"
             onError={(e) => {
-              e.target.src = getStaticPath('sprites/episodes/locations/school/school_building.png'); // fallback
+              // Используем разные fallback изображения в зависимости от типа эпизода
+              if (episode.type === 'detective') {
+                e.target.src = getStaticPath('sprites/episodes/locations/mansion/mansion_inside.png');
+              } else {
+                e.target.src = getStaticPath('sprites/episodes/locations/school/school_building.png');
+              }
             }}
           />
         ) : (

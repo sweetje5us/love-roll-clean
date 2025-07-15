@@ -3,7 +3,7 @@
   "name": "Поместье",
   "description": "Детективное расследование",
   "longDescription": "Этот эпизод поможет вам освоить все основные механики игры. Вы научитесь взаимодействовать с персонажами, принимать решения и понимать последствия своих выборов. Пройдите через простые ситуации, чтобы понять, как работает система диалогов, выборов и последствий.",
-"preview": "sprites/episodes/locations/mansion/mansion_outside.png",
+  "preview": "sprites/episodes/locations/mansion/mansion_outside.png",
   "type": "detective",
   "ageRating": "0+",
   "duration": "60-75 минут",

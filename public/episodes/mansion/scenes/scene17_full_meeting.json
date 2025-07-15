@@ -1,0 +1,48 @@
+{
+  "id": "scene17",
+  "name": "Добро пожаловать в игру",
+  "background": "sprites/episodes/locations/mansion/mansion_room_with_people_11zon.png",
+  "characters": [
+
+   
+  ],
+  "dialogue": [
+    {
+      "speaker": "narrator",
+      "text": "Выберите с кем поговорить",
+      "emotion": "happy"
+    }
+  ],
+  "choices": [
+    {
+      "id": "choice1",
+      "text": "Человек в пиджаке",
+      "nextScene": "scene17_meeting",
+      "requirements": {
+        "importantChoice": {
+          "oleg_meet": null
+        }
+      }
+    },  
+    {
+      "id": "choice2",
+      "text": "Человек в спортивной одежде",
+      "nextScene": "scene31_meeting",
+      "requirements": {
+        "importantChoice": {
+          "splash_meet": null
+        }
+      }
+    },
+    {
+      "id": "choice3",
+      "text": "Осмотреть дом",
+      "nextScene": "scene26"
+    }
+  ],
+  "requirements": {},
+  "rewards": {
+    "experience": 0,
+    "coins": 0
+  }
+} 

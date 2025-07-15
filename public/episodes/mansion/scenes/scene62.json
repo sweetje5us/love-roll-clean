@@ -34,7 +34,7 @@
       {
         "id": "choice2",
         "text": "Подойти поздороваться",
-        "nextScene": "scene63"
+        "nextScene": "scene63_meeting"
       }
   ],
   "requirements": {},

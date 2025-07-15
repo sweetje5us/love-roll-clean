@@ -1,0 +1,51 @@
+{
+  "id": "scene36_1",
+  "name": "Добро пожаловать в игру",
+  "background": "sprites/episodes/locations/mansion/guest_room_bedroom_11zon.png",
+  "characters": [
+
+   
+  ],
+  "dialogue": [
+
+    {
+      "speaker": "player",
+      "text": "Все будет хорошо, вы можете поделиться переживаниями",
+      "emotion": "happy"
+    },
+    {
+      "speaker": "nadson",
+      "text": "Владимир! Здесь кое-кто лезет не в свое дело!",
+      "emotion": "happy"
+    },
+    {
+      "speaker": "artess_god",
+      "text": "Вы доставляете слишком много хлопот",
+      "emotion": "happy"
+    },
+    {
+      "speaker": "artess_god",
+      "text": "Я вас выведу отсюда",
+      "emotion": "happy"
+    }
+  ],
+  "choices": [
+    
+    {
+      "id": "choice1",
+      "text": "Выйти",
+      "nextScene": "scene26",
+      "relationships": {
+        "artess_god": -10,
+        "nadson": -10
+      }
+     
+    }
+      
+  ],
+  "requirements": {},
+  "rewards": {
+    "experience": 0,
+    "coins": 0
+  }
+} 

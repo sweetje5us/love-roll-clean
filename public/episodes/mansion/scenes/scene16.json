@@ -9,12 +9,7 @@
   "dialogue": [
     {
       "speaker": "dan",
-      "text": "Привет, детектив!",
-      "emotion": "happy"
-    },
-    {
-      "speaker": "dan",
-      "text": "Спасибо что смогли приехать",
+      "text": "Меня зовут Дэн,",
       "emotion": "happy"
     },
     {
@@ -42,11 +37,8 @@
           "relationship": {
             "dan": 10
           }
-        },
-        "important": true,
-  "value": "true",
-  "description": "Знакомство с Даном",
-  "consequences": ["выбор 1"]
+        }
+
       },
       {
         "id": "choice2",
@@ -57,11 +49,6 @@
             "dan": -10
           }
         }
-      },
-      {
-        "id": "choice3",
-        "text": "Расскажите про гостей",
-        "nextScene": "scene18"
       }
   ],
   "requirements": {},

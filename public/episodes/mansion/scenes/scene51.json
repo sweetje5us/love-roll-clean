@@ -21,8 +21,17 @@
   "choices": [
      
       {
-        "id": "choice1",
+        "id": "door_second_floor_check",
         "text": "[Решительность] Открыть дверь",
+        "important": true,
+        "value": "true",
+        "description": "Попытка открыть дверь",
+        "consequences": ["выбор 1"],
+        "requirements": {
+          "importantChoice": {
+            "door_second_floor_check": null
+          }
+        },
         "diceCheck": {
           "stat": "determination",
           "difficulty": 12,
@@ -36,8 +45,19 @@
         },
         "nextScene": "scene36_1"
       },
+{
+  "id": "choice2",
+  "text": "Открыть дверь",
+  "nextScene": "scene36_1",
+  "requirements": {
+    "importantChoice": {
+      "door_second_floor_check": true
+    }
+  }
+},
+
       {
-        "id": "choice2",
+        "id": "choice3",
         "text": "Вернуться",
         "nextScene": "scene26"
       }

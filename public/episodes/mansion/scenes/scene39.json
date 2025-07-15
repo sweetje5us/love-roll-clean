@@ -9,17 +9,17 @@
   "dialogue": [
     {
       "speaker": "artess_god",
-      "text": "Господин Диметрио занят",
+      "text": "Я Владимир, охранник Диметрио",
       "emotion": "happy"
     },
     {
       "speaker": "artess_god",
-      "text": "Как только он освободится, он выйдет к гостям",
+      "text": "Если вы будете себя плохо вести,",
       "emotion": "happy"
     },
     {
-      "speaker": "narrator",
-      "text": "Пожалуйста не делайте глупостей",
+      "speaker": "artess_god",
+      "text": "Будете иметь дело со мной",
       "emotion": "happy"
     }
   ],
@@ -27,11 +27,20 @@
       {
         "id": "choice1",
         "text": "Вернуться назад",
-        "nextScene": "scene26"
+        "nextScene": "scene34"
       },
       {
-        "id": "choice2",
+        "id": "dimetrio_door_check2",
         "text": "[Решительность] Дернуть ручку двери",
+        "important": true,
+        "value": "true",
+        "description": "Попытка открыть дверь",
+        "consequences": ["выбор 1"],
+        "requirements": {
+          "importantChoice": {
+            "dimetrio_door_check2": null
+          }
+        },
         "diceCheck": {
           "stat": "determination",
           "difficulty": 12,

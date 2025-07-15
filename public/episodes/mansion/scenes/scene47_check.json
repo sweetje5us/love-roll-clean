@@ -1,0 +1,70 @@
+{
+  "id": "scene36_1",
+  "name": "Добро пожаловать в игру",
+  "background": "sprites/episodes/locations/mansion/guest_room_bedroom_11zon.png",
+  "characters": [
+
+   
+  ],
+  "dialogue": [
+    {
+      "speaker": "narrator",
+      "text": "Дополнительные действия",
+      "emotion": "angry"
+    }
+    
+  ],
+  "choices": [
+    
+      {
+        "id": "dulapeepa_check2",
+        "text": "[Решительность] Помочь тебе найти Мишу?",
+        "important": true,
+        "value": "true",
+        "description": "Попытка открыть дверь",
+        "consequences": ["выбор 1"],
+        "requirements": {
+          "importantChoice": {
+            "dulapeepa_check2": null
+          }
+        },
+        "diceCheck": {
+          "stat": "determination",
+          "difficulty": 12,
+          "description": "Попытка открыть дверь",
+          "results": {
+            "critical_success": "scene47_2",
+            "success": "scene47_1",
+            "failure": "scene47_3",
+            "critical_failure": "scene47_4"
+          }
+        },
+        "nextScene": "scene47_1"
+      },
+      {
+        "id": "pet_show_dulapeepa",
+        "text": "Показать питомца",
+        "important": true,
+        "value": "true",
+        "description": "Показать питомца",
+        "consequences": ["выбор 1"],
+        "requirements": {
+          "importantChoice": {
+            "pet_show_dulapeepa": null
+          }
+        },
+        "nextScene": "scene47_pet_show",
+        "specialInteraction": "pet_play"
+      },
+      {
+        "id": "choice5",
+        "text": "Вернуться",
+        "nextScene": "scene36_meeting"
+      }
+  ],
+  "requirements": {},
+  "rewards": {
+    "experience": 0,
+    "coins": 0
+  }
+} 

@@ -17,7 +17,7 @@
       {
         "id": "choice1",
         "text": "Завести с кем-нибудь разговор.",
-        "nextScene": "scene17"
+        "nextScene": "scene17_full_meeting"
       },
       {
         "id": "choice2",

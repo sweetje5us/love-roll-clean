@@ -1,0 +1,53 @@
+{
+  "id": "scene53_1",
+  "name": "Добро пожаловать в игру",
+  "background": "sprites/episodes/locations/mansion/mansion_cabinet_11zon.png",
+  "characters": [
+
+   
+  ],
+  "dialogue": [
+    {
+      "speaker": "narrator",
+      "text": "Продолжение настаивать на открытии двери в кабинет",
+      "emotion": "happy"
+    }
+  ],
+  "choices": [
+    {
+      "id": "artess_god_check2",
+      "text": "[Решительность] Увернуться от охранника, и зайти в кабинет",
+      "important": true,
+      "value": "true",
+      "description": "Попытка открыть дверь",
+      "consequences": ["выбор 1"],
+      "requirements": {
+        "importantChoice": {  
+          "artess_god_check2": null
+        }
+      },
+      "diceCheck": {
+        "stat": "determination",
+        "difficulty": 12,
+        "description": "Попытка открыть дверь",
+        "results": {
+          "critical_success": "scene53_2",
+          "success": "scene53_1",
+          "failure": "scene53_3",
+          "critical_failure": "scene53_4"
+        }
+      },
+      "nextScene": "scene53_1"
+    },
+    {
+      "id": "choice2",
+      "text": "Вернуться назад",
+      "nextScene": "scene34"
+    }
+  ],
+  "requirements": {},
+  "rewards": {
+    "experience": 0,
+    "coins": 0
+  }
+} 

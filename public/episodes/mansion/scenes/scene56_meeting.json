@@ -1,6 +1,6 @@
 {
-    "id": "scene57",
-    "name": "Открытие двери (Критический успех)",
+    "id": "scene56_1",
+    "name": "Открытие двери (успех)",
     "background": "sprites/episodes/locations/mansion/attic_inside_day.png",
     "characters": [
   
@@ -14,6 +14,8 @@
       }
     ],
     "choices": [
+
+    
       {
         "id": "svet_meet",
         "text": "Тебя искала Лиза",
@@ -22,16 +24,28 @@
           "importantChoice": {
             "dulapeepa_meet": "true"
           }
-        },
+        }
+      },
+      {
+        "id": "pet_show_dulapeepa",
+        "text": "Показать питомца",
         "important": true,
-  "value": "true",
-  "description": "Знакомство с Светом",
-  "consequences": ["выбор 1"]
+        "value": "true",
+        "description": "Показать питомца",
+        "consequences": ["выбор 1"],
+        "requirements": {
+          "importantChoice": {
+            "pet_show_dulapeepa": null
+          }
+        },
+        "nextScene": "scene56_pet_show",
+        "specialInteraction": "pet_play"
       },
         {
-          "id": "choice2",
+          "id": "choice3",
           "text": "Вернуться назад",
           "nextScene": "scene32"
+    
         }
     ],
     "requirements": {},

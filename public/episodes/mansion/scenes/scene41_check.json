@@ -1,0 +1,53 @@
+{
+  "id": "scene41_1",
+  "name": "Добро пожаловать в игру",
+  "background": "sprites/episodes/locations/mansion/mansion_door_cab_11zon.png",
+  "characters": [
+
+   
+  ],
+  "dialogue": [
+    {
+      "speaker": "narrator",
+      "text": "Дополнительные действия",
+      "emotion": "happy"
+    }
+  ],
+  "choices": [
+    {
+      "id": "artess_god_check",
+      "text": "[Решительность] Дернуть ручку двери",
+      "important": true,
+      "value": "true",
+      "description": "Попытка открыть дверь",
+      "consequences": ["выбор 1"],
+      "requirements": {
+        "importantChoice": {
+          "artess_god_meet": null
+        }
+      },
+      "diceCheck": {
+        "stat": "determination",
+        "difficulty": 12,
+        "description": "Попытка открыть дверь",
+        "results": {
+          "critical_success": "scene41_2",
+          "success": "scene41_1",
+          "failure": "scene41_3",
+          "critical_failure": "scene41_4"
+        }
+      },
+      "nextScene": "scene41_1"
+    },
+    {
+      "id": "choice2",
+      "text": "Вернуться назад",
+      "nextScene": "scene34"
+    }
+  ],
+  "requirements": {},
+  "rewards": {
+    "experience": 0,
+    "coins": 0
+  }
+} 

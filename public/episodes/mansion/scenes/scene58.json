@@ -14,18 +14,18 @@
       }
     ],
     "choices": [
-      
       {
         "id": "choice1",
-        "text": "Кто ты?",
-        "nextScene": "scene57"
+        "text": "Дополнительные действия",
+        "nextScene": "scene58_check"
       },
-        {
-          "id": "choice2",
-          "text": "Вернуться назад",
-          "nextScene": "scene32"
-        }
+      {
+        "id": "choice5",
+        "text": "Вернуться назад",
+        "nextScene": "scene32"
+      }
     ],
+
     "requirements": {},
     "rewards": {
       "experience": 0,

@@ -27,7 +27,7 @@
       {
         "id": "choice1",
         "text": "Завести новые знакомства",
-        "nextScene": "scene17"
+        "nextScene": "scene17_full_meeting"
       },
       {
         "id": "choice2",

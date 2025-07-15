@@ -26,9 +26,13 @@
   "choices": [
     
       {
-        "id": "choice2",
+        "id": "dimetrio_meet",
         "text": "Отправиться в гостевую комнату",
         "nextScene": "scene64",
+        "important": true,
+        "value": "true",
+        "description": "Знакомство с Диметрио",
+        "consequences": ["выбор 1"],
         "effects": {
           "relationship": {
             "dimetrio": 10

@@ -1,0 +1,48 @@
+{
+  "id": "scene32",
+  "name": "Добро пожаловать в игру",
+  "background": "sprites/episodes/locations/mansion/mansion_second_floor_11zon.png",
+  "characters": [
+
+   
+  ],
+  "dialogue": [
+    {
+      "speaker": "bakshi",
+      "text": "А?",
+      "emotion": "happy"
+    },
+    {
+      "speaker": "narrator",
+      "text": "Храп прервался, вы слышите как человек подходит к двери, но не открывает",
+      "emotion": "happy"
+    },
+    {
+      "speaker": "bakshi",
+      "text": "Олежа если это опять ты, я позову Владимира!",
+      "emotion": "happy"
+    }
+  ],
+  "choices": [
+
+      {
+        "id": "bakhshi_meet",
+        "text": "Поздороваться",
+        "nextScene": "scene45_meeting",
+        "important": true,
+        "value": "true",
+        "description": "Поздороваться",
+        "consequences": ["выбор 1"],
+        "requirements": {
+          "importantChoice": {
+            "bakhshi_meet": true
+          }
+        }
+      }
+  ],
+  "requirements": {},
+  "rewards": {
+    "experience": 0,
+    "coins": 0
+  }
+} 

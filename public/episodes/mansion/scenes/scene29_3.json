@@ -32,7 +32,7 @@
       {
         "id": "choice2",
         "text": "Расскажите о гостях",
-        "nextScene": "scene27"
+        "nextScene": "scene17_full_meeting"
       },
       {
         "id": "choice3",

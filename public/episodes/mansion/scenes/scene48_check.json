@@ -1,0 +1,78 @@
+{
+  "id": "scene36_1",
+  "name": "Добро пожаловать в игру",
+  "background": "sprites/episodes/locations/mansion/guest_room_bedroom_11zon.png",
+  "characters": [
+
+   
+  ],
+  "dialogue": [
+
+    {
+      "speaker": "narrator",
+      "text": "Дополнительные действия",
+      "emotion": "happy"
+    }
+  ],
+  "choices": [
+    
+      {
+        "id": "nadson_support_check",
+        "text": "[Чувствительность] Попытаться поддержать Надин",
+        "important": true,
+        "value": "true",
+        "description": "Попытка поддержать Надин",
+        "consequences": ["выбор 1"],
+        "requirements": {
+          "importantChoice": {
+            "nadson_support_check": null
+          }
+        },
+        "diceCheck": {
+          "stat": "sensitivity",
+          "difficulty": 12,
+          "description": "Попытка поддержать Надин",
+          "results": {
+            "critical_success": "scene48_2",
+            "success": "scene48_1",
+            "failure": "scene48_3",
+            "critical_failure": "scene48_4"
+          }
+        }
+      },
+      {
+        "id": "nadson_items_check",
+        "text": "Дать Надин шоколадку",
+        "important": true,
+        "value": "true",
+        
+        "requirements": {
+          "importantChoice": {
+            "nadson_items_check": null
+          }
+        },
+        "requiredItem": "chocolate",
+      "effects": {
+        "items": {
+          "remove": [
+            "chocolate"
+          ]
+        },
+        "relationships": {
+          "npc_id": 10
+        }
+      }
+      },
+
+      {
+        "id": "choice2",
+        "text": "вернуться",
+        "nextScene": "scene48"
+      }
+  ],
+  "requirements": {},
+  "rewards": {
+    "experience": 0,
+    "coins": 0
+  }
+} 

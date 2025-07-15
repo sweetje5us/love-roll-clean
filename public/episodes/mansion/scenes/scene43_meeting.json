@@ -1,0 +1,52 @@
+{
+  "id": "scene36_1",
+  "name": "Добро пожаловать в игру",
+  "background": "sprites/episodes/locations/mansion/guest_room_bedroom_11zon.png",
+  "characters": [
+
+   
+  ],
+  "dialogue": [
+    {
+      "speaker": "nadson",
+      "text": "Я Надин, жена Диметрио",
+      "emotion": "happy"
+    },
+    {
+      "speaker": "nadson",
+      "text": "Сегодня мы очень сильно ссорились",
+      "emotion": "happy"
+    },
+    {
+      "speaker": "nadson",
+      "text": "Иногда он бывает невыносимым",
+      "emotion": "happy"
+    }
+  ],
+  "choices": [
+    
+      {
+        "id": "nadson_meet",
+        "text": "Спросить про Диметрио",
+        "nextScene": "scene48"
+
+      },
+      {
+        "id": "nadson_meet",
+        "text": "Спросить про гостей",
+        "nextScene": "scene49"
+
+      },
+      {
+        "id": "nadson_meet",
+        "text": "Дополнительные действия",
+        "nextScene": "scene48_check"
+
+      }
+  ],
+  "requirements": {},
+  "rewards": {
+    "experience": 0,
+    "coins": 0
+  }
+} 

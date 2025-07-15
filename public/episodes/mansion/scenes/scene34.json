@@ -28,15 +28,24 @@
       {
         "id": "artess_god_meet",
         "text": "Заговорить с охранником",
-        "nextScene": "scene39",
+        "nextScene": "scene39_meeting",
         "important": true,
   "value": "true",
   "description": "Знакомство с Артес",
   "consequences": ["выбор 1"]
       },
       {
-        "id": "choice2",
+        "id": "dimetrio_door_check1",
         "text": "[Решительность] Дернуть ручку двери",
+        "important": true,
+        "value": "true",
+        "description": "Попытка открыть дверь",
+        "consequences": ["выбор 1"],
+        "requirements": {
+          "importantChoice": {
+            "dimetrio_door_check1": null
+          }
+        },
         "diceCheck": {
           "stat": "determination",
           "difficulty": 12,

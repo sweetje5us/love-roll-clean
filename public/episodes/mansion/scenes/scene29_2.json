@@ -37,7 +37,7 @@
       {
         "id": "choice1",
         "text": "Спасибо, на этом все.",
-        "nextScene": "scene23",
+        "nextScene": "scene17_full_meeting",
         "effects": {
           "relationship": {
             "dan": 25

@@ -33,18 +33,8 @@
       {
         "id": "choice2",
         "text": "[Решительность] Увернуться от охранника, и зайти в кабинет",
-        "diceCheck": {
-          "stat": "determination",
-          "difficulty": 12,
-          "description": "Попытка открыть дверь",
-          "results": {
-            "critical_success": "scene53_2",
-            "success": "scene53_1",
-            "failure": "scene53_3",
-            "critical_failure": "scene53_4"
-          }
-        },
-        "nextScene": "scene53_1"
+        
+        "nextScene": "scene53_check"
       }
   ],
   "requirements": {},

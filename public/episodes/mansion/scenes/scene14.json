@@ -25,7 +25,7 @@
     {
       "id": "choice1",
       "text": "Добрый вечер, не обращайте на меня внимание, я здесь не по работе.",
-      "nextScene": "scene16"
+      "nextScene": "scene16_meeting"
     }
   ],
   "requirements": {},

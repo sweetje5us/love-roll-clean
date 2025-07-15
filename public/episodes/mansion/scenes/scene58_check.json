@@ -1,0 +1,60 @@
+{
+    "id": "scene58",
+    "name": "Открытие двери (Критический успех)",
+    "background": "sprites/episodes/locations/mansion/attic_inside_day.png",
+    "characters": [
+  
+     
+    ],
+    "dialogue": [
+      {
+        "speaker": "svet",
+        "text": "Дополнительные действия",
+        "emotion": "happy"
+      }
+    ],
+    "choices": [
+      {
+        "id": "pet_show_svet",
+        "text": "Показать питомца",
+        "important": true,
+        "value": "true",
+        "description": "Показать питомца Мише",
+        "consequences": ["выбор 1"],
+        "requirements": {
+          "importantChoice": {
+            "pet_show_svet": null
+          }
+        },
+        "nextScene": "scene56_pet_show",
+        "specialInteraction": "pet_play"
+      },
+      {
+        "id": "svet_hide_check",
+        "text": "[Интеллект] Предложить место чтобы спрятаться получше",
+        "nextScene": "scene56_pet_show",
+        "diceCheck": {
+          "stat": "intelligence",
+          "difficulty": 15,
+          "description": "Попытка предложить место чтобы спрятаться получше",
+          "results": {
+            "critical_success": "scene58_2",
+            "success": "scene58_1",
+            "failure": "scene58_3",
+            "critical_failure": "scene58_4"
+          }
+        }
+      },
+      {
+        "id": "choice5",
+        "text": "Вернуться назад",
+        "nextScene": "scene32"
+      }
+    ],
+
+    "requirements": {},
+    "rewards": {
+      "experience": 0,
+      "coins": 0
+    }
+  } 

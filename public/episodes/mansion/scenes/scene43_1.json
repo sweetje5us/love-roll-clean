@@ -1,0 +1,48 @@
+{
+  "id": "scene36_1",
+  "name": "Добро пожаловать в игру",
+  "background": "sprites/episodes/locations/mansion/guest_room_bedroom_11zon.png",
+  "characters": [
+    {
+      "id": "nadson",
+      "position": "center", 
+      "name": "Надин"
+    }
+   
+  ],
+  "dialogue": [
+    {
+      "speaker": "narrator",
+      "text": "Вы зашли в главную спальню",
+      "emotion": "happy"
+    },
+    {
+      "speaker": "narrator",
+      "text": "Вы видите девушку, которая плачет",
+      "emotion": "happy"
+    },
+    {
+      "speaker": "narrator",
+      "text": "Когда вы зашли, она замолчала",
+      "emotion": "happy"
+    }
+    
+  ],
+  "choices": [
+    
+      {
+        "id": "nadson_meet",
+        "text": "Представиться, и спросить что с ней",
+        "nextScene": "scene43_meeting",
+        "important": true,
+  "value": "true",
+  "description": "Знакомство с Надин",
+  "consequences": ["выбор 1"]
+      }
+  ],
+  "requirements": {},
+  "rewards": {
+    "experience": 0,
+    "coins": 0
+  }
+} 

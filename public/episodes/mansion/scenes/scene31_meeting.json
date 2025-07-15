@@ -1,0 +1,37 @@
+{
+  "id": "scene31",
+  "name": "Добро пожаловать в игру",
+  "background": "sprites/episodes/locations/mansion/mansion_room_with_people_11zon.png",
+  "characters": [
+
+   
+  ],
+  "dialogue": [
+    {
+      "speaker": "splash",
+      "text": "Добрый день!",
+      "emotion": "happy"
+    }
+  ],
+  "choices": [
+          {
+        "id": "splash_meet",
+        "text": "Кто вы?",
+        "nextScene": "scene31",
+        "effects": {
+          "relationship": {
+            "splash": -10
+          }
+        },
+        "important": true,
+  "value": "true",
+  "description": "Знакомство с Splash",
+  "consequences": ["выбор 1"]
+      }
+  ],
+  "requirements": {},
+  "rewards": {
+    "experience": 0,
+    "coins": 0
+  }
+} 

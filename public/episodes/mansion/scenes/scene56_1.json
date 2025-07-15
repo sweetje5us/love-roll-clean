@@ -17,29 +17,12 @@
       {
         "id": "choice1",
         "text": "Кто ты?",
-        "nextScene": "scene57"
-      },
-    
-      {
-        "id": "svet_meet",
-        "text": "Тебя искала Лиза",
-        "nextScene": "scene58",
-        "requirements": {
-          "importantChoice": {
-            "dulapeepa_meet": "true"
-          }
-        },
+        "nextScene": "scene56_meeting",
         "important": true,
-  "value": "true",
-  "description": "Знакомство с Светом",
-  "consequences": ["выбор 1"]
-      },
-        {
-          "id": "choice3",
-          "text": "Вернуться назад",
-          "nextScene": "scene32"
-    
-        }
+        "value": "true",
+        "description": "Знакомство с Светом",
+        "consequences": ["выбор 1"]
+      }
     ],
     "requirements": {},
     "rewards": {

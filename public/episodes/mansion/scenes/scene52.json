@@ -1,45 +1,28 @@
 {
-  "id": "scene52",
+  "id": "scene32",
   "name": "Добро пожаловать в игру",
-  "background": "sprites/episodes/locations/mansion/attic_door_11zon.png",
+  "background": "sprites/episodes/locations/mansion/mansion_second_floor_11zon.png",
   "characters": [
 
    
   ],
   "dialogue": [
-        {
-      "speaker": "narrator",
-      "text": "Вы подошли к двери чердака",
-      "emotion": "angry"
+    {
+      "speaker": "bakshi",
+      "text": "У меня проблемы со сном",
+      "emotion": "happy"
     },
     {
-      "speaker": "narrator",
-      "text": "Дверь на чердак закрыта",
-      "emotion": "angry"
+      "speaker": "bakshi",
+      "text": "Могу я лечь спать обратно?",
+      "emotion": "happy"
     }
   ],
   "choices": [
       {
         "id": "choice1",
-        "text": "Вернуться назад",
+        "text": "Вернуться",
         "nextScene": "scene32"
-      },
-     
-      {
-        "id": "choice2",
-        "text": "[Коварство] Попытаться взломать дверь",
-        "diceCheck": {
-          "stat": "cunning",
-          "difficulty": 12,
-          "description": "Попытка открыть дверь",
-          "results": {
-            "critical_success": "scene54_2",
-            "success": "scene54_1",
-            "failure": "scene54_3",
-            "critical_failure": "scene54_4"
-          }
-        },
-        "nextScene": "scene54_1"
       }
   ],
   "requirements": {},

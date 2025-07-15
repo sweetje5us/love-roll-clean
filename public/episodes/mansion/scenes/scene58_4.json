@@ -1,0 +1,29 @@
+{
+    "id": "scene58_4",
+    "name": "Открытие двери (провал)",
+    "background": "sprites/episodes/locations/mansion/attic_inside_day.png",
+    "characters": [
+  
+     
+    ],
+    "dialogue": [
+      {
+        "speaker": "svet",
+        "text": "Отлично, ну и куда спрятаться?",
+        "emotion": "happy"
+      }
+    ],
+    "choices": [
+      {
+        "id": "choice1",
+        "text": "Можешь убежать в лес",
+        "nextScene": "scene59_2"
+      }
+    ],
+
+    "requirements": {},
+    "rewards": {
+      "experience": 0,
+      "coins": 0
+    }
+  } 

@@ -9,45 +9,11 @@
   "dialogue": [
     {
       "speaker": "splash",
-      "text": "Добрый день!",
-      "emotion": "happy"
-    },
-    {
-      "speaker": "splash",
-      "text": "Прекрасная атмосфера здесь, правда?",
-      "emotion": "happy"
-    },
-    {
-      "speaker": "splash",
-      "text": "Ах, да, я забыл представиться",
-      "emotion": "smirk"
-    },
-    {
-      "speaker": "splash",
-      "text": "Вы должно быть видели меня, ведь я довольноизвестный человек",
-      "emotion": "neutral"
-    },
-    {
-      "speaker": "splash",
-      "text": "Ну что, вспомнили?",
-      "emotion": "neutral"
+      "text": "Я Дмитрий Сплэш, футболист из команды Диметрио",
+      "emotion": "angry"
     }
   ],
   "choices": [
-          {
-        "id": "splash_meet",
-        "text": "Расскажите о себе",
-        "nextScene": "scene35",
-        "effects": {
-          "relationship": {
-            "splash": -10
-          }
-        },
-        "important": true,
-  "value": "true",
-  "description": "Знакомство с Splash",
-  "consequences": ["выбор 1"]
-      },
       {
         "id": "choice2",
         "text": "Это все хорошо, но я ищу господина Диметрио",
@@ -60,7 +26,7 @@
       },
       {
         "id": "choice3",
-        "text": "Может кто-то из гостей может вас представить?",
+        "text": "Знаете ли вы кого-то из гостей?",
         "nextScene": "scene33",
         "effects": {
           "relationship": {

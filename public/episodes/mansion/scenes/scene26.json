@@ -32,7 +32,8 @@
       {
         "id": "choice3",
         "text": "Осмотреть гостевую спальню первого этажа",
-        "nextScene": "scene28"
+        "nextScene": "scene28_check"
+        
       },
       {
         "id": "choice4",

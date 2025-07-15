@@ -27,11 +27,8 @@
     {
       "id": "dulapeepa_meet",
       "text": "Хорошо, пойду его искать",
-      "nextScene": "scene26",
-      "important": true,
-"value": "true",
-"description": "Знакомство с Дулапеепой",
-"consequences": ["выбор 1"]
+      "nextScene": "scene26"
+
     }
   ],
   "requirements": {},

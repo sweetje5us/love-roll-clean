@@ -1,0 +1,39 @@
+{
+  "id": "scene32",
+  "name": "Добро пожаловать в игру",
+  "background": "sprites/episodes/locations/mansion/mansion_second_floor_11zon.png",
+  "characters": [
+
+   
+  ],
+  "dialogue": [
+    {
+      "speaker": "bakshi",
+      "text": "Меня зовут Бахши",
+      "emotion": "happy"
+    },
+    {
+      "speaker": "bakshi",
+      "text": "Могу я лечь спать обратно?",
+      "emotion": "happy"
+    }
+  ],
+  "choices": [
+
+      {
+        "id": "choice1",
+        "text": "Вы мешаете людям своим храпом",
+        "nextScene": "scene52"
+      },
+      {
+        "id": "choice1",
+        "text": "Уйти",
+        "nextScene": "scene32"
+      }
+  ],
+  "requirements": {},
+  "rewards": {
+    "experience": 0,
+    "coins": 0
+  }
+} 

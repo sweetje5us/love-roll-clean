@@ -23,18 +23,8 @@
     {
       "id": "choice1",
       "text": "[Чувствительность] Осмотреться",
-      "diceCheck": {
-        "stat": "sensitivity",
-        "difficulty": 12,
-        "description": "Попытка открыть дверь",
-        "results": {
-          "critical_success": "scene56_2",
-          "success": "scene56_1",
-          "failure": "scene56_3",
-          "critical_failure": "scene56_4"
-        }
-      },
-      "nextScene": "scene56_1"
+      
+      "nextScene": "scene56_check"
     },
       {
         "id": "choice2",

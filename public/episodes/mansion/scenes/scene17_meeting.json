@@ -1,0 +1,33 @@
+{
+  "id": "scene17",
+  "name": "Добро пожаловать в игру",
+  "background": "sprites/episodes/locations/mansion/mansion_room_with_people_11zon.png",
+  "characters": [
+
+   
+  ],
+  "dialogue": [
+    {
+      "speaker": "oleg",
+      "text": "Добрый день!",
+      "emotion": "happy"
+    }
+  ],
+  "choices": [
+      
+      {
+        "id": "oleg_meet",
+        "text": "Кто вы?",
+        "nextScene": "scene17",
+        "important": true,
+  "value": "true",
+  "description": "Знакомство с Олегом",
+  "consequences": ["выбор 1"]
+      }
+  ],
+  "requirements": {},
+  "rewards": {
+    "experience": 0,
+    "coins": 0
+  }
+} 

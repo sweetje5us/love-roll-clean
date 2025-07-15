@@ -1,0 +1,41 @@
+{
+    "id": "scene59_1",
+    "name": "Открытие двери (провал)",
+    "background": "sprites/episodes/locations/mansion/attic_inside_day.png",
+    "characters": [
+  
+     
+    ],
+    "dialogue": [
+      {
+        "speaker": "svet",
+        "text": "Хорошо, я спрячусь в комнате с камином",
+        "emotion": "happy"
+      },
+      {
+        "speaker": "svet",
+        "text": "Вот тебе за помощь!",
+        "emotion": "happy"
+      }
+    ],
+    "choices": [
+      {
+        "id": "choice1",
+        "text": "Спасибо за подарок, я пойду",
+        "nextScene": "scene32",
+        "effects": {
+          "items": {
+            "add": [
+              "cockatrice"
+            ]
+          }      
+        }
+      }
+    ],
+
+    "requirements": {},
+    "rewards": {
+      "experience": 0,
+      "coins": 0
+    }
+  } 

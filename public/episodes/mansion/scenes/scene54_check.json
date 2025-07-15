@@ -1,0 +1,70 @@
+{
+  "id": "scene52",
+  "name": "Добро пожаловать в игру",
+  "background": "sprites/episodes/locations/mansion/attic_door_11zon.png",
+  "characters": [
+
+   
+  ],
+  "dialogue": [
+        {
+      "speaker": "narrator",
+      "text": "Вы подошли к двери чердака",
+      "emotion": "angry"
+    },
+    {
+      "speaker": "narrator",
+      "text": "Дверь на чердак закрыта",
+      "emotion": "angry"
+    }
+  ],
+  "choices": [
+      {
+        "id": "choice1",
+        "text": "Вернуться назад",
+        "nextScene": "scene32"
+      },
+     
+      {
+        "id": "attic_check",
+        "text": "[Коварство] Попытаться взломать дверь",
+        "important": true,
+        "value": "true",
+        "description": "Попытка открыть дверь",
+        "consequences": ["выбор 1"],
+        "requirements": {
+          "importantChoice": {
+            "attic_check": null
+          }
+        },
+        "diceCheck": {
+          "stat": "cunning",
+          "difficulty": 12,
+          "description": "Попытка открыть дверь",
+          "results": {
+            "critical_success": "scene54_2",
+            "success": "scene54_1",
+            "failure": "scene54_3",
+            "critical_failure": "scene54_4"
+          }
+        },
+        "nextScene": "scene54_1"
+      },
+      {
+        "id": "open_door",
+        "text": "Открыть дверь",
+
+        "requirements": {
+          "importantChoice": {
+            "dulapeepa_meet": "true"
+          }
+        },
+        "nextScene": "scene56_check"
+      }
+  ],
+  "requirements": {},
+  "rewards": {
+    "experience": 0,
+    "coins": 0
+  }
+} 

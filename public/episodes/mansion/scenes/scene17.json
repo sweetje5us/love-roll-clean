@@ -38,27 +38,12 @@
       {
         "id": "oleg_meet",
         "text": "Расскажите о себе",
-        "nextScene": "scene25",
-        "important": true,
-  "value": "true",
-  "description": "Знакомство с Олегом",
-  "consequences": ["выбор 1"]
+        "nextScene": "scene25"
       },
       {
         "id": "choice2",
-        "text": "[Убеждение] Расскажите о господине Диметрио",
-        "diceCheck": {
-          "stat": "charisma",
-          "difficulty": 12,
-          "description": "Попытка убедить Олега рассказать о господине Диметрио",
-          "results": {
-            "critical_success": "scene29_2",
-            "success": "scene29_1",
-            "failure": "scene29_3",
-            "critical_failure": "scene29_4"
-          }
-        },
-        "nextScene": "scene29_1"
+        "text": "Дополнительные действия",
+        "nextScene": "scene29_check"
       },
       {
         "id": "choice3",

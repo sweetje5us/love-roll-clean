@@ -143,11 +143,19 @@ const EPISODE_FOLDERS = [
 // Загрузка конфигурации эпизода из его папки
 export const loadEpisodeConfig = async (episodeId) => {
   try {
+    console.log(`loadEpisodeConfig: загружаем конфигурацию для эпизода ${episodeId}`);
     const response = await fetch(`/episodes/${episodeId}/config.json`);
     if (!response.ok) {
       throw new Error(`Не удалось загрузить конфигурацию эпизода ${episodeId}`);
     }
     const config = await response.json();
+    
+    console.log(`loadEpisodeConfig: конфигурация загружена для ${episodeId}:`, {
+      id: config.id,
+      name: config.name,
+      preview: config.preview,
+      type: config.type
+    });
     
     // Добавляем прогресс из сохранений
     const save = getEpisodeSave(episodeId);
@@ -180,7 +188,19 @@ export const loadAllEpisodeConfigs = async () => {
 
 // Получение превью эпизода
 export const getEpisodePreview = (episodeId, previewName) => {
-  return `/episodes/${episodeId}/${previewName}`;
+  let finalPath;
+  
+  // Если previewName уже содержит полный путь, используем его
+  if (previewName.startsWith('sprites/')) {
+    finalPath = `/${previewName}`;
+  } else {
+    // Иначе формируем путь относительно папки эпизода
+    finalPath = `/episodes/${episodeId}/${previewName}`;
+  }
+  
+  console.log(`getEpisodePreview: episodeId=${episodeId}, previewName=${previewName}, finalPath=${finalPath}`);
+  
+  return finalPath;
 };
 
 // Получение ресурсов эпизода (изображения, аудио и т.д.)

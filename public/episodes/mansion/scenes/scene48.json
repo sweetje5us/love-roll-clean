@@ -1,55 +1,42 @@
 {
-  "id": "scene48",
+  "id": "scene36_1",
   "name": "Добро пожаловать в игру",
-  "background": "sprites/episodes/locations/mansion/mansion_room_camin_11zon.png",
+  "background": "sprites/episodes/locations/mansion/guest_room_bedroom_11zon.png",
   "characters": [
 
    
   ],
   "dialogue": [
-        {
-      "speaker": "mooduck",
-      "text": "Господин Диметрио мой босс",
-      "emotion": "angry"
+    {
+      "speaker": "nadson",
+      "text": "Диметрио благородный человек",
+      "emotion": "happy"
     },
     {
-      "speaker": "mooduck",
-      "text": "Я помогаю составлять его Автобиографию",
-      "emotion": "angry"
+      "speaker": "nadson",
+      "text": "Я его люблю и очень им горжусь",
+      "emotion": "happy"
     },
     {
-      "speaker": "mooduck",
-      "text": "А он невероятно требователен, ставит сжатые сроки",
-      "emotion": "angry"
-    },
-    {
-      "speaker": "mooduck",
-      "text": "Поэтому сейчас вместо отдыха, мне приходится работать!",
-      "emotion": "angry"
+      "speaker": "narrator",
+      "text": "вы видите что произнеся эти слова Надин едва сдерживает слезы",
+      "emotion": "happy"
     }
   ],
   "choices": [
     
+
       {
-        "id": "choice1",
-        "text": "[Харизма] Может вам чем-то помочь?",
-        "diceCheck": {
-          "stat": "charisma",
-          "difficulty": 12,
-          "description": "Попытка помочь Василию Мадуку",
-          "results": {
-            "critical_success": "scene46_2",
-            "success": "scene46_1",
-            "failure": "scene46_3",
-            "critical_failure": "scene46_4"
-          }
-        },
-        "nextScene": "scene46_1"
+        "id": "nadson_meet",
+        "text": "Спросить про гостей",
+        "nextScene": "scene49"
+
       },
       {
-        "id": "choice2",
-        "text": "Что вы знаете о гостях?",
-        "nextScene": "scene50"
+        "id": "nadson_meet",
+        "text": "Дополнительные действия",
+        "nextScene": "scene48_check"
+
       }
   ],
   "requirements": {},
