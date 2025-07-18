@@ -144,18 +144,23 @@ class EpisodeManager {
         // Восстанавливаем важные выборы
         const importantChoicesMap = new Map();
         if (savedProgress.importantChoices) {
+          console.log(`Восстановление важных выборов из сохраненного прогресса:`, savedProgress.importantChoices);
           for (const [choiceId, choiceData] of Object.entries(savedProgress.importantChoices)) {
+            console.log(`Восстановление выбора ${choiceId}:`, choiceData);
             // Если choiceData - это объект с метаданными, извлекаем значение
             if (typeof choiceData === 'object' && choiceData.value !== undefined) {
               importantChoicesMap.set(choiceId, choiceData);
+              console.log(`Восстановлен выбор ${choiceId} с метаданными:`, choiceData);
             } else {
               // Если choiceData - это просто значение, создаем объект
-              importantChoicesMap.set(choiceId, {
+              const restoredChoice = {
                 value: choiceData,
                 timestamp: new Date().toISOString(),
                 chapter: savedProgress.currentChapter,
                 scene: savedProgress.currentScene
-              });
+              };
+              importantChoicesMap.set(choiceId, restoredChoice);
+              console.log(`Восстановлен выбор ${choiceId} с простым значением:`, restoredChoice);
             }
           }
         }
@@ -290,6 +295,20 @@ class EpisodeManager {
       this.currentScene = sceneId;
       
       console.log(`EpisodeManager.loadScene - сцена загружена:`, this.sceneData);
+      
+      // Проверяем важные выборы в сцене
+      if (this.sceneData.choices) {
+        console.log(`Проверяем важные выборы в сцене ${sceneId}:`);
+        this.sceneData.choices.forEach(choice => {
+          if (choice.important) {
+            console.log(`Важный выбор в сцене: ${choice.id} = ${choice.value}`);
+          }
+          if (choice.requirements && choice.requirements.importantChoice) {
+            console.log(`Требования важных выборов для ${choice.id}:`, choice.requirements.importantChoice);
+          }
+        });
+      }
+      
       return true;
     } catch (error) {
       console.error('Ошибка загрузки сцены:', error);
@@ -466,8 +485,13 @@ class EpisodeManager {
       
       // Проверяем, является ли это важным выбором
       if (choice.important) {
-        // Используем правильное значение из choice.value, а не из choiceData.value
-        const choiceValue = choice.value || choiceData.value;
+        // Используем значение из choice.value для важного выбора
+        const choiceValue = choice.value;
+        
+        console.log(`Обработка важного выбора: ${choiceId}`);
+        console.log(`choice.value: ${choice.value} (тип: ${typeof choice.value})`);
+        console.log(`choiceData.value: ${choiceData.value} (тип: ${typeof choiceData.value})`);
+        console.log(`Используемое значение: ${choiceValue} (тип: ${typeof choiceValue})`);
         
         this.importantChoices.set(choiceId, {
           value: choiceValue,
@@ -913,6 +937,8 @@ class EpisodeManager {
     
     // Проверяем все выборы
     const availableChoices = this.sceneData.choices.filter(choice => {
+      console.log(`EpisodeManager.getAvailableChoices - проверяем выбор ${choice.id}:`, choice);
+      
       // Проверяем требуемые предметы
       if (choice.requiredItem) {
         const itemQuantity = currentInventory[choice.requiredItem];
@@ -948,16 +974,18 @@ class EpisodeManager {
       }
       
       // Проверяем требования (старая система)
-      if (choice.requirements && !choice.conditions) {
+      if (choice.requirements) {
+        console.log(`Проверяем требования для выбора ${choice.id}:`, choice.requirements);
         const isAvailable = this.checkChoiceRequirements(choice.requirements);
         console.log(`Выбор ${choice.id} с требованиями: ${isAvailable ? 'доступен' : 'недоступен'}`);
         if (!isAvailable) return false;
       }
       
+      console.log(`EpisodeManager.getAvailableChoices - выбор ${choice.id} прошел все проверки`);
       return true;
     });
     
-    console.log(`Доступные выборы:`, availableChoices.map(c => c.id));
+    console.log(`EpisodeManager.getAvailableChoices - доступные выборы:`, availableChoices.map(c => c.id));
     return availableChoices;
   }
 
@@ -967,7 +995,11 @@ class EpisodeManager {
    * @returns {boolean} - Доступен ли выбор
    */
   checkChoiceRequirements(requirements) {
+    console.log(`EpisodeManager.checkChoiceRequirements - начало проверки требований:`, requirements);
+    console.log(`EpisodeManager.checkChoiceRequirements - текущие важные выборы:`, Object.fromEntries(this.importantChoices));
+    
     for (const [requirementType, value] of Object.entries(requirements)) {
+      console.log(`EpisodeManager.checkChoiceRequirements - проверяем тип требования: ${requirementType} со значением:`, value);
       switch (requirementType) {
         case 'stats':
           for (const [statName, minValue] of Object.entries(value)) {
@@ -1011,35 +1043,41 @@ class EpisodeManager {
           break;
         case 'importantChoice':
           // Проверяем важные выборы
-          console.log(`Проверка важных выборов для требования:`, value);
-          console.log(`Текущие важные выборы:`, Object.fromEntries(this.importantChoices));
+          console.log(`EpisodeManager.checkChoiceRequirements - проверка важных выборов для требования:`, value);
+          console.log(`EpisodeManager.checkChoiceRequirements - текущие важные выборы:`, Object.fromEntries(this.importantChoices));
           for (const [choiceId, expectedValue] of Object.entries(value)) {
             const actualValue = this.importantChoices.get(choiceId)?.value;
-            console.log(`Проверка ${choiceId}: ожидается ${expectedValue}, получено ${actualValue}`);
+            console.log(`EpisodeManager.checkChoiceRequirements - проверка ${choiceId}: ожидается ${expectedValue} (тип: ${typeof expectedValue}), получено ${actualValue} (тип: ${typeof actualValue})`);
             
             // Специальная обработка для проверки отсутствия важного выбора
             if (expectedValue === "" || expectedValue === null || expectedValue === "missing") {
               // Если ожидается пустая строка, null или "missing", то важный выбор не должен быть сделан
               if (actualValue !== null && actualValue !== undefined) {
-                console.log(`Требование не выполнено: ${choiceId} - выбор не должен быть сделан, но он есть (${actualValue})`);
+                console.log(`EpisodeManager.checkChoiceRequirements - требование не выполнено: ${choiceId} - выбор не должен быть сделан, но он есть (${actualValue})`);
                 return false;
+              } else {
+                console.log(`EpisodeManager.checkChoiceRequirements - требование выполнено: ${choiceId} - выбор не сделан, как и требуется`);
               }
             } else if (typeof expectedValue === 'string' && expectedValue.startsWith('!')) {
               // Отрицание: если ожидается "!value", то важный выбор не должен быть равен "value"
               const targetValue = expectedValue.substring(1);
               if (actualValue === targetValue) {
-                console.log(`Требование не выполнено: ${choiceId} - выбор не должен быть равен ${targetValue}`);
+                console.log(`EpisodeManager.checkChoiceRequirements - требование не выполнено: ${choiceId} - выбор не должен быть равен ${targetValue}`);
                 return false;
+              } else {
+                console.log(`EpisodeManager.checkChoiceRequirements - требование выполнено: ${choiceId} - выбор не равен ${targetValue}`);
               }
             } else {
               // Обычная проверка точного совпадения
               if (actualValue !== expectedValue) {
-                console.log(`Требование не выполнено: ${choiceId} - значения не совпадают (ожидается ${expectedValue}, получено ${actualValue})`);
+                console.log(`EpisodeManager.checkChoiceRequirements - требование не выполнено: ${choiceId} - значения не совпадают (ожидается ${expectedValue}, получено ${actualValue})`);
                 return false;
+              } else {
+                console.log(`EpisodeManager.checkChoiceRequirements - требование выполнено: ${choiceId} - значения совпадают`);
               }
             }
           }
-          console.log(`Все требования важных выборов выполнены`);
+          console.log(`EpisodeManager.checkChoiceRequirements - все требования важных выборов выполнены`);
           break;
         case 'items':
           // Здесь можно добавить проверку предметов в инвентаре
@@ -1048,6 +1086,7 @@ class EpisodeManager {
           break;
       }
     }
+    console.log(`EpisodeManager.checkChoiceRequirements - все требования выполнены, возвращаем true`);
     return true;
   }
 

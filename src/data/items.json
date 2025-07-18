@@ -1,52 +1,10 @@
 {
   "items": {
     "consumable": {
-      "basic_health_potion": {
-        "id": "basic_health_potion",
-        "name": "Простое зелье здоровья",
-        "description": "Простое зелье для восстановления сил. Можно предложить уставшему человеку",
-        "type": "consumable",
-        "rarity": "common",
-        "price": {
-          "currency": "coins",
-          "amount": 15
-        },
-        "sellPrice": 7,
-        "canSell": true,
-        "sprite": "sprites/items/consumable/basic health potion.png"
-      },
-      "health_potion": {
-        "id": "health_potion",
-        "name": "Зелье здоровья",
-        "description": "Эффективное зелье для восстановления. Хороший подарок для больного",
-        "type": "consumable",
-        "rarity": "common",
-        "price": {
-          "currency": "coins",
-          "amount": 25
-        },
-        "sellPrice": 12,
-        "canSell": true,
-        "sprite": "sprites/items/consumable/health potion.png"
-      },
-      "basic_mana_potion": {
-        "id": "basic_mana_potion",
-        "name": "Простое зелье маны",
-        "description": "Простое зелье для восстановления энергии. Поможет уставшему магу",
-        "type": "consumable",
-        "rarity": "common",
-        "price": {
-          "currency": "coins",
-          "amount": 12
-        },
-        "sellPrice": 6,
-        "canSell": true,
-        "sprite": "sprites/items/consumable/basic mana potion.png"
-      },
-      "mana_potion": {
-        "id": "mana_potion",
-        "name": "Зелье маны",
-        "description": "Эффективное зелье для восстановления магической энергии. Ценный подарок для мага",
+      "basic_charisma_potion": {
+        "id": "basic_charisma_potion",
+        "name": "Простое зелье харизмы",
+        "description": "Добавляет 1 очко к броску при проверке харизмы",
         "type": "consumable",
         "rarity": "common",
         "price": {
@@ -55,12 +13,96 @@
         },
         "sellPrice": 10,
         "canSell": true,
+        "sprite": "sprites/items/consumable/basic health potion.png"
+      },
+      "charisma_potion": {
+        "id": "charisma_potion",
+        "name": "Зелье харизмы",
+        "description": "Добавляет 2 очка к броску при проверке харизмы",
+        "type": "consumable",
+        "rarity": "rare",
+        "price": {
+          "currency": "coins",
+          "amount": 45
+        },
+        "sellPrice": 22,
+        "canSell": true,
+        "sprite": "sprites/items/consumable/health potion.png"
+      },
+      "basic_cold_potion": {
+        "id": "basic_cold_potion",
+        "name": "Простое зелье холода",
+        "description": "Добавляет 1 очко к броску при проверке холода",
+        "type": "consumable",
+        "rarity": "common",
+        "price": {
+          "currency": "coins",
+          "amount": 20
+        },
+        "sellPrice": 10,
+        "canSell": true,
+        "sprite": "sprites/items/consumable/basic mana potion.png"
+      },
+      "cold_potion": {
+        "id": "cold_potion",
+        "name": "Зелье холода",
+        "description": "Добавляет 2 очка к броску при проверке холода",
+        "type": "consumable",
+        "rarity": "rare",
+        "price": {
+          "currency": "coins",
+          "amount": 45
+        },
+        "sellPrice": 22,
+        "canSell": true,
         "sprite": "sprites/items/consumable/mana potion.png"
       },
-      "strength_potion": {
-        "id": "strength_potion",
-        "name": "Зелье силы",
-        "description": "Зелье, дающее временную силу. Может помочь в сложной ситуации",
+      "basic_sensitivity_potion": {
+        "id": "basic_sensitivity_potion",
+        "name": "Простое зелье чувствительности",
+        "description": "Добавляет 1 очко к броску при проверке чувствительности",
+        "type": "consumable",
+        "rarity": "common",
+        "price": {
+          "currency": "coins",
+          "amount": 20
+        },
+        "sellPrice": 10,
+        "canSell": true,
+        "sprite": "sprites/items/consumable/fire berry.png"
+      },
+      "sensitivity_potion": {
+        "id": "sensitivity_potion",
+        "name": "Зелье чувствительности",
+        "description": "Добавляет 2 очка к броску при проверке чувствительности",
+        "type": "consumable",
+        "rarity": "rare",
+        "price": {
+          "currency": "coins",
+          "amount": 45
+        },
+        "sellPrice": 22,
+        "canSell": true,
+        "sprite": "sprites/items/consumable/fire potion.png"
+      },
+      "basic_determination_potion": {
+        "id": "basic_determination_potion",
+        "name": "Простое зелье решительности",
+        "description": "Добавляет 1 очко к броску при проверке решительности",
+        "type": "consumable",
+        "rarity": "common",
+        "price": {
+          "currency": "coins",
+          "amount": 20
+        },
+        "sellPrice": 10,
+        "canSell": true,
+        "sprite": "sprites/items/consumable/defense potion.png"
+      },
+      "determination_potion": {
+        "id": "determination_potion",
+        "name": "Зелье решительности",
+        "description": "Добавляет 2 очка к броску при проверке решительности",
         "type": "consumable",
         "rarity": "rare",
         "price": {
@@ -71,10 +113,24 @@
         "canSell": true,
         "sprite": "sprites/items/consumable/strength potion.png"
       },
-      "agility_potion": {
-        "id": "agility_potion",
-        "name": "Зелье ловкости",
-        "description": "Зелье, улучшающее ловкость. Полезно для акробатов и танцоров",
+      "basic_cunning_potion": {
+        "id": "basic_cunning_potion",
+        "name": "Простое зелье коварства",
+        "description": "Добавляет 1 очко к броску при проверке коварства",
+        "type": "consumable",
+        "rarity": "common",
+        "price": {
+          "currency": "coins",
+          "amount": 20
+        },
+        "sellPrice": 10,
+        "canSell": true,
+        "sprite": "sprites/items/consumable/luck potion.png"
+      },
+      "cunning_potion": {
+        "id": "cunning_potion",
+        "name": "Зелье коварства",
+        "description": "Добавляет 2 очка к броску при проверке коварства",
         "type": "consumable",
         "rarity": "rare",
         "price": {
@@ -85,24 +141,38 @@
         "canSell": true,
         "sprite": "sprites/items/consumable/agility potion.png"
       },
-      "magic_potion": {
-        "id": "magic_potion",
-        "name": "Зелье магии",
-        "description": "Зелье, усиливающее магические способности. Дорогой подарок для мага",
+      "basic_intelligence_potion": {
+        "id": "basic_intelligence_potion",
+        "name": "Простое книга",
+        "description": "Добавляет 1 очко к броску при проверке интеллекта",
+        "type": "consumable",
+        "rarity": "common",
+        "price": {
+          "currency": "coins",
+          "amount": 20
+        },
+        "sellPrice": 10,
+        "canSell": true,
+        "sprite": "sprites/items/consumable/basic book.png"
+      },
+      "intelligence_potion": {
+        "id": "intelligence_potion",
+        "name": "Старый свиток",
+        "description": "Добавляет 2 очка к броску при проверке интеллекта",
         "type": "consumable",
         "rarity": "rare",
         "price": {
           "currency": "coins",
-          "amount": 50
+          "amount": 45
         },
-        "sellPrice": 25,
+        "sellPrice": 22,
         "canSell": true,
-        "sprite": "sprites/items/consumable/magic potion.png"
+        "sprite": "sprites/items/consumable/basic scroll.png"
       },
       "resurrection_potion": {
         "id": "resurrection_potion",
         "name": "Зелье воскрешения",
-        "description": "Легендарное зелье, помогает перебросить плохой резульат кубика. Бесценный артефакт",
+        "description": "Легендарное зелье, позволяет перебросить плохой результат кубика. Бесценный артефакт",
         "type": "consumable",
         "rarity": "mythical",
         "price": {
@@ -116,7 +186,7 @@
       "golden_apple": {
         "id": "golden_apple",
         "name": "Золотое яблоко",
-        "description": "Магическое яблоко, способное исцелить любые недуги. Королевский подарок",
+        "description": "Добавляет 2 очка к любому броску",
         "type": "consumable",
         "rarity": "legendary",
         "price": {
@@ -127,383 +197,19 @@
         "canSell": false,
         "sprite": "sprites/items/consumable/golden apple.png"
       },
-      "antidote": {
-        "id": "antidote",
-        "name": "Противоядие",
-        "description": "Эффективное средство против ядов. Спасет жизнь отравленному",
+      "reset_potion": {
+        "id": "reset_potion",
+        "name": "Зелье обнуления",
+        "description": "Позволяет вернуть отношения с персонажем к нейтральным",
         "type": "consumable",
-        "rarity": "common",
+        "rarity": "mythical",
         "price": {
-          "currency": "coins",
-          "amount": 15
+          "currency": "gems",
+          "amount": 30
         },
-        "sellPrice": 7,
-        "canSell": true,
+        "sellPrice": 0,
+        "canSell": false,
         "sprite": "sprites/items/consumable/antidote.png"
-      },
-      "apple": {
-        "id": "apple",
-        "name": "Яблоко",
-        "description": "Свежее сочное яблоко. Простой, но приятный подарок",
-        "type": "consumable",
-        "rarity": "common",
-        "price": {
-          "currency": "coins",
-          "amount": 15
-        },
-        "sellPrice": 7,
-        "canSell": true,
-        "sprite": "sprites/items/consumable/apple.png"
-      },
-      "basic_antidote": {
-        "id": "basic_antidote",
-        "name": "Простое противоядие",
-        "description": "Простое средство от легких отравлений. Базовый аптечный препарат",
-        "type": "consumable",
-        "rarity": "common",
-        "price": {
-          "currency": "coins",
-          "amount": 15
-        },
-        "sellPrice": 7,
-        "canSell": true,
-        "sprite": "sprites/items/consumable/basic antidote.png"
-      },
-      "basic_book": {
-        "id": "basic_book",
-        "name": "Простая книга",
-        "description": "Обычная книга с базовыми знаниями. Хороший подарок для любителя чтения",
-        "type": "consumable",
-        "rarity": "common",
-        "price": {
-          "currency": "coins",
-          "amount": 15
-        },
-        "sellPrice": 7,
-        "canSell": true,
-        "sprite": "sprites/items/consumable/basic book.png"
-      },
-      "basic_scroll": {
-        "id": "basic_scroll",
-        "name": "Простой свиток",
-        "description": "Свиток с элементарными заклинаниями. Интересен для начинающих магов",
-        "type": "consumable",
-        "rarity": "common",
-        "price": {
-          "currency": "coins",
-          "amount": 15
-        },
-        "sellPrice": 7,
-        "canSell": true,
-        "sprite": "sprites/items/consumable/basic scroll.png"
-      },
-      "candy_icon": {
-        "id": "candy_icon",
-        "name": "Конфета",
-        "description": "Сладкая конфета. Простой способ поднять настроение",
-        "type": "consumable",
-        "rarity": "common",
-        "price": {
-          "currency": "coins",
-          "amount": 15
-        },
-        "sellPrice": 7,
-        "canSell": true,
-        "sprite": "sprites/items/consumable/candy icon.png"
-      },
-      "chocolate": {
-        "id": "chocolate",
-        "name": "Шоколад",
-        "description": "Вкусный шоколад. Классический подарок для сладкоежек",
-        "type": "consumable",
-        "rarity": "common",
-        "price": {
-          "currency": "coins",
-          "amount": 15
-        },
-        "sellPrice": 7,
-        "canSell": true,
-        "sprite": "sprites/items/consumable/chocolate.png"
-      },
-      "cursed_potion": {
-        "id": "cursed_potion",
-        "name": "Проклятое зелье",
-        "description": "Опасное зелье с темной магией. Может навредить тому, кто его выпьет",
-        "type": "consumable",
-        "rarity": "mythical",
-        "price": {
-          "currency": "gems",
-          "amount": 30
-        },
-        "sellPrice": 0,
-        "canSell": false,
-        "sprite": "sprites/items/consumable/cursed potion.png"
-      },
-      "dark_mushroom": {
-        "id": "dark_mushroom",
-        "name": "Темный гриб",
-        "description": "Загадочный гриб, растущий в темных местах. Интересен для алхимиков",
-        "type": "consumable",
-        "rarity": "common",
-        "price": {
-          "currency": "coins",
-          "amount": 15
-        },
-        "sellPrice": 7,
-        "canSell": true,
-        "sprite": "sprites/items/consumable/dark mushroom.png"
-      },
-      "darkness_potion": {
-        "id": "darkness_potion",
-        "name": "Зелье тьмы",
-        "description": "Зелье, наполненное темной энергией. Опасно для обычных людей",
-        "type": "consumable",
-        "rarity": "mythical",
-        "price": {
-          "currency": "gems",
-          "amount": 30
-        },
-        "sellPrice": 0,
-        "canSell": false,
-        "sprite": "sprites/items/consumable/darkness potion.png"
-      },
-      "defense_potion": {
-        "id": "defense_potion",
-        "name": "Зелье защиты",
-        "description": "Зелье, дающее чувство защищенности. Полезно в опасных ситуациях",
-        "type": "consumable",
-        "rarity": "rare",
-        "price": {
-          "currency": "coins",
-          "amount": 25
-        },
-        "sellPrice": 12,
-        "canSell": true,
-        "sprite": "sprites/items/consumable/defense potion.png"
-      },
-      "dryed_nightshade": {
-        "id": "dryed_nightshade",
-        "name": "Сушеный паслен",
-        "description": "Высушенный ядовитый паслен. Используется в алхимии",
-        "type": "consumable",
-        "rarity": "common",
-        "price": {
-          "currency": "coins",
-          "amount": 15
-        },
-        "sellPrice": 7,
-        "canSell": true,
-        "sprite": "sprites/items/consumable/dryed nightshade.png"
-      },
-      "earth_potion": {
-        "id": "earth_potion",
-        "name": "Земляное зелье",
-        "description": "Зелье, наполненное силой земли. Дает ощущение стабильности",
-        "type": "consumable",
-        "rarity": "common",
-        "price": {
-          "currency": "coins",
-          "amount": 15
-        },
-        "sellPrice": 7,
-        "canSell": true,
-        "sprite": "sprites/items/consumable/earth potion.png"
-      },
-      "elven_dew": {
-        "id": "elven_dew",
-        "name": "Эльфийская роса",
-        "description": "Магическая роса из эльфийских лесов. Редкий ингредиент",
-        "type": "consumable",
-        "rarity": "common",
-        "price": {
-          "currency": "coins",
-          "amount": 15
-        },
-        "sellPrice": 7,
-        "canSell": true,
-        "sprite": "sprites/items/consumable/elven dew.png"
-      },
-      "fairy_pollen": {
-        "id": "fairy_pollen",
-        "name": "Пыльца фей",
-        "description": "Светящаяся пыльца с цветов фей. Магический ингредиент",
-        "type": "consumable",
-        "rarity": "common",
-        "price": {
-          "currency": "coins",
-          "amount": 15
-        },
-        "sellPrice": 7,
-        "canSell": true,
-        "sprite": "sprites/items/consumable/fairy pollen.png"
-      },
-      "fire_berry": {
-        "id": "fire_berry",
-        "name": "Огненная ягода",
-        "description": "Горячая ягода с огненной энергией. Осторожно - обжигает!",
-        "type": "consumable",
-        "rarity": "common",
-        "price": {
-          "currency": "coins",
-          "amount": 15
-        },
-        "sellPrice": 7,
-        "canSell": true,
-        "sprite": "sprites/items/consumable/fire berry.png"
-      },
-      "fire_potion": {
-        "id": "fire_potion",
-        "name": "Огненное зелье",
-        "description": "Зелье с огненной магией. Согревает изнутри",
-        "type": "consumable",
-        "rarity": "common",
-        "price": {
-          "currency": "coins",
-          "amount": 15
-        },
-        "sellPrice": 7,
-        "canSell": true,
-        "sprite": "sprites/items/consumable/fire potion.png"
-      },
-      "ghost_essence": {
-        "id": "ghost_essence",
-        "name": "Эссенция призрака",
-        "description": "Концентрированная энергия призрака. Жуткий ингредиент",
-        "type": "consumable",
-        "rarity": "common",
-        "price": {
-          "currency": "coins",
-          "amount": 15
-        },
-        "sellPrice": 7,
-        "canSell": true,
-        "sprite": "sprites/items/consumable/ghost essence.png"
-      },
-      "gingerbread": {
-        "id": "gingerbread",
-        "name": "Имбирный пряник",
-        "description": "Вкусный пряник с имбирем. Теплый и уютный подарок",
-        "type": "consumable",
-        "rarity": "common",
-        "price": {
-          "currency": "coins",
-          "amount": 15
-        },
-        "sellPrice": 7,
-        "canSell": true,
-        "sprite": "sprites/items/consumable/gingerbread.png"
-      },
-      "glowshroom": {
-        "id": "glowshroom",
-        "name": "Светящийся гриб",
-        "description": "Гриб, излучающий мягкий свет. Красивый и полезный",
-        "type": "consumable",
-        "rarity": "common",
-        "price": {
-          "currency": "coins",
-          "amount": 15
-        },
-        "sellPrice": 7,
-        "canSell": true,
-        "sprite": "sprites/items/consumable/glowshroom.png"
-      },
-      "ice_potion": {
-        "id": "ice_potion",
-        "name": "Ледяное зелье",
-        "description": "Зелье с ледяной магией. Охлаждает в жаркий день",
-        "type": "consumable",
-        "rarity": "common",
-        "price": {
-          "currency": "coins",
-          "amount": 15
-        },
-        "sellPrice": 7,
-        "canSell": true,
-        "sprite": "sprites/items/consumable/ice potion.png"
-      },
-      "light_potion": {
-        "id": "light_potion",
-        "name": "Зелье света",
-        "description": "Зелье со светлой магией. Прогоняет тьму и страхи",
-        "type": "consumable",
-        "rarity": "common",
-        "price": {
-          "currency": "coins",
-          "amount": 15
-        },
-        "sellPrice": 7,
-        "canSell": true,
-        "sprite": "sprites/items/consumable/light potion.png"
-      },
-      "luck_potion": {
-        "id": "luck_potion",
-        "name": "Зелье удачи",
-        "description": "Зелье, приносящее удачу. Поможет в важных делах",
-        "type": "consumable",
-        "rarity": "rare",
-        "price": {
-          "currency": "coins",
-          "amount": 25
-        },
-        "sellPrice": 12,
-        "canSell": true,
-        "sprite": "sprites/items/consumable/luck potion.png"
-      },
-      "medicinal_herb": {
-        "id": "medicinal_herb",
-        "name": "Лечебная трава",
-        "description": "Целебная трава с лечебными свойствами. Поможет при недомогании",
-        "type": "consumable",
-        "rarity": "common",
-        "price": {
-          "currency": "coins",
-          "amount": 15
-        },
-        "sellPrice": 7,
-        "canSell": true,
-        "sprite": "sprites/items/consumable/medicinal herb.png"
-      },
-      "milk_bottle": {
-        "id": "milk_bottle",
-        "name": "Бутылка молока",
-        "description": "Свежее молоко в бутылке. Питательный напиток",
-        "type": "consumable",
-        "rarity": "common",
-        "price": {
-          "currency": "coins",
-          "amount": 15
-        },
-        "sellPrice": 7,
-        "canSell": true,
-        "sprite": "sprites/items/consumable/milk bottle.png"
-      },
-      "moondust": {
-        "id": "moondust",
-        "name": "Лунная пыль",
-        "description": "Магическая пыль, собранная при свете луны. Мистический ингредиент",
-        "type": "consumable",
-        "rarity": "common",
-        "price": {
-          "currency": "coins",
-          "amount": 15
-        },
-        "sellPrice": 7,
-        "canSell": true,
-        "sprite": "sprites/items/consumable/moondust.png"
-      },
-      "poison_potion": {
-        "id": "poison_potion",
-        "name": "Ядовитое зелье",
-        "description": "Опасное зелье с ядом. Может быть смертельным",
-        "type": "consumable",
-        "rarity": "mythical",
-        "price": {
-          "currency": "gems",
-          "amount": 30
-        },
-        "sellPrice": 0,
-        "canSell": false,
-        "sprite": "sprites/items/consumable/poison potion.png"
       },
       "present": {
         "id": "present",
@@ -518,90 +224,6 @@
         "sellPrice": 7,
         "canSell": true,
         "sprite": "sprites/items/consumable/present.png"
-      },
-      "regeneration_potion": {
-        "id": "regeneration_potion",
-        "name": "Зелье регенерации",
-        "description": "Зелье, ускоряющее восстановление. Поможет выздороветь быстрее",
-        "type": "consumable",
-        "rarity": "common",
-        "price": {
-          "currency": "coins",
-          "amount": 15
-        },
-        "sellPrice": 7,
-        "canSell": true,
-        "sprite": "sprites/items/consumable/regeneration potion.png"
-      },
-      "thunder_potion": {
-        "id": "thunder_potion",
-        "name": "Громовое зелье",
-        "description": "Зелье с электрической энергией. Бодрит и заряжает энергией",
-        "type": "consumable",
-        "rarity": "common",
-        "price": {
-          "currency": "coins",
-          "amount": 15
-        },
-        "sellPrice": 7,
-        "canSell": true,
-        "sprite": "sprites/items/consumable/thunder potion.png"
-      },
-      "water_berry": {
-        "id": "water_berry",
-        "name": "Водная ягода",
-        "description": "Сочная ягода, наполненная влагой. Утоляет жажду",
-        "type": "consumable",
-        "rarity": "common",
-        "price": {
-          "currency": "coins",
-          "amount": 15
-        },
-        "sellPrice": 7,
-        "canSell": true,
-        "sprite": "sprites/items/consumable/water berry.png"
-      },
-      "water_potion": {
-        "id": "water_potion",
-        "name": "Водное зелье",
-        "description": "Зелье с водной магией. Успокаивает и освежает",
-        "type": "consumable",
-        "rarity": "common",
-        "price": {
-          "currency": "coins",
-          "amount": 15
-        },
-        "sellPrice": 7,
-        "canSell": true,
-        "sprite": "sprites/items/consumable/water potion.png"
-      },
-      "will_potion": {
-        "id": "will_potion",
-        "name": "Зелье воли",
-        "description": "Зелье, укрепляющее силу воли. Поможет преодолеть трудности",
-        "type": "consumable",
-        "rarity": "rare",
-        "price": {
-          "currency": "coins",
-          "amount": 25
-        },
-        "sellPrice": 12,
-        "canSell": true,
-        "sprite": "sprites/items/consumable/will potion.png"
-      },
-      "wind_potion": {
-        "id": "wind_potion",
-        "name": "Ветреное зелье",
-        "description": "Зелье с силой ветра. Дает ощущение свободы и легкости",
-        "type": "consumable",
-        "rarity": "common",
-        "price": {
-          "currency": "coins",
-          "amount": 15
-        },
-        "sellPrice": 7,
-        "canSell": true,
-        "sprite": "sprites/items/consumable/wind potion.png"
       }
     },
     "material": {
@@ -1073,8 +695,8 @@
         "scary": false,
         "can_get_in_scenes": true,
         "special": {
-          "type": "money",
-          "increase": 15
+          "type": "relation",
+          "increase": 10
         }
       },
       "rat": {
@@ -1113,8 +735,8 @@
         "scary": false,
         "can_get_in_scenes": true,
         "special": {
-          "type": "money",
-          "increase": 25
+          "type": "relation",
+          "increase": 10
         }
       },
       "fish": {
@@ -1153,8 +775,9 @@
         "scary": false,
         "can_get_in_scenes": true,
         "special": {
-          "type": "price",
-          "value": 200
+          "type": "stat",
+          "stat_type": "sensitivity",
+          "bonus": 1
         }
       },
       "turtle": {
@@ -1174,7 +797,7 @@
         "can_get_in_scenes": true,
         "special": {
           "type": "stat",
-          "stat_type": "charisma",
+          "stat_type": "intelligence",
           "bonus": 1
         }
       },
@@ -1216,7 +839,7 @@
         "can_get_in_scenes": false,
         "special": {
           "type": "stat",
-          "stat_type": "sensitivity",
+          "stat_type": "cunning",
           "bonus": 1
         }
       },
@@ -1299,8 +922,9 @@
         "scary": false,
         "can_get_in_scenes": true,
         "special": {
-          "type": "relation",
-          "increase": 15
+          "type": "stat",
+          "stat_type": "cunning",
+          "bonus": 1
         }
       },
       "wolf": {
@@ -1339,8 +963,8 @@
         "scary": false,
         "can_get_in_scenes": true,
         "special": {
-          "type": "money",
-          "increase": 50
+         "type": "relation",
+          "increase": 10
         }
       },
       "scallop": {
@@ -1359,8 +983,9 @@
         "scary": false,
         "can_get_in_scenes": true,
         "special": {
-          "type": "price",
-          "value": 200
+          "type": "stat",
+          "stat_type": "charisma",
+          "bonus": 1
         }
       },
       "fairy": {
@@ -1381,7 +1006,7 @@
         "special": {
           "type": "stat",
           "stat_type": "charisma",
-          "bonus": 2
+          "bonus": 3
         }
       },
       "big_slime": {
@@ -1400,8 +1025,8 @@
         "scary": false,
         "can_get_in_scenes": true,
         "special": {
-          "type": "money",
-          "increase": 75
+          "type": "relation",
+          "increase": 20
         }
       },
       "fire_slime": {
@@ -1440,8 +1065,8 @@
         "scary": false,
         "can_get_in_scenes": true,
         "special": {
-          "type": "money",
-          "increase": 50
+         "type": "relation",
+          "increase": 20
         }
       },
       "thunder_slime": {
@@ -1469,10 +1094,10 @@
         "name": "Ледяной дух",
         "description": "Холодный дух",
         "type": "pet",
-        "rarity": "rare",
+        "rarity": "legendary",
         "price": {
-          "currency": "coins",
-          "amount": 166
+          "currency": "gems",
+          "amount": 600
         },
         "sellPrice": 0,
         "canSell": false,
@@ -1480,8 +1105,9 @@
         "scary": false,
         "can_get_in_scenes": true,
         "special": {
-          "type": "price",
-          "value": 332
+          "type": "stat",
+          "stat_type": "coldness",
+          "bonus": 5
         }
       },
       "fire_wisp": {
@@ -1564,7 +1190,7 @@
         "can_get_in_scenes": true,
         "special": {
           "type": "stat",
-          "stat_type": "determination",
+          "stat_type": "sensitivity",
           "bonus": 2
         }
       },
@@ -1645,8 +1271,8 @@
         "scary": true,
         "can_get_in_scenes": false,
         "special": {
-          "type": "money",
-          "increase": 50
+          "type": "relation",
+          "increase": 20
         }
       },
       "raven": {
@@ -1685,8 +1311,9 @@
         "scary": true,
         "can_get_in_scenes": false,
         "special": {
-          "type": "price",
-          "value": 272
+          "type": "stat",
+          "stat_type": "cunning",
+          "bonus": 1
         }
       },
       "goblin_swordfighter": {
@@ -1706,7 +1333,7 @@
         "can_get_in_scenes": false,
         "special": {
           "type": "stat",
-          "stat_type": "charisma",
+          "stat_type": "determination",
           "bonus": 2
         }
       },
@@ -1748,7 +1375,7 @@
         "can_get_in_scenes": false,
         "special": {
           "type": "stat",
-          "stat_type": "sensitivity",
+          "stat_type": "cunning",
           "bonus": 2
         }
       },
@@ -1831,8 +1458,8 @@
         "scary": false,
         "can_get_in_scenes": true,
         "special": {
-          "type": "money",
-          "increase": 100
+          "type": "relation",
+          "increase": 20
         }
       },
       "cyber_unit": {
@@ -1871,8 +1498,8 @@
         "scary": true,
         "can_get_in_scenes": false,
         "special": {
-          "type": "money",
-          "increase": 50
+          "type": "relation",
+          "increase": 20
         }
       },
       "fire_robot": {
@@ -1900,7 +1527,7 @@
         "name": "Ледяной робот",
         "description": "Холодный робот",
         "type": "pet",
-        "rarity": "rare",
+        "rarity": "mythical",
         "price": {
           "currency": "coins",
           "amount": 256
@@ -1911,8 +1538,9 @@
         "scary": true,
         "can_get_in_scenes": false,
         "special": {
-          "type": "price",
-          "value": 512
+         "type": "stat",
+          "stat_type": "coldness",
+          "bonus": 3
         }
       },
       "jellyfish": {
@@ -1941,10 +1569,10 @@
         "name": "Скорпион",
         "description": "Ядовитый скорпион",
         "type": "pet",
-        "rarity": "rare",
+        "rarity": "mythical",
         "price": {
-          "currency": "coins",
-          "amount": 196
+          "currency": "gems",
+          "amount": 200
         },
         "sellPrice": 0,
         "canSell": false,
@@ -1953,8 +1581,8 @@
         "can_get_in_scenes": false,
         "special": {
           "type": "stat",
-          "stat_type": "coldness",
-          "bonus": 2
+          "stat_type": "cunning",
+          "bonus": 3
         }
       },
       "wasp": {
@@ -1962,7 +1590,7 @@
         "name": "Оса",
         "description": "Жужжащая оса",
         "type": "pet",
-        "rarity": "rare",
+        "rarity": "mythical",
         "price": {
           "currency": "coins",
           "amount": 136
@@ -1975,7 +1603,7 @@
         "special": {
           "type": "stat",
           "stat_type": "sensitivity",
-          "bonus": 2
+          "bonus": 3
         }
       },
       "salamander": {
@@ -2097,8 +1725,8 @@
         "scary": true,
         "can_get_in_scenes": false,
         "special": {
-          "type": "money",
-          "increase": 50
+          "type": "relation",
+          "increase": 20
         }
       },
       "bogwine": {
@@ -2137,8 +1765,9 @@
         "scary": false,
         "can_get_in_scenes": true,
         "special": {
-          "type": "price",
-          "value": 392
+          "type": "stat",
+          "stat_type": "coldness",
+          "bonus": 2
         }
       },
       "glistening_fish": {
@@ -2200,7 +1829,7 @@
         "can_get_in_scenes": false,
         "special": {
           "type": "stat",
-          "stat_type": "sensitivity",
+          "stat_type": "determination",
           "bonus": 2
         }
       },
@@ -2251,7 +1880,7 @@
         "name": "Растительный бегемот",
         "description": "Гигантское растение",
         "type": "pet",
-        "rarity": "rare",
+        "rarity": "mythical",
         "price": {
           "currency": "coins",
           "amount": 256
@@ -2264,7 +1893,7 @@
         "special": {
           "type": "stat",
           "stat_type": "intelligence",
-          "bonus": 2
+          "bonus": 3
         }
       },
       "living_boulder": {
@@ -2283,8 +1912,9 @@
         "scary": true,
         "can_get_in_scenes": false,
         "special": {
-          "type": "price",
-          "value": 540
+          "type": "stat",
+          "stat_type": "determination",
+          "bonus": 1
         }
       },
       "tentacle_monster": {
@@ -2323,8 +1953,8 @@
         "scary": true,
         "can_get_in_scenes": false,
         "special": {
-          "type": "money",
-          "increase": 50
+          "type": "relation",
+          "increase": 20
         }
       },
       "snow_worm": {
@@ -2363,8 +1993,9 @@
         "scary": false,
         "can_get_in_scenes": true,
         "special": {
-          "type": "price",
-          "value": 600
+          "type": "stat",
+          "stat_type": "sensitivity",
+          "bonus": 2
         }
       },
       "dryad": {
@@ -2426,7 +2057,7 @@
         "can_get_in_scenes": false,
         "special": {
           "type": "stat",
-          "stat_type": "sensitivity",
+          "stat_type": "determination",
           "bonus": 2
         }
       },
@@ -2477,7 +2108,7 @@
         "name": "Кокатрис",
         "description": "Петух-дракон",
         "type": "pet",
-        "rarity": "rare",
+        "rarity": "legendary",
         "price": {
           "currency": "coins",
           "amount": 390
@@ -2490,7 +2121,7 @@
         "special": {
           "type": "stat",
           "stat_type": "intelligence",
-          "bonus": 2
+          "bonus": 5
         }
       },
       "basilisk": {
@@ -2549,8 +2180,8 @@
         "scary": true,
         "can_get_in_scenes": false,
         "special": {
-          "type": "money",
-          "increase": 50
+          "type": "relation",
+          "increase": 20
         }
       },
       "tengu": {
@@ -2589,8 +2220,8 @@
         "scary": true,
         "can_get_in_scenes": false,
         "special": {
-          "type": "price",
-          "value": 1200
+          "type": "cube",
+          "modificator": 1
         }
       },
       "abyssal_dweller": {
@@ -2631,8 +2262,8 @@
         "can_get_in_scenes": true,
         "special": {
           "type": "stat",
-          "stat_type": "coldness",
-          "bonus": 2
+          "stat_type": "determination",
+          "bonus": 4
         }
       },
       "dragon": {
@@ -2672,7 +2303,7 @@
         "can_get_in_scenes": true,
         "special": {
           "type": "relation",
-          "increase": 25
+          "increase": 50
         }
       },
       "gorgon": {
@@ -2691,7 +2322,7 @@
         "scary": true,
         "can_get_in_scenes": false,
         "special": {
-          "type": "money",
+          "type": "relation",
           "increase": 50
         }
       },
@@ -2722,7 +2353,7 @@
         "type": "pet",
         "rarity": "legendary",
         "price": {
-          "currency": "gems",
+          "currency": "reroll",
           "amount": 400
         },
         "sellPrice": 0,
@@ -2731,8 +2362,8 @@
         "scary": true,
         "can_get_in_scenes": false,
         "special": {
-          "type": "price",
-          "value": 800
+          "type": "cube",
+          "modificator": 1
         }
       },
       "reaper": {
@@ -2752,8 +2383,8 @@
         "can_get_in_scenes": false,
         "special": {
           "type": "stat",
-          "stat_type": "sensitivity",
-          "bonus": 2
+          "stat_type": "determination",
+          "bonus": 4
         }
       },
       "banshee": {
@@ -2774,7 +2405,7 @@
         "special": {
           "type": "stat",
           "stat_type": "cunning",
-          "bonus": 2
+          "bonus": 4
         }
       },
       "wraith": {
@@ -2794,8 +2425,8 @@
         "can_get_in_scenes": false,
         "special": {
           "type": "stat",
-          "stat_type": "determination",
-          "bonus": 2
+          "stat_type": "sensitivity",
+          "bonus": 4
         }
       }
     },

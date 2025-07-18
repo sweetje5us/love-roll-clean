@@ -1,0 +1,82 @@
+{
+  "id": "scene70",
+  "chapterId": "2",
+  "name": "Комната с камином",
+  "background": "",
+  "characters": [
+    {
+      "id": "dan",
+      "position": "left",
+      "name": "Дэн"
+    },
+    {
+      "id": "dulapeepa",
+      "position": "right",
+      "name": "Елизавета"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "narrator",
+      "text": "Вы в комнате с камином",
+      "emotion": "normal"
+    },
+    {
+      "speaker": "narrator",
+      "text": "В ней стоит Елизавета и Дэн.",
+      "emotion": "normal"
+    },
+    {
+      "speaker": "narrator",
+      "text": "Елизавета сильно плачет, и Дэн пытается ее успокоить",
+      "emotion": "normal"
+    }
+  ],
+  "choices": [
+    {
+      "id": "scene70_choice1",
+      "text": "Поговорить с Лизой",
+      "nextScene": "scene72_lisa",
+      "important": false,
+      "value": "",
+      "description": "",
+      "consequences": [
+        ""
+      ],
+      "diceCheck": null,
+      "specialInteraction": "",
+      "requiredItem": "",
+      "conditions": {}
+    },
+    {
+      "id": "scene70_choice2",
+      "text": "Поговорить с Дэном",
+      "nextScene": "scene72_dan",
+      "important": false,
+      "value": "",
+      "description": "",
+      "consequences": [
+        ""
+      ],
+      "diceCheck": null,
+      "specialInteraction": "",
+      "requiredItem": "",
+      "conditions": {}
+    },
+    {
+      "id": "scene70_choice3",
+      "text": "Вернуться",
+      "nextScene": "scene67",
+      "important": false,
+      "value": "",
+      "description": "",
+      "consequences": [
+        ""
+      ],
+      "diceCheck": null,
+      "specialInteraction": "",
+      "requiredItem": "",
+      "conditions": {}
+    }
+  ]
+}

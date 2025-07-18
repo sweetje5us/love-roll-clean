@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { performStatCheck } from '../../utils/diceSystem';
+import { useInventory } from '../../contexts/InventoryContext';
 import itemsData from '../../data/items.json';
 import './DiceRollModal.css';
 
@@ -8,10 +9,10 @@ import './DiceRollModal.css';
 const getStatIcon = (statName) => {
   const icons = {
     charisma: 'fas fa-heart',
-    cold: 'fas fa-snowflake',
+    coldness: 'fas fa-snowflake',
     sensitivity: 'fas fa-eye',
     cunning: 'fas fa-mask',
-    courage: 'fas fa-shield-alt',
+    determination: 'fas fa-shield-alt',
     intelligence: 'fas fa-brain'
   };
   return icons[statName] || 'fas fa-dice-d20';
@@ -20,10 +21,10 @@ const getStatIcon = (statName) => {
 const getStatDisplayName = (statName) => {
   const names = {
     charisma: 'Харизма',
-    cold: 'Холод',
+    coldness: 'Холод',
     sensitivity: 'Чувствительность',
     cunning: 'Коварство',
-    courage: 'Смелость',
+    determination: 'Решительность',
     intelligence: 'Интеллект'
   };
   return names[statName] || statName;
@@ -45,6 +46,65 @@ const getResultDescription = (result) => {
     critical_failure: 'Критическая неудача! Действие провалено полностью.'
   };
   return descriptions[result] || 'Результат не определен.';
+};
+
+// Функция для получения доступных зелий для характеристики
+const getAvailablePotions = (statName, inventory) => {
+  const availablePotions = [];
+  
+  // Маппинг характеристик на зелья
+  const statToPotions = {
+    charisma: ['basic_charisma_potion', 'charisma_potion'],
+    coldness: ['basic_cold_potion', 'cold_potion'],
+    sensitivity: ['basic_sensitivity_potion', 'sensitivity_potion'],
+    cunning: ['basic_cunning_potion', 'cunning_potion'],
+    determination: ['basic_determination_potion', 'determination_potion'],
+    intelligence: ['basic_intelligence_potion', 'intelligence_potion']
+  };
+  
+  // Получаем зелья для данной характеристики
+  const statPotions = statToPotions[statName] || [];
+  
+  // Проверяем наличие зелий в инвентаре
+  statPotions.forEach(potionId => {
+    const itemData = inventory[potionId];
+    if (itemData) {
+      const quantity = typeof itemData === 'number' ? itemData : itemData.quantity || 0;
+      if (quantity > 0) {
+        const potionData = itemsData.items.consumable[potionId];
+        if (potionData) {
+          availablePotions.push({
+            id: potionId,
+            name: potionData.name,
+            description: potionData.description,
+            bonus: potionId.startsWith('basic_') ? 1 : 2,
+            quantity: quantity
+          });
+        }
+      }
+    }
+  });
+  
+  // Добавляем золотое яблоко (универсальное зелье)
+  const goldenAppleData = inventory['golden_apple'];
+  if (goldenAppleData) {
+    const quantity = typeof goldenAppleData === 'number' ? goldenAppleData : goldenAppleData.quantity || 0;
+    if (quantity > 0) {
+      const appleData = itemsData.items.consumable['golden_apple'];
+      if (appleData) {
+        availablePotions.push({
+          id: 'golden_apple',
+          name: appleData.name,
+          description: appleData.description,
+          bonus: 2,
+          quantity: quantity,
+          universal: true
+        });
+      }
+    }
+  }
+  
+  return availablePotions;
 };
 
 // Карта соседних значений для d20 (точно как в test_dice_mechanics.html)
@@ -122,7 +182,10 @@ const DiceRollModal = ({
   const [rollResult, setRollResult] = useState(null);
   const [finalFace, setFinalFace] = useState(20);
   const [d20Rotation, setD20Rotation] = useState(getRotationForFace(20));
+  const [selectedPotion, setSelectedPotion] = useState(null);
   const rollAnimationRef = useRef(null);
+  
+  const { inventory, removeItem } = useInventory();
 
   // Получаем информацию о проверке
   const diceCheckInfo = choice?.diceCheck;
@@ -132,6 +195,9 @@ const DiceRollModal = ({
 
   // Получаем значение характеристики персонажа
   const statValue = character?.stats?.[statName] || 10;
+
+  // Получаем доступные зелья для данной характеристики
+  const availablePotions = getAvailablePotions(statName, inventory);
 
   // Функция для установки CSS-переменных для отображения чисел на гранях (точно как в test_dice_mechanics.html)
   const setDiceNumbers = (faceNumber) => {
@@ -171,6 +237,7 @@ const DiceRollModal = ({
       setRollResult(null);
       setFinalFace(20);
       setD20Rotation(getRotationForFace(20));
+      setSelectedPotion(null);
       // Устанавливаем начальные CSS-переменные
       setTimeout(() => {
         setDiceNumbers(20);
@@ -191,7 +258,7 @@ const DiceRollModal = ({
     }
   }, [rollResult]);
 
-  // Функция броска кубика (точно как в test_dice_mechanics.html)
+  // Функция броска кубика с учетом выбранного зелья
   const handleRollDice = () => {
     if (isRolling) return;
     
@@ -205,7 +272,30 @@ const DiceRollModal = ({
     
     setTimeout(() => {
       // Выполняем проверку
-      const result = performStatCheck(statName, character, difficulty, itemsData);
+      let result = performStatCheck(statName, character, difficulty, itemsData);
+      
+      // Применяем бонус от выбранного зелья
+      if (selectedPotion) {
+        result = {
+          ...result,
+          total: result.total + selectedPotion.bonus,
+          potionBonus: selectedPotion.bonus,
+          usedPotion: selectedPotion
+        };
+        
+        // Обновляем результат на основе нового total
+        if (result.total >= difficulty) {
+          result.result = 'success';
+          result.resultType = 'Успех';
+        } else {
+          result.result = 'failure';
+          result.resultType = 'Неудача';
+        }
+        
+        // Удаляем использованное зелье из инвентаря
+        removeItem(selectedPotion.id, 1);
+      }
+      
       setRollResult(result);
       setFinalFace(result.roll);
       
@@ -228,6 +318,7 @@ const DiceRollModal = ({
     setFinalFace(20);
     setD20Rotation(getRotationForFace(20));
     setDiceNumbers(20);
+    setSelectedPotion(null);
   };
 
   // Закрытие модального окна
@@ -277,6 +368,40 @@ const DiceRollModal = ({
                 <p>{description}</p>
               </div>
             </div>
+
+            {/* Выбор зелья */}
+            {availablePotions.length > 0 && !rollResult && (
+              <div className="potion-selection">
+                <h3>🧪 Выберите зелье (необязательно):</h3>
+                <div className="potion-options">
+                  <label className="potion-option">
+                    <input
+                      type="radio"
+                      name="potion"
+                      value=""
+                      checked={selectedPotion === null}
+                      onChange={() => setSelectedPotion(null)}
+                    />
+                    <span className="potion-label">Без зелья</span>
+                  </label>
+                  {availablePotions.map((potion) => (
+                    <label key={potion.id} className="potion-option">
+                      <input
+                        type="radio"
+                        name="potion"
+                        value={potion.id}
+                        checked={selectedPotion?.id === potion.id}
+                        onChange={() => setSelectedPotion(potion)}
+                      />
+                      <span className="potion-label">
+                        {potion.name} (+{potion.bonus}) - {potion.quantity} шт.
+                        {potion.universal && <span className="universal-badge">✨</span>}
+                      </span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+            )}
 
             {/* Кубик d20 - точно как в test_dice_mechanics.html */}
             <div className="dice-container">
@@ -339,6 +464,12 @@ const DiceRollModal = ({
                     <span className="label">Модификатор:</span>
                     <span className="value">{rollResult.modifier >= 0 ? '+' : ''}{rollResult.modifier}</span>
                   </div>
+                  {rollResult.potionBonus && (
+                    <div className="detail-item potion-bonus">
+                      <span className="label">Бонус зелья:</span>
+                      <span className="value">+{rollResult.potionBonus}</span>
+                    </div>
+                  )}
                   <div className="detail-item">
                     <span className="label">Итого:</span>
                     <span className="value">{rollResult.total}</span>

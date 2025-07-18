@@ -3,8 +3,23 @@
   "name": "День 2. Расследование начинается",
   "description": "Начало детективного расследования",
   "duration": "5-7 минут",
-  "scenes": ["scene66"],
+  "scenes": [
+    "scene66",
+    "scene67",
+    "scene68",
+    "scene71_main",
+    "scene98",
+    "scene99",
+    "scene100",
+    "scene101",
+    "scene68_1",
+    "scene68_2",
+    "scene68_3",
+    "scene68_4",
+    "scene69",
+    "scene70"
+  ],
   "unlocked": false,
   "completed": false,
   "background": "sprites/episodes/locations/mansion/mansion_inside.png"
-} 
+}

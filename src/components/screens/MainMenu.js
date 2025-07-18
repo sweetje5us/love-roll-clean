@@ -112,6 +112,12 @@ const MainMenu = () => {
       gradient: 'linear-gradient(to right, #9BD6E5, #5D9B9B)'
     },
     {
+      id: SCREEN_TYPES.EPISODE_EDITOR,
+      icon: 'fas fa-edit',
+      text: 'Редактор эпизодов',
+      gradient: 'linear-gradient(to right, #FF6B6B, #FF8E53)'
+    },
+    {
       id: SCREEN_TYPES.SETTINGS,
       icon: 'fas fa-cog',
       text: 'Настройки',

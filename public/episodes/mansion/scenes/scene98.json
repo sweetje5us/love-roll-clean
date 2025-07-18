@@ -1,0 +1,25 @@
+{
+  "id": "scene98",
+  "chapterId": "2",
+  "name": "Лечь спать [Критический провал]",
+  "background": "",
+  "characters": [],
+  "dialogue": [],
+  "choices": [
+    {
+      "id": "scene98_choice1",
+      "text": "Выйти из комнаты",
+      "nextScene": "scene67",
+      "important": false,
+      "value": "",
+      "description": "",
+      "consequences": [
+        ""
+      ],
+      "diceCheck": null,
+      "specialInteraction": "",
+      "requiredItem": "",
+      "conditions": {}
+    }
+  ]
+}

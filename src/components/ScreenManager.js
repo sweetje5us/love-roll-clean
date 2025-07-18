@@ -10,6 +10,7 @@ import SettingsScreen from './screens/SettingsScreen';
 import LoadingScreen from './screens/LoadingScreen';
 import CharacterSelectScreen from './screens/CharacterSelectScreen';
 import EpisodeSelectScreen from './screens/EpisodeSelectScreen';
+import EpisodeEditorScreen from './screens/EpisodeEditorScreen';
 
 const ScreenManager = () => {
   const { currentScreen, transitionType, isLoading, getNavigationParams, goBack } = useScreen();
@@ -63,6 +64,8 @@ const ScreenManager = () => {
             }}
           />
         );
+      case SCREEN_TYPES.EPISODE_EDITOR:
+        return <EpisodeEditorScreen />;
       case SCREEN_TYPES.SETTINGS:
         return <SettingsScreen />;
       case SCREEN_TYPES.LOADING:

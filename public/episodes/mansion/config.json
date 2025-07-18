@@ -6,25 +6,41 @@
   "preview": "sprites/episodes/locations/mansion/mansion_outside.png",
   "type": "detective",
   "ageRating": "0+",
-  "duration": "60-75 минут",
-  "difficulty": "normal",
+  "duration": "30-60 мин",
+  "difficulty": "medium",
   "unlocked": true,
   "completed": false,
-  "tags": ["детектив", "расследование", "поместье"],
+  "tags": [
+    "детектив",
+    "расследование",
+    "поместье"
+  ],
   "chapters": [
     {
-      "id": 1,
-      "name": "Глава 1: Знакомство с основами",
-      "description": "Знакомство с игрой и основными элементами интерфейса",
+      "id": "1",
+      "name": "Глава 1: Знакомство с гостями",
+      "description": "Знакомство с гостями поместья Диметрио",
       "duration": "3-5 минут",
-      "scenes": ["scene1", "scene2"]
+      "scenes": [
+        "scene1",
+        "scene2"
+      ]
     },
     {
-      "id": 2,
-      "name": "Глава 2: Расследование",
+      "id": "2",
+      "name": "Глава 2: Начало расследования",
       "description": "Расследование",
       "duration": "3-5 минут",
-      "scenes": ["scene66"]
+      "scenes": [
+        "scene66",
+        "scene67",
+        "scene68",
+        "scene71_main",
+        "scene99",
+        "scene98",
+        "scene100",
+        "scene101"
+      ]
     }
   ],
   "characters": [
@@ -77,9 +93,10 @@
         "hairColor": "dark",
         "hairBehind": "",
         "dress": "office3",
-        "dressPaid": false,
+        "dressPaid": true,
         "accessory": "black_glasses",
-        "accessoryPaid": false
+        "accessoryPaid": false,
+        "bush": ""
       }
     },
     {
@@ -252,5 +269,4 @@
       "description": "Уютная классная комната для обучения"
     }
   ]
-
-} 
+}

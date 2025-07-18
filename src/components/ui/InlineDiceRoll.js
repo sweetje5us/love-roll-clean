@@ -30,6 +30,65 @@ const getResultDescription = (result) => {
   return descriptions[result] || 'Результат не определен.';
 };
 
+// Функция для получения доступных зелий для характеристики
+const getAvailablePotions = (statName, inventory) => {
+  const availablePotions = [];
+  
+  // Маппинг характеристик на зелья
+  const statToPotions = {
+    charisma: ['basic_charisma_potion', 'charisma_potion'],
+    coldness: ['basic_cold_potion', 'cold_potion'],
+    sensitivity: ['basic_sensitivity_potion', 'sensitivity_potion'],
+    cunning: ['basic_cunning_potion', 'cunning_potion'],
+    determination: ['basic_determination_potion', 'determination_potion'],
+    intelligence: ['basic_intelligence_potion', 'intelligence_potion']
+  };
+  
+  // Получаем зелья для данной характеристики
+  const statPotions = statToPotions[statName] || [];
+  
+  // Проверяем наличие зелий в инвентаре
+  statPotions.forEach(potionId => {
+    const itemData = inventory[potionId];
+    if (itemData) {
+      const quantity = typeof itemData === 'number' ? itemData : itemData.quantity || 0;
+      if (quantity > 0) {
+        const potionData = itemsData.items.consumable[potionId];
+        if (potionData) {
+          availablePotions.push({
+            id: potionId,
+            name: potionData.name,
+            description: potionData.description,
+            bonus: potionId.startsWith('basic_') ? 1 : 2,
+            quantity: quantity
+          });
+        }
+      }
+    }
+  });
+  
+  // Добавляем золотое яблоко (универсальное зелье)
+  const goldenAppleData = inventory['golden_apple'];
+  if (goldenAppleData) {
+    const quantity = typeof goldenAppleData === 'number' ? goldenAppleData : goldenAppleData.quantity || 0;
+    if (quantity > 0) {
+      const appleData = itemsData.items.consumable['golden_apple'];
+      if (appleData) {
+        availablePotions.push({
+          id: 'golden_apple',
+          name: appleData.name,
+          description: appleData.description,
+          bonus: 2,
+          quantity: quantity,
+          universal: true
+        });
+      }
+    }
+  }
+  
+  return availablePotions;
+};
+
 // Карта соседних значений для d20 (точно как в test_dice_mechanics.html)
 const D20_NEIGHBORS = {
   1: [2, 3, 4, 5, 6],
@@ -107,6 +166,7 @@ const InlineDiceRoll = ({
   const [finalFace, setFinalFace] = useState(20);
   const [d20Rotation, setD20Rotation] = useState(getRotationForFace(20));
   const [rerollCount, setRerollCount] = useState(0);
+  const [selectedPotion, setSelectedPotion] = useState(null);
   
   const { inventory } = useInventory();
 
@@ -121,6 +181,9 @@ const InlineDiceRoll = ({
   const petStatBonus = getPetStatBonus(character, statName, itemsData);
   const finalStatValue = getFinalStatValue(character, statName, itemsData);
   const petCubeBonus = getPetCubeBonus(character, itemsData);
+
+  // Получаем доступные зелья для данной характеристики
+  const availablePotions = getAvailablePotions(statName, inventory);
 
   // Функция для проверки наличия зелья воскрешения
   const hasResurrectionPotion = () => {
@@ -226,6 +289,7 @@ const InlineDiceRoll = ({
       setFinalFace(20);
       setD20Rotation(getRotationForFace(20));
       setRerollCount(0);
+      setSelectedPotion(null);
       // Устанавливаем начальные CSS-переменные
       setTimeout(() => {
         setDiceNumbers(20);
@@ -246,7 +310,7 @@ const InlineDiceRoll = ({
     }
   }, [rollResult]);
 
-  // Функция броска кубика (точно как в test_dice_mechanics.html)
+  // Функция броска кубика с учетом выбранного зелья
   const handleRollDice = () => {
     if (isRolling) return;
     
@@ -260,7 +324,32 @@ const InlineDiceRoll = ({
     
     setTimeout(() => {
       // Выполняем проверку с учетом бонусов питомцев
-      const result = performStatCheck(statName, character, difficulty, itemsData);
+      let result = performStatCheck(statName, character, difficulty, itemsData);
+      
+      // Применяем бонус от выбранного зелья
+      if (selectedPotion) {
+        result = {
+          ...result,
+          total: result.total + selectedPotion.bonus,
+          potionBonus: selectedPotion.bonus,
+          usedPotion: selectedPotion
+        };
+        
+        // Обновляем результат на основе нового total
+        if (result.total >= difficulty) {
+          result.result = 'success';
+          result.resultType = 'Успех';
+        } else {
+          result.result = 'failure';
+          result.resultType = 'Неудача';
+        }
+        
+        // Удаляем использованное зелье из инвентаря
+        if (removeItem) {
+          removeItem(selectedPotion.id, 1);
+        }
+      }
+      
       setRollResult(result);
       setFinalFace(result.roll);
       
@@ -279,20 +368,19 @@ const InlineDiceRoll = ({
 
   // Функция переброса
   const handleReroll = () => {
-    if (!canReroll()) {
-      return;
-    }
-    setRerollCount(prev => prev + 1);
-    // Если это не бесплатный переброс, списываем зелье
-    if (!isFreeReroll()) {
-      if (removeItem) {
-        removeItem('resurrection_potion', 1);
-      }
-    }
+    if (!canReroll()) return;
+    
     setRollResult(null);
     setFinalFace(20);
     setD20Rotation(getRotationForFace(20));
     setDiceNumbers(20);
+    setSelectedPotion(null);
+    setRerollCount(prev => prev + 1);
+    
+    // Если используется зелье воскрешения, удаляем его
+    if (!isFreeReroll() && hasResurrectionPotion() && removeItem) {
+      removeItem('resurrection_potion', 1);
+    }
   };
 
   if (!isVisible) return null;
@@ -305,141 +393,178 @@ const InlineDiceRoll = ({
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
       >
-        <div className="inline-dice-roll-container">
-          {/* Информация о проверке */}
-          <div className="inline-check-info">
-            <div className="inline-stat-info">
-              <i className={getStatIcon(statName)}></i>
-              <span className="inline-stat-name">{getStatDisplayName(statName)}</span>
-              <span className="inline-stat-value">
-                ({baseStatValue}
-                {petStatBonus > 0 && <span className="pet-stat-bonus">+{petStatBonus}</span>}
-                )
-              </span>
+        <motion.div
+          className="inline-dice-roll-container"
+          initial={{ scale: 0.8, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          exit={{ scale: 0.8, opacity: 0 }}
+        >
+          <div className="inline-dice-roll-header">
+            <h3>🎲 Проверка {getStatDisplayName(statName)}</h3>
+          </div>
+
+          <div className="inline-dice-roll-content">
+            {/* Информация о проверке */}
+            <div className="inline-check-info">
+              <div className="inline-stat-info">
+                <i className={getStatIcon(statName)}></i>
+                <span className="inline-stat-name">{getStatDisplayName(statName)}</span>
+                <span className="inline-stat-value">
+                  ({baseStatValue}
+                  {petStatBonus > 0 && <span className="pet-stat-bonus">+{petStatBonus}</span>}
+                  )
+                </span>
+              </div>
+              <div className="inline-difficulty-info">
+                <span>Сложность: {difficulty}</span>
+              </div>
+              {/* Отображение бонусов питомцев */}
+              {(petStatBonus > 0 || petCubeBonus > 0) && (
+                <div className="inline-pet-bonuses">
+                  {petStatBonus > 0 && (
+                    <span className="pet-bonus-item">
+                      <i className="fas fa-paw"></i>
+                      Бонус к характеристике: +{petStatBonus}
+                    </span>
+                  )}
+                  {petCubeBonus > 0 && (
+                    <span className="pet-bonus-item">
+                      <i className="fas fa-dice-d20"></i>
+                      Бонус к броску: +{petCubeBonus}
+                    </span>
+                  )}
+                </div>
+              )}
+              <div className="inline-description">
+                <p>{description}</p>
+              </div>
             </div>
-            <div className="inline-difficulty-info">
-              <span>Сложность: {difficulty}</span>
-            </div>
-            {/* Отображение бонусов питомцев */}
-            {(petStatBonus > 0 || petCubeBonus > 0) && (
-              <div className="inline-pet-bonuses">
-                {petStatBonus > 0 && (
-                  <span className="pet-bonus-item">
-                    <i className="fas fa-paw"></i>
-                    Бонус к характеристике: +{petStatBonus}
-                  </span>
-                )}
-                {petCubeBonus > 0 && (
-                  <span className="pet-bonus-item">
-                    <i className="fas fa-dice-d20"></i>
-                    Бонус к броску: +{petCubeBonus}
-                  </span>
-                )}
+
+            {/* Выбор зелья */}
+            {availablePotions.length > 0 && !rollResult && (
+              <div className="inline-potion-selection">
+                <h4>🧪 Выберите зелье (необязательно):</h4>
+                <div className="inline-potion-options">
+                  <label className="inline-potion-option">
+                    <input
+                      type="radio"
+                      name="inline-potion"
+                      value=""
+                      checked={selectedPotion === null}
+                      onChange={() => setSelectedPotion(null)}
+                    />
+                    <span className="inline-potion-label">Без зелья</span>
+                  </label>
+                  {availablePotions.map((potion) => (
+                    <label key={potion.id} className="inline-potion-option">
+                      <input
+                        type="radio"
+                        name="inline-potion"
+                        value={potion.id}
+                        checked={selectedPotion?.id === potion.id}
+                        onChange={() => setSelectedPotion(potion)}
+                      />
+                      <span className="inline-potion-label">
+                        {potion.name} (+{potion.bonus}) - {potion.quantity} шт.
+                        {potion.universal && <span className="universal-badge">✨</span>}
+                      </span>
+                    </label>
+                  ))}
+                </div>
               </div>
             )}
-            <div className="inline-description">
-              <p>{description}</p>
-            </div>
-          </div>
 
-          {/* Кубик d20 */}
-          <div className="inline-dice-container">
-            <div className={`inline-d20 ${isRolling ? 'rolling' : ''}`}> 
-              <div className="inline-d20-dodecahedron" style={!isRolling ? { transform: d20Rotation } : {}}>
-                <div className="face face-1"></div>
-                <div className="face face-2"></div>
-                <div className="face face-3"></div>
-                <div className="face face-4"></div>
-                <div className="face face-5"></div>
-                <div className="face face-6"></div>
-                <div className="face face-7"></div>
-                <div className="face face-8"></div>
-                <div className="face face-9"></div>
-                <div className="face face-10"></div>
-                <div className="face face-11"></div>
-                <div className="face face-12"></div>
-                <div className="face face-13"></div>
-                <div className="face face-14"></div>
-                <div className="face face-15"></div>
-                <div className="face face-16"></div>
-                <div className="face face-17"></div>
-                <div className="face face-18"></div>
-                <div className="face face-19"></div>
-                <div className="face face-20"></div>
-              </div>
-            </div>
-            <div className="inline-dice-value">{finalFace}</div>
-          </div>
-
-          {/* Кнопка броска */}
-          {!rollResult && (
-            <button 
-              className={`inline-roll-button ${isRolling ? 'rolling' : ''}`}
-              onClick={handleRollDice}
-              disabled={isRolling}
-            >
-              {isRolling ? '🎲 Бросаем...' : '🎲 Бросить кубик'}
-            </button>
-          )}
-
-          {/* Результат броска */}
-          {rollResult && (
-            <motion.div
-              className="inline-roll-result"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-            >
-              <div className={`inline-result-header ${getResultColor(rollResult.result)}`}>
-                <h3>{rollResult.resultType}</h3>
-                <p>{getResultDescription(rollResult.result)}</p>
-              </div>
-
-              <div className="inline-result-summary">
-                <div className="inline-summary-item">
-                  <span className="summary-label">Результат:</span>
-                  <span className="summary-value">
-                    {rollResult.roll} {rollResult.modifier >= 0 ? '+ ' : ''}{rollResult.modifier}
-                    {rollResult.petCubeBonus > 0 && ` + ${rollResult.petCubeBonus}`}
-                    = {rollResult.total}
-                  </span>
+            {/* Кубик d20 */}
+            <div className="inline-dice-container">
+              <div className={`inline-d20 ${isRolling ? 'rolling' : ''}`}>
+                <div className="inline-d20-dodecahedron" style={!isRolling ? { transform: d20Rotation } : {}}>
+                  <div className="face face-1"></div>
+                  <div className="face face-2"></div>
+                  <div className="face face-3"></div>
+                  <div className="face face-4"></div>
+                  <div className="face face-5"></div>
+                  <div className="face face-6"></div>
+                  <div className="face face-7"></div>
+                  <div className="face face-8"></div>
+                  <div className="face face-9"></div>
+                  <div className="face face-10"></div>
+                  <div className="face face-11"></div>
+                  <div className="face face-12"></div>
+                  <div className="face face-13"></div>
+                  <div className="face face-14"></div>
+                  <div className="face face-15"></div>
+                  <div className="face face-16"></div>
+                  <div className="face face-17"></div>
+                  <div className="face face-18"></div>
+                  <div className="face face-19"></div>
+                  <div className="face face-20"></div>
                 </div>
-                {/* Детальная информация о бонусах */}
-                {(rollResult.petStatBonus > 0 || rollResult.petCubeBonus > 0) && (
-                  <div className="inline-bonus-details">
-                    {rollResult.petStatBonus > 0 && (
-                      <div className="bonus-detail">
-                        <span>Базовая характеристика: {rollResult.baseStatValue}</span>
-                        <span>Бонус питомца: +{rollResult.petStatBonus}</span>
-                        <span>Итого: {rollResult.statValue}</span>
-                      </div>
-                    )}
-                    {rollResult.petCubeBonus > 0 && (
-                      <div className="bonus-detail">
-                        <span>Бонус к броску: +{rollResult.petCubeBonus}</span>
-                      </div>
-                    )}
-                  </div>
-                )}
               </div>
+              <div className="inline-dice-value">{finalFace}</div>
+            </div>
 
-              <div className="inline-result-actions">
-                <button className="inline-continue-button" onClick={handleContinue}>
-                  Продолжить
-                </button>
-                {/* Кнопка переброса всегда видна, если бросок не успешен */}
-                {rollResult.result !== 'success' && rollResult.result !== 'critical_success' && (
-                  <button 
-                    className={`inline-reroll-button${!canReroll() ? ' disabled' : ''}`} 
-                    onClick={handleReroll}
-                    disabled={!canReroll()}
-                  >
-                    {getRerollButtonText()}
+            {/* Кнопка броска */}
+            {!rollResult && (
+              <button 
+                className={`inline-roll-button ${isRolling ? 'rolling' : ''}`}
+                onClick={handleRollDice}
+                disabled={isRolling}
+              >
+                {isRolling ? '🎲 Бросаем...' : '🎲 Бросить кубик'}
+              </button>
+            )}
+
+            {/* Результат броска */}
+            {rollResult && (
+              <motion.div
+                className="inline-roll-result"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+              >
+                <div className={`inline-result-header ${getResultColor(rollResult.result)}`}>
+                  <h4>{rollResult.resultType}</h4>
+                  <p>{getResultDescription(rollResult.result)}</p>
+                </div>
+
+                <div className="inline-result-details">
+                  <div className="inline-detail-item">
+                    <span className="inline-label">Бросок d20:</span>
+                    <span className="inline-value">{rollResult.roll}</span>
+                  </div>
+                  <div className="inline-detail-item">
+                    <span className="inline-label">Модификатор:</span>
+                    <span className="inline-value">{rollResult.modifier >= 0 ? '+' : ''}{rollResult.modifier}</span>
+                  </div>
+                  {rollResult.potionBonus && (
+                    <div className="inline-detail-item inline-potion-bonus">
+                      <span className="inline-label">Бонус зелья:</span>
+                      <span className="inline-value">+{rollResult.potionBonus}</span>
+                    </div>
+                  )}
+                  <div className="inline-detail-item">
+                    <span className="inline-label">Итого:</span>
+                    <span className="inline-value">{rollResult.total}</span>
+                  </div>
+                  <div className="inline-detail-item">
+                    <span className="inline-label">Сложность:</span>
+                    <span className="inline-value">{rollResult.difficulty}</span>
+                  </div>
+                </div>
+
+                <div className="inline-result-actions">
+                  <button className="inline-continue-button" onClick={handleContinue}>
+                    Продолжить
                   </button>
-                )}
-              </div>
-            </motion.div>
-          )}
-        </div>
+                  {canReroll() && (
+                    <button className="inline-reroll-button" onClick={handleReroll}>
+                      {getRerollButtonText()}
+                    </button>
+                  )}
+                </div>
+              </motion.div>
+            )}
+          </div>
+        </motion.div>
       </motion.div>
     </AnimatePresence>
   );

@@ -1,0 +1,92 @@
+{
+  "id": "scene67",
+  "chapterId": "2",
+  "name": "Выход из комнаты",
+  "background": "sprites/episodes/locations/mansion/mansion_inside.png",
+  "characters": [
+    {
+      "id": "player",
+      "position": "center",
+      "name": "Игрок"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "narrator",
+      "text": "Вы слышите переполох наверху,",
+      "emotion": "normal"
+    },
+    {
+      "speaker": "narrator",
+      "text": "Шум от разговоров, звуки шагов",
+      "emotion": "normal"
+    },
+    {
+      "speaker": "narrator",
+      "text": "Вам нужно понять что происходит",
+      "emotion": "normal"
+    }
+  ],
+  "choices": [
+    {
+      "id": "scene67_choice1",
+      "text": "Пройти к кабинету Диметрио",
+      "nextScene": "scene68",
+      "important": false,
+      "value": "",
+      "description": "",
+      "consequences": [
+        ""
+      ],
+      "diceCheck": null,
+      "specialInteraction": "",
+      "requiredItem": "",
+      "conditions": {}
+    },
+    {
+      "id": "scene67_choice2",
+      "text": "Пройти к гостевой спальне",
+      "nextScene": "scene69",
+      "important": false,
+      "value": "",
+      "description": "",
+      "consequences": [
+        ""
+      ],
+      "diceCheck": null,
+      "specialInteraction": "",
+      "requiredItem": "",
+      "conditions": {}
+    },
+    {
+      "id": "scene67_choice3",
+      "text": "Пройти к комнате с камином",
+      "nextScene": "scene70",
+      "important": false,
+      "value": "",
+      "description": "",
+      "consequences": [
+        ""
+      ],
+      "diceCheck": null,
+      "specialInteraction": "",
+      "requiredItem": "",
+      "conditions": {}
+    },
+    {
+      "id": "scene67_choice4",
+      "text": "Подняться на второй этаж",
+      "nextScene": "scene71_main",
+      "important": false,
+      "value": "",
+      "description": "",
+      "consequences": [
+        ""
+      ],
+      "diceCheck": null,
+      "specialInteraction": "",
+      "requiredItem": "",
+      "conditions": {}
+    }
+  ]
+}

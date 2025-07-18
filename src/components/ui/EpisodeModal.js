@@ -8,8 +8,15 @@ import './EpisodeModal.css';
 const EpisodeModal = ({ episode, episodeData, isOpen, onClose, onStartEpisode }) => {
   if (!episode || !episodeData) return null;
 
-  const typeInfo = episodeData.types[episode.type];
-  const ageInfo = episodeData.ageRatings[episode.ageRating];
+  const typeInfo = episodeData.types[episode.type] || {
+    name: episode.type || 'Неизвестно',
+    color: '#6b7280',
+    icon: 'fas fa-question'
+  };
+  const ageInfo = episodeData.ageRatings[episode.ageRating] || {
+    name: episode.ageRating || '0+',
+    color: '#22c55e'
+  };
 
   // Используем главы из конфигурации эпизода
   const chapters = episode.chapters || [];

@@ -1,0 +1,66 @@
+{
+  "id": "scene68",
+  "chapterId": "2",
+  "name": "Кабинет Диметрио",
+  "background": "sprites/episodes/locations/mansion/mansion_door_cab_11zon.png",
+  "characters": [
+    {
+      "id": "player",
+      "position": "center",
+      "name": "Игрок"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "narrator",
+      "text": "Вы подошли к двери кабинета Диметрио",
+      "emotion": "normal"
+    }
+  ],
+  "choices": [
+    {
+      "id": "dimetrio_door_closed_check",
+      "text": "[Чувствительность] Проверить закрыта ли дверь",
+      "nextScene": "scene68_1",
+      "important": true,
+      "value": "true",
+      "description": "true",
+      "consequences": [
+        "выбор 1"
+      ],
+      "requirements": {
+        "importantChoice": {
+          "dimetrio_door_closed_check": null
+        }
+      },
+      "diceCheck": {
+        "stat": "sensitivity",
+        "difficulty": 10,
+        "results": {
+          "critical_success": "scene68_2",
+          "success": "scene68_1",
+          "failure": "scene68_3",
+          "critical_failure": "scene68_4"
+        }
+      },
+      "specialInteraction": "",
+      "requiredItem": "",
+      "conditions": {}
+    },
+    {
+      "id": "scene68_choice2",
+      "text": "Вернуться",
+      "nextScene": "scene67",
+      "important": false,
+      "value": "",
+      "description": "",
+      "consequences": [
+        ""
+      ],
+      "diceCheck": null,
+      "specialInteraction": "",
+      "requiredItem": "",
+      "conditions": {}
+    }
+  ]
+}

@@ -1,0 +1,66 @@
+{
+  "id": "scene69",
+  "chapterId": "2",
+  "name": "Гостевая спальня 1 этажа",
+  "background": "",
+  "characters": [
+    {
+      "id": "player",
+      "position": "center",
+      "name": "Игрок"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "narrator",
+      "text": "Вы у двери гостевой спальни",
+      "emotion": "normal"
+    }
+  ],
+  "choices": [
+    {
+      "id": "scene69_choice1",
+      "text": "Вернуться",
+      "nextScene": "scene67",
+      "important": false,
+      "value": "",
+      "description": "",
+      "consequences": [
+        ""
+      ],
+      "diceCheck": null,
+      "specialInteraction": "",
+      "requiredItem": "",
+      "conditions": {}
+    },
+    {
+      "id": "check_door_bedroom1",
+      "text": "[Решительность] Дернуть ручку двери",
+      "nextScene": "scene69_1",
+      "important": true,
+      "value": "true",
+      "description": "",
+      "consequences": [
+        ""
+      ],
+      "diceCheck": {
+        "stat": "determination",
+        "difficulty": 15,
+        "results": {
+          "critical_success": "scene69_2",
+          "success": "scene69_1",
+          "failure": "scene69_3",
+          "critical_failure": "scene69_4"
+        }
+      },
+      "specialInteraction": "",
+      "requiredItem": "",
+      "conditions": {},
+      "requirements": {
+        "importantChoice": {
+          "check_door_bedroom1": null
+        }
+      }
+    }
+  ]
+}

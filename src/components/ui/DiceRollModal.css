@@ -106,6 +106,71 @@
   opacity: 0.9;
 }
 
+/* Секция выбора зелий */
+.potion-selection {
+  margin-bottom: 30px;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 15px;
+  border: 2px solid rgba(255, 215, 0, 0.3);
+}
+
+.potion-selection h3 {
+  margin: 0 0 15px 0;
+  font-size: 1.3em;
+  color: #ffd700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.potion-options {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-height: 200px;
+  overflow-y: auto;
+  padding-right: 10px;
+}
+
+.potion-option {
+  display: flex;
+  align-items: center;
+  padding: 12px 15px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+}
+
+.potion-option:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 215, 0, 0.5);
+}
+
+.potion-option input[type="radio"] {
+  margin-right: 12px;
+  transform: scale(1.2);
+  accent-color: #ffd700;
+}
+
+.potion-label {
+  flex: 1;
+  font-size: 1em;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.universal-badge {
+  color: #ffd700;
+  font-size: 1.2em;
+  margin-left: 8px;
+}
+
 /* Контейнер кубика */
 .dice-container {
   position: relative;
@@ -199,115 +264,53 @@
   margin-bottom: calc(var(--face-height) * -.5);
   margin-left: calc(var(--face-width) * -.5);
   margin-right: calc(var(--face-width) * -.5);
-  border-left: calc(var(--face-width) * .5) solid transparent;
-  border-right: calc(var(--face-width) * .5) solid transparent;
-  border-bottom: calc(var(--face-height) * .5) solid var(--face-color);
   position: absolute;
-  transition: opacity 0.3s ease, visibility 0.3s ease, z-index 0.3s ease;
-  backface-visibility: hidden;
   transform-style: preserve-3d;
+  border: 2px solid var(--clr-darker);
+  border-radius: 8px;
+  box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
 }
 
 .d20-dodecahedron .face.active {
-  border-bottom-color: #ff6b6b;
-  box-shadow: 0 0 20px rgba(255, 107, 107, 0.5);
+  border-color: #ffd700;
+  box-shadow: inset 0 0 20px rgba(255, 215, 0, 0.3), 0 0 20px rgba(255, 215, 0, 0.5);
 }
 
 .d20-dodecahedron .face::after {
+  content: var(--dice-number);
   position: absolute;
-  top: calc(var(--face-height) * 0.25);
-  left: calc(var(--face-width) * -1);
-  color: black;
-  font-size: calc(var(--face-height) * .175);
-  text-align: center;
-  line-height: 1;
-  width: calc(var(--face-width) * 2);
-  height: var(--face-height);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 24px;
   font-weight: bold;
-  content: ''; /* Убираем числа с граней */
+  color: #333;
+  text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.8);
+  z-index: 10;
 }
 
-.d20-dodecahedron .face-1::after {
-  content: var(--dice-number, '20'); /* Отображаем выпавшее число */
-}
+.d20-dodecahedron .face-1::after { content: var(--dice-number-1, '1'); }
+.d20-dodecahedron .face-2::after { content: var(--dice-number-2, '2'); }
+.d20-dodecahedron .face-3::after { content: var(--dice-number-3, '3'); }
+.d20-dodecahedron .face-4::after { content: var(--dice-number-4, '4'); }
+.d20-dodecahedron .face-5::after { content: var(--dice-number-5, '5'); }
+.d20-dodecahedron .face-6::after { content: var(--dice-number-6, '6'); }
+.d20-dodecahedron .face-7::after { content: var(--dice-number-7, '7'); }
+.d20-dodecahedron .face-8::after { content: var(--dice-number-8, '8'); }
+.d20-dodecahedron .face-9::after { content: var(--dice-number-9, '9'); }
+.d20-dodecahedron .face-10::after { content: var(--dice-number-10, '10'); }
+.d20-dodecahedron .face-11::after { content: var(--dice-number-11, '11'); }
+.d20-dodecahedron .face-12::after { content: var(--dice-number-12, '12'); }
+.d20-dodecahedron .face-13::after { content: var(--dice-number-13, '13'); }
+.d20-dodecahedron .face-14::after { content: var(--dice-number-14, '14'); }
+.d20-dodecahedron .face-15::after { content: var(--dice-number-15, '15'); }
+.d20-dodecahedron .face-16::after { content: var(--dice-number-16, '16'); }
+.d20-dodecahedron .face-17::after { content: var(--dice-number-17, '17'); }
+.d20-dodecahedron .face-18::after { content: var(--dice-number-18, '18'); }
+.d20-dodecahedron .face-19::after { content: var(--dice-number-19, '19'); }
+.d20-dodecahedron .face-20::after { content: var(--dice-number-20, '20'); }
 
-.d20-dodecahedron .face-2::after {
-  content: var(--dice-number-2, ''); /* Соседнее значение */
-}
-
-.d20-dodecahedron .face-3::after {
-  content: var(--dice-number-3, ''); /* Соседнее значение */
-}
-
-.d20-dodecahedron .face-4::after {
-  content: var(--dice-number-4, ''); /* Соседнее значение */
-}
-
-.d20-dodecahedron .face-5::after {
-  content: var(--dice-number-5, ''); /* Соседнее значение */
-}
-
-.d20-dodecahedron .face-6::after {
-  content: var(--dice-number-6, ''); /* Соседнее значение */
-}
-
-.d20-dodecahedron .face-7::after {
-  content: var(--dice-number-7, ''); /* Соседнее значение */
-}
-
-.d20-dodecahedron .face-8::after {
-  content: var(--dice-number-8, ''); /* Соседнее значение */
-}
-
-.d20-dodecahedron .face-9::after {
-  content: var(--dice-number-9, ''); /* Соседнее значение */
-}
-
-.d20-dodecahedron .face-10::after {
-  content: var(--dice-number-10, ''); /* Соседнее значение */
-}
-
-.d20-dodecahedron .face-11::after {
-  content: var(--dice-number-11, ''); /* Соседнее значение */
-}
-
-.d20-dodecahedron .face-12::after {
-  content: var(--dice-number-12, ''); /* Соседнее значение */
-}
-
-.d20-dodecahedron .face-13::after {
-  content: var(--dice-number-13, ''); /* Соседнее значение */
-}
-
-.d20-dodecahedron .face-14::after {
-  content: var(--dice-number-14, ''); /* Соседнее значение */
-}
-
-.d20-dodecahedron .face-15::after {
-  content: var(--dice-number-15, ''); /* Соседнее значение */
-}
-
-.d20-dodecahedron .face-16::after {
-  content: var(--dice-number-16, ''); /* Соседнее значение */
-}
-
-.d20-dodecahedron .face-17::after {
-  content: var(--dice-number-17, ''); /* Соседнее значение */
-}
-
-.d20-dodecahedron .face-18::after {
-  content: var(--dice-number-18, ''); /* Соседнее значение */
-}
-
-.d20-dodecahedron .face-19::after {
-  content: var(--dice-number-19, ''); /* Соседнее значение */
-}
-
-.d20-dodecahedron .face-20::after {
-  content: var(--dice-number-20, ''); /* Соседнее значение */
-}
-
-/* Генерация граней d20 - точно как в test_dice_mechanics.html */
 .d20-dodecahedron .face-1 { transform: rotateY(calc(var(--top-face-angle) * -1 * 0)) translateZ(var(--translateZ-top)) translateY(var(--translateY-top)) rotateX(var(--ends-angle)); }
 .d20-dodecahedron .face-2 { transform: rotateY(calc(var(--top-face-angle) * -1 * 1)) translateZ(var(--translateZ-top)) translateY(var(--translateY-top)) rotateX(var(--ends-angle)); }
 .d20-dodecahedron .face-3 { transform: rotateY(calc(var(--top-face-angle) * -1 * 2)) translateZ(var(--translateZ-top)) translateY(var(--translateY-top)) rotateX(var(--ends-angle)); }
@@ -330,29 +333,33 @@
 .d20-dodecahedron .face-20 { transform: rotateY(calc(var(--top-face-angle) * 2 + (var(--top-face-angle) / 2))) translateZ(var(--translateZ-bottom)) translateY(var(--translateY-bottom)) rotateZ(180deg) rotateX(var(--ends-angle)); }
 
 .dice-value {
-  margin-top: 20px;
-  font-size: 2em;
+  position: absolute;
+  bottom: -30px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 1.5em;
   font-weight: bold;
   color: #ffd700;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
 
 .roll-button {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #ff6b6b, #ee5a24);
   color: white;
   border: none;
   padding: 15px 30px;
   font-size: 1.2em;
-  border-radius: 50px;
+  font-weight: bold;
+  border-radius: 25px;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-  margin: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  margin: 20px 0;
 }
 
 .roll-button:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
 }
 
 .roll-button:disabled {
@@ -362,12 +369,12 @@
 }
 
 .roll-button.rolling {
-  animation: pulse 1s infinite;
+  animation: pulse 0.5s ease-in-out infinite alternate;
 }
 
 @keyframes pulse {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.05); }
+  from { transform: scale(1); }
+  to { transform: scale(1.05); }
 }
 
 .roll-result {
@@ -385,15 +392,18 @@
 }
 
 .result-header.success {
-  background: linear-gradient(135deg, #4ade80, #22c55e);
+  background: rgba(76, 175, 80, 0.3);
+  border: 2px solid rgba(76, 175, 80, 0.5);
 }
 
 .result-header.warning {
-  background: linear-gradient(135deg, #fbbf24, #f59e0b);
+  background: rgba(255, 152, 0, 0.3);
+  border: 2px solid rgba(255, 152, 0, 0.5);
 }
 
 .result-header.danger {
-  background: linear-gradient(135deg, #f87171, #ef4444);
+  background: rgba(244, 67, 54, 0.3);
+  border: 2px solid rgba(244, 67, 54, 0.5);
 }
 
 .result-header h3 {
@@ -404,34 +414,46 @@
 
 .result-header p {
   margin: 0;
+  font-size: 1.1em;
   opacity: 0.9;
 }
 
 .result-details {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 15px;
   margin-bottom: 20px;
 }
 
 .detail-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 15px;
   background: rgba(255, 255, 255, 0.1);
-  padding: 15px;
-  border-radius: 10px;
-  text-align: center;
+  border-radius: 8px;
 }
 
 .detail-item .label {
-  display: block;
-  font-size: 0.9em;
-  opacity: 0.8;
-  margin-bottom: 5px;
+  font-weight: bold;
+  color: #ffd700;
 }
 
 .detail-item .value {
-  display: block;
-  font-size: 1.3em;
   font-weight: bold;
+  color: white;
+}
+
+.detail-item.potion-bonus {
+  background: rgba(255, 215, 0, 0.2);
+  border: 1px solid rgba(255, 215, 0, 0.5);
+}
+
+.detail-item.potion-bonus .label {
+  color: #ffd700;
+}
+
+.detail-item.potion-bonus .value {
   color: #ffd700;
 }
 
@@ -439,43 +461,43 @@
   display: flex;
   gap: 15px;
   justify-content: center;
-  flex-wrap: wrap;
 }
 
 .continue-button,
 .reroll-button {
-  padding: 12px 24px;
+  padding: 12px 25px;
+  font-size: 1.1em;
+  font-weight: bold;
   border: none;
-  border-radius: 25px;
-  font-size: 1em;
+  border-radius: 20px;
   cursor: pointer;
   transition: all 0.3s ease;
 }
 
 .continue-button {
-  background: linear-gradient(135deg, #4ade80, #22c55e);
+  background: linear-gradient(135deg, #4caf50, #45a049);
   color: white;
 }
 
 .continue-button:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 16px rgba(34, 197, 94, 0.3);
+  box-shadow: 0 4px 15px rgba(76, 175, 80, 0.4);
 }
 
 .reroll-button {
-  background: linear-gradient(135deg, #fbbf24, #f59e0b);
+  background: linear-gradient(135deg, #ff9800, #f57c00);
   color: white;
 }
 
 .reroll-button:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 16px rgba(245, 158, 11, 0.3);
+  box-shadow: 0 4px 15px rgba(255, 152, 0, 0.4);
 }
 
 @media (max-width: 768px) {
   .dice-roll-modal {
-    margin: 10px;
     padding: 20px;
+    margin: 10px;
   }
 
   .d20 {
@@ -486,7 +508,6 @@
   .d20-dodecahedron {
     width: 150px;
     height: 150px;
-    --box-size: 150px;
   }
 
   .result-actions {

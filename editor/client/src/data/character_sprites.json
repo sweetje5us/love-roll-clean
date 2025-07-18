@@ -1,0 +1,575 @@
+{
+  "base_body": {
+    "female": {
+      "file": "body/Female body.png",
+      "size": [400, 600]
+    },
+    "male": {
+      "file": "body/Male body.png",
+      "size": [400, 600]
+    },
+    "female_mature": {
+      "file": "body/Mature Female body.png",
+      "size": [400, 600]
+    },
+    "male_mature": {
+      "file": "body/Mature Male body.png",
+      "size": [400, 600]
+    }
+  },
+  "hair_behind": {
+    "female": {
+      "long": {
+        "blond": "hair_behind/female/long/blond.png",
+        "brown": "hair_behind/female/long/brown.png",
+        "dark": "hair_behind/female/long/dark.png",
+        "pink": "hair_behind/female/long/pink.png",
+        "silver": "hair_behind/female/long/silver.png"
+      },
+      "short": {
+        "blond": "hair_behind/female/short/blond.png",
+        "brown": "hair_behind/female/short/brown.png",
+        "dark": "hair_behind/female/short/dark.png",
+        "pink": "hair_behind/female/short/pink.png",
+        "silver": "hair_behind/female/short/silver.png"
+      },
+      "short_bob": {
+        "blond": "hair_behind/female/short_bob/blond.png",
+        "brown": "hair_behind/female/short_bob/brown.png",
+        "dark": "hair_behind/female/short_bob/dark.png",
+        "pink": "hair_behind/female/short_bob/pink.png",
+        "silver": "hair_behind/female/short_bob/silver.png"
+      },
+      "twin_tail": {
+        "blond": "hair_behind/female/twin_tail/blond.png",
+        "brown": "hair_behind/female/twin_tail/brown.png",
+        "dark": "hair_behind/female/twin_tail/dark.png",
+        "pink": "hair_behind/female/twin_tail/pink.png",
+        "silver": "hair_behind/female/twin_tail/silver.png"
+      }
+    },
+    "male": {
+      "long": {
+        "blond": "hair_behind/male/long/blond.png",
+        "brown": "hair_behind/male/long/brown.png",
+        "dark": "hair_behind/male/long/dark.png",
+        "red": "hair_behind/male/long/red.png",
+        "silver": "hair_behind/male/long/silver.png"
+      },
+      "short1": {
+        "blond": "hair_behind/male/short1/blond.png",
+        "brown": "hair_behind/male/short1/brown.png",
+        "dark": "hair_behind/male/short1/dark.png",
+        "red": "hair_behind/male/short1/red.png",
+        "silver": "hair_behind/male/short1/silver.png"
+      },
+      "short2": {
+        "blond": "hair_behind/male/short2/blond.png",
+        "brown": "hair_behind/male/short2/brown.png",
+        "dark": "hair_behind/male/short2/dark.png",
+        "red": "hair_behind/male/short2/red.png",
+        "silver": "hair_behind/male/short2/silver.png"
+      },
+      "short3": {
+        "blond": "hair_behind/male/short3/blond.png",
+        "brown": "hair_behind/male/short3/brown.png",
+        "dark": "hair_behind/male/short3/dark.png",
+        "red": "hair_behind/male/short3/red.png",
+        "silver": "hair_behind/male/short3/silver.png"
+      }
+    },
+    "female_mature": {
+      "long": {
+        "blond": "hair_behind/female_mature/long/blond.png",
+        "brown": "hair_behind/female_mature/long/brown.png",
+        "dark": "hair_behind/female_mature/long/dark.png",
+        "pink": "hair_behind/female_mature/long/pink.png",
+        "silver": "hair_behind/female_mature/long/silver.png"
+      },
+      "long_curl": {
+        "blond": "hair_behind/female_mature/long_curl/blond.png",
+        "brown": "hair_behind/female_mature/long_curl/brown.png",
+        "dark": "hair_behind/female_mature/long_curl/dark.png",
+        "pink": "hair_behind/female_mature/long_curl/pink.png",
+        "silver": "hair_behind/female_mature/long_curl/silver.png"
+      },
+      "short": {
+        "blond": "hair_behind/female_mature/short/blond.png",
+        "brown": "hair_behind/female_mature/short/brown.png",
+        "dark": "hair_behind/female_mature/short/dark.png",
+        "pink": "hair_behind/female_mature/short/pink.png",
+        "silver": "hair_behind/female_mature/short/silver.png"
+      },
+      "short_curly": {
+        "blond": "hair_behind/female_mature/short_curly/blond.png",
+        "brown": "hair_behind/female_mature/short_curly/brown.png",
+        "dark": "hair_behind/female_mature/short_curly/dark.png",
+        "pink": "hair_behind/female_mature/short_curly/pink.png",
+        "silver": "hair_behind/female_mature/short_curly/silver.png"
+      }
+    },
+    "male_mature": {
+      "long": {
+        "blond": "hair_behind/male_mature/long/blond.png",
+        "brown": "hair_behind/male_mature/long/brown.png",
+        "dark": "hair_behind/male_mature/long/dark.png",
+        "red": "hair_behind/male_mature/long/red.png",
+        "silver": "hair_behind/male_mature/long/silver.png"
+      },
+      "short1": {
+        "blond": "hair_behind/male_mature/short1/blond.png",
+        "brown": "hair_behind/male_mature/short1/brown.png",
+        "dark": "hair_behind/male_mature/short1/dark.png",
+        "red": "hair_behind/male_mature/short1/red.png",
+        "silver": "hair_behind/male_mature/short1/silver.png"
+      },
+      "short2": {
+        "blond": "hair_behind/male_mature/short2/blond.png",
+        "brown": "hair_behind/male_mature/short2/brown.png",
+        "dark": "hair_behind/male_mature/short2/dark.png",
+        "red": "hair_behind/male_mature/short2/red.png",
+        "silver": "hair_behind/male_mature/short2/silver.png"
+      },
+      "short3": {
+        "black": "hair_behind/male_mature/short3/black.png",
+        "blond": "hair_behind/male_mature/short3/blond.png",
+        "brown": "hair_behind/male_mature/short3/brown.png",
+        "red": "hair_behind/male_mature/short3/red.png",
+        "silver": "hair_behind/male_mature/short3/silver.png"
+      }
+    }
+  },
+  "hairs": {
+    "female": {
+      "hime_cut": {
+        "blond": "hairs/female/hime_cut/blond.png",
+        "brown": "hairs/female/hime_cut/brown.png",
+        "dark": "hairs/female/hime_cut/dark.png",
+        "pink": "hairs/female/hime_cut/pink.png",
+        "silver": "hairs/female/hime_cut/silver.png"
+      },
+      "long_hair": {
+        "blond": "hairs/female/long_hair/blond.png",
+        "brown": "hairs/female/long_hair/brown.png",
+        "dark": "hairs/female/long_hair/dark.png",
+        "pink": "hairs/female/long_hair/pink.png",
+        "silver": "hairs/female/long_hair/silver.png"
+      },
+      "short_bob": {
+        "blond": "hairs/female/short_bob/blond.png",
+        "brown": "hairs/female/short_bob/brown.png",
+        "dark": "hairs/female/short_bob/dark.png",
+        "pink": "hairs/female/short_bob/pink.png",
+        "silver": "hairs/female/short_bob/silver.png"
+      },
+      "short_hair": {
+        "blond": "hairs/female/short_hair/blond.png",
+        "brown": "hairs/female/short_hair/brown.png",
+        "dark": "hairs/female/short_hair/dark.png",
+        "pink": "hairs/female/short_hair/pink.png",
+        "silver": "hairs/female/short_hair/silver.png"
+      }
+    },
+    "male": {
+      "curly": {
+        "blond": "hairs/male/curly/blond.png",
+        "brown": "hairs/male/curly/brown.png",
+        "dark": "hairs/male/curly/dark.png",
+        "red": "hairs/male/curly/red.png",
+        "silver": "hairs/male/curly/silver.png"
+      },
+      "long2": {
+        "blond": "hairs/male/long2/blond.png",
+        "brown": "hairs/male/long2/brown.png",
+        "dark": "hairs/male/long2/dark.png",
+        "red": "hairs/male/long2/red.png",
+        "silver": "hairs/male/long2/silver.png"
+      },
+      "long3": {
+        "blond": "hairs/male/long3/blond.png",
+        "brown": "hairs/male/long3/brown.png",
+        "dark": "hairs/male/long3/dark.png",
+        "red": "hairs/male/long3/red.png",
+        "silver": "hairs/male/long3/silver.png"
+      },
+      "long4": {
+        "blond": "hairs/male/long4/blond.png",
+        "brown": "hairs/male/long4/brown.png",
+        "dark": "hairs/male/long4/dark.png",
+        "red": "hairs/male/long4/red.png",
+        "silver": "hairs/male/long4/silver.png"
+      },
+      "short1": {
+        "blond": "hairs/male/short1/blond.png",
+        "brown": "hairs/male/short1/brown.png",
+        "dark": "hairs/male/short1/dark.png",
+        "red": "hairs/male/short1/red.png",
+        "silver": "hairs/male/short1/silver.png"
+      },
+      "short2": {
+        "blond": "hairs/male/short2/blond.png",
+        "brown": "hairs/male/short2/brown.png",
+        "dark": "hairs/male/short2/dark.png",
+        "red": "hairs/male/short2/red.png",
+        "silver": "hairs/male/short2/silver.png"
+      },
+      "short3": {
+        "blond": "hairs/male/short3/blond.png",
+        "brown": "hairs/male/short3/brown.png",
+        "dark": "hairs/male/short3/dark.png",
+        "red": "hairs/male/short3/red.png",
+        "silver": "hairs/male/short3/silver.png"
+      },
+      "short4": {
+        "blond": "hairs/male/short4/blond.png",
+        "brown": "hairs/male/short4/brown.png",
+        "dark": "hairs/male/short4/dark.png",
+        "red": "hairs/male/short4/red.png",
+        "silver": "hairs/male/short4/silver.png"
+      }
+    },
+    "female_mature": {
+      "hime_cut": {
+        "blond": "hairs/female_mature/hime_cut/blond.png",
+        "brown": "hairs/female_mature/hime_cut/brown.png",
+        "dark": "hairs/female_mature/hime_cut/dark.png",
+        "pink": "hairs/female_mature/hime_cut/pink.png",
+        "silver": "hairs/female_mature/hime_cut/silver.png"
+      },
+      "hime_cut_short": {
+        "blond": "hairs/female_mature/hime_cut_short/blond.png",
+        "brown": "hairs/female_mature/hime_cut_short/brown.png",
+        "dark": "hairs/female_mature/hime_cut_short/dark.png",
+        "pink": "hairs/female_mature/hime_cut_short/pink.png",
+        "silver": "hairs/female_mature/hime_cut_short/silver.png"
+      },
+      "long": {
+        "blond": "hairs/female_mature/long/blond.png",
+        "brown": "hairs/female_mature/long/brown.png",
+        "dark": "hairs/female_mature/long/dark.png",
+        "pink": "hairs/female_mature/long/pink.png",
+        "silver": "hairs/female_mature/long/silver.png"
+      },
+      "middle": {
+        "blond": "hairs/female_mature/middle/blond.png",
+        "brown": "hairs/female_mature/middle/brown.png",
+        "dark": "hairs/female_mature/middle/dark.png",
+        "pink": "hairs/female_mature/middle/pink.png",
+        "silver": "hairs/female_mature/middle/silver.png"
+      },
+      "short": {
+        "blond": "hairs/female_mature/short/blond.png",
+        "brown": "hairs/female_mature/short/brown.png",
+        "dark": "hairs/female_mature/short/dark.png",
+        "pink": "hairs/female_mature/short/pink.png",
+        "silver": "hairs/female_mature/short/silver.png"
+      },
+      "side_curl": {
+        "blond": "hairs/female_mature/side_curl/blond.png",
+        "brown": "hairs/female_mature/side_curl/brown.png",
+        "dark": "hairs/female_mature/side_curl/dark.png",
+        "pink": "hairs/female_mature/side_curl/pink.png",
+        "silver": "hairs/female_mature/side_curl/silver.png"
+      }
+    },
+    "male_mature": {
+      "curly": {
+        "blond": "hairs/male_mature/curly/blond.png",
+        "brown": "hairs/male_mature/curly/brown.png",
+        "dark": "hairs/male_mature/curly/dark.png",
+        "red": "hairs/male_mature/curly/red.png",
+        "silver": "hairs/male_mature/curly/silver.png"
+      },
+      "long_blocking_eyes": {
+        "blond": "hairs/male_mature/long_blocking_eyes/blond.png",
+        "brown": "hairs/male_mature/long_blocking_eyes/brown.png",
+        "dark": "hairs/male_mature/long_blocking_eyes/dark.png",
+        "red": "hairs/male_mature/long_blocking_eyes/red.png",
+        "silver": "hairs/male_mature/long_blocking_eyes/silver.png"
+      },
+      "long1": {
+        "blond": "hairs/male_mature/long1/blond.png",
+        "brown": "hairs/male_mature/long1/brown.png",
+        "dark": "hairs/male_mature/long1/dark.png",
+        "red": "hairs/male_mature/long1/red.png",
+        "silver": "hairs/male_mature/long1/silver.png"
+      },
+      "long2": {
+        "blond": "hairs/male_mature/long2/blond.png",
+        "brown": "hairs/male_mature/long2/brown.png",
+        "dark": "hairs/male_mature/long2/dark.png",
+        "red": "hairs/male_mature/long2/red.png",
+        "silver": "hairs/male_mature/long2/silver.png"
+      },
+      "short1": {
+        "blond": "hairs/male_mature/short1/blond.png",
+        "brown": "hairs/male_mature/short1/brown.png",
+        "dark": "hairs/male_mature/short1/dark.png",
+        "red": "hairs/male_mature/short1/red.png",
+        "silver": "hairs/male_mature/short1/silver.png"
+      },
+      "short2": {
+        "black": "hairs/male_mature/short2/black.png",
+        "blond": "hairs/male_mature/short2/blond.png",
+        "brown": "hairs/male_mature/short2/brown.png",
+        "red": "hairs/male_mature/short2/red.png",
+        "silver": "hairs/male_mature/short2/silver.png"
+      },
+      "short3": {
+        "blond": "hairs/male_mature/short3/blond.png",
+        "brown": "hairs/male_mature/short3/brown.png",
+        "dark": "hairs/male_mature/short3/dark.png",
+        "red": "hairs/male_mature/short3/red.png",
+        "silver": "hairs/male_mature/short3/silver.png"
+      },
+      "short4": {
+        "blond": "hairs/male_mature/short4/blond.png",
+        "brown": "hairs/male_mature/short4/brown.png",
+        "dark": "hairs/male_mature/short4/dark.png",
+        "red": "hairs/male_mature/short4/red.png",
+        "silver": "hairs/male_mature/short4/silver.png"
+      }
+    }
+  },
+  "dresses": {
+    "female": {
+      "free": {
+        "hoodie": "dresses/female/hoodie.png",
+        "school_uniform": "dresses/female/school_uniform.png",
+        "school_uniform2": "dresses/female/school_uniform2.png",
+        "sport_uniform": "dresses/female/sport_uniform.png",
+        "summer_dress": "dresses/female/summer_dress.png",
+        "winter_outfit": "dresses/female/winter_outfit.png"
+      },
+      "paid": {
+        "school_uniform": "dresses/female/paid/school_uniform.png",
+        "school_uniform2": "dresses/female/paid/school_uniform2.png",
+        "winter_outfit": "dresses/female/paid/winter_outfit.png"
+      },
+      "scenes": {
+        "pajama": "dresses/female/scenes/pajama.png",
+        "swimsuit": "dresses/female/scenes/swimsuit.png",
+        "towel": "dresses/female/scenes/towel.png"
+      }
+    },
+    "male": {
+      "free": {
+        "casual": "dresses/male/casual.png",
+        "casual2": "dresses/male/casual2.png",
+        "casual3": "dresses/male/casual3.png",
+        "school_uniform1": "dresses/male/school_uniform1.png",
+        "school_uniform2": "dresses/male/school_uniform2.png",
+        "sport_uniform": "dresses/male/sport_uniform.png",
+        "tanktop": "dresses/male/tanktop.png",
+        "tanktop2": "dresses/male/tanktop2.png",
+        "uniform": "dresses/male/uniform.png",
+        "winter": "dresses/male/winter.png"
+      },
+      "paid": {
+        "casual4": "dresses/male/paid/casual4.png",
+        "casual5": "dresses/male/paid/casual5.png",
+        "casual6": "dresses/male/paid/casual6.png",
+        "tanktop": "dresses/male/paid/tanktop.png",
+        "tanktop2": "dresses/male/paid/tanktop2.png",
+        "vest": "dresses/male/paid/vest.png"
+      },
+      "scenes": {
+        "casual5": "dresses/male/scenes/casual5.png",
+        "school_teacher": "dresses/male/scenes/school_teacher.png"
+      }
+    },
+    "female_mature": {
+      "free": {
+        "casual": "dresses/female_mature/casual.png",
+        "office_suit": "dresses/female_mature/office_suit.png",
+        "school1": "dresses/female_mature/school1.png",
+        "school2": "dresses/female_mature/school2.png",
+        "shirt1": "dresses/female_mature/shirt1.png",
+        "shirt2": "dresses/female_mature/shirt2.png",
+        "sport_uniform": "dresses/female_mature/sport_uniform.png",
+        "winter": "dresses/female_mature/winter.png"
+      },
+      "paid": {
+        "casual2": "dresses/female_mature/paid/casual2.png",
+        "casual3": "dresses/female_mature/paid/casual3.png",
+        "dress1": "dresses/female_mature/paid/dress1.png",
+        "summer_dress": "dresses/female_mature/paid/summer_dress.png"
+      },
+      "scenes": {
+        "appron1": "dresses/female_mature/scenes/appron1.png",
+        "appron2": "dresses/female_mature/scenes/appron2.png",
+        "doc_suit1": "dresses/female_mature/scenes/doc_suit1.png",
+        "doc_suit2": "dresses/female_mature/scenes/doc_suit2.png",
+        "doc_suit3": "dresses/female_mature/scenes/doc_suit3.png",
+        "swim_suit": "dresses/female_mature/scenes/swim_suit.png",
+        "towel": "dresses/female_mature/scenes/towel.png"
+      }
+    },
+    "male_mature": {
+      "free": {
+        "hoodie1": "dresses/male_mature/hoodie1.png",
+        "hoodie2": "dresses/male_mature/hoodie2.png",
+        "sport_uniform": "dresses/male_mature/sport_uniform.png",
+        "tanktop": "dresses/male_mature/tanktop.png",
+        "tanktop2": "dresses/male_mature/tanktop2.png",
+        "tshirt": "dresses/male_mature/tshirt.png",
+        "winter": "dresses/male_mature/winter.png"
+      },
+      "paid": {
+        "casual1": "dresses/male_mature/paid/casual1.png",
+        "casual2": "dresses/male_mature/paid/casual2.png",
+        "office1": "dresses/male_mature/paid/office1.png",
+        "office2": "dresses/male_mature/paid/office2.png",
+        "office3": "dresses/male_mature/paid/office3.png",
+        "office4": "dresses/male_mature/paid/office4.png",
+        "tshirt2": "dresses/male_mature/paid/tshirt2.png",
+        "vest": "dresses/male_mature/paid/vest.png"
+      },
+      "scenes": {
+        "teacher_uniform": "dresses/male_mature/scenes/teacher_uniform.png",
+        "teacher_uniform2": "dresses/male_mature/scenes/teacher_uniform2.png",
+        "teacher_uniform3": "dresses/male_mature/scenes/teacher_uniform3.png"
+      }
+    }
+  },
+  "accessories": {
+    "female": {
+      "free": {
+        "black_glasses": "accessories/female/black_glasses.png",
+        "choker": "accessories/female/choker.png",
+        "circle_glasses": "accessories/female/circle_glasses.png",
+        "flower": "accessories/female/flower.png",
+        "red_glasses": "accessories/female/red_glasses.png"
+      },
+      "paid": {
+        "choker": "accessories/female/paid/choker.png"
+      }
+    },
+    "male": {
+      "free": {
+        "glasses_black": "accessories/male/glasses_black.png",
+        "glasses": "accessories/male/glasses.png",
+        "headphones": "accessories/male/headphones.png"
+      }
+    },
+    "female_mature": {
+      "free": {
+        "black_band": "accessories/female_mature/black_band.png",
+        "black_glasses": "accessories/female_mature/black_glasses.png",
+        "circle_glasses": "accessories/female_mature/circle_glasses.png",
+        "flower": "accessories/female_mature/flower.png",
+        "red_glasses": "accessories/female_mature/red_glasses.png",
+        "white_band": "accessories/female_mature/white_band.png",
+        "yellow_band": "accessories/female_mature/yellow_band.png"
+      },
+      "paid": {
+        "black_ribbon": "accessories/female_mature/paid/black_ribbon.png",
+        "choker": "accessories/female_mature/paid/choker.png",
+        "ribbon": "accessories/female_mature/paid/ribbon.png",
+        "rose1": "accessories/female_mature/paid/rose1.png",
+        "rose2": "accessories/female_mature/paid/rose2.png",
+        "white_ribbon": "accessories/female_mature/paid/white_ribbon.png",
+        "yellow_ribbon": "accessories/female_mature/paid/yellow_ribbon.png"
+      }
+    },
+    "male_mature": {
+      "free": {
+        "black_glasses": "accessories/male_mature/black_glasses.png",
+        "circle_glasses": "accessories/male_mature/circle_glasses.png",
+        "headphones": "accessories/male_mature/headphones.png"
+      }
+    }
+  },
+  "emotion": {
+    "female": {
+      "pink_eyes": {
+        "normal": "emotion/female/pink_eyes/normal.png",
+        "smile": "emotion/female/pink_eyes/smile.png",
+        "smile2": "emotion/female/pink_eyes/smile2.png",
+        "shocked": "emotion/female/pink_eyes/shocked.png",
+        "sad": "emotion/female/pink_eyes/sad.png",
+        "crying": "emotion/female/pink_eyes/crying.png",
+        "surprised": "emotion/female/pink_eyes/surprised.png",
+        "delighted": "emotion/female/pink_eyes/delighted.png",
+        "delighted2": "emotion/female/pink_eyes/delighted2.png",
+        "angry1": "emotion/female/pink_eyes/angry1.png",
+        "angry2": "emotion/female/pink_eyes/angry2.png",
+        "smug": "emotion/female/pink_eyes/smug.png",
+        "smug2": "emotion/female/pink_eyes/smug2.png",
+        "annoyed": "emotion/female/pink_eyes/annoyed.png",
+        "sleepy": "emotion/female/pink_eyes/sleepy.png",
+        "sleepy2": "emotion/female/pink_eyes/sleepy2.png"
+      }
+    },
+    "male": {
+      "pink_eyes": {
+        "normal": "emotion/male/pink_eyes/normal.png",
+        "smile": "emotion/male/pink_eyes/smile.png",
+        "smile2": "emotion/male/pink_eyes/smile2.png",
+        "shocked": "emotion/male/pink_eyes/shocked.png",
+        "sad": "emotion/male/pink_eyes/sad.png",
+        "crying": "emotion/male/pink_eyes/crying.png",
+        "surprised": "emotion/male/pink_eyes/surprised.png",
+        "delighted": "emotion/male/pink_eyes/delighted.png",
+        "delighted2": "emotion/male/pink_eyes/delighted2.png",
+        "angry1": "emotion/male/pink_eyes/angry1.png",
+        "angry2": "emotion/male/pink_eyes/angry2.png",
+        "smug": "emotion/male/pink_eyes/smug.png",
+        "smug2": "emotion/male/pink_eyes/smug2.png",
+        "annoyed": "emotion/male/pink_eyes/annoyed.png",
+        "sleepy": "emotion/male/pink_eyes/sleepy.png",
+        "sleepy2": "emotion/male/pink_eyes/sleepy2.png"
+      }
+    },
+    "female_mature": {
+      "pink_eyes": {
+        "normal": "emotion/female_mature/pink_eyes/normal.png",
+        "smile": "emotion/female_mature/pink_eyes/smile.png",
+        "smile2": "emotion/female_mature/pink_eyes/smile2.png",
+        "shocked": "emotion/female_mature/pink_eyes/shocked.png",
+        "sad": "emotion/female_mature/pink_eyes/sad.png",
+        "crying": "emotion/female_mature/pink_eyes/crying.png",
+        "surprised": "emotion/female_mature/pink_eyes/surprised.png",
+        "delighted": "emotion/female_mature/pink_eyes/delighted.png",
+        "delighted2": "emotion/female_mature/pink_eyes/delighted2.png",
+        "angry1": "emotion/female_mature/pink_eyes/angry1.png",
+        "angry2": "emotion/female_mature/pink_eyes/angry2.png",
+        "smug": "emotion/female_mature/pink_eyes/smug.png",
+        "smug2": "emotion/female_mature/pink_eyes/smug2.png",
+        "annoyed": "emotion/female_mature/pink_eyes/annoyed.png",
+        "sleepy": "emotion/female_mature/pink_eyes/sleepy.png",
+        "sleepy2": "emotion/female_mature/pink_eyes/sleepy2.png"
+      }
+    },
+    "male_mature": {
+      "pink_eyes": {
+        "normal": "emotion/male_mature/pink_eyes/normal.png",
+        "smile": "emotion/male_mature/pink_eyes/smile.png",
+        "smile2": "emotion/male_mature/pink_eyes/smile2.png",
+        "shocked": "emotion/male_mature/pink_eyes/shocked.png",
+        "sad": "emotion/male_mature/pink_eyes/sad.png",
+        "crying": "emotion/male_mature/pink_eyes/crying.png",
+        "surprised": "emotion/male_mature/pink_eyes/surprised.png",
+        "delighted": "emotion/male_mature/pink_eyes/delighted.png",
+        "delighted2": "emotion/male_mature/pink_eyes/delighted2.png",
+        "angry1": "emotion/male_mature/pink_eyes/angry1.png",
+        "angry2": "emotion/male_mature/pink_eyes/angry2.png",
+        "smug": "emotion/male_mature/pink_eyes/smug.png",
+        "smug2": "emotion/male_mature/pink_eyes/smug2.png",
+        "annoyed": "emotion/male_mature/pink_eyes/annoyed.png",
+        "sleepy": "emotion/male_mature/pink_eyes/sleepy.png",
+        "sleepy2": "emotion/male_mature/pink_eyes/sleepy2.png"
+      }
+    }
+  },
+  "bush": {
+    "female": {
+      "1": "bush/female/1.png",
+      "2": "bush/female/2.png"
+    },
+    "female_mature": {
+      "1": "bush/female_mature/1.png",
+      "2": "bush/female_mature/2.png"
+    }
+  }
+} 

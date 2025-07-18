@@ -1,43 +1,56 @@
 {
   "id": "scene66",
-  "name": "Начало расследования",
-  "background": "sprites/episodes/locations/mansion/guest_room_bedroom_11zon.png",
+  "chapterId": 2,
+  "name": "Темная ночь",
+  "background": "sprites/episodes/locations/mansion/mansion_outside_building_night_11zon.png",
   "characters": [
-
-   
+    {
+      "id": "",
+      "position": "center",
+      "name": ""
+    }
   ],
   "dialogue": [
     {
       "speaker": "narrator",
-      "text": "Наступил второй день в поместье",
+      "text": "Поздняя ночь.",
       "emotion": "happy"
     },
     {
       "speaker": "narrator",
-      "text": "Сегодня вы начинаете настоящее расследование",
+      "text": "Вас будит душераздирающий женский крик",
       "emotion": "happy"
     },
     {
-      "speaker": "peter",
-      "text": "Доброе утро! Готовы к новому дню?",
-      "emotion": "happy"
+      "speaker": "narrator",
+      "text": "Вам нужно понять что произошло",
+      "emotion": "normal"
     }
   ],
   "choices": [
-      {
-        "id": "choice1",
-        "text": "Да, готов!",
-        "nextScene": "scene67"
+    {
+      "id": "choice1",
+      "text": "Выйти из комнаты",
+      "nextScene": "scene67",
+      "important": false
+    },
+    {
+      "id": "sleep_more",
+      "text": "[Холод] Лечь спать обратно",
+      "nextScene": "scene100",
+      "important": true,
+      "diceCheck": {
+        "stat": "coldness",
+        "difficulty": 18,
+        "results": {
+          "success": "scene100",
+          "critical_success": "scene101",
+          "failure": "scene99",
+          "critical_failure": "scene98"
+        }
       },
-      {
-        "id": "choice2",
-        "text": "Нужно еще время",
-        "nextScene": "scene68"
-      }
-  ],
-  "requirements": {},
-  "rewards": {
-    "experience": 10,
-    "coins": 5
-  }
-} 
+      "value": "sleep_more",
+      "description": "true"
+    }
+  ]
+}

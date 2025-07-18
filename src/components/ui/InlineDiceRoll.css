@@ -43,6 +43,46 @@
   100% { transform: translateX(100%); }
 }
 
+/* Заголовок */
+.inline-dice-roll-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 2px solid rgba(52, 152, 219, 0.3);
+}
+
+.inline-dice-roll-header h3 {
+  margin: 0;
+  font-size: 1.4em;
+  font-weight: bold;
+  color: #ecf0f1;
+}
+
+.inline-close-button {
+  background: rgba(231, 76, 60, 0.2);
+  border: none;
+  color: #e74c3c;
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.inline-close-button:hover {
+  background: rgba(231, 76, 60, 0.3);
+  transform: scale(1.1);
+}
+
+.inline-dice-roll-content {
+  text-align: center;
+}
+
 /* Информация о проверке */
 .inline-check-info {
   text-align: center;
@@ -87,6 +127,71 @@
   font-style: italic;
   color: #bdc3c7;
   line-height: 1.4;
+}
+
+/* Секция выбора зелий */
+.inline-potion-selection {
+  margin-bottom: 25px;
+  padding: 15px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  border: 2px solid rgba(241, 196, 15, 0.3);
+}
+
+.inline-potion-selection h4 {
+  margin: 0 0 12px 0;
+  font-size: 1.1em;
+  color: #f1c40f;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.inline-potion-options {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 150px;
+  overflow-y: auto;
+  padding-right: 8px;
+}
+
+.inline-potion-option {
+  display: flex;
+  align-items: center;
+  padding: 10px 12px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+}
+
+.inline-potion-option:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(241, 196, 15, 0.5);
+}
+
+.inline-potion-option input[type="radio"] {
+  margin-right: 10px;
+  transform: scale(1.1);
+  accent-color: #f1c40f;
+}
+
+.inline-potion-label {
+  flex: 1;
+  font-size: 0.9em;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.universal-badge {
+  color: #f1c40f;
+  font-size: 1.1em;
+  margin-left: 6px;
 }
 
 /* Контейнер кубика */
@@ -199,78 +304,98 @@
 }
 
 .inline-d20-dodecahedron .face::after {
+  content: var(--dice-number);
   position: absolute;
   top: calc(var(--face-height) * 0.25);
   left: calc(var(--face-width) * -1);
-  color: #2c3e50;
+  color: black;
   font-size: calc(var(--face-height) * .175);
   text-align: center;
   line-height: 1;
   width: calc(var(--face-width) * 2);
   height: var(--face-height);
   font-weight: bold;
-  content: '';
+  content: ''; /* Убираем числа с граней */
 }
 
 .inline-d20-dodecahedron .face-1::after {
-  content: var(--dice-number, '20');
+  content: var(--dice-number, '20'); /* Отображаем выпавшее число */
 }
+
 .inline-d20-dodecahedron .face-2::after {
-  content: var(--dice-number-2, '');
+  content: var(--dice-number-2, ''); /* Соседнее значение */
 }
+
 .inline-d20-dodecahedron .face-3::after {
-  content: var(--dice-number-3, '');
+  content: var(--dice-number-3, ''); /* Соседнее значение */
 }
+
 .inline-d20-dodecahedron .face-4::after {
-  content: var(--dice-number-4, '');
+  content: var(--dice-number-4, ''); /* Соседнее значение */
 }
+
 .inline-d20-dodecahedron .face-5::after {
-  content: var(--dice-number-5, '');
+  content: var(--dice-number-5, ''); /* Соседнее значение */
 }
+
 .inline-d20-dodecahedron .face-6::after {
-  content: var(--dice-number-6, '');
+  content: var(--dice-number-6, ''); /* Соседнее значение */
 }
+
 .inline-d20-dodecahedron .face-7::after {
-  content: var(--dice-number-7, '');
+  content: var(--dice-number-7, ''); /* Соседнее значение */
 }
+
 .inline-d20-dodecahedron .face-8::after {
-  content: var(--dice-number-8, '');
+  content: var(--dice-number-8, ''); /* Соседнее значение */
 }
+
 .inline-d20-dodecahedron .face-9::after {
-  content: var(--dice-number-9, '');
+  content: var(--dice-number-9, ''); /* Соседнее значение */
 }
+
 .inline-d20-dodecahedron .face-10::after {
-  content: var(--dice-number-10, '');
+  content: var(--dice-number-10, ''); /* Соседнее значение */
 }
+
 .inline-d20-dodecahedron .face-11::after {
-  content: var(--dice-number-11, '');
+  content: var(--dice-number-11, ''); /* Соседнее значение */
 }
+
 .inline-d20-dodecahedron .face-12::after {
-  content: var(--dice-number-12, '');
+  content: var(--dice-number-12, ''); /* Соседнее значение */
 }
+
 .inline-d20-dodecahedron .face-13::after {
-  content: var(--dice-number-13, '');
+  content: var(--dice-number-13, ''); /* Соседнее значение */
 }
+
 .inline-d20-dodecahedron .face-14::after {
-  content: var(--dice-number-14, '');
+  content: var(--dice-number-14, ''); /* Соседнее значение */
 }
+
 .inline-d20-dodecahedron .face-15::after {
-  content: var(--dice-number-15, '');
+  content: var(--dice-number-15, ''); /* Соседнее значение */
 }
+
 .inline-d20-dodecahedron .face-16::after {
-  content: var(--dice-number-16, '');
+  content: var(--dice-number-16, ''); /* Соседнее значение */
 }
+
 .inline-d20-dodecahedron .face-17::after {
-  content: var(--dice-number-17, '');
+  content: var(--dice-number-17, ''); /* Соседнее значение */
 }
+
 .inline-d20-dodecahedron .face-18::after {
-  content: var(--dice-number-18, '');
+  content: var(--dice-number-18, ''); /* Соседнее значение */
 }
+
 .inline-d20-dodecahedron .face-19::after {
-  content: var(--dice-number-19, '');
+  content: var(--dice-number-19, ''); /* Соседнее значение */
 }
+
 .inline-d20-dodecahedron .face-20::after {
-  content: var(--dice-number-20, '');
+  content: var(--dice-number-20, ''); /* Соседнее значение */
 }
 
 /* Генерация граней d20 - точно как в test_dice_mechanics.html */
@@ -295,118 +420,124 @@
 .inline-d20-dodecahedron .face-19 { transform: rotateY(calc(var(--top-face-angle) * 1 + (var(--top-face-angle) / 2))) translateZ(var(--translateZ-bottom)) translateY(var(--translateY-bottom)) rotateZ(180deg) rotateX(var(--ends-angle)); }
 .inline-d20-dodecahedron .face-20 { transform: rotateY(calc(var(--top-face-angle) * 2 + (var(--top-face-angle) / 2))) translateZ(var(--translateZ-bottom)) translateY(var(--translateY-bottom)) rotateZ(180deg) rotateX(var(--ends-angle)); }
 
-/* Кнопка броска */
 .inline-roll-button {
-  background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+  background: linear-gradient(135deg, #e74c3c, #c0392b);
   color: white;
   border: none;
-  padding: 15px 30px;
+  padding: 12px 25px;
   font-size: 1.1em;
-  border-radius: 25px;
+  font-weight: bold;
+  border-radius: 20px;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 8px 16px rgba(52, 152, 219, 0.3);
-  width: 100%;
-  font-weight: bold;
-  text-transform: uppercase;
-  letter-spacing: 1px;
+  box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3);
+  margin: 15px 0;
 }
 
 .inline-roll-button:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 12px 24px rgba(52, 152, 219, 0.4);
-  background: linear-gradient(135deg, #2980b9 0%, #1f5f8b 100%);
+  box-shadow: 0 6px 20px rgba(231, 76, 60, 0.4);
 }
 
 .inline-roll-button:disabled {
-  opacity: 0.7;
+  opacity: 0.6;
   cursor: not-allowed;
   transform: none;
 }
 
 .inline-roll-button.rolling {
-  background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
-  animation: pulse 1s infinite;
+  animation: pulse 0.5s ease-in-out infinite alternate;
 }
 
 @keyframes pulse {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.05); }
+  from { transform: scale(1); }
+  to { transform: scale(1.05); }
 }
 
-/* Результат броска */
 .inline-roll-result {
-  margin-top: 15px;
+  margin-top: 25px;
   padding: 15px;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 15px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
 }
 
 .inline-result-header {
-  text-align: center;
   margin-bottom: 15px;
   padding: 12px;
-  border-radius: 10px;
-  color: white;
+  border-radius: 8px;
+  text-align: center;
 }
 
 .inline-result-header.success {
-  background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
-  border: 2px solid #27ae60;
+  background: rgba(46, 204, 113, 0.2);
+  border: 2px solid rgba(46, 204, 113, 0.5);
 }
 
 .inline-result-header.danger {
-  background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
-  border: 2px solid #e74c3c;
+  background: rgba(231, 76, 60, 0.2);
+  border: 2px solid rgba(231, 76, 60, 0.5);
 }
 
 .inline-result-header.warning {
-  background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
-  border: 2px solid #f39c12;
+  background: rgba(241, 196, 15, 0.2);
+  border: 2px solid rgba(241, 196, 15, 0.5);
 }
 
-.inline-result-header h3 {
-  margin: 0 0 5px 0;
-  font-size: 1.2em;
-  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
-}
-
-.inline-result-header p {
-  margin: 0;
-  font-size: 0.95em;
-  opacity: 0.9;
-}
-
-/* Краткое резюме результата */
-.inline-result-summary {
-  margin-bottom: 15px;
-}
-
-.inline-summary-item {
-  background: rgba(255, 255, 255, 0.1);
-  padding: 10px 15px;
-  border-radius: 8px;
-  text-align: center;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.inline-summary-item .summary-label {
-  font-size: 0.9em;
-  color: #bdc3c7;
-  font-weight: 500;
-}
-
-.inline-summary-item .summary-value {
-  font-size: 1.1em;
+.inline-result-header h4 {
+  margin: 0 0 8px 0;
+  font-size: 1.3em;
   font-weight: bold;
   color: #ecf0f1;
 }
 
-/* Кнопки действий */
+.inline-result-header p {
+  margin: 0;
+  font-size: 1em;
+  color: #bdc3c7;
+  line-height: 1.4;
+}
+
+.inline-result-details {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.inline-detail-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 6px;
+}
+
+.inline-detail-item .inline-label {
+  font-weight: bold;
+  color: #3498db;
+  font-size: 0.9em;
+}
+
+.inline-detail-item .inline-value {
+  font-weight: bold;
+  color: white;
+  font-size: 0.9em;
+}
+
+.inline-detail-item.inline-potion-bonus {
+  background: rgba(241, 196, 15, 0.15);
+  border: 1px solid rgba(241, 196, 15, 0.4);
+}
+
+.inline-detail-item.inline-potion-bonus .inline-label {
+  color: #f1c40f;
+}
+
+.inline-detail-item.inline-potion-bonus .inline-value {
+  color: #f1c40f;
+}
+
 .inline-result-actions {
   display: flex;
   gap: 12px;
@@ -416,186 +547,169 @@
 .inline-continue-button,
 .inline-reroll-button {
   padding: 10px 20px;
-  border: none;
-  border-radius: 18px;
+  font-size: 1em;
   font-weight: bold;
+  border: none;
+  border-radius: 15px;
   cursor: pointer;
   transition: all 0.3s ease;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  min-width: 100px;
-  font-size: 0.9em;
+  min-width: 120px;
 }
 
 .inline-continue-button {
-  background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+  background: linear-gradient(135deg, #27ae60, #2ecc71);
   color: white;
-  box-shadow: 0 5px 15px rgba(39, 174, 96, 0.3);
 }
 
 .inline-continue-button:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(39, 174, 96, 0.4);
-  background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+  box-shadow: 0 4px 15px rgba(46, 204, 113, 0.4);
 }
 
 .inline-reroll-button {
-  background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+  background: linear-gradient(135deg, #f39c12, #e67e22);
   color: white;
-  box-shadow: 0 5px 15px rgba(243, 156, 18, 0.3);
 }
 
 .inline-reroll-button:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(243, 156, 18, 0.4);
-  background: linear-gradient(135deg, #e67e22 0%, #f39c12 100%);
+  box-shadow: 0 4px 15px rgba(243, 156, 18, 0.4);
 }
 
 .inline-reroll-button.disabled,
 .inline-reroll-button:disabled {
-  opacity: 0.6;
+  opacity: 0.5;
   cursor: not-allowed;
-  background: linear-gradient(135deg, #95a5a6 0%, #7f8c8d 100%);
   transform: none;
 }
 
 .inline-reroll-button.disabled:hover,
 .inline-reroll-button:disabled:hover {
   transform: none;
-  box-shadow: 0 5px 15px rgba(243, 156, 18, 0.3);
+  box-shadow: none;
 }
 
-/* Адаптивность */
 @media (max-width: 768px) {
   .inline-dice-roll-container {
-    padding: 15px;
+    padding: 20px;
     margin: 10px;
-    max-width: 90vw;
+    max-width: 400px;
   }
-  
+
   .inline-d20 {
     width: 100px;
     height: 100px;
   }
-  
+
   .inline-d20-dodecahedron {
     width: 100px;
     height: 100px;
-    --box-size: 100px;
   }
-  
+
   .inline-check-info {
     margin-bottom: 20px;
   }
-  
+
   .inline-stat-info {
     font-size: 1em;
   }
-  
+
   .inline-dice-container {
     margin: 20px 0;
   }
-  
+
   .inline-roll-result {
-    margin-top: 12px;
-    padding: 12px;
+    margin-top: 20px;
   }
-  
+
   .inline-result-header {
     margin-bottom: 12px;
-    padding: 10px;
   }
-  
-  .inline-result-header h3 {
-    font-size: 1.1em;
+
+  .inline-result-header h4 {
+    font-size: 1.2em;
   }
-  
+
   .inline-result-header p {
     font-size: 0.9em;
   }
-  
-  .inline-summary-item {
-    padding: 8px 12px;
-    flex-direction: column;
-    gap: 5px;
+
+  .inline-detail-item {
+    padding: 6px 10px;
   }
-  
-  .inline-summary-item .summary-label {
-    font-size: 0.85em;
+
+  .inline-detail-item .inline-label {
+    font-size: 0.8em;
   }
-  
-  .inline-summary-item .summary-value {
-    font-size: 1em;
+
+  .inline-detail-item .inline-value {
+    font-size: 0.8em;
   }
-  
+
   .inline-result-actions {
     flex-direction: column;
     gap: 8px;
   }
-  
+
   .inline-continue-button,
   .inline-reroll-button {
-    width: 100%;
     padding: 8px 16px;
-    font-size: 0.85em;
-    min-width: auto;
+    font-size: 0.9em;
+    min-width: 100px;
   }
-  
+
   .inline-roll-button {
-    padding: 12px 24px;
+    padding: 10px 20px;
     font-size: 1em;
   }
 }
 
-/* Стили для бонусов питомцев */
 .inline-pet-bonuses {
   display: flex;
   flex-direction: column;
   gap: 8px;
-  margin: 12px 0;
-  padding: 12px;
-  background: linear-gradient(135deg, rgba(255, 193, 7, 0.1), rgba(255, 152, 0, 0.1));
-  border: 1px solid rgba(255, 193, 7, 0.3);
+  margin: 10px 0;
+  padding: 10px;
+  background: rgba(52, 152, 219, 0.1);
   border-radius: 8px;
+  border: 1px solid rgba(52, 152, 219, 0.3);
 }
 
 .pet-bonus-item {
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 14px;
-  font-weight: 600;
-  color: #f57c00;
+  font-size: 0.9em;
+  color: #3498db;
+  font-weight: bold;
 }
 
 .pet-bonus-item i {
-  font-size: 16px;
-  color: #ff9800;
+  color: #f39c12;
+  font-size: 1.1em;
 }
 
 .pet-stat-bonus {
-  color: #f57c00;
-  font-weight: 600;
-  font-size: 14px;
+  color: #f39c12;
+  font-weight: bold;
   margin-left: 4px;
+  font-size: 0.9em;
 }
 
-/* Детальная информация о бонусах */
 .inline-bonus-details {
-  margin-top: 12px;
-  padding: 12px;
-  background: rgba(255, 193, 7, 0.05);
+  margin-top: 10px;
+  padding: 10px;
+  background: rgba(52, 152, 219, 0.1);
   border-radius: 8px;
-  border: 1px solid rgba(255, 193, 7, 0.2);
 }
 
 .bonus-detail {
   display: flex;
-  flex-direction: column;
-  gap: 4px;
-  font-size: 12px;
-  color: #666;
-  margin-bottom: 8px;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 5px;
+  font-size: 0.9em;
+  color: #ecf0f1;
 }
 
 .bonus-detail:last-child {
@@ -603,36 +717,34 @@
 }
 
 .bonus-detail span {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  color: #3498db;
+  font-weight: bold;
 }
 
 .bonus-detail span:last-child {
-  font-weight: 600;
-  color: #f57c00;
+  color: #f39c12;
 }
 
-/* Адаптивность для бонусов */
 @media (max-width: 768px) {
   .inline-pet-bonuses {
+    margin: 8px 0;
     padding: 8px;
-    gap: 6px;
   }
-  
+
   .pet-bonus-item {
-    font-size: 12px;
+    font-size: 0.8em;
   }
-  
+
   .pet-bonus-item i {
-    font-size: 14px;
+    font-size: 1em;
   }
-  
+
   .inline-bonus-details {
+    margin-top: 8px;
     padding: 8px;
   }
-  
+
   .bonus-detail {
-    font-size: 11px;
+    font-size: 0.8em;
   }
 } 

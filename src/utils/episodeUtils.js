@@ -134,12 +134,6 @@ export const updateEpisodeProgress = (episodeId, progress, userProgress = {}) =>
   };
 };
 
-// Список доступных эпизодов
-const EPISODE_FOLDERS = [
-  'tutorial',
-  'mansion'
-];
-
 // Загрузка конфигурации эпизода из его папки
 export const loadEpisodeConfig = async (episodeId) => {
   try {
@@ -172,6 +166,47 @@ export const loadEpisodeConfig = async (episodeId) => {
 export const loadAllEpisodeConfigs = async () => {
   const episodes = [];
   
+  try {
+    // Сначала пытаемся загрузить из episodes.json
+    const episodesResponse = await fetch('/episodes.json');
+    if (episodesResponse.ok) {
+      const episodesData = await episodesResponse.json();
+      const episodeIds = Object.keys(episodesData.episodes || {});
+      
+      // Загружаем конфигурации для каждого эпизода
+      for (const episodeId of episodeIds) {
+        try {
+          const config = await loadEpisodeConfig(episodeId);
+          if (config) {
+            // Объединяем данные из episodes.json с конфигурацией
+            const episodeData = episodesData.episodes[episodeId];
+            episodes.push({
+              ...config,
+              ...episodeData
+            });
+          }
+        } catch (error) {
+          console.error(`Ошибка загрузки эпизода ${episodeId}:`, error);
+        }
+      }
+    } else {
+      // Fallback: используем статический список
+      const EPISODE_FOLDERS = ['tutorial', 'mansion'];
+      for (const folder of EPISODE_FOLDERS) {
+        try {
+          const config = await loadEpisodeConfig(folder);
+          if (config) {
+            episodes.push(config);
+          }
+        } catch (error) {
+          console.error(`Ошибка загрузки эпизода ${folder}:`, error);
+        }
+      }
+    }
+  } catch (error) {
+    console.error('Ошибка загрузки списка эпизодов:', error);
+    // Fallback: используем статический список
+    const EPISODE_FOLDERS = ['tutorial', 'mansion'];
   for (const folder of EPISODE_FOLDERS) {
     try {
       const config = await loadEpisodeConfig(folder);
@@ -180,6 +215,7 @@ export const loadAllEpisodeConfigs = async () => {
       }
     } catch (error) {
       console.error(`Ошибка загрузки эпизода ${folder}:`, error);
+      }
     }
   }
   

@@ -1,0 +1,25 @@
+{
+  "id": "scene99",
+  "chapterId": "2",
+  "name": "Лечь спать [Провал]",
+  "background": "sprites/episodes/locations/mansion/mansion_outside_building_night_11zon.png",
+  "characters": [],
+  "dialogue": [],
+  "choices": [
+    {
+      "id": "scene99_choice1",
+      "text": "Выйти из комнаты",
+      "nextScene": "scene67",
+      "important": false,
+      "value": "",
+      "description": "",
+      "consequences": [
+        ""
+      ],
+      "diceCheck": null,
+      "specialInteraction": "",
+      "requiredItem": "",
+      "conditions": {}
+    }
+  ]
+}
