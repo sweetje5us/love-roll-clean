@@ -1,9 +1,10 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { useScreen, SCREEN_TYPES } from '../../contexts/ScreenContext';
 import { useCharacters } from '../../contexts/CharacterContext';
 import { useInventory } from '../../contexts/InventoryContext';
 import { useRelationships } from '../../contexts/RelationshipsContext';
+import { usePets } from '../../contexts/PetContext';
 import { getStaticPath } from '../../utils/pathUtils';
 import episodeManager from '../../utils/episodeManager';
 import sceneManager from '../../utils/sceneManager';
@@ -14,6 +15,7 @@ import RelationshipsWindow from '../ui/RelationshipsWindow';
 import ShopModal from '../ui/ShopModal';
 import InventoryModal from '../ui/InventoryModal';
 import PauseMenuModal from '../ui/PauseMenuModal';
+import PetModal from '../ui/PetModal';
 import NotificationSystem from '../ui/NotificationSystem';
 import InlineDiceRoll from '../ui/InlineDiceRoll';
 import EpisodeCompleteScreen from '../ui/EpisodeCompleteScreen';
@@ -228,6 +230,29 @@ const GameScreen = () => {
   const { addExperience, getCharacter, getLevelInfo } = useCharacters();
   const { inventory, updateInventory, addItem, removeItem } = useInventory();
   const { initializeRelationships, changeRelationship, getRelationship, updateRelationship } = useRelationships();
+  const { 
+    activePetId, 
+    getActivePet, 
+    getActivePetStatus, 
+    getStatusIconByName, 
+    getStatusColorByName, 
+    getStatusTextByName 
+  } = usePets();
+  
+  // Получаем статус активного питомца для отображения на кнопке
+  const activePetStatus = useMemo(() => {
+    if (!activePetId) return [];
+    return getActivePetStatus();
+  }, [activePetId, getActivePetStatus]);
+
+  // Получаем основной статус для отображения на кнопке
+  const primaryPetStatus = useMemo(() => {
+    if (activePetStatus.length === 0) return null;
+    // Приоритет статусов: больной > голоден > грустит > устал > спит
+    const priorityOrder = ['sick', 'hungry', 'sad', 'tired', 'sleeping'];
+    return activePetStatus.find(status => priorityOrder.includes(status)) || activePetStatus[0];
+  }, [activePetStatus]);
+
   const [gameState, setGameState] = useState({
     isLoaded: false,
     isLoading: true,
@@ -281,6 +306,9 @@ const GameScreen = () => {
   
   // Состояние для модального окна паузы
   const [isPauseMenuOpen, setIsPauseMenuOpen] = useState(false);
+  
+  // Состояние для модального окна питомца
+  const [isPetModalOpen, setIsPetModalOpen] = useState(false);
   
   // Состояние для отслеживания изменений отношений
   const [hasNewRelationshipChanges, setHasNewRelationshipChanges] = useState(false);
@@ -822,6 +850,16 @@ const GameScreen = () => {
   // Обработчик закрытия модального окна паузы
   const handleClosePauseMenu = () => {
     setIsPauseMenuOpen(false);
+  };
+
+  // Обработчик открытия модального окна питомца
+  const handleOpenPetModal = () => {
+    setIsPetModalOpen(true);
+  };
+
+  // Обработчик закрытия модального окна питомца
+  const handleClosePetModal = () => {
+    setIsPetModalOpen(false);
   };
 
   // Обработчик закрытия встроенного интерфейса броска кубика
@@ -1464,6 +1502,18 @@ const GameScreen = () => {
           <button className="game-nav-button pulse" onClick={handleOpenShopModal} title="Магазин">
             <i className="fas fa-store"></i>
           </button>
+          <button className="game-nav-button pulse" onClick={handleOpenPetModal} title="Питомец">
+            <i className="fas fa-paw"></i>
+            {primaryPetStatus && (
+              <div 
+                className="pet-status-badge"
+                style={{ backgroundColor: getStatusColorByName(primaryPetStatus) }}
+                title={getStatusTextByName(primaryPetStatus)}
+              >
+                <i className={getStatusIconByName(primaryPetStatus)}></i>
+              </div>
+            )}
+          </button>
           <button className="game-nav-button pulse" onClick={handleOpenPauseMenu} title="Пауза">
             <i className="fas fa-pause"></i>
           </button>
@@ -1715,6 +1765,13 @@ const GameScreen = () => {
         onContinue={handleContinueGame}
       />
 
+      {/* Модальное окно питомца */}
+      <PetModal
+        isOpen={isPetModalOpen}
+        onClose={handleClosePetModal}
+        character={selectedCharacter}
+      />
+
       {/* Встроенный интерфейс броска кубика */}
       <InlineDiceRoll
         isVisible={inlineDiceRoll.isVisible}
@@ -1726,7 +1783,7 @@ const GameScreen = () => {
       />
 
       {/* Система уведомлений */}
-      <NotificationSystem hasChoices={gameState.choices.length > 0} />
+      <NotificationSystem />
 
       {/* Экран завершения эпизода */}
       <EpisodeCompleteScreen

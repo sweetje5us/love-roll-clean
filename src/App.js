@@ -9,6 +9,7 @@ import { CharacterProvider, useCharacters } from './contexts/CharacterContext';
 import { DailyRewardsProvider } from './contexts/DailyRewardsContext';
 import { RelationshipsProvider } from './contexts/RelationshipsContext';
 import { NotificationProvider } from './contexts/NotificationContext';
+import { PetProvider } from './contexts/PetContext';
 import './styles/App.css';
 
 // Компонент для экспорта контекста в глобальную область видимости
@@ -39,18 +40,20 @@ function App() {
         <CurrencyProvider>
           <InventoryProvider>
             <CharacterProvider>
-              <RelationshipsProvider>
-                <NotificationProvider>
-                  <GameContextExporter>
-                    <DailyRewardsProvider>
-                      <div className="App">
-                        <ScreenManager />
-                        <LevelUpModal />
-                      </div>
-                    </DailyRewardsProvider>
-                  </GameContextExporter>
-                </NotificationProvider>
-              </RelationshipsProvider>
+              <PetProvider>
+                <RelationshipsProvider>
+                  <NotificationProvider>
+                    <GameContextExporter>
+                      <DailyRewardsProvider>
+                        <div className="App">
+                          <ScreenManager />
+                          <LevelUpModal />
+                        </div>
+                      </DailyRewardsProvider>
+                    </GameContextExporter>
+                  </NotificationProvider>
+                </RelationshipsProvider>
+              </PetProvider>
             </CharacterProvider>
           </InventoryProvider>
         </CurrencyProvider>

@@ -50,17 +50,17 @@ const ShopModal = ({ isOpen, onClose }) => {
     selectedQuantity: 1
   });
 
+  // Данные инвентаря
+  const inventoryData = getInventoryData();
+  const inventoryItems = getInventoryItemsWithInfo(inventoryData);
+  const inventoryStats = getInventoryStats(inventoryItems);
+  
   // Получаем реальные данные предметов
   const allShopItems = getShopItemsWithInventoryFilter(inventoryData);
   const itemTypes = getAllTypes();
   const rotationInfo = getRotationInfo();
   const discountItems = getCurrentDiscounts(allShopItems);
   const [currentDiscountIndex, setCurrentDiscountIndex] = useState(0);
-  
-  // Данные инвентаря
-  const inventoryData = getInventoryData();
-  const inventoryItems = getInventoryItemsWithInfo(inventoryData);
-  const inventoryStats = getInventoryStats(inventoryItems);
   
   // Проверяем, есть ли предметы, которые не найдены в данных
   const missingItems = Object.keys(inventoryData).filter(itemId => !getItemById(itemId));
@@ -227,7 +227,7 @@ const ShopModal = ({ isOpen, onClose }) => {
   }, [discountItems.length]);
 
   return (
-    <AnimatePresence>
+    <AnimatePresence key="shop-main">
       {isOpen && (
         <motion.div
           key="shop-modal"
@@ -643,7 +643,7 @@ const ShopModal = ({ isOpen, onClose }) => {
       />
 
       {/* Модальное окно выбора количества */}
-      <AnimatePresence>
+      <AnimatePresence key="quantity-modal">
         {quantityModal.isOpen && (
           <motion.div
             className="quantity-modal-overlay"

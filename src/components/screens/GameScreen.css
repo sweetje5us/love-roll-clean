@@ -734,23 +734,60 @@
 /* Кнопки навигации */
 .game-navigation-buttons {
   display: flex;
-  gap: 10px;
+  
 }
 
 .game-nav-button {
-  width: 44px;
-  height: 44px;
+  position: relative;
+  width: 50px;
+  height: 50px;
+  border: none;
   border-radius: 50%;
-  border: 2px solid rgba(255, 140, 198, 0.3);
+  background: linear-gradient(135deg, #ff8cc6, #ff6bb5);
   color: white;
-  font-size: 16px;
+  font-size: 18px;
   cursor: pointer;
-  transition: all 0.3s ease;
   display: flex;
   align-items: center;
   justify-content: center;
-  backdrop-filter: blur(10px);
-  box-shadow: 0 4px 16px rgba(255, 140, 198, 0.15);
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(255, 140, 198, 0.3);
+  margin: 0 8px;
+}
+
+.game-nav-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(255, 140, 198, 0.4);
+}
+
+.game-nav-button:active {
+  transform: translateY(0);
+}
+
+/* Бейдж статуса питомца */
+.pet-status-badge {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  animation: statusPulse 2s ease-in-out infinite;
+}
+
+@keyframes statusPulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
 }
 
 .game-nav-button:nth-child(1) { 
