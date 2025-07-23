@@ -121,29 +121,32 @@ const ItemCard = ({
         <h3 className="item-name">{item.name}</h3>
         <p className="item-description">{item.description}</p>
         
-        {/* Специальная способность питомца */}
-        {isPet && specialText && (
-          <div 
-            className="item-special-ability"
-            style={{ color: specialColor }}
-          >
-            {specialText}
-          </div>
-        )}
-
         {/* Дополнительная информация о питомце */}
         {isPet && (
           <div className="pet-info">
-            {item.scary !== undefined && (
-              <span className={`pet-trait ${item.scary ? 'scary' : 'friendly'}`}>
-                {item.scary ? '😱 Пугающий' : '😊 Дружелюбный'}
-              </span>
+            {/* Специальная способность питомца */}
+            {specialText && (
+              <div 
+                className="item-special-ability"
+                style={{ color: specialColor }}
+              >
+                {specialText}
+              </div>
             )}
-            {item.can_get_in_scenes !== undefined && (
-              <span className={`pet-trait ${item.can_get_in_scenes ? 'scene-available' : 'scene-unavailable'}`}>
-                {item.can_get_in_scenes ? '🎭 В сценах' : '🚫 Не в сценах'}
-              </span>
-            )}
+            
+            {/* Черты питомца */}
+            <div className="pet-traits-row">
+              {item.scary !== undefined && (
+                <span className={`pet-trait ${item.scary ? 'scary' : 'friendly'}`}>
+                  {item.scary ? '😱' : '😊'}
+                </span>
+              )}
+              {item.can_get_in_scenes !== undefined && (
+                <span className={`pet-trait ${item.can_get_in_scenes ? 'scene-available' : 'scene-unavailable'}`}>
+                  {item.can_get_in_scenes ? '🎭' : '🚫'}
+                </span>
+              )}
+            </div>
           </div>
         )}
         

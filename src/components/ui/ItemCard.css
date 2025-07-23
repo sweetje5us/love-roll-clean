@@ -9,7 +9,7 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
-  min-height: 280px; /* Минимальная высота вместо фиксированной */
+  height: 320px; /* Фиксированная высота для всех карточек */
 }
 
 .item-card:hover {
@@ -157,7 +157,7 @@
 .discounted-price {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+ 
 }
 
 .original-price-amount {
@@ -238,7 +238,7 @@
 .item-card.small {
   padding: 8px;
   gap: 6px;
-  min-height: 220px; /* Минимальная высота вместо фиксированной */
+  height: 260px; /* Фиксированная высота */
 }
 
 .item-card.small .item-image {
@@ -262,7 +262,7 @@
 .item-card.large {
   padding: 16px;
   gap: 12px;
-  min-height: 340px; /* Минимальная высота вместо фиксированной */
+  height: 380px; /* Фиксированная высота */
 }
 
 .item-card.large .item-image {
@@ -288,7 +288,7 @@
   .item-card {
     padding: 10px;
     gap: 6px;
-    min-height: 260px; /* Минимальная высота вместо фиксированной */
+    height: 300px; /* Фиксированная высота */
   }
   
   .item-image {
@@ -307,6 +307,17 @@
   .item-sell-btn {
     padding: 5px 8px;
     font-size: 10px;
+  }
+  
+  .item-special-ability {
+    font-size: 9px;
+    padding: 2px 3px;
+  }
+  
+  .pet-trait {
+    font-size: 9px;
+    padding: 2px 3px;
+    min-width: 18px;
   }
 }
 
@@ -482,30 +493,40 @@
 
 /* Специальная способность питомца */
 .item-special-ability {
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 600;
-  margin: 4px 0;
-  padding: 4px 8px;
+  margin: 2px 0;
+  padding: 3px 6px;
   background: rgba(255, 255, 255, 0.8);
   border-radius: 6px;
-  border-left: 3px solid currentColor;
   text-align: center;
+  line-height: 1.2;
 }
 
 /* Информация о питомце */
 .pet-info {
+  margin: 2px 0;
+}
+
+.pet-traits-row {
   display: flex;
-  flex-direction: column;
-  gap: 2px;
-  margin: 4px 0;
+  justify-content: center;
+  gap: 4px;
+  flex-wrap: wrap;
+  margin-top: 2px;
 }
 
 .pet-trait {
-  font-size: 10px;
-  padding: 2px 6px;
-  border-radius: 4px;
+  font-size: 12px;
+  padding: 3px 6px;
+  border-radius: 6px;
   text-align: center;
   font-weight: 500;
+  min-width: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: help;
 }
 
 .pet-trait.friendly {
@@ -528,6 +549,8 @@
   color: #6b7280;
 }
 
+
+
 /* Адаптивность для мобильных устройств */
 @media (max-width: 768px) {
   .item-special-badge {
@@ -539,12 +562,13 @@
   }
   
   .item-special-ability {
-    font-size: 11px;
-    padding: 3px 6px;
+    font-size: 10px;
+    padding: 2px 4px;
   }
   
   .pet-trait {
-    font-size: 9px;
-    padding: 1px 4px;
+    font-size: 10px;
+    padding: 2px 4px;
+    min-width: 20px;
   }
 } 
