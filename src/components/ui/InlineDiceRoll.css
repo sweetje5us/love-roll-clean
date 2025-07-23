@@ -747,4 +747,41 @@
   .bonus-detail {
     font-size: 0.8em;
   }
+}
+
+/* Предупреждения о питомцах */
+.inline-pet-warning {
+  background: rgba(231, 76, 60, 0.1);
+  border: 1px solid rgba(231, 76, 60, 0.3);
+  border-radius: 8px;
+  padding: 10px;
+  margin: 10px 0;
+  text-align: center;
+}
+
+.pet-warning-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: #e74c3c;
+  font-size: 0.9em;
+  font-weight: 500;
+}
+
+.pet-warning-item i {
+  color: #e74c3c;
+  font-size: 1.1em;
+}
+
+@media (max-width: 768px) {
+  .inline-pet-warning {
+    padding: 8px;
+    margin: 8px 0;
+  }
+  
+  .pet-warning-item {
+    font-size: 0.8em;
+    gap: 6px;
+  }
 } 

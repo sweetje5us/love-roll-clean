@@ -6,9 +6,11 @@ import {
   getStatDisplayName, 
   getPetStatBonus, 
   getPetCubeBonus,
-  getFinalStatValue 
+  getFinalStatValue,
+  canPetReroll
 } from '../../utils/diceSystem';
 import { useInventory } from '../../contexts/InventoryContext';
+import { usePets } from '../../contexts/PetContext';
 import './InlineDiceRoll.css';
 import itemsData from '../../data/items.json';
 
@@ -169,6 +171,7 @@ const InlineDiceRoll = ({
   const [selectedPotion, setSelectedPotion] = useState(null);
   
   const { inventory } = useInventory();
+  const { getActivePet } = usePets();
 
   // Получаем информацию о проверке
   const diceCheckInfo = choice?.diceCheck;
@@ -176,11 +179,14 @@ const InlineDiceRoll = ({
   const difficulty = diceCheckInfo?.difficulty || 10;
   const description = diceCheckInfo?.description || 'Проверка характеристики';
 
+  // Получаем состояние активного питомца
+  const activePetState = getActivePet();
+  
   // Получаем значения характеристик с учетом бонусов питомцев
   const baseStatValue = character?.stats?.[statName] || 10;
-  const petStatBonus = getPetStatBonus(character, statName, itemsData);
+  const petStatBonus = getPetStatBonus(character, statName, itemsData, activePetState);
   const finalStatValue = getFinalStatValue(character, statName, itemsData);
-  const petCubeBonus = getPetCubeBonus(character, itemsData);
+  const petCubeBonus = getPetCubeBonus(character, itemsData, activePetState);
 
   // Получаем доступные зелья для данной характеристики
   const availablePotions = getAvailablePotions(statName, inventory);
@@ -198,30 +204,12 @@ const InlineDiceRoll = ({
 
   // Функция для проверки питомца с способностью переброса
   const hasRerollPet = () => {
-    if (!character || !character.petId) return false;
-    const pet = itemsData.items.pet[character.petId];
-    if (!pet || !pet.special) return false;
-    // special может быть объектом или массивом
-    if (Array.isArray(pet.special)) {
-      return pet.special.some(s => s.type === 'reroll' && (s.count === undefined || rerollCount < s.count));
-    } else if (pet.special.type === 'reroll') {
-      return pet.special.count === undefined || rerollCount < pet.special.count;
-    }
-    return false;
+    return canPetReroll(character, itemsData, activePetState, rerollCount);
   };
 
   // Функция для проверки, бесплатный ли переброс
   const isFreeReroll = () => {
-    if (!character || !character.petId) return false;
-    const pet = itemsData.items.pet[character.petId];
-    if (!pet || !pet.special) return false;
-    if (Array.isArray(pet.special)) {
-      const s = pet.special.find(s => s.type === 'reroll');
-      return s && (s.count === undefined || rerollCount < s.count);
-    } else if (pet.special.type === 'reroll') {
-      return pet.special.count === undefined || rerollCount < pet.special.count;
-    }
-    return false;
+    return canPetReroll(character, itemsData, activePetState, rerollCount);
   };
 
   // Функция для проверки доступности переброса
@@ -324,7 +312,7 @@ const InlineDiceRoll = ({
     
     setTimeout(() => {
       // Выполняем проверку с учетом бонусов питомцев
-      let result = performStatCheck(statName, character, difficulty, itemsData);
+      let result = performStatCheck(statName, character, difficulty, itemsData, activePetState);
       
       // Применяем бонус от выбранного зелья
       if (selectedPotion) {
@@ -433,6 +421,16 @@ const InlineDiceRoll = ({
                       Бонус к броску: +{petCubeBonus}
                     </span>
                   )}
+                </div>
+              )}
+              
+              {/* Предупреждение о низком настроении питомца */}
+              {activePetState && activePetState.happiness < 60 && character?.petId && (
+                <div className="inline-pet-warning">
+                  <span className="pet-warning-item">
+                    <i className="fas fa-exclamation-triangle"></i>
+                    Питомец грустит! Способности неактивны (счастье: {Math.round(activePetState.happiness)}%)
+                  </span>
                 </div>
               )}
               <div className="inline-description">

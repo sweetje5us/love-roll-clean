@@ -265,9 +265,11 @@ const PetModal = ({ isOpen, onClose, character }) => {
                   {activePetData.special && (
                     <div className="pet-special">
                       <div 
-                        className="special-ability"
+                        className={`special-ability ${activePetState && activePetState.happiness < 60 ? 'disabled' : ''}`}
                         style={{ 
-                          backgroundColor: getPetSpecialColor(activePetData.special.type),
+                          backgroundColor: activePetState && activePetState.happiness < 60 
+                            ? '#666' 
+                            : getPetSpecialColor(activePetData.special.type),
                           color: 'white'
                         }}
                       >
@@ -278,6 +280,12 @@ const PetModal = ({ isOpen, onClose, character }) => {
                           {getPetSpecialText(activePetData)}
                         </span>
                       </div>
+                      {activePetState && activePetState.happiness < 60 && (
+                        <div className="pet-ability-warning">
+                          <i className="fas fa-exclamation-triangle"></i>
+                          Способность неактивна! Питомец грустит (счастье: {Math.round(activePetState.happiness)}%)
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>

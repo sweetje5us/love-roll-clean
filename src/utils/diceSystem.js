@@ -22,13 +22,19 @@ export function getStatModifier(statValue) {
  * @param {Object} character - Объект персонажа
  * @param {string} statName - Название характеристики
  * @param {Object} itemsData - Данные предметов
+ * @param {Object} petState - Состояние питомца (опционально)
  * @returns {number} Бонус к характеристике
  */
-export function getPetStatBonus(character, statName, itemsData) {
+export function getPetStatBonus(character, statName, itemsData, petState = null) {
   if (!character?.petId || !itemsData?.items?.pet) return 0;
   
   const pet = itemsData.items.pet[character.petId];
   if (!pet || !pet.special) return 0;
+  
+  // Проверяем настроение питомца (счастье должно быть >= 60%)
+  if (petState && petState.happiness < 60) {
+    return 0;
+  }
   
   // Проверяем, является ли special массивом или объектом
   if (Array.isArray(pet.special)) {
@@ -45,13 +51,19 @@ export function getPetStatBonus(character, statName, itemsData) {
  * Получает бонус к результату броска от питомца
  * @param {Object} character - Объект персонажа
  * @param {Object} itemsData - Данные предметов
+ * @param {Object} petState - Состояние питомца (опционально)
  * @returns {number} Бонус к результату броска
  */
-export function getPetCubeBonus(character, itemsData) {
+export function getPetCubeBonus(character, itemsData, petState = null) {
   if (!character?.petId || !itemsData?.items?.pet) return 0;
   
   const pet = itemsData.items.pet[character.petId];
   if (!pet || !pet.special) return 0;
+  
+  // Проверяем настроение питомца (счастье должно быть >= 60%)
+  if (petState && petState.happiness < 60) {
+    return 0;
+  }
   
   // Проверяем, является ли special массивом или объектом
   if (Array.isArray(pet.special)) {
@@ -62,6 +74,64 @@ export function getPetCubeBonus(character, itemsData) {
   }
   
   return 0;
+}
+
+/**
+ * Проверяет, доступен ли переброс от питомца
+ * @param {Object} character - Объект персонажа
+ * @param {Object} itemsData - Данные предметов
+ * @param {Object} petState - Состояние питомца (опционально)
+ * @param {number} rerollCount - Текущее количество перебросов
+ * @returns {boolean} Доступен ли переброс
+ */
+export function canPetReroll(character, itemsData, petState = null, rerollCount = 0) {
+  if (!character?.petId || !itemsData?.items?.pet) return false;
+  
+  const pet = itemsData.items.pet[character.petId];
+  if (!pet || !pet.special) return false;
+  
+  // Проверяем настроение питомца (счастье должно быть >= 60%)
+  if (petState && petState.happiness < 60) {
+    return false;
+  }
+  
+  // Проверяем, является ли special массивом или объектом
+  if (Array.isArray(pet.special)) {
+    const rerollAbility = pet.special.find(s => s.type === 'reroll');
+    return rerollAbility && (rerollAbility.count === undefined || rerollCount < rerollAbility.count);
+  } else if (pet.special.type === 'reroll') {
+    return pet.special.count === undefined || rerollCount < pet.special.count;
+  }
+  
+  return false;
+}
+
+/**
+ * Проверяет, доступна ли способность улучшения отношений от питомца
+ * @param {Object} character - Объект персонажа
+ * @param {Object} itemsData - Данные предметов
+ * @param {Object} petState - Состояние питомца (опционально)
+ * @returns {boolean} Доступна ли способность
+ */
+export function canPetImproveRelations(character, itemsData, petState = null) {
+  if (!character?.petId || !itemsData?.items?.pet) return false;
+  
+  const pet = itemsData.items.pet[character.petId];
+  if (!pet || !pet.special) return false;
+  
+  // Проверяем настроение питомца (счастье должно быть >= 60%)
+  if (petState && petState.happiness < 60) {
+    return false;
+  }
+  
+  // Проверяем, является ли special массивом или объектом
+  if (Array.isArray(pet.special)) {
+    return pet.special.some(s => s.type === 'relation');
+  } else if (pet.special.type === 'relation') {
+    return true;
+  }
+  
+  return false;
 }
 
 /**
@@ -83,13 +153,14 @@ export function getFinalStatValue(character, statName, itemsData) {
  * @param {Object} character - Объект персонажа
  * @param {number} difficulty - Сложность проверки
  * @param {Object} itemsData - Данные предметов
+ * @param {Object} petState - Состояние питомца (опционально)
  * @returns {Object} Результат проверки
  */
-export function performStatCheck(statName, character, difficulty, itemsData) {
+export function performStatCheck(statName, character, difficulty, itemsData, petState = null) {
   const roll = rollD20();
   const finalStatValue = getFinalStatValue(character, statName, itemsData);
   const modifier = getStatModifier(finalStatValue);
-  const petCubeBonus = getPetCubeBonus(character, itemsData);
+  const petCubeBonus = getPetCubeBonus(character, itemsData, petState);
   const total = roll + modifier + petCubeBonus;
   
   // Определяем результат
@@ -121,7 +192,7 @@ export function performStatCheck(statName, character, difficulty, itemsData) {
     statName,
     statValue: finalStatValue,
     baseStatValue: character?.stats?.[statName] || 10,
-    petStatBonus: getPetStatBonus(character, statName, itemsData)
+    petStatBonus: getPetStatBonus(character, statName, itemsData, petState)
   };
 }
 

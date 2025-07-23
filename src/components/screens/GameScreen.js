@@ -24,6 +24,7 @@ import { clearEpisodeSaves } from '../../utils/saveUtils';
 import { processChoiceEffects, isChoiceAvailable } from '../../utils/dialogueItemSystem';
 import { hasDiceCheck } from '../../utils/diceSystem';
 import { getPetSpecialText } from '../../utils/itemUtils';
+import { canPetImproveRelations } from '../../utils/diceSystem';
 import itemsData from '../../data/items.json';
 import './GameScreen.css';
 
@@ -603,12 +604,14 @@ const GameScreen = () => {
       
              // Специальная обработка для pet_play
        if (choice && choice.specialInteraction === 'pet_play') {
+         const activePetState = getActivePet();
          const petId = selectedCharacter?.petId || selectedCharacter?.pet?.id;
          const pet = petId && Object.values(itemsData.items.pet || {}).find(p => 
            p.id === petId && p.special?.type === 'relation'
          );
          
-         if (pet && pet.special?.increase) {
+         // Проверяем, доступна ли способность улучшения отношений
+         if (pet && pet.special?.increase && canPetImproveRelations(selectedCharacter, itemsData, activePetState)) {
            console.log(`PET_PLAY: Найден питомец ${pet.name} с бонусом +${pet.special.increase} к отношениям`);
            // Создаем модифицированный выбор с правильным значением отношений
            const modifiedChoice = {
@@ -626,6 +629,8 @@ const GameScreen = () => {
            if (choiceIndex !== -1) {
              currentData.scene.choices[choiceIndex] = modifiedChoice;
            }
+         } else if (pet && activePetState && activePetState.happiness < 60) {
+           console.log(`PET_PLAY: Питомец ${pet.name} грустит (счастье: ${Math.round(activePetState.happiness)}%), способность неактивна`);
          }
        }
       
@@ -1649,11 +1654,8 @@ const GameScreen = () => {
               }
               
               // Проверяем специальное взаимодействие с питомцем
-              const petWithRelationAbility = petId && 
-                Object.values(itemsData.items.pet || {}).find(p => 
-                  p.id === petId && 
-                  p.special?.type === 'relation'
-                );
+              const activePetState = getActivePet();
+              const petWithRelationAbility = canPetImproveRelations(selectedCharacter, itemsData, activePetState);
               
               // Если это специальное взаимодействие с питомцем
               if (choice.specialInteraction === 'pet_play') {
@@ -1675,7 +1677,10 @@ const GameScreen = () => {
                     Предложить Анне поиграть с питомцем
                     {!hasPetWithRelationAbility && (
                       <span className="choice-requirement">
-                        (требуется питомец со способностью улучшения отношений)
+                        {activePetState && activePetState.happiness < 60 
+                          ? `(питомец грустит! счастье: ${Math.round(activePetState.happiness)}%)`
+                          : '(требуется питомец со способностью улучшения отношений)'
+                        }
                       </span>
                     )}
                   </motion.button>

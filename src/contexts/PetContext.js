@@ -136,7 +136,8 @@ const calculatePetStats = (petState) => {
   const HAPPINESS_DECAY_RATE = 1.5; // Счастье каждые 1.5 часа  
   const ENERGY_DECAY_RATE = 2; // Энергия каждые 2 часа
   const HEALTH_DECAY_RATE = 3; // Здоровье каждые 3 часа
-  const SLEEP_ENERGY_RECOVERY_RATE = 0.5; // Восстановление энергии во сне каждые 30 минут
+  const SLEEP_ENERGY_RECOVERY_RATE = 0.05; // Восстановление энергии во сне каждые 18 минут (быстрее)
+  const SLEEP_HAPPINESS_RECOVERY_RATE = 0.1; // Восстановление счастья во сне каждые 2 часа (медленнее)
   
   // Вычисляем время с последнего взаимодействия
   const timeSinceFed = petState.lastFed ? (now - petState.lastFed) / (1000 * 60 * 60) : 0;
@@ -150,14 +151,39 @@ const calculatePetStats = (petState) => {
   const energyDecay = Math.max(0, (timeSinceRest / ENERGY_DECAY_RATE) * 18); // 18% за период
   const healthDecay = Math.max(0, (timeSinceInteraction / HEALTH_DECAY_RATE) * 8); // 8% за период
   
-  // Вычисляем восстановление энергии во сне
+  // Вычисляем восстановление энергии и счастья во сне
   let energyRecovery = 0;
+  let happinessRecovery = 0;
   let isSleeping = petState.isSleeping;
   let sleepStartTime = petState.sleepStartTime;
   
   if (petState.isSleeping && petState.sleepStartTime) {
     const timeSinceSleepStart = (now - petState.sleepStartTime) / (1000 * 60 * 60); // в часах
-    energyRecovery = Math.min(100 - petState.energy, (timeSinceSleepStart / SLEEP_ENERGY_RECOVERY_RATE) * 20); // 20% за период
+    
+    // Восстановление энергии во сне (быстрее)
+    energyRecovery = Math.min(100 - petState.energy, (timeSinceSleepStart / SLEEP_ENERGY_RECOVERY_RATE) * 40); // 25% за период
+    
+    // Восстановление счастья во сне (зависит от других характеристик)
+    const currentHunger = Math.max(0, petState.hunger - hungerDecay);
+    const currentHealth = Math.max(0, petState.health - healthDecay);
+    
+    // Базовое восстановление счастья во сне
+    let baseHappinessRecovery = (timeSinceSleepStart / SLEEP_HAPPINESS_RECOVERY_RATE) * 5; // 5% за период (медленно)
+    
+    // Если все характеристики выше 70%, счастье восстанавливается быстро
+    if (currentHunger >= 70 && currentHealth >= 70) {
+      baseHappinessRecovery = (timeSinceSleepStart / SLEEP_HAPPINESS_RECOVERY_RATE) * 15; // 15% за период (быстро)
+    }
+    // Если здоровье и голод выше 70%, счастье восстанавливается медленно
+    else if (currentHunger >= 70 || currentHealth >= 70) {
+      baseHappinessRecovery = (timeSinceSleepStart / SLEEP_HAPPINESS_RECOVERY_RATE) * 8; // 8% за период (средне)
+    }
+    // Если характеристики низкие, счастье не восстанавливается
+    else {
+      baseHappinessRecovery = 0;
+    }
+    
+    happinessRecovery = Math.min(100 - petState.happiness, baseHappinessRecovery);
     
     // Если энергия достигла 100%, питомец просыпается
     if (petState.energy + energyRecovery >= 100) {
@@ -167,9 +193,30 @@ const calculatePetStats = (petState) => {
     }
   }
   
+  // Дополнительные модификаторы счастья на основе других характеристик
+  let happinessModifier = 0;
+  
+  // Если питомец голоден, счастье уменьшается
+  const currentHunger = Math.max(0, petState.hunger - hungerDecay);
+  if (currentHunger < 30) {
+    happinessModifier -= (30 - currentHunger) * 0.3; // -0.3% за каждый % голода ниже 30 (менее агрессивно)
+  }
+  
+  // Если питомец болен, счастье уменьшается
+  const currentHealth = Math.max(0, petState.health - healthDecay);
+  if (currentHealth < 50) {
+    happinessModifier -= (50 - currentHealth) * 0.2; // -0.2% за каждый % здоровья ниже 50 (менее агрессивно)
+  }
+  
+  // Если питомец устал, счастье уменьшается
+  const currentEnergy = Math.min(100, Math.max(0, petState.energy - energyDecay) + energyRecovery);
+  if (currentEnergy < 20) {
+    happinessModifier -= (20 - currentEnergy) * 0.25; // -0.25% за каждый % энергии ниже 20 (менее агрессивно)
+  }
+  
   const baseStats = {
     hunger: Math.max(0, petState.hunger - hungerDecay),
-    happiness: Math.max(0, petState.happiness - happinessDecay),
+    happiness: Math.max(0, Math.min(100, petState.happiness - happinessDecay + happinessRecovery + happinessModifier)),
     energy: Math.min(100, Math.max(0, petState.energy - energyDecay) + energyRecovery),
     health: Math.max(0, petState.health - healthDecay),
     isSleeping: isSleeping,
@@ -395,12 +442,10 @@ export const PetProvider = ({ children }) => {
 
     const now = Date.now();
     const hungerIncrease = Math.min(100 - petState.hunger, 30); // Увеличиваем голод на 30, но не больше 100
-    const happinessIncrease = Math.min(100 - petState.happiness, 10); // Немного увеличиваем счастье
     const experienceGain = 5; // Получаем опыт за кормление
 
     updatePetState(petId, {
       hunger: Math.min(100, petState.hunger + hungerIncrease),
-      happiness: Math.min(100, petState.happiness + happinessIncrease),
       experience: petState.experience + experienceGain,
       lastFed: now,
       lastInteraction: now,

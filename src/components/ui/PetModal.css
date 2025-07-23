@@ -1197,4 +1197,50 @@
     opacity: 0.7;
     transform: translateY(-6px) scale(0.9);
   }
+}
+
+/* Предупреждения о способностях питомца */
+.special-ability.disabled {
+  opacity: 0.6;
+  filter: grayscale(50%);
+}
+
+.pet-ability-warning {
+  background: rgba(231, 76, 60, 0.1);
+  border: 1px solid rgba(231, 76, 60, 0.3);
+  border-radius: 8px;
+  padding: 8px 12px;
+  margin-top: 8px;
+  text-align: center;
+  animation: warningPulse 2s infinite;
+}
+
+.pet-ability-warning i {
+  color: #e74c3c;
+  margin-right: 6px;
+  font-size: 0.9em;
+}
+
+.pet-ability-warning {
+  color: #e74c3c;
+  font-size: 0.85em;
+  font-weight: 500;
+}
+
+@keyframes warningPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+@media (max-width: 768px) {
+  .pet-ability-warning {
+    padding: 6px 10px;
+    margin-top: 6px;
+    font-size: 0.8em;
+  }
+  
+  .pet-ability-warning i {
+    font-size: 0.8em;
+    margin-right: 4px;
+  }
 } 
