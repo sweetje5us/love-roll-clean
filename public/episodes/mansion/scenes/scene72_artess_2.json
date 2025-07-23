@@ -1,0 +1,25 @@
+{
+  "id": "scene72_artess_2",
+  "chapterId": "2",
+  "name": "свидетели",
+  "background": "",
+  "characters": [],
+  "dialogue": [],
+  "choices": [
+    {
+      "id": "scene72_artess_2_choice1",
+      "text": "Нужно опросить всех свидетелей",
+      "nextScene": "scene72_artess_call",
+      "important": false,
+      "value": "",
+      "description": "",
+      "consequences": [
+        ""
+      ],
+      "diceCheck": null,
+      "specialInteraction": "",
+      "requiredItem": "",
+      "conditions": {}
+    }
+  ]
+}

@@ -1,0 +1,112 @@
+{
+  "id": "scene73",
+  "chapterId": "2",
+  "name": "Общение с врачом",
+  "background": "",
+  "characters": [
+    {
+      "id": "shasta",
+      "position": "center",
+      "name": "Диана"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "shasta",
+      "text": "Меня зовут Диана",
+      "emotion": "normal"
+    },
+    {
+      "speaker": "shasta",
+      "text": "Нас сюда вызвали в связи с смертью покойного",
+      "emotion": "normal"
+    },
+    {
+      "speaker": "shasta",
+      "text": "Вы ведь детектив, верно?",
+      "emotion": "normal"
+    },
+    {
+      "speaker": "shasta",
+      "text": "Нам нужно обсудить подробности",
+      "emotion": "normal"
+    }
+  ],
+  "choices": [
+    {
+      "id": "scene73_choice1",
+      "text": "Как зовут покойного?",
+      "nextScene": "scene73_1",
+      "important": false,
+      "value": "",
+      "description": "",
+      "consequences": [
+        ""
+      ],
+      "diceCheck": null,
+      "specialInteraction": "",
+      "requiredItem": "",
+      "conditions": {}
+    },
+    {
+      "id": "scene73_choice2",
+      "text": "От чего умер покойный?",
+      "nextScene": "scene73_2",
+      "important": false,
+      "value": "",
+      "description": "",
+      "consequences": [
+        ""
+      ],
+      "diceCheck": null,
+      "specialInteraction": "",
+      "requiredItem": "",
+      "conditions": {}
+    },
+    {
+      "id": "scene73_choice3",
+      "text": "Кто вас вызвал?",
+      "nextScene": "scene73_3",
+      "important": false,
+      "value": "",
+      "description": "",
+      "consequences": [
+        ""
+      ],
+      "diceCheck": null,
+      "specialInteraction": "",
+      "requiredItem": "",
+      "conditions": {}
+    },
+    {
+      "id": "scene73_choice4",
+      "text": "В какое время умер покойный?",
+      "nextScene": "scene73_4",
+      "important": false,
+      "value": "",
+      "description": "",
+      "consequences": [
+        ""
+      ],
+      "diceCheck": null,
+      "specialInteraction": "",
+      "requiredItem": "",
+      "conditions": {}
+    },
+    {
+      "id": "scene73_choice5",
+      "text": "Вернуться",
+      "nextScene": "scene71_main",
+      "important": false,
+      "value": "",
+      "description": "",
+      "consequences": [
+        ""
+      ],
+      "diceCheck": null,
+      "specialInteraction": "",
+      "requiredItem": "",
+      "conditions": {}
+    }
+  ]
+}

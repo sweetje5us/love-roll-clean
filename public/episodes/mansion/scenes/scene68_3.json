@@ -3,7 +3,35 @@
   "chapterId": "2",
   "name": "Проверить дверь провал",
   "background": "",
-  "characters": [],
-  "dialogue": [],
-  "choices": []
+  "characters": [
+    {
+      "id": "player",
+      "position": "center",
+      "name": "Игрок"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "narrator",
+      "text": "Дверь закрыта",
+      "emotion": "normal"
+    }
+  ],
+  "choices": [
+    {
+      "id": "scene68_3_choice1",
+      "text": "Вернуться",
+      "nextScene": "scene67",
+      "important": false,
+      "value": "",
+      "description": "",
+      "consequences": [
+        ""
+      ],
+      "diceCheck": null,
+      "specialInteraction": "",
+      "requiredItem": "",
+      "conditions": {}
+    }
+  ]
 }

@@ -1,0 +1,42 @@
+{
+  "id": "scene72_meeting",
+  "chapterId": "2",
+  "name": "Знакомство с врачом",
+  "background": "",
+  "characters": [
+    {
+      "id": "shasta",
+      "position": "right",
+      "name": "Диана"
+    },
+    {
+      "id": "player",
+      "position": "left",
+      "name": "Игрок"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "shasta",
+      "text": "Добрый вечер..",
+      "emotion": "normal"
+    }
+  ],
+  "choices": [
+    {
+      "id": "diana_meet",
+      "text": "Кто вы? Что здесь произошло?",
+      "nextScene": "scene73",
+      "important": true,
+      "value": "true",
+      "description": "",
+      "consequences": [
+        ""
+      ],
+      "diceCheck": null,
+      "specialInteraction": "",
+      "requiredItem": "",
+      "conditions": {}
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "id": "scene73_4",
+  "chapterId": "2",
+  "name": "в какое время",
+  "background": "",
+  "characters": [],
+  "dialogue": [],
+  "choices": [
+    {
+      "id": "scene73_4_choice1",
+      "text": "Я бы хотел еще кое-что спросить..",
+      "nextScene": "scene73",
+      "important": false,
+      "value": "",
+      "description": "",
+      "consequences": [
+        ""
+      ],
+      "diceCheck": null,
+      "specialInteraction": "",
+      "requiredItem": "",
+      "conditions": {}
+    }
+  ]
+}

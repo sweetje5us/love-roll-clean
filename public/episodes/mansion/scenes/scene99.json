@@ -4,7 +4,13 @@
   "name": "Лечь спать [Провал]",
   "background": "sprites/episodes/locations/mansion/mansion_outside_building_night_11zon.png",
   "characters": [],
-  "dialogue": [],
+  "dialogue": [
+    {
+      "speaker": "narrator",
+      "text": "Громкий шум вам не дает уснуть",
+      "emotion": "normal"
+    }
+  ],
   "choices": [
     {
       "id": "scene99_choice1",

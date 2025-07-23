@@ -466,42 +466,8 @@ app.get('/api/episodes/:episodeId/chapters/:chapterId/scenes', async (req, res) 
         console.warn(`✗ Файл сцены не найден: ${scenePath}`);
       }
     }
-    
-    // Если сцен не найдено, попробуем загрузить все сцены из папки scenes
-    if (scenes.length === 0) {
-      console.log(`Сцены не найдены в config.json, загружаем все сцены из папки scenes для главы ${chapterId}`);
-      const scenesPath = path.join(EPISODES_PATH, episodeId, 'scenes');
-      if (await fs.pathExists(scenesPath)) {
-        try {
-          const sceneFiles = await fs.readdir(scenesPath);
-          const jsonFiles = sceneFiles.filter(file => file.endsWith('.json'));
-          
-          for (const file of jsonFiles) {
-            const sceneId = file.replace('.json', '');
-            const scenePath = path.join(scenesPath, file);
-            try {
-              const sceneData = await fs.readJson(scenePath);
-              scenes.push(sceneData);
-            } catch (sceneError) {
-              console.warn(`Ошибка чтения сцены ${sceneId}:`, sceneError);
-              scenes.push({
-                id: sceneId,
-                name: sceneId,
-                description: 'Сцена недоступна',
-                background: '',
-                characters: [],
-                dialogue: [],
-                choices: []
-              });
-            }
-          }
-        } catch (dirError) {
-          console.error('Ошибка чтения папки сцен:', dirError);
-        }
-      }
-    }
-    
-    console.log(`Загружено ${scenes.length} сцен для главы ${chapterId} эпизода ${episodeId}`);
+    // Если сцен не найдено, НЕ загружаем все сцены из папки scenes, а просто возвращаем пустой массив
+    // (Раньше здесь был блок, который подгружал все сцены эпизода, теперь он удалён)
     res.json(scenes);
   } catch (error) {
     console.error('Ошибка загрузки сцен:', error);

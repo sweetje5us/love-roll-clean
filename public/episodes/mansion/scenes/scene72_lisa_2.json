@@ -1,0 +1,85 @@
+{
+  "id": "scene72_lisa_2",
+  "chapterId": "2",
+  "name": "где Миша",
+  "background": "",
+  "characters": [],
+  "dialogue": [],
+  "choices": [
+    {
+      "id": "scene72_lisa_2_choice1",
+      "text": "Ты его нашла?",
+      "nextScene": "scene72_lisa_svet1",
+      "important": false,
+      "value": "",
+      "description": "",
+      "consequences": [
+        ""
+      ],
+      "diceCheck": null,
+      "specialInteraction": "",
+      "requiredItem": "",
+      "conditions": {}
+    },
+    {
+      "id": "scene72_lisa_2_choice2",
+      "text": "Ты его нашла?",
+      "nextScene": "scene72_lisa_svet2",
+      "important": false,
+      "value": "",
+      "description": "",
+      "consequences": [
+        ""
+      ],
+      "diceCheck": null,
+      "specialInteraction": "",
+      "requiredItem": "",
+      "conditions": {}
+    },
+    {
+      "id": "scene72_lisa_2_choice3",
+      "text": "Ты его нашла?",
+      "nextScene": "scene72_lisa_svet3",
+      "important": false,
+      "value": "",
+      "description": "",
+      "consequences": [
+        ""
+      ],
+      "diceCheck": null,
+      "specialInteraction": "",
+      "requiredItem": "",
+      "conditions": {}
+    },
+    {
+      "id": "scene72_lisa_2_choice4",
+      "text": "Вернуться",
+      "nextScene": "scene72_lisa",
+      "important": false,
+      "value": "",
+      "description": "",
+      "consequences": [
+        ""
+      ],
+      "diceCheck": null,
+      "specialInteraction": "",
+      "requiredItem": "",
+      "conditions": {}
+    },
+    {
+      "id": "scene72_lisa_2_choice5",
+      "text": "Ты его нашла?",
+      "nextScene": "scene72_lisa_svet_4",
+      "important": false,
+      "value": "",
+      "description": "",
+      "consequences": [
+        ""
+      ],
+      "diceCheck": null,
+      "specialInteraction": "",
+      "requiredItem": "",
+      "conditions": {}
+    }
+  ]
+}

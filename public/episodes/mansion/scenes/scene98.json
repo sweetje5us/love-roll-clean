@@ -4,7 +4,13 @@
   "name": "Лечь спать [Критический провал]",
   "background": "",
   "characters": [],
-  "dialogue": [],
+  "dialogue": [
+    {
+      "speaker": "narrator",
+      "text": "Вы не можете спать когда рядом враги",
+      "emotion": "normal"
+    }
+  ],
   "choices": [
     {
       "id": "scene98_choice1",

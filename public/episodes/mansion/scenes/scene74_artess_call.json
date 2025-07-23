@@ -1,0 +1,26 @@
+{
+  "id": "scene74_artess_call",
+  "chapterId": "2",
+  "name": "Владимир собирает свидетелей",
+  "background": "",
+  "characters": [],
+  "dialogue": [],
+  "choices": [
+    {
+      "id": "scene74_artess_call_choice1",
+      "text": "Встретимся внизу",
+      "nextScene": "",
+      "important": true,
+      "value": "scene74_artess_call_choice1",
+      "description": "true",
+      "consequences": [
+        ""
+      ],
+      "diceCheck": null,
+      "specialInteraction": "",
+      "requiredItem": "",
+      "conditions": {},
+      "endChapter": true
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "id": "scene72_peter_2",
+  "chapterId": "2",
+  "name": "кто вызвал",
+  "background": "",
+  "characters": [],
+  "dialogue": [],
+  "choices": [
+    {
+      "id": "scene72_peter_2_choice1",
+      "text": "Есть еще вопросы..",
+      "nextScene": "scene72_peter",
+      "important": false,
+      "value": "",
+      "description": "",
+      "consequences": [
+        ""
+      ],
+      "diceCheck": null,
+      "specialInteraction": "",
+      "requiredItem": "",
+      "conditions": {}
+    }
+  ]
+}

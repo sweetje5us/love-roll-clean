@@ -1,0 +1,42 @@
+{
+  "id": "scene69_4",
+  "chapterId": "2",
+  "name": "Дернуть дверь критический провал",
+  "background": "",
+  "characters": [
+    {
+      "id": "player",
+      "position": "center",
+      "name": "Игрок"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "narrator",
+      "text": "Дверь закрыта.",
+      "emotion": "normal"
+    }
+  ],
+  "choices": [
+    {
+      "id": "scene69_4_choice1",
+      "text": "Вернуться",
+      "nextScene": "scene67",
+      "important": false,
+      "value": "",
+      "description": "",
+      "consequences": [
+        ""
+      ],
+      "effects": {
+        "relationships": {
+          "dulapeepa": -10
+        }
+      },
+      "diceCheck": null,
+      "specialInteraction": "",
+      "requiredItem": "",
+      "conditions": {}
+    }
+  ]
+}

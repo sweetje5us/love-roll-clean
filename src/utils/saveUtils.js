@@ -3,6 +3,13 @@
 const SAVE_KEY = 'episode_saves';
 const GAME_STATE_KEY = 'game_state';
 
+const getSaveKey = (episodeId, playerCharacterId) => {
+  if (playerCharacterId) {
+    return `${episodeId}_${playerCharacterId}`;
+  }
+  return episodeId;
+};
+
 /**
  * Получает все сохранения эпизодов
  */
@@ -19,17 +26,19 @@ export const getEpisodeSaves = () => {
 /**
  * Сохраняет прогресс эпизода
  */
-export const saveEpisodeProgress = (episodeId, chapterId, progress = {}) => {
+export const saveEpisodeProgress = (episodeId, chapterId, progress = {}, playerCharacterId = null) => {
   try {
     const saves = getEpisodeSaves();
-    const episodeSave = saves[episodeId] || {
+    const key = getSaveKey(episodeId, playerCharacterId || progress.playerCharacterId);
+    const episodeSave = saves[key] || {
       currentChapter: 1,
       currentScene: null,
       completedChapters: [],
       progress: {},
       playerChoices: {},
       importantChoices: {}, // Важные выборы
-      lastPlayed: null
+      lastPlayed: null,
+      playerCharacterId: playerCharacterId || progress.playerCharacterId || null
     };
 
     // Обновляем текущую главу
@@ -45,9 +54,14 @@ export const saveEpisodeProgress = (episodeId, chapterId, progress = {}) => {
       episodeSave.completedChapters.push(chapterId - 1);
     }
     
+    // Обновляем список завершенных глав из прогресса (для случая завершения эпизода)
+    if (progress.completedChapters) {
+      episodeSave.completedChapters = progress.completedChapters;
+    }
+    
     // Обновляем прогресс
     episodeSave.progress = { ...episodeSave.progress, ...progress };
-    episodeSave.playerCharacterId = progress.playerCharacterId || episodeSave.playerCharacterId;
+    episodeSave.playerCharacterId = playerCharacterId || progress.playerCharacterId || episodeSave.playerCharacterId;
     episodeSave.lastPlayed = new Date().toISOString();
     
     // Сохраняем статус завершения эпизода
@@ -58,7 +72,7 @@ export const saveEpisodeProgress = (episodeId, chapterId, progress = {}) => {
       episodeSave.completedAt = progress.completedAt;
     }
 
-    saves[episodeId] = episodeSave;
+    saves[key] = episodeSave;
     localStorage.setItem(SAVE_KEY, JSON.stringify(saves));
     
     return true;
@@ -71,17 +85,18 @@ export const saveEpisodeProgress = (episodeId, chapterId, progress = {}) => {
 /**
  * Сохраняет детальное состояние игры для эпизода
  */
-export const saveGameState = (episodeId, gameState) => {
+export const saveGameState = (episodeId, gameState, playerCharacterId = null) => {
   try {
     const saves = getEpisodeSaves();
-    const episodeSave = saves[episodeId] || {
+    const key = getSaveKey(episodeId, playerCharacterId || gameState.playerCharacterId);
+    const episodeSave = saves[key] || {
       currentChapter: 1,
       currentScene: null,
       completedChapters: [],
       progress: {},
       playerChoices: {},
       importantChoices: {}, // Важные выборы
-      playerCharacterId: null,
+      playerCharacterId: playerCharacterId || gameState.playerCharacterId || null,
       lastPlayed: null
     };
 
@@ -91,10 +106,15 @@ export const saveGameState = (episodeId, gameState) => {
     episodeSave.playerChoices = gameState.playerChoices || episodeSave.playerChoices;
     episodeSave.importantChoices = gameState.importantChoices || episodeSave.importantChoices;
     episodeSave.progress = { ...episodeSave.progress, ...gameState.progress };
-    episodeSave.playerCharacterId = gameState.playerCharacterId || episodeSave.playerCharacterId;
+    episodeSave.playerCharacterId = playerCharacterId || gameState.playerCharacterId || episodeSave.playerCharacterId;
     episodeSave.lastPlayed = new Date().toISOString();
+    
+    // Обновляем завершенные главы из прогресса
+    if (gameState.progress && gameState.progress.completedChapters) {
+      episodeSave.completedChapters = gameState.progress.completedChapters;
+    }
 
-    saves[episodeId] = episodeSave;
+    saves[key] = episodeSave;
     localStorage.setItem(SAVE_KEY, JSON.stringify(saves));
     
     return true;
@@ -107,17 +127,18 @@ export const saveGameState = (episodeId, gameState) => {
 /**
  * Сохраняет важный выбор
  */
-export const saveImportantChoice = (episodeId, choiceId, choiceData) => {
+export const saveImportantChoice = (episodeId, choiceId, choiceData, playerCharacterId = null) => {
   try {
     const saves = getEpisodeSaves();
-    const episodeSave = saves[episodeId] || {
+    const key = getSaveKey(episodeId, playerCharacterId);
+    const episodeSave = saves[key] || {
       currentChapter: 1,
       currentScene: null,
       completedChapters: [],
       progress: {},
       playerChoices: {},
       importantChoices: {},
-      playerCharacterId: null,
+      playerCharacterId: playerCharacterId || null,
       lastPlayed: null
     };
 
@@ -131,7 +152,7 @@ export const saveImportantChoice = (episodeId, choiceId, choiceData) => {
       consequences: choiceData.consequences || []
     };
 
-    saves[episodeId] = episodeSave;
+    saves[key] = episodeSave;
     localStorage.setItem(SAVE_KEY, JSON.stringify(saves));
     
     return true;
@@ -144,9 +165,10 @@ export const saveImportantChoice = (episodeId, choiceId, choiceData) => {
 /**
  * Получает сохранение для конкретного эпизода
  */
-export const getEpisodeSave = (episodeId) => {
+export const getEpisodeSave = (episodeId, playerCharacterId) => {
   const saves = getEpisodeSaves();
-  return saves[episodeId] || null;
+  const key = getSaveKey(episodeId, playerCharacterId);
+  return saves[key] || null;
 };
 
 /**
@@ -224,8 +246,8 @@ export const isChapterCompleted = (episodeId, chapterId) => {
 /**
  * Получает последнее сохранение для эпизода
  */
-export const getLastSave = (episodeId) => {
-  const save = getEpisodeSave(episodeId);
+export const getLastSave = (episodeId, playerCharacterId = null) => {
+  const save = getEpisodeSave(episodeId, playerCharacterId);
   if (!save) return null;
   
   return {
@@ -325,12 +347,23 @@ export const importSaves = (file) => {
 /**
  * Очищает все сохранения эпизода
  */
-export const clearEpisodeSaves = (episodeId = null) => {
+export const clearEpisodeSaves = (episodeId = null, playerCharacterId = null) => {
   try {
     if (episodeId) {
       // Очищаем сохранение конкретного эпизода
       const saves = getEpisodeSaves();
-      delete saves[episodeId];
+      if (playerCharacterId) {
+        // Очищаем сохранение конкретного эпизода и персонажа
+        const key = getSaveKey(episodeId, playerCharacterId);
+        delete saves[key];
+      } else {
+        // Очищаем все сохранения для эпизода (всех персонажей)
+        Object.keys(saves).forEach(key => {
+          if (key.startsWith(episodeId + '_') || key === episodeId) {
+            delete saves[key];
+          }
+        });
+      }
       localStorage.setItem(SAVE_KEY, JSON.stringify(saves));
       console.log(`Сохранения эпизода ${episodeId} очищены`);
     } else {

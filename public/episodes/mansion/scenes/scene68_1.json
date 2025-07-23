@@ -4,6 +4,33 @@
   "name": "Проверить дверь Успех",
   "background": "",
   "characters": [],
-  "dialogue": [],
-  "choices": []
+  "dialogue": [
+    {
+      "speaker": "narrator",
+      "text": "Дверь закрыта",
+      "emotion": "normal"
+    },
+    {
+      "speaker": "narrator",
+      "text": "У кого-то должен быть от нее ключ",
+      "emotion": "normal"
+    }
+  ],
+  "choices": [
+    {
+      "id": "scene68_1_choice1",
+      "text": "Вернуться",
+      "nextScene": "scene67",
+      "important": false,
+      "value": "",
+      "description": "",
+      "consequences": [
+        ""
+      ],
+      "diceCheck": null,
+      "specialInteraction": "",
+      "requiredItem": "",
+      "conditions": {}
+    }
+  ]
 }

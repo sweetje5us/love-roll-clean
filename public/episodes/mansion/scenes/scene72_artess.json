@@ -1,0 +1,55 @@
+{
+  "id": "scene72_artess",
+  "chapterId": "2",
+  "name": "Общение с Владимиром",
+  "background": "",
+  "characters": [],
+  "dialogue": [],
+  "choices": [
+    {
+      "id": "scene72_artess_choice1",
+      "text": "Что здесь произошло?",
+      "nextScene": "scene72_artess_1",
+      "important": false,
+      "value": "",
+      "description": "",
+      "consequences": [
+        ""
+      ],
+      "diceCheck": null,
+      "specialInteraction": "",
+      "requiredItem": "",
+      "conditions": {}
+    },
+    {
+      "id": "scene72_artess_choice2",
+      "text": "Есть ли свидетели?",
+      "nextScene": "scene72_artess_2",
+      "important": false,
+      "value": "",
+      "description": "",
+      "consequences": [
+        ""
+      ],
+      "diceCheck": null,
+      "specialInteraction": "",
+      "requiredItem": "",
+      "conditions": {}
+    },
+    {
+      "id": "scene72_artess_choice3",
+      "text": "Вернуться",
+      "nextScene": "scene71_main",
+      "important": false,
+      "value": "",
+      "description": "",
+      "consequences": [
+        ""
+      ],
+      "diceCheck": null,
+      "specialInteraction": "",
+      "requiredItem": "",
+      "conditions": {}
+    }
+  ]
+}

@@ -3,7 +3,90 @@
   "chapterId": "2",
   "name": "Корридор 2 этажа",
   "background": "sprites/episodes/locations/mansion/gfdg",
-  "characters": [],
-  "dialogue": [],
-  "choices": []
+  "characters": [
+    {
+      "id": "artess_god",
+      "position": "right",
+      "name": "Владимир Артов"
+    },
+    {
+      "id": "shasta",
+      "position": "center",
+      "name": "Диана"
+    },
+    {
+      "id": "peter",
+      "position": "right",
+      "name": "Питер"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "narrator",
+      "text": "Вы поднялись на второй этаж",
+      "emotion": "normal"
+    },
+    {
+      "speaker": "narrator",
+      "text": "Вы видите лежащего человека на полу, без признаков жизни",
+      "emotion": "normal"
+    },
+    {
+      "speaker": "narrator",
+      "text": "Рядом с ним стоит женщина-врач",
+      "emotion": "normal"
+    },
+    {
+      "speaker": "narrator",
+      "text": "Рядом стоят охранник и дворецкий",
+      "emotion": "normal"
+    }
+  ],
+  "choices": [
+    {
+      "id": "scene71_main_choice1",
+      "text": "Заговорить с врачом",
+      "nextScene": "scene72_meeting",
+      "important": false,
+      "value": "",
+      "description": "",
+      "consequences": [
+        ""
+      ],
+      "diceCheck": null,
+      "specialInteraction": "",
+      "requiredItem": "",
+      "conditions": {}
+    },
+    {
+      "id": "scene71_main_choice2",
+      "text": "Заговорить с дворецким",
+      "nextScene": "scene72_peter",
+      "important": false,
+      "value": "",
+      "description": "",
+      "consequences": [
+        ""
+      ],
+      "diceCheck": null,
+      "specialInteraction": "",
+      "requiredItem": "",
+      "conditions": {}
+    },
+    {
+      "id": "scene71_main_choice3",
+      "text": "Заговорить с охранником",
+      "nextScene": "scene72_artess",
+      "important": false,
+      "value": "",
+      "description": "",
+      "consequences": [
+        ""
+      ],
+      "diceCheck": null,
+      "specialInteraction": "",
+      "requiredItem": "",
+      "conditions": {}
+    }
+  ]
 }

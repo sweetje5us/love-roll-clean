@@ -9,6 +9,7 @@ import ItemCard from '../ui/ItemCard';
 import ChestModal from '../ui/ChestModal';
 import { 
   getShopItems, 
+  getShopItemsWithInventoryFilter,
   getItemsByType, 
   getAllTypes, 
   getTypeInfo,
@@ -19,6 +20,7 @@ import { getCurrentDiscounts } from '../../utils/discountSystem';
 import { getInventoryItemsWithInfo, filterInventoryItems, sortInventoryItems, getInventoryStats } from '../../utils/inventoryUtils';
 import { getItemById } from '../../utils/itemUtils';
 import './ShopScreen.css';
+import { AnimatePresence } from 'framer-motion';
 
 const ShopScreen = () => {
   const { goBack } = useScreen();
@@ -41,25 +43,118 @@ const ShopScreen = () => {
     chestItem: null
   });
 
+  // Состояние для модального окна выбора количества
+  const [quantityModal, setQuantityModal] = useState({
+    isOpen: false,
+    item: null,
+    maxQuantity: 1,
+    selectedQuantity: 1
+  });
+
+  // Данные инвентаря
+  const inventoryData = getInventoryData();
+  const inventoryItems = getInventoryItemsWithInfo(inventoryData);
+  const inventoryStats = getInventoryStats(inventoryItems);
+  
   // Получаем реальные данные предметов
-  const allShopItems = getShopItems();
+  const allShopItems = getShopItemsWithInventoryFilter(inventoryData);
   const itemTypes = getAllTypes();
   const rotationInfo = getRotationInfo();
   const discountItems = getCurrentDiscounts(allShopItems);
   console.log('Скидочные предметы в карусели:', discountItems);
   const [currentDiscountIndex, setCurrentDiscountIndex] = useState(0);
-  
-  // Данные инвентаря
-  const inventoryData = getInventoryData();
-  const inventoryItems = getInventoryItemsWithInfo(inventoryData);
-  const inventoryStats = getInventoryStats(inventoryItems);
   const [inventoryFilter, setInventoryFilter] = useState('all');
   const [inventorySort, setInventorySort] = useState('name');
+  
+  // Дополнительные фильтры для магазина
+  const [rarityFilter, setRarityFilter] = useState('all');
+  const [petAbilityFilter, setPetAbilityFilter] = useState('all');
+  const [clothingGenderFilter, setClothingGenderFilter] = useState('all');
+  const [clothingAgeFilter, setClothingAgeFilter] = useState('all');
+  const [clothingTypeFilter, setClothingTypeFilter] = useState('all');
+  const [consumableEffectFilter, setConsumableEffectFilter] = useState('all');
+  const [consumableStatFilter, setConsumableStatFilter] = useState('all');
+  const [filtersVisible, setFiltersVisible] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(false);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
 
-  // Фильтрация товаров по категории
-  const filteredItems = activeCategory === 'all' 
+  // Фильтрация товаров по категории и дополнительным фильтрам
+  let filteredItems = activeCategory === 'all' 
     ? allShopItems 
-    : getItemsByType(activeCategory);
+    : getItemsByType(activeCategory, inventoryData);
+    
+  // Применяем дополнительные фильтры
+  if (rarityFilter !== 'all') {
+    filteredItems = filteredItems.filter(item => item.rarity === rarityFilter);
+  }
+  
+  // Фильтры для питомцев
+  if (activeCategory === 'pet' && petAbilityFilter !== 'all') {
+    filteredItems = filteredItems.filter(item => {
+      if (!item.special) return false;
+      return item.special.type === petAbilityFilter;
+    });
+  }
+  
+  // Фильтры для одежды
+  if (activeCategory === 'clothing') {
+    if (clothingGenderFilter !== 'all') {
+      filteredItems = filteredItems.filter(item => item.gender === clothingGenderFilter);
+    }
+    if (clothingAgeFilter !== 'all') {
+      filteredItems = filteredItems.filter(item => item.age === clothingAgeFilter);
+    }
+    if (clothingTypeFilter !== 'all') {
+      filteredItems = filteredItems.filter(item => item.subtype === clothingTypeFilter);
+    }
+  }
+  
+  // Фильтры для расходуемых
+  if (activeCategory === 'consumable') {
+    if (consumableEffectFilter !== 'all') {
+      filteredItems = filteredItems.filter(item => {
+        const description = item.description.toLowerCase();
+        
+        if (consumableEffectFilter === 'stat') {
+          // Ищем зелья, которые добавляют очки к характеристикам
+          return description.includes('добавляет') && description.includes('очко');
+        } else if (consumableEffectFilter === 'reroll') {
+          // Ищем предметы с перебросом
+          return description.includes('переброс') || description.includes('перекинуть') ||
+                 description.includes('перебросить');
+        } else if (consumableEffectFilter === 'relation') {
+          // Ищем предметы, влияющие на отношения (но не зелья характеристик)
+          return (description.includes('отношения') || description.includes('отношений')) &&
+                 !(description.includes('добавляет') && description.includes('очко'));
+        }
+        return true;
+      });
+    }
+    if (consumableStatFilter !== 'all') {
+      filteredItems = filteredItems.filter(item => {
+        const description = item.description.toLowerCase();
+        const name = item.name.toLowerCase();
+        
+        // Карта соответствий характеристик и их вариантов написания в данных
+        const statVariants = {
+          'харизма': ['харизм'],
+          'холод': ['холод'],
+          'чувствительность': ['чувствительн'],
+          'решительность': ['решительн'],
+          'коварство': ['коварств'],
+          'интеллект': ['интеллект']
+        };
+        
+        const searchTerm = consumableStatFilter.toLowerCase();
+        const variants = statVariants[searchTerm] || [searchTerm];
+        
+        // Ищем в описании и названии по всем вариантам
+        return variants.some(variant => 
+          description.includes(variant) || name.includes(variant)
+        );
+      });
+    }
+  }
 
   // Переключение вкладок
   const switchTab = (tabId) => {
@@ -69,6 +164,16 @@ const ShopScreen = () => {
   // Переключение категорий магазина
   const switchShopCategory = (category) => {
     setActiveCategory(category);
+    // Сбрасываем специфичные фильтры при смене категории
+    setRarityFilter('all');
+    setPetAbilityFilter('all');
+    setClothingGenderFilter('all');
+    setClothingAgeFilter('all');
+    setClothingTypeFilter('all');
+    setConsumableEffectFilter('all');
+    setConsumableStatFilter('all');
+    // Скрываем фильтры при смене категории
+    setFiltersVisible(false);
   };
 
   // Покупка предмета
@@ -76,30 +181,91 @@ const ShopScreen = () => {
     console.log('Покупка предмета:', { itemId, price, currency });
     
     const item = getItemById(itemId);
-    const currencySymbol = currency === 'gems' ? '💎' : '🪙';
-    const currentBalance = currency === 'gems' ? gems : gold;
     
-    const confirmMessage = `Вы уверены, что хотите купить "${item?.name || itemId}" за ${price} ${currencySymbol}?\n\nВаш баланс: ${currentBalance} ${currencySymbol}`;
+    // Для питомцев и одежды - покупка только по 1 штуке
+    if (item.type === 'pet' || item.type === 'clothing') {
+      const currencySymbol = currency === 'gems' ? '💎' : '🪙';
+      const currentBalance = currency === 'gems' ? gems : gold;
+      
+      const confirmMessage = `Вы уверены, что хотите купить "${item?.name || itemId}" за ${price} ${currencySymbol}?\n\nВаш баланс: ${currentBalance} ${currencySymbol}`;
+      
+      if (window.confirm(confirmMessage)) {
+        if (currency === 'coins') {
+          if (hasEnoughGold(price)) {
+            removeGold(price);
+            addItem(itemId, 1);
+            alert(`✅ Вы купили "${item?.name || itemId}" за ${price} монет!`);
+          } else {
+            alert('❌ Недостаточно монет!');
+          }
+        } else if (currency === 'gems') {
+          if (hasEnoughGems(price)) {
+            removeGems(price);
+            addItem(itemId, 1);
+            alert(`✅ Вы купили "${item?.name || itemId}" за ${price} самоцветов!`);
+          } else {
+            alert('❌ Недостаточно самоцветов!');
+          }
+        }
+      }
+    } else {
+      // Для остальных предметов - открываем модальное окно выбора количества
+      const currentBalance = currency === 'gems' ? gems : gold;
+      const maxQuantity = Math.floor(currentBalance / price);
+      
+      setQuantityModal({
+        isOpen: true,
+        item: { ...item, price, currency },
+        maxQuantity: Math.max(1, maxQuantity),
+        selectedQuantity: 1
+      });
+    }
+  };
+
+  // Подтверждение покупки с выбранным количеством
+  const confirmPurchase = () => {
+    const { item, selectedQuantity } = quantityModal;
+    const totalPrice = item.price * selectedQuantity;
+    const currencySymbol = item.currency === 'gems' ? '💎' : '🪙';
+    
+    const confirmMessage = `Вы уверены, что хотите купить ${selectedQuantity} "${item.name}" за ${totalPrice} ${currencySymbol}?`;
     
     if (window.confirm(confirmMessage)) {
-      if (currency === 'coins') {
-        if (hasEnoughGold(price)) {
-          removeGold(price);
-          addItem(itemId, 1);
-          alert(`✅ Вы купили "${item?.name || itemId}" за ${price} монет!`);
+      if (item.currency === 'coins') {
+        if (hasEnoughGold(totalPrice)) {
+          removeGold(totalPrice);
+          addItem(item.id, selectedQuantity);
+          alert(`✅ Вы купили ${selectedQuantity} "${item.name}" за ${totalPrice} монет!`);
         } else {
           alert('❌ Недостаточно монет!');
         }
-      } else if (currency === 'gems') {
-        if (hasEnoughGems(price)) {
-          removeGems(price);
-          addItem(itemId, 1);
-          alert(`✅ Вы купили "${item?.name || itemId}" за ${price} самоцветов!`);
+      } else if (item.currency === 'gems') {
+        if (hasEnoughGems(totalPrice)) {
+          removeGems(totalPrice);
+          addItem(item.id, selectedQuantity);
+          alert(`✅ Вы купили ${selectedQuantity} "${item.name}" за ${totalPrice} самоцветов!`);
         } else {
           alert('❌ Недостаточно самоцветов!');
         }
       }
+      
+      setQuantityModal({
+        isOpen: false,
+        item: null,
+        maxQuantity: 1,
+        selectedQuantity: 1
+      });
     }
+  };
+
+  // Закрытие модального окна выбора количества
+  const closeQuantityModal = () => {
+    setQuantityModal({
+      isOpen: false,
+      item: null,
+      maxQuantity: 1,
+      selectedQuantity: 1
+    });
   };
 
   // Продажа предмета
@@ -170,6 +336,20 @@ const ShopScreen = () => {
     }
   };
 
+  // Функция для проверки возможности прокрутки категорий
+  const checkScrollPosition = (container) => {
+    if (container) {
+      const { scrollLeft, scrollWidth, clientWidth } = container;
+      setCanScrollLeft(scrollLeft > 0);
+      setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 1);
+    }
+  };
+
+  // Обработчик прокрутки категорий
+  const handleCategoriesScroll = (e) => {
+    checkScrollPosition(e.target);
+  };
+
   // Автоматическое переключение карусели
   useEffect(() => {
     if (discountItems.length <= 1) return;
@@ -180,6 +360,21 @@ const ShopScreen = () => {
 
     return () => clearInterval(interval);
   }, [discountItems.length]);
+
+  // Проверка возможности прокрутки категорий при изменении размера окна
+  useEffect(() => {
+    const checkScrollOnResize = () => {
+      const container = document.querySelector('.categories-container');
+      if (container) {
+        checkScrollPosition(container);
+      }
+    };
+
+    checkScrollOnResize();
+    window.addEventListener('resize', checkScrollOnResize);
+    
+    return () => window.removeEventListener('resize', checkScrollOnResize);
+  }, [activeCategory, itemTypes]);
 
   return (
     <motion.div 
@@ -251,26 +446,209 @@ const ShopScreen = () => {
             transition={{ duration: 0.3 }}
           >
             {/* Категории товаров */}
-            <div className="categories-container">
-              <button 
-                className={`category-btn ${activeCategory === 'all' ? 'active' : ''}`}
-                onClick={() => switchShopCategory('all')}
+            <div className="categories-wrapper">
+              {/* Индикатор прокрутки влево */}
+              {canScrollLeft && (
+                <div className="scroll-indicator scroll-indicator-left">
+                  <i className="fas fa-chevron-left"></i>
+                </div>
+              )}
+              
+              <div 
+                className="categories-container"
+                onScroll={handleCategoriesScroll}
+                ref={(el) => {
+                  if (el) {
+                    checkScrollPosition(el);
+                  }
+                }}
               >
-                Все
-              </button>
-              {itemTypes.map((type) => {
-                const typeInfo = getTypeInfo(type);
-                return (
-                  <button 
-                    key={type}
-                    className={`category-btn ${activeCategory === type ? 'active' : ''}`}
-                    onClick={() => switchShopCategory(type)}
-                  >
-                    {typeInfo.name}
-                  </button>
-                );
-              })}
+                <button 
+                  className={`category-btn ${activeCategory === 'all' ? 'active' : ''}`}
+                  onClick={() => switchShopCategory('all')}
+                >
+                  Все
+                </button>
+                {itemTypes.map((type) => {
+                  const typeInfo = getTypeInfo(type);
+                  return (
+                    <button 
+                      key={type}
+                      className={`category-btn ${activeCategory === type ? 'active' : ''}`}
+                      onClick={() => switchShopCategory(type)}
+                    >
+                      {typeInfo.name}
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* Индикатор прокрутки вправо */}
+              {canScrollRight && (
+                <div className="scroll-indicator scroll-indicator-right">
+                  <i className="fas fa-chevron-right"></i>
+                </div>
+              )}
             </div>
+
+            {/* Кнопка показа/скрытия фильтров */}
+            <div className="filters-toggle">
+              <button 
+                className="filters-toggle-btn"
+                onClick={() => setFiltersVisible(!filtersVisible)}
+              >
+                <i className={`fas fa-filter ${filtersVisible ? 'active' : ''}`}></i>
+                Фильтры
+                <i className={`fas fa-chevron-${filtersVisible ? 'up' : 'down'}`}></i>
+              </button>
+            </div>
+
+            {/* Дополнительные фильтры */}
+            <AnimatePresence>
+              {filtersVisible && (
+                <motion.div 
+                  className="shop-filters"
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: 'auto' }}
+                  exit={{ opacity: 0, height: 0 }}
+                  transition={{ duration: 0.3, ease: 'easeInOut' }}
+                >
+              {/* Фильтр по редкости */}
+              <div className="filter-group">
+                <label>Редкость:</label>
+                <select 
+                  value={rarityFilter} 
+                  onChange={(e) => setRarityFilter(e.target.value)}
+                  className="filter-select"
+                >
+                  <option value="all">Все редкости</option>
+                  <option value="common">Обычная</option>
+                  <option value="rare">Редкая</option>
+                  <option value="legendary">Легендарная</option>
+                  <option value="mythical">Мифическая</option>
+                </select>
+              </div>
+
+              {/* Фильтры для питомцев */}
+              {activeCategory === 'pet' && (
+                <div className="filter-group">
+                  <label>Способность:</label>
+                  <select 
+                    value={petAbilityFilter} 
+                    onChange={(e) => setPetAbilityFilter(e.target.value)}
+                    className="filter-select"
+                  >
+                    <option value="all">Все способности</option>
+                    <option value="relation">Отношения</option>
+                    <option value="reroll">Переброс</option>
+                    <option value="stat">Характеристики</option>
+                  </select>
+                </div>
+              )}
+
+              {/* Фильтры для одежды */}
+              {activeCategory === 'clothing' && (
+                <>
+                  <div className="filter-group">
+                    <label>Пол:</label>
+                    <select 
+                      value={clothingGenderFilter} 
+                      onChange={(e) => setClothingGenderFilter(e.target.value)}
+                      className="filter-select"
+                    >
+                      <option value="all">Все</option>
+                      <option value="male">Мужской</option>
+                      <option value="female">Женский</option>
+                    </select>
+                  </div>
+                  <div className="filter-group">
+                    <label>Возраст:</label>
+                    <select 
+                      value={clothingAgeFilter} 
+                      onChange={(e) => setClothingAgeFilter(e.target.value)}
+                      className="filter-select"
+                    >
+                      <option value="all">Все возрасты</option>
+                      <option value="1">Молодой</option>
+                      <option value="2">Зрелый</option>
+                    </select>
+                  </div>
+                  <div className="filter-group">
+                    <label>Тип:</label>
+                    <select 
+                      value={clothingTypeFilter} 
+                      onChange={(e) => setClothingTypeFilter(e.target.value)}
+                      className="filter-select"
+                    >
+                      <option value="all">Все типы</option>
+                      <option value="dress">Одежда</option>
+                      <option value="accessory">Аксессуар</option>
+                    </select>
+                  </div>
+                </>
+              )}
+
+              {/* Фильтры для расходуемых */}
+              {activeCategory === 'consumable' && (
+                <>
+                  <div className="filter-group">
+                    <label>Эффект:</label>
+                    <select 
+                      value={consumableEffectFilter} 
+                      onChange={(e) => setConsumableEffectFilter(e.target.value)}
+                      className="filter-select"
+                    >
+                      <option value="all">Все эффекты</option>
+                      <option value="stat">+ к характеристикам</option>
+                      <option value="reroll">Переброс</option>
+                      <option value="relation">Отношения</option>
+                    </select>
+                  </div>
+                  <div className="filter-group">
+                    <label>Характеристика:</label>
+                    <select 
+                      value={consumableStatFilter} 
+                      onChange={(e) => setConsumableStatFilter(e.target.value)}
+                      className="filter-select"
+                    >
+                      <option value="all">Все характеристики</option>
+                      <option value="харизма">Харизма</option>
+                      <option value="холод">Холод</option>
+                      <option value="чувствительность">Чувствительность</option>
+                      <option value="решительность">Решительность</option>
+                      <option value="коварство">Коварство</option>
+                      <option value="интеллект">Интеллект</option>
+                    </select>
+                  </div>
+                </>
+              )}
+              
+              {/* Кнопка сброса фильтров */}
+              {(rarityFilter !== 'all' || 
+                (activeCategory === 'pet' && petAbilityFilter !== 'all') ||
+                (activeCategory === 'clothing' && (clothingGenderFilter !== 'all' || clothingAgeFilter !== 'all' || clothingTypeFilter !== 'all')) ||
+                (activeCategory === 'consumable' && (consumableEffectFilter !== 'all' || consumableStatFilter !== 'all'))) && (
+                <div className="filter-group">
+                  <button 
+                    className="reset-filters-btn"
+                    onClick={() => {
+                      setRarityFilter('all');
+                      setPetAbilityFilter('all');
+                      setClothingGenderFilter('all');
+                      setClothingAgeFilter('all');
+                      setClothingTypeFilter('all');
+                      setConsumableEffectFilter('all');
+                      setConsumableStatFilter('all');
+                    }}
+                  >
+                    <i className="fas fa-times"></i>
+                    Сбросить фильтры
+                  </button>
+                </div>
+              )}
+                </motion.div>
+              )}
+            </AnimatePresence>
 
             {/* Карусель скидочных предложений */}
             {discountItems.length > 0 && (
@@ -407,7 +785,7 @@ const ShopScreen = () => {
               >
                 <option value="all">Все предметы</option>
                 <option value="consumable">Расходуемые</option>
-                <option value="material">Материалы</option>
+                <option value="gift">Подарки</option>
                 <option value="key">Ключи</option>
                 <option value="pet">Питомцы</option>
                 <option value="clothing">Одежда</option>
@@ -552,6 +930,107 @@ const ShopScreen = () => {
         onOpenChest={handleChestOpen}
         onRemoveItem={handleChestRemoveItem}
       />
+
+      {/* Модальное окно выбора количества */}
+      <AnimatePresence>
+        {quantityModal.isOpen && (
+          <motion.div
+            className="quantity-modal-overlay"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={closeQuantityModal}
+          >
+            <motion.div
+              className="quantity-modal-content"
+              initial={{ scale: 0.8, opacity: 0, y: 50 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.8, opacity: 0, y: 50 }}
+              transition={{ type: "spring", damping: 25, stiffness: 300 }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="quantity-modal-header">
+                <h3>Выберите количество</h3>
+                <button className="quantity-modal-close" onClick={closeQuantityModal}>
+                  <i className="fas fa-times"></i>
+                </button>
+              </div>
+              
+              <div className="quantity-modal-body">
+                <div className="quantity-item-info">
+                  <img 
+                    src={quantityModal.item?.sprite} 
+                    alt={quantityModal.item?.name}
+                    className="item-sprite"
+                  />
+                  <div className="item-details">
+                    <h4>{quantityModal.item?.name}</h4>
+                    <p>{quantityModal.item?.description}</p>
+                    <div className="item-price">
+                      {quantityModal.item?.price} {quantityModal.item?.currency === 'gems' ? '💎' : '🪙'} за штуку
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="quantity-selector">
+                  <label>Количество:</label>
+                  <div className="quantity-controls">
+                    <button 
+                      className="quantity-btn"
+                      onClick={() => setQuantityModal(prev => ({
+                        ...prev,
+                        selectedQuantity: Math.max(1, prev.selectedQuantity - 1)
+                      }))}
+                      disabled={quantityModal.selectedQuantity <= 1}
+                    >
+                      <i className="fas fa-minus"></i>
+                    </button>
+                    
+                    <input
+                      type="number"
+                      min="1"
+                      max={quantityModal.maxQuantity}
+                      value={quantityModal.selectedQuantity}
+                      onChange={(e) => {
+                        const value = parseInt(e.target.value) || 1;
+                        setQuantityModal(prev => ({
+                          ...prev,
+                          selectedQuantity: Math.max(1, Math.min(value, prev.maxQuantity))
+                        }));
+                      }}
+                      className="quantity-input"
+                    />
+                    
+                    <button 
+                      className="quantity-btn"
+                      onClick={() => setQuantityModal(prev => ({
+                        ...prev,
+                        selectedQuantity: Math.min(prev.maxQuantity, prev.selectedQuantity + 1)
+                      }))}
+                      disabled={quantityModal.selectedQuantity >= quantityModal.maxQuantity}
+                    >
+                      <i className="fas fa-plus"></i>
+                    </button>
+                  </div>
+                  
+                  <div className="total-price">
+                    Итого: {quantityModal.item?.price * quantityModal.selectedQuantity} {quantityModal.item?.currency === 'gems' ? '💎' : '🪙'}
+                  </div>
+                </div>
+              </div>
+              
+              <div className="quantity-modal-footer">
+                <button className="quantity-cancel-btn" onClick={closeQuantityModal}>
+                  Отмена
+                </button>
+                <button className="quantity-confirm-btn" onClick={confirmPurchase}>
+                  Купить
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.div>
   );
 };

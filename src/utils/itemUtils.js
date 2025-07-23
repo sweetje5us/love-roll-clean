@@ -15,17 +15,17 @@ export const getAllItems = () => {
 };
 
 // Получить предметы по типу
-export const getItemsByType = (type) => {
+export const getItemsByType = (type, inventory = {}) => {
   if (type === 'all') {
-    return getShopItems();
+    return getShopItemsWithInventoryFilter(inventory);
   }
   // Исключаем сундуки и особые предметы из всех категорий
   if (type === 'chest' || type === 'special') {
     return [];
   }
   
-  // Получаем все предметы магазина и фильтруем по типу
-  const shopItems = getShopItems();
+  // Получаем все предметы магазина с фильтрацией и фильтруем по типу
+  const shopItems = getShopItemsWithInventoryFilter(inventory);
   return shopItems.filter(item => item.type === type);
 };
 
@@ -183,14 +183,10 @@ export const getShopItems = () => {
     item.price && 
     item.price.amount > 0 && 
     item.type !== 'chest' && 
-    item.type !== 'special'
+    item.type !== 'special' // Специальные предметы недоступны в магазине
   );
   
-  // Всегда включаем предметы одежды в магазин
-  const clothingItems = Object.values(itemsData.items.clothing || {});
-  const allAvailableItems = [...availableItems, ...clothingItems];
-  
-  // Применяем ротацию ассортимента (только к обычным предметам, не к одежде)
+  // Применяем ротацию ассортимента (влияет только на питомцев)
   const currentWeek = getCurrentWeek();
   const rotatedItems = getWeeklyItems(availableItems, currentWeek);
   
@@ -212,8 +208,26 @@ export const getShopItems = () => {
     return item;
   });
   
-  // Возвращаем все предметы: обычные с ротацией и одежду без ротации
-  return [...itemsWithDiscounts, ...clothingItems];
+  // Возвращаем все предметы с ротацией (питомцы меняются каждую неделю)
+  return itemsWithDiscounts;
+};
+
+// Получить предметы для магазина с фильтрацией по инвентарю
+export const getShopItemsWithInventoryFilter = (inventory = {}) => {
+  const allShopItems = getShopItems();
+  
+  // Фильтруем предметы, исключая уже купленные питомцы и одежду
+  const filteredItems = allShopItems.filter(item => {
+    // Если это питомец или одежда, проверяем, есть ли уже в инвентаре
+    if (item.type === 'pet' || item.type === 'clothing') {
+      return !inventory[item.id]; // Исключаем, если уже есть в инвентаре
+    }
+    
+    // Для остальных предметов оставляем как есть
+    return true;
+  });
+  
+  return filteredItems;
 };
 
 // Получить предметы для инвентаря (только те, что можно продать)

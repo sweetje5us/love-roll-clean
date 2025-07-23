@@ -702,6 +702,18 @@ const SceneModal = ({
                           Важный выбор
                         </label>
                       </div>
+                      <div className="form-group">
+                        <label>
+                          <input
+                            type="checkbox"
+                            checked={!!choice.endChapter}
+                            onChange={(e) => {
+                              updateChoice(index, 'endChapter', e.target.checked ? true : undefined);
+                            }}
+                          />
+                          Завершить главу
+                        </label>
+                      </div>
                     </div>
                     
                     {choice.important && (

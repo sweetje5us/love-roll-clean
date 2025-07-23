@@ -1,0 +1,55 @@
+{
+  "id": "scene72_dan",
+  "chapterId": "2",
+  "name": "Общение с Дэном",
+  "background": "",
+  "characters": [],
+  "dialogue": [],
+  "choices": [
+    {
+      "id": "scene72_dan_choice1",
+      "text": "Что произошло наверху?",
+      "nextScene": "scene72_dan_1",
+      "important": false,
+      "value": "",
+      "description": "",
+      "consequences": [
+        ""
+      ],
+      "diceCheck": null,
+      "specialInteraction": "",
+      "requiredItem": "",
+      "conditions": {}
+    },
+    {
+      "id": "scene72_dan_choice2",
+      "text": "Что вы здесь делаете?",
+      "nextScene": "scene72_dan_1",
+      "important": false,
+      "value": "",
+      "description": "",
+      "consequences": [
+        ""
+      ],
+      "diceCheck": null,
+      "specialInteraction": "",
+      "requiredItem": "",
+      "conditions": {}
+    },
+    {
+      "id": "scene72_dan_choice3",
+      "text": "Вернуться",
+      "nextScene": "scene70",
+      "important": false,
+      "value": "",
+      "description": "",
+      "consequences": [
+        ""
+      ],
+      "diceCheck": null,
+      "specialInteraction": "",
+      "requiredItem": "",
+      "conditions": {}
+    }
+  ]
+}

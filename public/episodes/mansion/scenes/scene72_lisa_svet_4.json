@@ -1,0 +1,25 @@
+{
+  "id": "scene72_lisa_svet_4",
+  "chapterId": "2",
+  "name": "Нашла(комната с камином)",
+  "background": "",
+  "characters": [],
+  "dialogue": [],
+  "choices": [
+    {
+      "id": "scene72_lisa_svet_4_choice1",
+      "text": "Вернуться",
+      "nextScene": "scene72_lisa",
+      "important": false,
+      "value": "",
+      "description": "",
+      "consequences": [
+        ""
+      ],
+      "diceCheck": null,
+      "specialInteraction": "",
+      "requiredItem": "",
+      "conditions": {}
+    }
+  ]
+}

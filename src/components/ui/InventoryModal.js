@@ -174,7 +174,7 @@ const InventoryModal = ({ isOpen, onClose }) => {
                     >
                       <option value="all">Все предметы</option>
                       <option value="consumable">Расходники</option>
-                      <option value="material">Материалы</option>
+                      <option value="gift">Подарки</option>
                       <option value="special">Особые</option>
                       <option value="pet">Питомцы</option>
                       <option value="clothing">Одежда</option>

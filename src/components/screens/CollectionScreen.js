@@ -244,9 +244,10 @@ const CollectionScreen = () => {
                   >
                     <option value="all">Все предметы</option>
                     <option value="consumable">Зелья</option>
-                    <option value="material">Материалы</option>
+                    <option value="gift">Подарки</option>
                     <option value="special">Особые</option>
                     <option value="pet">Питомцы</option>
+                    <option value="clothing">Одежда</option>
                     <option value="chest">Сундуки</option>
                     <option value="key">Ключи</option>
                   </select>

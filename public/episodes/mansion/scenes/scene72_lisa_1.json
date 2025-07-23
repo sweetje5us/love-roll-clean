@@ -1,0 +1,40 @@
+{
+  "id": "scene72_lisa_1",
+  "chapterId": "2",
+  "name": "почему плачет",
+  "background": "",
+  "characters": [],
+  "dialogue": [],
+  "choices": [
+    {
+      "id": "scene72_lisa_1_choice1",
+      "text": "Где Миша?",
+      "nextScene": "scene72_lisa_2",
+      "important": false,
+      "value": "",
+      "description": "",
+      "consequences": [
+        ""
+      ],
+      "diceCheck": null,
+      "specialInteraction": "",
+      "requiredItem": "",
+      "conditions": {}
+    },
+    {
+      "id": "scene72_lisa_1_choice2",
+      "text": "Вернуться",
+      "nextScene": "scene72_lisa",
+      "important": false,
+      "value": "",
+      "description": "",
+      "consequences": [
+        ""
+      ],
+      "diceCheck": null,
+      "specialInteraction": "",
+      "requiredItem": "",
+      "conditions": {}
+    }
+  ]
+}

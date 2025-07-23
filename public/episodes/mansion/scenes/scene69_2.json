@@ -1,0 +1,47 @@
+{
+  "id": "scene69_2",
+  "chapterId": "2",
+  "name": "Дернуть дверь критический успех",
+  "background": "",
+  "characters": [
+    {
+      "id": "player",
+      "position": "center",
+      "name": "Игрок"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "narrator",
+      "text": "Дверь закрыта.",
+      "emotion": "normal"
+    },
+    {
+      "speaker": "narrator",
+      "text": "Вы сможете попасть внутрь если у вас будет ключ",
+      "emotion": "normal"
+    },
+    {
+      "speaker": "narrator",
+      "text": "Можно предположить что ключ есть у Елизаветы или Дэна",
+      "emotion": "normal"
+    }
+  ],
+  "choices": [
+    {
+      "id": "scene69_2_choice1",
+      "text": "Вернуться",
+      "nextScene": "scene67",
+      "important": false,
+      "value": "",
+      "description": "",
+      "consequences": [
+        ""
+      ],
+      "diceCheck": null,
+      "specialInteraction": "",
+      "requiredItem": "",
+      "conditions": {}
+    }
+  ]
+}

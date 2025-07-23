@@ -1,0 +1,25 @@
+{
+  "id": "scene73_2",
+  "chapterId": "2",
+  "name": "от чего умер",
+  "background": "",
+  "characters": [],
+  "dialogue": [],
+  "choices": [
+    {
+      "id": "scene73_2_choice1",
+      "text": "Еще кое что..",
+      "nextScene": "scene73",
+      "important": false,
+      "value": "",
+      "description": "",
+      "consequences": [
+        ""
+      ],
+      "diceCheck": null,
+      "specialInteraction": "",
+      "requiredItem": "",
+      "conditions": {}
+    }
+  ]
+}

@@ -66,22 +66,27 @@ const ItemCard = ({
       onClick={isChest ? handleChestClick : undefined}
       style={{ cursor: isChest ? 'pointer' : 'default' }}
     >
-      {/* Бейдж редкости */}
-      {showRarity && (
-        <div 
-          className="item-rarity-badge"
-          style={{ backgroundColor: rarityColor }}
-        >
-          {item.rarity}
+      {/* Изображение предмета */}
+      <div className="item-image" data-rarity={item.rarity}>
+        <img 
+          src={item.sprite} 
+          alt={item.name}
+          onError={(e) => {
+            e.target.style.display = 'none';
+            e.target.nextSibling.style.display = 'flex';
+          }}
+        />
+        <div className="item-image-placeholder">
+          <i className="fas fa-question"></i>
         </div>
-      )}
-
-      {/* Бейдж скидки */}
-      {item.hasDiscount && (
-        <div className="item-discount-badge">
-          -{item.discountPercent}%
-        </div>
-      )}
+        
+        {/* Бейдж скидки */}
+        {item.hasDiscount && (
+          <div className="item-discount-badge">
+            -{item.discountPercent}%
+          </div>
+        )}
+      </div>
 
       {/* Бейдж сундука */}
       {isChest && (
@@ -101,23 +106,18 @@ const ItemCard = ({
         </div>
       )}
 
-      {/* Изображение предмета */}
-      <div className="item-image">
-        <img 
-          src={item.sprite} 
-          alt={item.name}
-          onError={(e) => {
-            e.target.style.display = 'none';
-            e.target.nextSibling.style.display = 'flex';
-          }}
-        />
-        <div className="item-image-placeholder">
-          <i className="fas fa-question"></i>
-        </div>
-      </div>
-
       {/* Информация о предмете */}
       <div className="item-info">
+        {/* Бейдж редкости */}
+        {showRarity && (
+          <div 
+            className="item-rarity-badge"
+            style={{ backgroundColor: rarityColor }}
+          >
+            {item.rarity}
+          </div>
+        )}
+
         <h3 className="item-name">{item.name}</h3>
         <p className="item-description">{item.description}</p>
         

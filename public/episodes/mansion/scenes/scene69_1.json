@@ -1,0 +1,37 @@
+{
+  "id": "scene69_1",
+  "chapterId": "2",
+  "name": "Дернуть дверь успех",
+  "background": "",
+  "characters": [
+    {
+      "id": "player",
+      "position": "center",
+      "name": "Игрок"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "narrator",
+      "text": "Дверь закрыта, вы сможете в нее попасть, если у вас будет ключ",
+      "emotion": "normal"
+    }
+  ],
+  "choices": [
+    {
+      "id": "scene69_1_choice1",
+      "text": "Вернуться",
+      "nextScene": "scene67",
+      "important": false,
+      "value": "",
+      "description": "",
+      "consequences": [
+        ""
+      ],
+      "diceCheck": null,
+      "specialInteraction": "",
+      "requiredItem": "",
+      "conditions": {}
+    }
+  ]
+}

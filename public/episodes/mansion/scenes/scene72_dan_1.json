@@ -1,0 +1,25 @@
+{
+  "id": "scene72_dan_1",
+  "chapterId": "2",
+  "name": "разговор с Дэном",
+  "background": "",
+  "characters": [],
+  "dialogue": [],
+  "choices": [
+    {
+      "id": "scene72_dan_1_choice1",
+      "text": "Вернуться",
+      "nextScene": "scene70",
+      "important": false,
+      "value": "",
+      "description": "",
+      "consequences": [
+        ""
+      ],
+      "diceCheck": null,
+      "specialInteraction": "",
+      "requiredItem": "",
+      "conditions": {}
+    }
+  ]
+}

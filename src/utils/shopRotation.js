@@ -16,29 +16,26 @@ export const getRandomItems = (items, count) => {
 
 // Получить предметы для текущей недели
 export const getWeeklyItems = (allItems, week) => {
-  // Предметы, которые всегда доступны
+  // Предметы, которые всегда доступны (расходуемые, ключи, подарки, одежда)
   const alwaysAvailable = allItems.filter(item => 
-    item.type === 'consumable' || item.type === 'key'
+    item.type === 'consumable' || item.type === 'key' || item.type === 'gift' || item.type === 'clothing'
   );
 
-  // Предметы, которые ротируются
-  const rotatingItems = allItems.filter(item => 
-    item.type === 'material' || item.type === 'pet'
-  );
+  // Только питомцы ротируются
+  const pets = allItems.filter(item => item.type === 'pet');
 
-  // Используем номер недели как seed для генерации случайных предметов
+  // Используем номер недели как seed для генерации случайных питомцев
   const seed = week;
-  const shuffledRotating = [...rotatingItems].sort((a, b) => {
+  const shuffledPets = [...pets].sort((a, b) => {
     const hashA = (a.id + seed).split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
     const hashB = (b.id + seed).split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
     return hashA - hashB;
   });
 
-  // Выбираем случайные предметы для ротации (максимум 8 материалов и 4 питомца)
-  const materials = shuffledRotating.filter(item => item.type === 'material').slice(0, 8);
-  const pets = shuffledRotating.filter(item => item.type === 'pet').slice(0, 4);
+  // Выбираем случайных питомцев для ротации (максимум 8 питомцев)
+  const selectedPets = shuffledPets.slice(0, 8);
 
-  return [...alwaysAvailable, ...materials, ...pets];
+  return [...alwaysAvailable, ...selectedPets];
 };
 
 // Получить информацию о ротации

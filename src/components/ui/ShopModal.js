@@ -5,6 +5,7 @@ import { useInventory } from '../../contexts/InventoryContext';
 import { useDailyRewards } from '../../contexts/DailyRewardsContext';
 import { 
   getShopItems, 
+  getShopItemsWithInventoryFilter,
   getAllTypes, 
   getRotationInfo, 
   getCurrentDiscounts, 
@@ -41,8 +42,16 @@ const ShopModal = ({ isOpen, onClose }) => {
     chestItem: null
   });
 
+  // Состояние для модального окна выбора количества
+  const [quantityModal, setQuantityModal] = useState({
+    isOpen: false,
+    item: null,
+    maxQuantity: 1,
+    selectedQuantity: 1
+  });
+
   // Получаем реальные данные предметов
-  const allShopItems = getShopItems();
+  const allShopItems = getShopItemsWithInventoryFilter(inventoryData);
   const itemTypes = getAllTypes();
   const rotationInfo = getRotationInfo();
   const discountItems = getCurrentDiscounts(allShopItems);
@@ -64,7 +73,7 @@ const ShopModal = ({ isOpen, onClose }) => {
   // Фильтрация товаров по категории
   const filteredItems = activeCategory === 'all' 
     ? allShopItems 
-    : getItemsByType(activeCategory);
+    : getItemsByType(activeCategory, inventoryData);
 
   // Переключение вкладок
   const switchTab = (tabId) => {
@@ -81,30 +90,91 @@ const ShopModal = ({ isOpen, onClose }) => {
     console.log('Покупка предмета:', { itemId, price, currency });
     
     const item = getItemById(itemId);
-    const currencySymbol = currency === 'gems' ? '💎' : '🪙';
-    const currentBalance = currency === 'gems' ? gems : gold;
     
-    const confirmMessage = `Вы уверены, что хотите купить "${item?.name || itemId}" за ${price} ${currencySymbol}?\n\nВаш баланс: ${currentBalance} ${currencySymbol}`;
+    // Для питомцев и одежды - покупка только по 1 штуке
+    if (item.type === 'pet' || item.type === 'clothing') {
+      const currencySymbol = currency === 'gems' ? '💎' : '🪙';
+      const currentBalance = currency === 'gems' ? gems : gold;
+      
+      const confirmMessage = `Вы уверены, что хотите купить "${item?.name || itemId}" за ${price} ${currencySymbol}?\n\nВаш баланс: ${currentBalance} ${currencySymbol}`;
+      
+      if (window.confirm(confirmMessage)) {
+        if (currency === 'coins') {
+          if (hasEnoughGold(price)) {
+            removeGold(price);
+            addItem(itemId, 1);
+            alert(`✅ Вы купили "${item?.name || itemId}" за ${price} монет!`);
+          } else {
+            alert('❌ Недостаточно монет!');
+          }
+        } else if (currency === 'gems') {
+          if (hasEnoughGems(price)) {
+            removeGems(price);
+            addItem(itemId, 1);
+            alert(`✅ Вы купили "${item?.name || itemId}" за ${price} самоцветов!`);
+          } else {
+            alert('❌ Недостаточно самоцветов!');
+          }
+        }
+      }
+    } else {
+      // Для остальных предметов - открываем модальное окно выбора количества
+      const currentBalance = currency === 'gems' ? gems : gold;
+      const maxQuantity = Math.floor(currentBalance / price);
+      
+      setQuantityModal({
+        isOpen: true,
+        item: { ...item, price, currency },
+        maxQuantity: Math.max(1, maxQuantity),
+        selectedQuantity: 1
+      });
+    }
+  };
+
+  // Подтверждение покупки с выбранным количеством
+  const confirmPurchase = () => {
+    const { item, selectedQuantity } = quantityModal;
+    const totalPrice = item.price * selectedQuantity;
+    const currencySymbol = item.currency === 'gems' ? '💎' : '🪙';
+    
+    const confirmMessage = `Вы уверены, что хотите купить ${selectedQuantity} "${item.name}" за ${totalPrice} ${currencySymbol}?`;
     
     if (window.confirm(confirmMessage)) {
-      if (currency === 'coins') {
-        if (hasEnoughGold(price)) {
-          removeGold(price);
-          addItem(itemId, 1);
-          alert(`✅ Вы купили "${item?.name || itemId}" за ${price} монет!`);
+      if (item.currency === 'coins') {
+        if (hasEnoughGold(totalPrice)) {
+          removeGold(totalPrice);
+          addItem(item.id, selectedQuantity);
+          alert(`✅ Вы купили ${selectedQuantity} "${item.name}" за ${totalPrice} монет!`);
         } else {
           alert('❌ Недостаточно монет!');
         }
-      } else if (currency === 'gems') {
-        if (hasEnoughGems(price)) {
-          removeGems(price);
-          addItem(itemId, 1);
-          alert(`✅ Вы купили "${item?.name || itemId}" за ${price} самоцветов!`);
+      } else if (item.currency === 'gems') {
+        if (hasEnoughGems(totalPrice)) {
+          removeGems(totalPrice);
+          addItem(item.id, selectedQuantity);
+          alert(`✅ Вы купили ${selectedQuantity} "${item.name}" за ${totalPrice} самоцветов!`);
         } else {
           alert('❌ Недостаточно самоцветов!');
         }
       }
+      
+      setQuantityModal({
+        isOpen: false,
+        item: null,
+        maxQuantity: 1,
+        selectedQuantity: 1
+      });
     }
+  };
+
+  // Закрытие модального окна выбора количества
+  const closeQuantityModal = () => {
+    setQuantityModal({
+      isOpen: false,
+      item: null,
+      maxQuantity: 1,
+      selectedQuantity: 1
+    });
   };
 
   // Продажа предмета
@@ -385,7 +455,7 @@ const ShopModal = ({ isOpen, onClose }) => {
                   >
                     <option value="all">Все предметы</option>
                     <option value="consumable">Расходники</option>
-                    <option value="material">Материалы</option>
+                    <option value="gift">Подарки</option>
                     <option value="clothing">Одежда</option>
                     <option value="pet">Питомцы</option>
                     <option value="chest">Сундуки</option>
@@ -571,6 +641,107 @@ const ShopModal = ({ isOpen, onClose }) => {
         onOpenChest={handleChestOpen}
         onRemoveItem={handleChestRemoveItem}
       />
+
+      {/* Модальное окно выбора количества */}
+      <AnimatePresence>
+        {quantityModal.isOpen && (
+          <motion.div
+            className="quantity-modal-overlay"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={closeQuantityModal}
+          >
+            <motion.div
+              className="quantity-modal-content"
+              initial={{ scale: 0.8, opacity: 0, y: 50 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.8, opacity: 0, y: 50 }}
+              transition={{ type: "spring", damping: 25, stiffness: 300 }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="quantity-modal-header">
+                <h3>Выберите количество</h3>
+                <button className="quantity-modal-close" onClick={closeQuantityModal}>
+                  <i className="fas fa-times"></i>
+                </button>
+              </div>
+              
+              <div className="quantity-modal-body">
+                <div className="quantity-item-info">
+                  <img 
+                    src={quantityModal.item?.sprite} 
+                    alt={quantityModal.item?.name}
+                    className="item-sprite"
+                  />
+                  <div className="item-details">
+                    <h4>{quantityModal.item?.name}</h4>
+                    <p>{quantityModal.item?.description}</p>
+                    <div className="item-price">
+                      {quantityModal.item?.price} {quantityModal.item?.currency === 'gems' ? '💎' : '🪙'} за штуку
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="quantity-selector">
+                  <label>Количество:</label>
+                  <div className="quantity-controls">
+                    <button 
+                      className="quantity-btn"
+                      onClick={() => setQuantityModal(prev => ({
+                        ...prev,
+                        selectedQuantity: Math.max(1, prev.selectedQuantity - 1)
+                      }))}
+                      disabled={quantityModal.selectedQuantity <= 1}
+                    >
+                      <i className="fas fa-minus"></i>
+                    </button>
+                    
+                    <input
+                      type="number"
+                      min="1"
+                      max={quantityModal.maxQuantity}
+                      value={quantityModal.selectedQuantity}
+                      onChange={(e) => {
+                        const value = parseInt(e.target.value) || 1;
+                        setQuantityModal(prev => ({
+                          ...prev,
+                          selectedQuantity: Math.max(1, Math.min(value, prev.maxQuantity))
+                        }));
+                      }}
+                      className="quantity-input"
+                    />
+                    
+                    <button 
+                      className="quantity-btn"
+                      onClick={() => setQuantityModal(prev => ({
+                        ...prev,
+                        selectedQuantity: Math.min(prev.maxQuantity, prev.selectedQuantity + 1)
+                      }))}
+                      disabled={quantityModal.selectedQuantity >= quantityModal.maxQuantity}
+                    >
+                      <i className="fas fa-plus"></i>
+                    </button>
+                  </div>
+                  
+                  <div className="total-price">
+                    Итого: {quantityModal.item?.price * quantityModal.selectedQuantity} {quantityModal.item?.currency === 'gems' ? '💎' : '🪙'}
+                  </div>
+                </div>
+              </div>
+              
+              <div className="quantity-modal-footer">
+                <button className="quantity-cancel-btn" onClick={closeQuantityModal}>
+                  Отмена
+                </button>
+                <button className="quantity-confirm-btn" onClick={confirmPurchase}>
+                  Купить
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </AnimatePresence>
   );
 };

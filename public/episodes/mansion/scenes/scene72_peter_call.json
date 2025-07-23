@@ -1,0 +1,25 @@
+{
+  "id": "scene72_peter_call",
+  "chapterId": "2",
+  "name": "Свидетели",
+  "background": "",
+  "characters": [],
+  "dialogue": [],
+  "choices": [
+    {
+      "id": "scene72_peter_call_choice1",
+      "text": "Собери всех свидетелей",
+      "nextScene": "scene74_peter_call",
+      "important": false,
+      "value": "",
+      "description": "",
+      "consequences": [
+        ""
+      ],
+      "diceCheck": null,
+      "specialInteraction": "",
+      "requiredItem": "",
+      "conditions": {}
+    }
+  ]
+}

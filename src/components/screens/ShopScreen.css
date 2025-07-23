@@ -163,14 +163,25 @@
 }
 
 /* Категории товаров */
+.categories-wrapper {
+  position: relative;
+  margin-bottom: 16px;
+  width: 100%;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
 .categories-container {
   display: flex;
   overflow-x: auto;
   gap: 8px;
-  margin-bottom: 16px;
-  padding-bottom: 4px;
+  padding: 8px 4px;
   scrollbar-width: none;
   -ms-overflow-style: none;
+  scroll-behavior: smooth;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .categories-container::-webkit-scrollbar {
@@ -178,28 +189,73 @@
 }
 
 .category-btn {
-  padding: 8px 16px;
-  border: none;
-  border-radius: 16px;
+  padding: 10px 18px;
+  border: 2px solid transparent;
+  border-radius: 20px;
   background: #fff;
   color: #ff8cc6;
   font-weight: 600;
   font-size: 13px;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.3s ease;
   white-space: nowrap;
-  box-shadow: 0 1px 4px rgba(255, 182, 193, 0.10);
+  box-shadow: 0 2px 8px rgba(255, 182, 193, 0.15);
   flex-shrink: 0;
+  position: relative;
+  overflow: hidden;
 }
 
 .category-btn.active {
   background: linear-gradient(135deg, #ffb6e6, #ff8cc6);
   color: #fff;
-  transform: scale(1.05);
+  border-color: #ff6b9a;
+  box-shadow: 0 4px 16px rgba(255, 140, 198, 0.3);
+  transform: translateY(-2px);
 }
 
 .category-btn:not(.active):hover {
   background: #fce4ec;
+  border-color: #ffb6e6;
+  transform: translateY(-1px);
+  box-shadow: 0 3px 12px rgba(255, 182, 193, 0.2);
+}
+
+/* Индикаторы прокрутки */
+.scroll-indicator {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 24px;
+  height: 24px;
+  background: rgba(255, 140, 198, 0.9);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 12px;
+  z-index: 10;
+  pointer-events: none;
+  animation: pulse-indicator 2s infinite;
+}
+
+.scroll-indicator-left {
+  left: 4px;
+}
+
+.scroll-indicator-right {
+  right: 4px;
+}
+
+@keyframes pulse-indicator {
+  0%, 100% {
+    opacity: 0.7;
+    transform: translateY(-50%) scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: translateY(-50%) scale(1.1);
+  }
 }
 
 /* Карусель скидочных предложений */
@@ -484,6 +540,9 @@
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
   gap: 12px;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .item-card {
@@ -495,6 +554,9 @@
   transition: all 0.2s ease;
   position: relative;
   overflow: hidden;
+  min-height: 200px;
+  display: flex;
+  flex-direction: column;
 }
 
 .item-card:hover {
@@ -535,22 +597,9 @@
   color: #ff8cc6;
 }
 
-.item-name {
-  font-size: 12px;
-  font-weight: 600;
-  color: #333;
-  margin: 0 0 4px 0;
-  text-align: center;
-  line-height: 1.2;
-}
+/* Стили для названия в карточках магазина - убираем, так как они конфликтуют с ItemCard.css */
 
-.item-description {
-  font-size: 10px;
-  color: #666;
-  margin: 0 0 8px 0;
-  text-align: center;
-  line-height: 1.2;
-}
+/* Стили для описания в карточках магазина - убираем, так как они конфликтуют с ItemCard.css */
 
 .item-price {
   display: flex;
@@ -1050,7 +1099,13 @@
   .category-btn {
     padding: 12px 20px;
     font-size: 14px;
-    border-radius: 20px;
+    border-radius: 22px;
+  }
+  
+  .scroll-indicator {
+    width: 28px;
+    height: 28px;
+    font-size: 14px;
   }
 
   .discount-carousel {
@@ -1175,6 +1230,7 @@
   .item-card {
     padding: 20px;
     border-radius: 20px;
+    min-height: 220px;
   }
 
   .item-icon {
@@ -1187,15 +1243,7 @@
     font-size: 24px;
   }
 
-  .item-name {
-    font-size: 14px;
-    margin-bottom: 6px;
-  }
-
-  .item-description {
-    font-size: 12px;
-    margin-bottom: 12px;
-  }
+  /* Стили для названия и описания убираем, так как они конфликтуют с ItemCard.css */
 
   .item-price {
     margin-bottom: 12px;
@@ -1459,6 +1507,7 @@
   
   .item-card {
     padding: 10px;
+    min-height: 180px;
   }
   
   .special-offer {
@@ -1467,6 +1516,19 @@
   
   .categories-container {
     margin-bottom: 12px;
+    padding: 6px 2px;
+  }
+  
+  .category-btn {
+    padding: 8px 14px;
+    font-size: 12px;
+    border-radius: 18px;
+  }
+  
+  .scroll-indicator {
+    width: 20px;
+    height: 20px;
+    font-size: 10px;
   }
   
   .shop-screen .back-button {
@@ -1513,4 +1575,429 @@
   border-radius: 12px;
   font-weight: 500;
   border: 1px solid rgba(255, 140, 198, 0.2);
+} 
+
+/* Модальное окно выбора количества */
+.quantity-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  padding: 20px;
+}
+
+.quantity-modal-content {
+  background: linear-gradient(135deg, #fff0f5 0%, #fce4ec 100%);
+  border-radius: 20px;
+  padding: 24px;
+  max-width: 400px;
+  width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(255, 140, 198, 0.3);
+  border: 2px solid rgba(255, 140, 198, 0.2);
+}
+
+.quantity-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid rgba(255, 140, 198, 0.2);
+}
+
+.quantity-modal-header h3 {
+  margin: 0;
+  color: #333;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.quantity-modal-close {
+  background: rgba(255, 140, 198, 0.2);
+  border: none;
+  color: #ff6b9a;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.quantity-modal-close:hover {
+  color: #fff;
+  background: linear-gradient(135deg, #ff8cc6, #ff6b9a);
+  transform: scale(1.1);
+}
+
+.quantity-modal-body {
+  margin-bottom: 20px;
+}
+
+.quantity-item-info {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 140, 198, 0.2);
+  box-shadow: 0 4px 12px rgba(255, 140, 198, 0.1);
+}
+
+.item-sprite {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+  margin-right: 16px;
+  border-radius: 8px;
+  background: white;
+  padding: 4px;
+  border: 1px solid rgba(255, 140, 198, 0.2);
+}
+
+.item-details h4 {
+  margin: 0 0 4px 0;
+  color: #333;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.item-details p {
+  margin: 0 0 8px 0;
+  color: #666;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.item-price {
+  color: #ff8cc6;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.quantity-selector {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.quantity-selector label {
+  color: #333;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.quantity-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  justify-content: center;
+}
+
+.quantity-btn {
+  background: rgba(255, 140, 198, 0.2);
+  border: 1px solid rgba(255, 140, 198, 0.3);
+  color: #ff6b9a;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  transition: all 0.2s;
+}
+
+.quantity-btn:hover:not(:disabled) {
+  background: linear-gradient(135deg, #ff8cc6, #ff6b9a);
+  color: white;
+  transform: scale(1.1);
+}
+
+.quantity-btn:disabled {
+  background: rgba(255, 140, 198, 0.1);
+  color: #ccc;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.quantity-input {
+  background: white;
+  border: 2px solid rgba(255, 140, 198, 0.3);
+  color: #333;
+  padding: 8px 12px;
+  border-radius: 12px;
+  text-align: center;
+  font-size: 16px;
+  font-weight: 600;
+  width: 80px;
+  min-width: 80px;
+  transition: all 0.2s;
+}
+
+.quantity-input:focus {
+  outline: none;
+  border-color: #ff8cc6;
+  box-shadow: 0 0 0 3px rgba(255, 140, 198, 0.1);
+}
+
+.total-price {
+  text-align: center;
+  color: #ff8cc6;
+  font-weight: 600;
+  font-size: 16px;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 12px;
+  margin-top: 8px;
+  border: 1px solid rgba(255, 140, 198, 0.2);
+  box-shadow: 0 4px 12px rgba(255, 140, 198, 0.1);
+}
+
+.quantity-modal-footer {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+}
+
+.quantity-cancel-btn {
+  background: rgba(255, 140, 198, 0.2);
+  border: 1px solid rgba(255, 140, 198, 0.3);
+  color: #ff6b9a;
+  padding: 10px 20px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.quantity-cancel-btn:hover {
+  background: rgba(255, 140, 198, 0.3);
+  transform: translateY(-1px);
+}
+
+.quantity-confirm-btn {
+  background: linear-gradient(135deg, #ff8cc6, #ff6b9a);
+  border: none;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.2s;
+  box-shadow: 0 4px 12px rgba(255, 140, 198, 0.3);
+}
+
+.quantity-confirm-btn:hover {
+  background: linear-gradient(135deg, #ff6b9a, #ff5a8a);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(255, 140, 198, 0.4);
+}
+
+/* Адаптивность для мобильных устройств */
+@media (max-width: 768px) {
+  .quantity-modal-content {
+    width: 95%;
+    padding: 20px;
+  }
+  
+  .quantity-item-info {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .item-sprite {
+    margin-right: 0;
+    margin-bottom: 12px;
+  }
+  
+  .quantity-controls {
+    gap: 8px;
+  }
+  
+  .quantity-input {
+    width: 60px;
+    min-width: 60px;
+  }
+  
+  .quantity-modal-footer {
+    flex-direction: column;
+  }
+  
+  .quantity-cancel-btn,
+  .quantity-confirm-btn {
+    width: 100%;
+  }
+}
+
+/* Кнопка переключения фильтров */
+.filters-toggle {
+  margin-bottom: 12px;
+  display: flex;
+  justify-content: center;
+}
+
+.filters-toggle-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: linear-gradient(135deg, #fff0f5 0%, #fce4ec 100%);
+  border: 2px solid rgba(255, 140, 198, 0.2);
+  border-radius: 20px;
+  color: #ff8cc6;
+  font-weight: 600;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(255, 182, 193, 0.15);
+}
+
+.filters-toggle-btn:hover {
+  background: linear-gradient(135deg, #fce4ec 0%, #ffb6e6 100%);
+  border-color: rgba(255, 140, 198, 0.4);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(255, 182, 193, 0.25);
+}
+
+.filters-toggle-btn i.fa-filter.active {
+  color: #ff6b9a;
+}
+
+.filters-toggle-btn i.fa-chevron-up,
+.filters-toggle-btn i.fa-chevron-down {
+  font-size: 11px;
+  transition: transform 0.3s ease;
+}
+
+/* Стили для дополнительных фильтров магазина */
+.shop-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 16px 0;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 12px;
+  border: 1px solid #ffdfea;
+  box-shadow: 0 2px 8px rgba(255, 182, 193, 0.1);
+}
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 120px;
+}
+
+.filter-group label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #ff8cc6;
+  margin: 0;
+}
+
+.filter-select {
+  padding: 8px 12px;
+  border: 1px solid #ffdfea;
+  border-radius: 8px;
+  background: white;
+  font-size: 14px;
+  color: #333;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.filter-select:focus {
+  outline: none;
+  border-color: #ff8cc6;
+  box-shadow: 0 0 0 2px rgba(255, 140, 198, 0.2);
+}
+
+.filter-select:hover {
+  border-color: #ff8cc6;
+}
+
+.reset-filters-btn {
+  background: rgba(255, 140, 198, 0.1);
+  border: 1px solid rgba(255, 140, 198, 0.3);
+  color: #ff6b9a;
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+
+.reset-filters-btn:hover {
+  background: rgba(255, 140, 198, 0.2);
+  border-color: #ff8cc6;
+  transform: translateY(-1px);
+}
+
+.reset-filters-btn i {
+  font-size: 10px;
+}
+
+/* Адаптивность для фильтров */
+@media (max-width: 768px) {
+  .filters-toggle-btn {
+    padding: 10px 18px;
+    font-size: 14px;
+  }
+  
+  .shop-filters {
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .filter-group {
+    min-width: auto;
+  }
+  
+  .filter-select {
+    font-size: 16px; /* Увеличиваем для лучшего тапа на мобильных */
+  }
+}
+
+@media (max-width: 480px) {
+  .filters-toggle-btn {
+    padding: 8px 14px;
+    font-size: 12px;
+  }
+  
+  .shop-filters {
+    padding: 12px;
+    margin: 12px 0;
+  }
+  
+  .filter-group label {
+    font-size: 11px;
+  }
+  
+  .filter-select {
+    padding: 10px 12px;
+  }
 } 

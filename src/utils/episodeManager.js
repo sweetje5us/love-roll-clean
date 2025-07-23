@@ -117,7 +117,7 @@ class EpisodeManager {
       }
       
       // Загружаем сохраненный прогресс или создаем новый
-      const savedProgress = getLastSave(episodeId);
+      const savedProgress = getLastSave(episodeId, playerCharacterId);
       console.log(`EpisodeManager.initializeEpisode - savedProgress:`, savedProgress);
       console.log(`EpisodeManager.initializeEpisode - playerCharacterId из параметра:`, playerCharacterId);
       
@@ -422,7 +422,8 @@ class EpisodeManager {
         };
         
         // Начисляем опыт за успешные броски
-        const playerCharacterId = this.episodeProgress.playerCharacterId;
+        // Используем ID персонажа из данных выбора, если он есть, иначе из прогресса
+        const playerCharacterId = choiceData.playerCharacterId || this.episodeProgress.playerCharacterId;
         if (playerCharacterId) {
           const result = choiceData.diceRollResult.result;
           if (result === 'critical_success') {
@@ -458,21 +459,41 @@ class EpisodeManager {
         let nextScene = choice.nextScene;
         
         // Если есть специальные сцены для результатов, используем их
-        if (choice.diceCheck && choice.diceCheck.results) {
-          const resultScenes = choice.diceCheck.results;
-          switch (choiceData.diceRollResult.result) {
-            case 'critical_success':
-              nextScene = resultScenes.critical_success || nextScene;
-              break;
-            case 'success':
-              nextScene = resultScenes.success || nextScene;
-              break;
-            case 'failure':
-              nextScene = resultScenes.failure || nextScene;
-              break;
-            case 'critical_failure':
-              nextScene = resultScenes.critical_failure || nextScene;
-              break;
+        if (choice.diceCheck) {
+          // Поддержка нового формата с объектом results
+          if (choice.diceCheck.results) {
+            const resultScenes = choice.diceCheck.results;
+            switch (choiceData.diceRollResult.result) {
+              case 'critical_success':
+                nextScene = resultScenes.critical_success || nextScene;
+                break;
+              case 'success':
+                nextScene = resultScenes.success || nextScene;
+                break;
+              case 'failure':
+                nextScene = resultScenes.failure || nextScene;
+                break;
+              case 'critical_failure':
+                nextScene = resultScenes.critical_failure || nextScene;
+                break;
+            }
+          }
+          // Поддержка старого формата с отдельными полями
+          else {
+            switch (choiceData.diceRollResult.result) {
+              case 'critical_success':
+                nextScene = choice.diceCheck.critical_success || nextScene;
+                break;
+              case 'success':
+                nextScene = choice.diceCheck.successScene || nextScene;
+                break;
+              case 'failure':
+                nextScene = choice.diceCheck.failureScene || nextScene;
+                break;
+              case 'critical_failure':
+                nextScene = choice.diceCheck.critical_failure || nextScene;
+                break;
+            }
           }
         }
         
@@ -507,7 +528,7 @@ class EpisodeManager {
           value: choiceValue,
           description: choice.description || '',
           consequences: choice.consequences || []
-        });
+        }, this.episodeProgress.playerCharacterId);
         
         console.log(`Важный выбор сохранен: ${choiceId} = ${choiceValue}`);
         console.log(`Текущие важные выборы:`, Object.fromEntries(this.importantChoices));
@@ -793,6 +814,11 @@ class EpisodeManager {
    * Завершение эпизода
    */
   completeEpisode() {
+    // Сначала завершаем текущую главу, если она еще не завершена
+    if (!this.episodeProgress.completedChapters.includes(this.currentChapter)) {
+      this.completeChapter();
+    }
+    
     // Отмечаем эпизод как завершенный
     this.episodeProgress.completed = true;
     this.episodeProgress.completedAt = new Date().toISOString();
@@ -824,7 +850,7 @@ class EpisodeManager {
     }
     
     console.log(`EpisodeManager.saveProgress - сохраняем episodeProgress:`, this.episodeProgress);
-    saveEpisodeProgress(this.currentEpisode, this.currentChapter, this.episodeProgress);
+    saveEpisodeProgress(this.currentEpisode, this.currentChapter, this.episodeProgress, this.episodeProgress.playerCharacterId);
     console.log(`Прогресс сохранен. Важные выборы:`, this.episodeProgress.importantChoices);
     console.log(`Прогресс сохранен. playerCharacterId:`, this.episodeProgress.playerCharacterId);
   }
@@ -838,7 +864,10 @@ class EpisodeManager {
       currentScene: this.currentScene,
       playerChoices: Object.fromEntries(this.playerChoices),
       importantChoices: {},
-      progress: this.episodeProgress.progress,
+      progress: {
+        ...this.episodeProgress.progress,
+        completedChapters: this.episodeProgress.completedChapters
+      },
       playerCharacterId: this.episodeProgress.playerCharacterId
     };
     
@@ -847,7 +876,7 @@ class EpisodeManager {
       gameState.importantChoices[choiceId] = choiceData;
     }
     
-    return saveGameState(this.currentEpisode, gameState);
+    return saveGameState(this.currentEpisode, gameState, this.episodeProgress.playerCharacterId);
   }
 
   /**
@@ -875,10 +904,13 @@ class EpisodeManager {
   getCurrentInventory() {
     // Получаем инвентарь из менеджера инвентаря
     if (this.inventoryManager) {
-      return this.inventoryManager.getInventory();
+      const inventory = this.inventoryManager.getInventory();
+      console.log(`EpisodeManager.getCurrentInventory - получен инвентарь:`, inventory);
+      return inventory;
     }
     
     // Fallback - возвращаем пустой инвентарь
+    console.log(`EpisodeManager.getCurrentInventory - inventoryManager недоступен, возвращаем пустой инвентарь`);
     return {};
   }
 
@@ -934,6 +966,7 @@ class EpisodeManager {
     
     // Получаем текущий инвентарь
     const currentInventory = this.getCurrentInventory();
+    console.log(`EpisodeManager.getAvailableChoices - текущий инвентарь:`, currentInventory);
     
     // Проверяем все выборы
     const availableChoices = this.sceneData.choices.filter(choice => {
@@ -942,6 +975,7 @@ class EpisodeManager {
       // Проверяем требуемые предметы
       if (choice.requiredItem) {
         const itemQuantity = currentInventory[choice.requiredItem];
+        console.log(`EpisodeManager.getAvailableChoices - проверяем предмет ${choice.requiredItem}:`, itemQuantity);
         let hasItem = false;
         
         if (typeof itemQuantity === 'number') {

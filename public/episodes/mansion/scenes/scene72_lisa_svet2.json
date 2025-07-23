@@ -1,0 +1,25 @@
+{
+  "id": "scene72_lisa_svet2",
+  "chapterId": "2",
+  "name": "Не нашла(чердак)",
+  "background": "",
+  "characters": [],
+  "dialogue": [],
+  "choices": [
+    {
+      "id": "scene72_lisa_svet2_choice1",
+      "text": "Вернуться",
+      "nextScene": "scene72_lisa",
+      "important": false,
+      "value": "",
+      "description": "",
+      "consequences": [
+        ""
+      ],
+      "diceCheck": null,
+      "specialInteraction": "",
+      "requiredItem": "",
+      "conditions": {}
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "id": "scene72_artess_1",
+  "chapterId": "2",
+  "name": "что произошло",
+  "background": "",
+  "characters": [],
+  "dialogue": [],
+  "choices": [
+    {
+      "id": "scene72_artess_1_choice1",
+      "text": "еще кое-что..",
+      "nextScene": "scene72_artess",
+      "important": false,
+      "value": "",
+      "description": "",
+      "consequences": [
+        ""
+      ],
+      "diceCheck": null,
+      "specialInteraction": "",
+      "requiredItem": "",
+      "conditions": {}
+    }
+  ]
+}
