@@ -1005,6 +1005,7 @@
         "description": "Милое слизистое создание",
         "type": "pet",
         "rarity": "common",
+        "gameType": "can_jump",
         "price": {
           "currency": "coins",
           "amount": 100
@@ -1025,6 +1026,7 @@
         "description": "Маленький грызун",
         "type": "pet",
         "rarity": "common",
+        "gameType": "can_walk",
         "price": {
           "currency": "coins",
           "amount": 100
@@ -1045,6 +1047,7 @@
         "description": "Зеленая квакушка",
         "type": "pet",
         "rarity": "common",
+        "gameType": "can_jump",
         "price": {
           "currency": "coins",
           "amount": 120
@@ -1062,6 +1065,7 @@
       "fish": {
         "id": "fish",
         "name": "Рыба",
+        "gameType": "can_swim",
         "description": "Обычная рыбка",
         "type": "pet",
         "rarity": "mythical",
@@ -1083,6 +1087,7 @@
         "id": "sheep",
         "name": "Овца",
         "description": "Пушистая овечка",
+        "gameType": "can_jump",
         "type": "pet",
         "rarity": "common",
         "price": {
@@ -1103,6 +1108,7 @@
       "turtle": {
         "id": "turtle",
         "name": "Черепаха",
+        "gameType": "can_swim",
         "description": "Медлительная черепаха",
         "type": "pet",
         "rarity": "common",
@@ -1124,6 +1130,7 @@
       "crab": {
         "id": "crab",
         "name": "Краб",
+        "gameType": "can_swim",
         "description": "Клешнистый краб",
         "type": "pet",
         "rarity": "common",
@@ -1145,6 +1152,7 @@
       "spider": {
         "id": "spider",
         "name": "Паук",
+        "gameType": "can_walk",
         "description": "Восьминогий паук",
         "type": "pet",
         "rarity": "common",
@@ -1166,6 +1174,7 @@
       "snake": {
         "id": "snake",
         "name": "Змея",
+        "gameType": "can_walk",
         "description": "Извивающаяся змея",
         "type": "pet",
         "rarity": "common",
@@ -1187,6 +1196,7 @@
       "bat": {
         "id": "bat",
         "name": "Летучая мышь",
+        "gameType": "can_fly",
         "description": "Ночная летучая мышь",
         "type": "pet",
         "rarity": "common",
@@ -1208,6 +1218,7 @@
       "monkey": {
         "id": "monkey",
         "name": "Обезьяна",
+        "gameType": "can_jump",
         "description": "Игривая обезьянка",
         "type": "pet",
         "rarity": "common",
@@ -1229,6 +1240,7 @@
       "fox": {
         "id": "fox",
         "name": "Лиса",
+        "gameType": "can_walk",
         "description": "Рыжая лиса",
         "type": "pet",
         "rarity": "common",
@@ -1250,6 +1262,7 @@
       "wolf": {
         "id": "wolf",
         "name": "Волк",
+        "gameType": "can_walk",
         "description": "Дикий волк",
         "type": "pet",
         "rarity": "common",
@@ -1270,6 +1283,7 @@
       "plant": {
         "id": "plant",
         "name": "Растение",
+        "gameType": "can_jump",
         "description": "Живое растение",
         "type": "pet",
         "rarity": "common",
@@ -1290,6 +1304,7 @@
       "scallop": {
         "id": "scallop",
         "name": "Морской гребешок",
+        "gameType": "can_swim",
         "description": "Морской моллюск",
         "type": "pet",
         "rarity": "common",
@@ -1311,6 +1326,7 @@
       "fairy": {
         "id": "fairy",
         "name": "Фея",
+        "gameType": "can_fly",
         "description": "Магическое существо",
         "type": "pet",
         "rarity": "mythical",
@@ -1332,6 +1348,7 @@
       "big_slime": {
         "id": "big_slime",
         "name": "Большой слайм",
+        "gameType": "can_jump",
         "description": "Увеличенный слайм",
         "type": "pet",
         "rarity": "rare",
@@ -1352,6 +1369,7 @@
       "fire_slime": {
         "id": "fire_slime",
         "name": "Огненный слайм",
+        "gameType": "can_jump",
         "description": "Горящий слайм",
         "type": "pet",
         "rarity": "rare",
@@ -1375,6 +1393,7 @@
         "description": "Зеленый слайм",
         "type": "pet",
         "rarity": "rare",
+        "gameType": "can_jump",
         "price": {
           "currency": "coins",
           "amount": 420
@@ -1395,6 +1414,7 @@
         "description": "Электрический слайм",
         "type": "pet",
         "rarity": "rare",
+        "gameType": "can_jump",
         "price": {
           "currency": "coins",
           "amount": 600
@@ -1415,6 +1435,7 @@
         "description": "Холодный дух",
         "type": "pet",
         "rarity": "legendary",
+        "gameType": "can_jump",
         "price": {
           "currency": "gems",
           "amount": 300
@@ -1436,6 +1457,7 @@
         "description": "Пламенный дух",
         "type": "pet",
         "rarity": "rare",
+        "gameType": "can_fly",
         "price": {
           "currency": "coins",
           "amount": 450
@@ -1457,6 +1479,7 @@
         "description": "Говорящий дух",
         "type": "pet",
         "rarity": "rare",
+        "gameType": "can_fly",
         "price": {
           "currency": "coins",
           "amount": 450
@@ -1478,6 +1501,7 @@
         "description": "Растительный дух",
         "type": "pet",
         "rarity": "rare",
+        "gameType": "can_jump",
         "price": {
           "currency": "coins",
           "amount": 450
@@ -1499,6 +1523,7 @@
         "description": "Мягкий медведь",
         "type": "pet",
         "rarity": "rare",
+        "gameType": "can_walk",
         "price": {
           "currency": "coins",
           "amount": 450
@@ -1520,6 +1545,7 @@
         "description": "Кролик с рогами",
         "type": "pet",
         "rarity": "rare",
+        "gameType": "can_jump",
         "price": {
           "currency": "coins",
           "amount": 450
@@ -1541,6 +1567,7 @@
         "description": "Полосатый хищник",
         "type": "pet",
         "rarity": "rare",
+        "gameType": "can_walk",
         "price": {
           "currency": "coins",
           "amount": 540
@@ -1561,6 +1588,7 @@
         "description": "Зубастый крокодил",
         "type": "pet",
         "rarity": "rare",
+        "gameType": "can_swim",
         "price": {
           "currency": "coins",
           "amount": 480
@@ -1581,6 +1609,7 @@
         "description": "Морской хищник",
         "type": "pet",
         "rarity": "rare",
+        "gameType": "can_swim",
         "price": {
           "currency": "coins",
           "amount": 420
@@ -1601,6 +1630,7 @@
         "description": "Мудрый ворон",
         "type": "pet",
         "rarity": "rare",
+        "gameType": "can_fly",
         "price": {
           "currency": "coins",
           "amount": 600
@@ -1621,6 +1651,7 @@
         "description": "Маленький гоблин",
         "type": "pet",
         "rarity": "rare",
+        "gameType": "can_walk",
         "price": {
           "currency": "coins",
           "amount": 300
@@ -1642,6 +1673,7 @@
         "description": "Вооруженный гоблин",
         "type": "pet",
         "rarity": "rare",
+        "gameType": "can_walk",
         "price": {
           "currency": "coins",
           "amount": 450
@@ -1663,6 +1695,7 @@
         "description": "Огненный бес",
         "type": "pet",
         "rarity": "rare",
+        "gameType": "can_jump",
         "price": {
           "currency": "coins",
           "amount": 450
@@ -1684,6 +1717,7 @@
         "description": "Темный бес",
         "type": "pet",
         "rarity": "rare",
+        "gameType": "can_jump",
         "price": {
           "currency": "coins",
           "amount": 450
@@ -1705,6 +1739,7 @@
         "description": "Каменный голем",
         "type": "pet",
         "rarity": "rare",
+        "gameType": "can_jump",
         "price": {
           "currency": "coins",
           "amount": 450
@@ -1726,6 +1761,7 @@
         "description": "Глиняный страж",
         "type": "pet",
         "rarity": "rare",
+        "gameType": "can_jump",
         "price": {
           "currency": "coins",
           "amount": 450
@@ -1747,6 +1783,7 @@
         "description": "Механический боец",
         "type": "pet",
         "rarity": "rare",
+        "gameType": "can_jump",
         "price": {
           "currency": "coins",
           "amount": 450
@@ -1768,6 +1805,7 @@
         "description": "Маленький робот",
         "type": "pet",
         "rarity": "rare",
+        "gameType": "can_jump",
         "price": {
           "currency": "coins",
           "amount": 420
@@ -1788,6 +1826,7 @@
         "description": "Боевой робот",
         "type": "pet",
         "rarity": "rare",
+        "gameType": "can_jump",
         "price": {
           "currency": "coins",
           "amount": 480
@@ -1808,6 +1847,7 @@
         "description": "Робот-воин",
         "type": "pet",
         "rarity": "rare",
+        "gameType": "can_jump",
         "price": {
           "currency": "coins",
           "amount": 420
@@ -1828,6 +1868,7 @@
         "description": "Горящий робот",
         "type": "pet",
         "rarity": "rare",
+        "gameType": "can_jump",
         "price": {
           "currency": "coins",
           "amount": 600
@@ -1848,6 +1889,7 @@
         "description": "Холодный робот",
         "type": "pet",
         "rarity": "mythical",
+        "gameType": "can_swim",
         "price": {
           "currency": "gems",
           "amount": 100
@@ -1869,6 +1911,7 @@
         "description": "Прозрачная медуза",
         "type": "pet",
         "rarity": "rare",
+        "gameType": "can_swim",
         "price": {
           "currency": "coins",
           "amount": 450
@@ -1890,6 +1933,7 @@
         "description": "Ядовитый скорпион",
         "type": "pet",
         "rarity": "mythical",
+        "gameType": "can_walk",
         "price": {
           "currency": "gems",
           "amount": 100
@@ -1911,6 +1955,7 @@
         "description": "Жужжащая оса",
         "type": "pet",
         "rarity": "mythical",
+        "gameType": "can_fly",
         "price": {
           "currency": "gems",
           "amount": 100
@@ -1932,6 +1977,7 @@
         "description": "Огненная саламандра",
         "type": "pet",
         "rarity": "rare",
+        "gameType": "can_walk",
         "price": {
           "currency": "coins",
           "amount": 450
@@ -1953,6 +1999,7 @@
         "description": "Большая черепаха",
         "type": "pet",
         "rarity": "rare",
+        "gameType": "can_swim",
         "price": {
           "currency": "coins",
           "amount": 450
@@ -1974,6 +2021,7 @@
         "description": "Ядовитая змея",
         "type": "pet",
         "rarity": "rare",
+        "gameType": "can_walk",
         "price": {
           "currency": "coins",
           "amount": 450
@@ -1995,6 +2043,7 @@
         "description": "Темная тень",
         "type": "pet",
         "rarity": "rare",
+        "gameType": "can_walk",
         "price": {
           "currency": "coins",
           "amount": 750
@@ -2015,6 +2064,7 @@
         "description": "Бестелесный дух",
         "type": "pet",
         "rarity": "rare",
+        "gameType": "can_fly",
         "price": {
           "currency": "coins",
           "amount": 480
@@ -2035,6 +2085,7 @@
         "description": "Болотное существо",
         "type": "pet",
         "rarity": "rare",
+        "gameType": "can_swim",
         "price": {
           "currency": "coins",
           "amount": 420
@@ -2051,10 +2102,11 @@
       },
       "bogwine": {
         "id": "bogwine",
-        "name": "Болотное вино",
+        "name": "Болотный дух",
         "description": "Болотный дух",
         "type": "pet",
         "rarity": "rare",
+        "gameType": "can_swim",
         "price": {
           "currency": "coins",
           "amount": 600
@@ -2075,6 +2127,7 @@
         "description": "Облачный дух",
         "type": "pet",
         "rarity": "rare",
+        "gameType": "can_fly",
         "price": {
           "currency": "coins",
           "amount": 450
@@ -2096,6 +2149,7 @@
         "description": "Сверкающая рыба",
         "type": "pet",
         "rarity": "rare",
+        "gameType": "can_swim",
         "price": {
           "currency": "coins",
           "amount": 450
@@ -2117,6 +2171,7 @@
         "description": "Монстр-звезда",
         "type": "pet",
         "rarity": "rare",
+        "gameType": "can_swim",
         "price": {
           "currency": "coins",
           "amount": 450
@@ -2138,6 +2193,7 @@
         "description": "Увеличенная лягушка",
         "type": "pet",
         "rarity": "rare",
+        "gameType": "can_jump",
         "price": {
           "currency": "coins",
           "amount": 450
@@ -2159,6 +2215,7 @@
         "description": "Живой гриб",
         "type": "pet",
         "rarity": "rare",
+        "gameType": "can_jump",
         "price": {
           "currency": "coins",
           "amount": 450
@@ -2180,6 +2237,7 @@
         "description": "Колючий монстр",
         "type": "pet",
         "rarity": "rare",
+        "gameType": "can_jump",
         "price": {
           "currency": "coins",
           "amount": 450
@@ -2201,6 +2259,7 @@
         "description": "Гигантское растение",
         "type": "pet",
         "rarity": "mythical",
+        "gameType": "can_jump",
         "price": {
           "currency": "gems",
           "amount": 100
@@ -2222,6 +2281,7 @@
         "description": "Оживший камень",
         "type": "pet",
         "rarity": "rare",
+        "gameType": "can_walk",
         "price": {
           "currency": "coins",
           "amount": 300
@@ -2243,6 +2303,7 @@
         "description": "Щупальцевидный монстр",
         "type": "pet",
         "rarity": "rare",
+        "gameType": "can_swim",
         "price": {
           "currency": "coins",
           "amount": 480
@@ -2263,6 +2324,7 @@
         "description": "Песочный червь",
         "type": "pet",
         "rarity": "rare",
+        "gameType": "can_walk",
         "price": {
           "currency": "coins",
           "amount": 420
@@ -2283,6 +2345,7 @@
         "description": "Ледяной червь",
         "type": "pet",
         "rarity": "rare",
+        "gameType": "can_walk",
         "price": {
           "currency": "coins",
           "amount": 600
@@ -2303,6 +2366,7 @@
         "description": "Морская дева",
         "type": "pet",
         "rarity": "rare",
+        "gameType": "can_swim",
         "price": {
           "currency": "coins",
           "amount": 450
@@ -2324,6 +2388,7 @@
         "description": "Лесная нимфа",
         "type": "pet",
         "rarity": "rare",
+        "gameType": "can_walk",
         "price": {
           "currency": "coins",
           "amount": 450
@@ -2366,6 +2431,7 @@
         "description": "Каменная гаргулья",
         "type": "pet",
         "rarity": "rare",
+        "gameType": "can_fly",
         "price": {
           "currency": "coins",
           "amount": 450
@@ -2387,6 +2453,7 @@
         "description": "Древняя мумия",
         "type": "pet",
         "rarity": "rare",
+        "gameType": "can_walk",
         "price": {
           "currency": "coins",
           "amount": 450
@@ -2408,6 +2475,7 @@
         "description": "Большой тролль",
         "type": "pet",
         "rarity": "rare",
+        "gameType": "can_walk",
         "price": {
           "currency": "coins",
           "amount": 450
@@ -2429,6 +2497,7 @@
         "description": "Петух-дракон",
         "type": "pet",
         "rarity": "legendary",
+        "gameType": "can_fly",
         "price": {
           "currency": "gems",
           "amount": 300
@@ -2450,6 +2519,7 @@
         "description": "Король змей",
         "type": "pet",
         "rarity": "rare",
+        "gameType": "can_swim",
         "price": {
           "currency": "coins",
           "amount": 600
@@ -2470,6 +2540,7 @@
         "description": "Одноглазый великан",
         "type": "pet",
         "rarity": "rare",
+        "gameType": "can_walk",
         "price": {
           "currency": "coins",
           "amount": 480
@@ -2490,6 +2561,7 @@
         "description": "Быкоголовый воин",
         "type": "pet",
         "rarity": "rare",
+        "gameType": "can_jump",
         "price": {
           "currency": "coins",
           "amount": 420
@@ -2510,6 +2582,7 @@
         "description": "Японский демон",
         "type": "pet",
         "rarity": "rare",
+        "gameType": "can_fly",
         "price": {
           "currency": "coins",
           "amount": 600
@@ -2530,6 +2603,7 @@
         "description": "Существо из бездны",
         "type": "pet",
         "rarity": "legendary",
+        "gameType": "can_fly",
         "price": {
           "currency": "gems",
           "amount": 300
@@ -2550,6 +2624,7 @@
         "description": "Житель глубин",
         "type": "pet",
         "rarity": "rare",
+        "gameType": "can_jump",
         "price": {
           "currency": "coins",
           "amount": 450
@@ -2571,6 +2646,7 @@
         "description": "Древний страж леса",
         "type": "pet",
         "rarity": "legendary",
+        "gameType": "can_walk",
         "price": {
           "currency": "gems",
           "amount": 250
@@ -2592,6 +2668,7 @@
         "description": "Могущественное существо",
         "type": "pet",
         "rarity": "legendary",
+        "gameType": "can_fly",
         "price": {
           "currency": "gems",
           "amount": 400
@@ -2612,6 +2689,7 @@
         "description": "Крылатый грифон",
         "type": "pet",
         "rarity": "legendary",
+        "gameType": "can_fly",
         "price": {
           "currency": "gems",
           "amount": 200
@@ -2632,6 +2710,7 @@
         "description": "Змееволосая горгона",
         "type": "pet",
         "rarity": "legendary",
+        "gameType": "can_swim",
         "price": {
           "currency": "gems",
           "amount": 200
@@ -2652,6 +2731,7 @@
         "description": "Магический джинн",
         "type": "pet",
         "rarity": "legendary",
+        "gameType": "can_fly",
         "price": {
           "currency": "gems",
           "amount": 200
@@ -2672,6 +2752,7 @@
         "description": "Морское чудовище",
         "type": "pet",
         "rarity": "legendary",
+        "gameType": "can_swim",
         "price": {
           "currency": "gems",
           "amount": 300
@@ -2692,6 +2773,7 @@
         "description": "Жнец душ",
         "type": "pet",
         "rarity": "legendary",
+        "gameType": "can_fly",
         "price": {
           "currency": "gems",
           "amount": 250
@@ -2713,6 +2795,7 @@
         "description": "Плачущий дух",
         "type": "pet",
         "rarity": "legendary",
+        "gameType": "can_fly",
         "price": {
           "currency": "gems",
           "amount": 250
@@ -2734,6 +2817,7 @@
         "description": "Темный призрак",
         "type": "pet",
         "rarity": "legendary",
+        "gameType": "can_fly",
         "price": {
           "currency": "gems",
           "amount": 250
