@@ -8,12 +8,12 @@
   ],
   "dialogue": [
     {
-      "speaker": "bakshi",
+      "speaker": "bakhshi",
       "text": "Меня зовут Бахши",
       "emotion": "happy"
     },
     {
-      "speaker": "bakshi",
+      "speaker": "bakhshi",
       "text": "Могу я лечь спать обратно?",
       "emotion": "happy"
     }

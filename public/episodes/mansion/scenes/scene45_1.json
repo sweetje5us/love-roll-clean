@@ -8,7 +8,7 @@
   ],
   "dialogue": [
     {
-      "speaker": "bakshi",
+      "speaker": "bakhshi",
       "text": "А?",
       "emotion": "happy"
     },
@@ -18,7 +18,7 @@
       "emotion": "happy"
     },
     {
-      "speaker": "bakshi",
+      "speaker": "bakhshi",
       "text": "Кто там?",
       "emotion": "happy"
     }
@@ -32,12 +32,8 @@
         "important": true,
         "value": "true",
         "description": "Поздороваться",
-        "consequences": ["выбор 1"],
-        "requirements": {
-          "importantChoice": {
-            "bakhshi_meet": true
-          }
-        }
+        "consequences": ["выбор 1"]
+       
       }
   ],
   "requirements": {},
