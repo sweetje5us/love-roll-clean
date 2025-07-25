@@ -1,6 +1,6 @@
 {
-  "id": "scene29_1",
-  "name": "Спросить о Диметрио(успех)",
+  "id": "scene29_check",
+  "name": "Дополнительные действия - Допрос Олега",
   "background": "sprites/episodes/locations/mansion/mansion_room_with_people_11zon.png",
   "characters": [
 

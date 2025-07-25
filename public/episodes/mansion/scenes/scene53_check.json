@@ -1,6 +1,6 @@
 {
-  "id": "scene53_1",
-  "name": "Добро пожаловать в игру",
+  "id": "scene53_check",
+  "name": "Кабинет Диметрио — попытка обойти охранника",
   "background": "sprites/episodes/locations/mansion/mansion_cabinet_11zon.png",
   "characters": [
 

@@ -1,6 +1,6 @@
 {
-  "id": "scene2",
-  "name": "Основы интерфейса",
+  "id": "scene10",
+  "name": "Допрос Питера - Детектив раскрыт",
   "background": "sprites/episodes/locations/mansion/mansion_outside.png",
   "characters": [
     {

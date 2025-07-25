@@ -1,14 +1,90 @@
 // Утилиты для работы с эпизодами
 import { getEpisodeSave, getCompletedChapters } from './saveUtils';
+import { KNOWN_EPISODES, getExistingEpisodes } from './episodeList';
 
 /**
- * Загружает данные эпизодов
+ * Автоматически сканирует папки эпизодов и возвращает список ID
+ */
+export const scanEpisodeFolders = async () => {
+  try {
+    // Используем функцию из episodeList.js для получения существующих эпизодов
+    const existingEpisodes = await getExistingEpisodes();
+    return existingEpisodes;
+  } catch (error) {
+    console.error('Ошибка сканирования папок эпизодов:', error);
+    return ['tutorial']; // Fallback на tutorial
+  }
+};
+
+/**
+ * Загружает данные эпизодов напрямую из их папок
  */
 export const loadEpisodesData = async () => {
   try {
-    const response = await fetch('/episodes.json');
-    const data = await response.json();
-    return data;
+    // Автоматически сканируем папки эпизодов
+    const episodeIds = await scanEpisodeFolders();
+    
+    // Загружаем конфигурации для каждого эпизода
+    const episodes = {};
+    const types = {};
+    const ageRatings = {};
+    
+    for (const episodeId of episodeIds) {
+      try {
+        const configResponse = await fetch(`/episodes/${episodeId}/config.json`);
+        if (configResponse.ok) {
+          const config = await configResponse.json();
+          
+          // Создаем запись для episodes
+          episodes[episodeId] = {
+            id: config.id,
+            name: config.name,
+            description: config.description,
+            longDescription: config.longDescription || config.description,
+            preview: config.preview,
+            type: config.type,
+            ageRating: config.ageRating || '0+',
+            duration: config.duration,
+            difficulty: config.difficulty,
+            unlocked: config.unlocked !== undefined ? config.unlocked : true,
+            completed: config.completed !== undefined ? config.completed : false,
+            tags: config.tags || [],
+            characters: config.characters || [],
+            chapters: config.chapters || []
+          };
+          
+          // Собираем типы эпизодов
+          if (config.type && !types[config.type]) {
+            types[config.type] = {
+              name: getTypeName(config.type),
+              color: getTypeColor(config.type),
+              icon: getTypeIcon(config.type)
+            };
+          }
+          
+          // Собираем возрастные рейтинги
+          const ageRating = config.ageRating || '0+';
+          if (!ageRatings[ageRating]) {
+            ageRatings[ageRating] = {
+              name: ageRating,
+              color: getAgeRatingColor(ageRating),
+              description: getAgeRatingDescription(ageRating)
+            };
+          }
+        }
+      } catch (error) {
+        console.error(`Ошибка загрузки эпизода ${episodeId}:`, error);
+      }
+    }
+    
+    const episodesData = {
+      episodes,
+      types,
+      ageRatings
+    };
+    
+    console.log('loadEpisodesData: данные загружены из конфигов эпизодов');
+    return episodesData;
   } catch (error) {
     console.error('Ошибка загрузки данных эпизодов:', error);
     return null;
@@ -139,18 +215,14 @@ export const loadEpisodeConfig = async (episodeId) => {
   try {
     console.log(`loadEpisodeConfig: загружаем конфигурацию для эпизода ${episodeId}`);
     
-    // Загружаем данные из episodes.json
-    const episodesResponse = await fetch('/episodes.json');
-    if (!episodesResponse.ok) {
-      throw new Error('Не удалось загрузить episodes.json');
+    // Загружаем конфигурацию из отдельного файла эпизода с принудительным обновлением кэша
+    const configResponse = await fetch(`/episodes/${episodeId}/config.json?t=${Date.now()}`, {
+      cache: 'no-cache'
+    });
+    if (!configResponse.ok) {
+      throw new Error(`Не удалось загрузить конфигурацию эпизода ${episodeId}`);
     }
-    const episodesData = await episodesResponse.json();
-    
-    // Ищем эпизод в episodes.json
-    const episodeData = episodesData.episodes[episodeId];
-    if (!episodeData) {
-      throw new Error(`Эпизод ${episodeId} не найден в episodes.json`);
-    }
+    const episodeData = await configResponse.json();
     
     console.log(`loadEpisodeConfig: конфигурация загружена для ${episodeId}:`, {
       id: episodeData.id,
@@ -175,51 +247,22 @@ export const loadAllEpisodeConfigs = async () => {
   const episodes = [];
   
   try {
-    // Загружаем из episodes.json
-    const episodesResponse = await fetch('/episodes.json');
-    if (episodesResponse.ok) {
-      const episodesData = await episodesResponse.json();
-      const episodeIds = Object.keys(episodesData.episodes || {});
-      
-      // Загружаем конфигурации для каждого эпизода
-      for (const episodeId of episodeIds) {
-        try {
-          const config = await loadEpisodeConfig(episodeId);
-          if (config) {
-            episodes.push(config);
-          }
-        } catch (error) {
-          console.error(`Ошибка загрузки эпизода ${episodeId}:`, error);
-        }
-      }
-    } else {
-      // Fallback: используем статический список
-      const EPISODE_FOLDERS = ['tutorial', 'mansion'];
-      for (const folder of EPISODE_FOLDERS) {
-        try {
-          const config = await loadEpisodeConfig(folder);
-          if (config) {
-            episodes.push(config);
-          }
-        } catch (error) {
-          console.error(`Ошибка загрузки эпизода ${folder}:`, error);
-        }
-      }
-    }
-  } catch (error) {
-    console.error('Ошибка загрузки списка эпизодов:', error);
-    // Fallback: используем статический список
-    const EPISODE_FOLDERS = ['tutorial', 'mansion'];
-    for (const folder of EPISODE_FOLDERS) {
+    // Автоматически сканируем папки эпизодов
+    const episodeIds = await scanEpisodeFolders();
+    
+    // Загружаем конфигурации для каждого эпизода
+    for (const episodeId of episodeIds) {
       try {
-        const config = await loadEpisodeConfig(folder);
+        const config = await loadEpisodeConfig(episodeId);
         if (config) {
           episodes.push(config);
         }
       } catch (error) {
-        console.error(`Ошибка загрузки эпизода ${folder}:`, error);
+        console.error(`Ошибка загрузки эпизода ${episodeId}:`, error);
       }
     }
+  } catch (error) {
+    console.error('Ошибка загрузки списка эпизодов:', error);
   }
   
   return episodes;

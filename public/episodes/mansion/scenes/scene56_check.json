@@ -1,6 +1,6 @@
 {
-    "id": "scene56_1",
-    "name": "Открытие двери (успех)",
+    "id": "scene56_check",
+    "name": "Чердак — попытка осмотреться",
     "background": "sprites/episodes/locations/mansion/attic_inside_day.png",
     "characters": [
   

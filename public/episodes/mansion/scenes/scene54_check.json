@@ -1,6 +1,6 @@
 {
-  "id": "scene52",
-  "name": "Добро пожаловать в игру",
+  "id": "scene54_check",
+  "name": "Чердак — попытка взлома двери",
   "background": "sprites/episodes/locations/mansion/attic_door_11zon.png",
   "characters": [
 

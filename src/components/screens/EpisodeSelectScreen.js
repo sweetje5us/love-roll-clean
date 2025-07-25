@@ -22,45 +22,86 @@ const EpisodeSelectScreen = ({ onBack }) => {
   useEffect(() => {
     // Загружаем конфигурации эпизодов из их папок
     const loadData = async () => {
-      const episodes = await loadAllEpisodeConfigs();
-      if (episodes && episodes.length > 0) {
-        // Добавляем информацию о завершении и сохранениях для каждого эпизода
-        const episodesWithStatus = episodes.map(episode => {
-          const isCompleted = isEpisodeCompleted(episode.id);
-          const hasSave = getEpisodeSave(episode.id) !== null;
-          
-          return {
-            ...episode,
-            completed: isCompleted,
-            hasSave: hasSave
-          };
-        });
-
-        setEpisodesData({
-          episodes: episodesWithStatus.reduce((acc, episode) => {
-            acc[episode.id] = episode;
-            return acc;
-          }, {}),
-          types: {
-            tutorial: { name: 'Обучение', color: '#4ade80', icon: 'fas fa-graduation-cap' },
-            romance: { name: 'Романтика', color: '#ec4899', icon: 'fas fa-heart' },
-            mystery: { name: 'Детектив', color: '#8b5cf6', icon: 'fas fa-search' },
-            detective: { name: 'Детектив', color: '#8b5cf6', icon: 'fas fa-search' }
-          },
-          ageRatings: {
-            '0+': { name: '0+', color: '#22c55e' },
-            '12+': { name: '12+', color: '#f59e0b' },
-            '16+': { name: '16+', color: '#ef4444' }
+      try {
+        // Принудительно очищаем кэш для эпизодов
+        if ('caches' in window) {
+          const cacheNames = await caches.keys();
+          for (const cacheName of cacheNames) {
+            if (cacheName.includes('episodes') || cacheName.includes('static')) {
+              await caches.delete(cacheName);
+            }
           }
-        });
-        setFilteredEpisodes(episodesWithStatus);
-      } else {
-        // Fallback данные
+        }
+        
+        // Загружаем эпизоды из их папок
+        const episodes = await loadAllEpisodeConfigs();
+        if (episodes && episodes.length > 0) {
+          // Добавляем информацию о завершении и сохранениях для каждого эпизода
+          const episodesWithStatus = episodes.map(episode => {
+            const isCompleted = isEpisodeCompleted(episode.id);
+            const hasSave = getEpisodeSave(episode.id) !== null;
+            
+            return {
+              ...episode,
+              completed: isCompleted,
+              hasSave: hasSave
+            };
+          });
+
+          setEpisodesData({
+            episodes: episodesWithStatus.reduce((acc, episode) => {
+              acc[episode.id] = episode;
+              return acc;
+            }, {}),
+            types: {
+              tutorial: { name: 'Обучение', color: '#4ade80', icon: 'fas fa-graduation-cap' },
+              romance: { name: 'Романтика', color: '#ec4899', icon: 'fas fa-heart' },
+              mystery: { name: 'Детектив', color: '#8b5cf6', icon: 'fas fa-search' },
+              detective: { name: 'Детектив', color: '#8b5cf6', icon: 'fas fa-search' },
+              story: { name: 'История', color: '#3b82f6', icon: 'fas fa-book' }
+            },
+            ageRatings: {
+              '0+': { name: '0+', color: '#22c55e' },
+              '12+': { name: '12+', color: '#f59e0b' },
+              '16+': { name: '16+', color: '#ef4444' }
+            }
+          });
+          setFilteredEpisodes(episodesWithStatus);
+        } else {
+          // Fallback данные только для tutorial
+          const fallbackEpisode = {
+            id: 'tutorial',
+            name: 'Обучение',
+            description: 'Познакомьтесь с основами игры',
+            type: 'tutorial',
+            ageRating: '0+',
+            duration: '15-20 минут',
+            unlocked: true,
+            completed: isEpisodeCompleted('tutorial'),
+            hasSave: getEpisodeSave('tutorial') !== null
+          };
+
+          setEpisodesData({
+            episodes: {
+              tutorial: fallbackEpisode
+            },
+            types: {
+              tutorial: { name: 'Обучение', color: '#4ade80', icon: 'fas fa-graduation-cap' },
+              detective: { name: 'Детектив', color: '#8b5cf6', icon: 'fas fa-search' }
+            },
+            ageRatings: {
+              '0+': { name: '0+', color: '#22c55e' }
+            }
+          });
+          setFilteredEpisodes([fallbackEpisode]);
+        }
+      } catch (error) {
+        console.error('Ошибка загрузки эпизодов:', error);
+        // Fallback: только tutorial
         const fallbackEpisode = {
           id: 'tutorial',
           name: 'Обучение',
           description: 'Познакомьтесь с основами игры',
-          preview: getStaticPath('sprites/episodes/locations/school/school_building.png'),
           type: 'tutorial',
           ageRating: '0+',
           duration: '15-20 минут',

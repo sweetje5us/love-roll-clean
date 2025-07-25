@@ -1,6 +1,6 @@
 {
-  "id": "scene28",
-  "name": "Добро пожаловать в игру",
+  "id": "scene28_check",
+  "name": "Гостевая спальня - Детский голос за дверью",
   "background": "sprites/episodes/locations/mansion/mansion_door_bedroom_first_floor_11zon.png",
   "characters": [
 

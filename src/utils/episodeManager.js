@@ -87,19 +87,13 @@ class EpisodeManager {
    */
   async initializeEpisode(episodeId, startChapter = 1, playerCharacterId = null) {
     try {
-      // Загружаем конфигурацию эпизода из episodes.json
-      const episodesResponse = await fetch('/episodes.json');
-      if (!episodesResponse.ok) {
-        throw new Error('Не удалось загрузить episodes.json');
+      // Загружаем конфигурацию эпизода из его папки
+      const configResponse = await fetch(`/episodes/${episodeId}/config.json`);
+      if (!configResponse.ok) {
+        throw new Error(`Не удалось загрузить конфигурацию эпизода ${episodeId}`);
       }
       
-      const episodesData = await episodesResponse.json();
-      const episodeData = episodesData.episodes[episodeId];
-      
-      if (!episodeData) {
-        throw new Error(`Эпизод ${episodeId} не найден в episodes.json`);
-      }
-      
+      const episodeData = await configResponse.json();
       this.episodeData = episodeData;
       this.currentEpisode = episodeId;
       
@@ -116,105 +110,46 @@ class EpisodeManager {
           this.itemsData = await itemsResponse.json();
           console.log('EpisodeManager: данные предметов загружены');
         } else {
-          console.warn('EpisodeManager: не удалось загрузить данные предметов по пути /src/data/items.json');
-          // Пробуем альтернативный путь
-          const altItemsResponse = await fetch('./src/data/items.json');
-          if (altItemsResponse.ok) {
-            this.itemsData = await altItemsResponse.json();
-            console.log('EpisodeManager: данные предметов загружены по альтернативному пути');
-          } else {
-            console.warn('EpisodeManager: не удалось загрузить данные предметов по альтернативному пути');
-          }
+          console.warn('EpisodeManager: не удалось загрузить данные предметов');
+          this.itemsData = itemsData; // Используем импортированные данные
         }
-      } catch (error) {
-        console.warn('EpisodeManager: ошибка загрузки данных предметов:', error);
+      } catch (itemsError) {
+        console.warn('EpisodeManager: ошибка загрузки предметов, используем импортированные данные');
+        this.itemsData = itemsData;
       }
       
-      // Загружаем сохраненный прогресс или создаем новый
-      const savedProgress = getLastSave(episodeId, playerCharacterId);
-      console.log(`EpisodeManager.initializeEpisode - savedProgress:`, savedProgress);
-      console.log(`EpisodeManager.initializeEpisode - playerCharacterId из параметра:`, playerCharacterId);
+      // Загружаем сохраненный прогресс
+      this.episodeProgress = getEpisodeSave(episodeId);
       
-      if (savedProgress) {
-        // Восстанавливаем сохраненный прогресс
-        this.episodeProgress = {
-          currentChapter: savedProgress.currentChapter,
-          completedChapters: savedProgress.completedChapters,
-          progress: savedProgress.progress,
-          playerCharacterId: savedProgress.playerCharacterId,
-          lastPlayed: savedProgress.lastPlayed
-        };
-        console.log(`EpisodeManager.initializeEpisode - восстановлен playerCharacterId: ${savedProgress.playerCharacterId}`);
+      if (this.episodeProgress) {
+        console.log(`EpisodeManager.initializeEpisode - загружен прогресс для эпизода ${episodeId}:`, this.episodeProgress);
         
-        // Если playerCharacterId не был сохранен, устанавливаем его из параметра
+        // Проверяем, есть ли персонаж игрока в прогрессе
         if (!this.episodeProgress.playerCharacterId && playerCharacterId) {
           this.episodeProgress.playerCharacterId = playerCharacterId;
-          console.log(`EpisodeManager.initializeEpisode - установлен playerCharacterId из параметра при восстановлении: ${playerCharacterId}`);
+          console.log(`EpisodeManager.initializeEpisode - установлен playerCharacterId из параметра: ${playerCharacterId}`);
         }
         
-        // Восстанавливаем выборы игрока
-        this.playerChoices = new Map(Object.entries(savedProgress.playerChoices || {}));
+        // Загружаем последнюю главу из прогресса
+        const lastChapter = this.episodeProgress.currentChapter || startChapter;
+        await this.loadChapter(lastChapter, false);
         
-        // Восстанавливаем важные выборы
-        const importantChoicesMap = new Map();
-        if (savedProgress.importantChoices) {
-          console.log(`Восстановление важных выборов из сохраненного прогресса:`, savedProgress.importantChoices);
-          for (const [choiceId, choiceData] of Object.entries(savedProgress.importantChoices)) {
-            console.log(`Восстановление выбора ${choiceId}:`, choiceData);
-            // Если choiceData - это объект с метаданными, извлекаем значение
-            if (typeof choiceData === 'object' && choiceData.value !== undefined) {
-              importantChoicesMap.set(choiceId, choiceData);
-              console.log(`Восстановлен выбор ${choiceId} с метаданными:`, choiceData);
-            } else {
-              // Если choiceData - это просто значение, создаем объект
-              const restoredChoice = {
-                value: choiceData,
-                timestamp: new Date().toISOString(),
-                chapter: savedProgress.currentChapter,
-                scene: savedProgress.currentScene
-              };
-              importantChoicesMap.set(choiceId, restoredChoice);
-              console.log(`Восстановлен выбор ${choiceId} с простым значением:`, restoredChoice);
-            }
-          }
-        }
-        this.importantChoices = importantChoicesMap;
-        console.log(`Восстановлены важные выборы:`, Object.fromEntries(this.importantChoices));
-        
-        // Проверяем, есть ли сохраненные отношения в прогрессе
-        if (savedProgress.progress) {
-          const relationshipKeys = Object.keys(savedProgress.progress).filter(key => key.startsWith('relation_'));
-          if (relationshipKeys.length > 0) {
-            console.log(`EpisodeManager.initializeEpisode - найдены сохраненные отношения в прогрессе:`, relationshipKeys);
-            console.log(`EpisodeManager.initializeEpisode - значения отношений:`, relationshipKeys.map(key => ({
-              key,
-              value: savedProgress.progress[key]
-            })));
-          } else {
-            console.log(`EpisodeManager.initializeEpisode - сохраненных отношений в прогрессе не найдено`);
-          }
-        }
-        
-        // Загружаем сохраненную главу
-        await this.loadChapter(savedProgress.currentChapter, false);
-        
-        // Если есть сохраненная сцена и она принадлежит текущей главе, загружаем её
-        if (savedProgress.currentScene && this.chapterData && this.chapterData.scenes && this.chapterData.scenes.includes(savedProgress.currentScene)) {
-          await this.loadScene(savedProgress.currentScene);
-        }
-        
-        console.log(`Эпизод ${episodeId} загружен с сохраненного прогресса: глава ${savedProgress.currentChapter}`);
+        console.log(`Эпизод ${episodeId} инициализирован с главы ${lastChapter}`);
       } else {
         // Создаем новый прогресс
         this.episodeProgress = {
-        currentChapter: startChapter,
-        completedChapters: [],
-        progress: {},
-        importantChoices: {},
-        lastPlayed: new Date().toISOString()
-      };
+          episodeId: episodeId,
+          currentChapter: startChapter,
+          currentScene: null,
+          playerChoices: {},
+          importantChoices: {},
+          relationships: {},
+          inventory: [],
+          stats: {},
+          lastPlayed: new Date().toISOString(),
+          playerCharacterId: playerCharacterId
+        };
         
-        // Устанавливаем ID персонажа игрока из параметра (если не был установлен ранее)
         if (!this.episodeProgress.playerCharacterId && playerCharacterId) {
           this.episodeProgress.playerCharacterId = playerCharacterId;
           console.log(`EpisodeManager.initializeEpisode - установлен playerCharacterId из параметра: ${playerCharacterId}`);
@@ -222,7 +157,7 @@ class EpisodeManager {
         
         console.log(`Создан новый прогресс для эпизода ${episodeId}`);
 
-      // Загружаем начальную главу
+        // Загружаем начальную главу
         await this.loadChapter(startChapter, true);
         
         console.log(`Эпизод ${episodeId} инициализирован с главы ${startChapter}`);
@@ -563,7 +498,7 @@ class EpisodeManager {
             const episodeConfig = this.getEpisodeConfig();
             const currentDialogue = this.sceneData?.dialogue?.[0];
             const speakerId = currentDialogue?.speaker;
-            const speakerCharacter = episodeConfig.characters.find(char => char.id === speakerId);
+            const speakerCharacter = episodeConfig.characters?.find(char => char.id === speakerId);
             const characterName = speakerCharacter ? speakerCharacter.name : speakerId;
             
             console.log('EpisodeManager - показываем уведомление о важном выборе для:', characterName);

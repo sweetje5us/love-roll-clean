@@ -1,7 +1,7 @@
 {
   "id": "scene1",
   "chapterId": "1",
-  "name": "Добро пожаловать в игру",
+  "name": "Прибытие в поместье Диметрио - Введение в историю",
   "background": "sprites/episodes/locations/mansion/mansion_outside.png",
   "characters": [],
   "dialogue": [

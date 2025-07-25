@@ -1,6 +1,6 @@
 {
-  "id": "scene17",
-  "name": "Добро пожаловать в игру",
+  "id": "scene17_full_meeting",
+  "name": "Полная встреча гостей - Выбор собеседника",
   "background": "sprites/episodes/locations/mansion/mansion_room_with_people_11zon.png",
   "characters": [
 

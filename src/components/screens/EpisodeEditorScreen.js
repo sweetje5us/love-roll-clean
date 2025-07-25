@@ -82,39 +82,12 @@ const EpisodeManager = ({ onEpisodeSelect, selectedEpisode: globalSelectedEpisod
       try {
         setIsLoading(true);
         
-        // Загружаем эпизоды через API
-        const response = await fetch('http://localhost:3001/api/episodes');
-        if (response.ok) {
-          const apiEpisodes = await response.json();
-          setEpisodes(apiEpisodes);
-        } else {
-          console.error('Ошибка загрузки эпизодов через API');
-          // Fallback: загружаем эпизоды из файловой системы
-          try {
-            const fileResponse = await fetch('/episodes.json');
-            if (fileResponse.ok) {
-              const data = await fileResponse.json();
-              const fileSystemEpisodes = Object.values(data.episodes || {});
-              setEpisodes(fileSystemEpisodes);
-            } else {
-              const episodesList = await loadAllEpisodeConfigs() || [];
-              setEpisodes(episodesList);
-            }
-          } catch (fallbackError) {
-            console.error('Ошибка fallback загрузки эпизодов:', fallbackError);
-            setEpisodes([]);
-          }
-        }
+        // Загружаем эпизоды из их папок
+        const episodesList = await loadAllEpisodeConfigs() || [];
+        setEpisodes(episodesList);
       } catch (error) {
         console.error('Ошибка загрузки эпизодов:', error);
-        // Fallback: загружаем эпизоды из файловой системы
-        try {
-          const episodesList = await loadAllEpisodeConfigs() || [];
-          setEpisodes(episodesList);
-        } catch (fallbackError) {
-          console.error('Ошибка fallback загрузки эпизодов:', fallbackError);
-          setEpisodes([]);
-        }
+        setEpisodes([]);
       } finally {
         setIsLoading(false);
       }
@@ -149,6 +122,9 @@ const EpisodeManager = ({ onEpisodeSelect, selectedEpisode: globalSelectedEpisod
 
       if (response.ok) {
         const savedEpisode = await response.json();
+        
+
+        
         // Обновляем локальный список
         setEpisodes([...episodes, savedEpisode]);
         setIsCreating(false);
@@ -334,42 +310,18 @@ const ChapterManager = ({ selectedEpisode, onChapterSelect, selectedChapter }) =
 
       setIsLoading(true);
       try {
-        // Загружаем главы через API
-        const response = await fetch(`http://localhost:3001/api/episodes/${selectedEpisode.id}/chapters`);
-        if (response.ok) {
-          const apiChapters = await response.json();
-          setChapters(apiChapters);
+        // Загружаем главы из config.json эпизода
+        const fileResponse = await fetch(`/episodes/${selectedEpisode.id}/config.json`);
+        if (fileResponse.ok) {
+          const episodeConfig = await fileResponse.json();
+          setChapters(episodeConfig.chapters || []);
         } else {
-          console.error('Ошибка загрузки глав через API');
-          // Fallback: загружаем главы из файловой системы
-          try {
-            const fileResponse = await fetch(`/episodes/${selectedEpisode.id}/config.json`);
-            if (fileResponse.ok) {
-              const episodeConfig = await fileResponse.json();
-              setChapters(episodeConfig.chapters || []);
-            } else {
-              setChapters([]);
-            }
-          } catch (fallbackError) {
-            console.error('Ошибка fallback загрузки глав:', fallbackError);
-            setChapters([]);
-          }
+          console.error('Ошибка загрузки глав из config.json эпизода');
+          setChapters([]);
         }
       } catch (error) {
         console.error('Ошибка загрузки глав:', error);
-        // Fallback: загружаем главы из файловой системы
-        try {
-          const fileResponse = await fetch(`/episodes/${selectedEpisode.id}/config.json`);
-          if (fileResponse.ok) {
-            const episodeConfig = await fileResponse.json();
-            setChapters(episodeConfig.chapters || []);
-          } else {
-            setChapters([]);
-          }
-        } catch (fallbackError) {
-          console.error('Ошибка fallback загрузки глав:', fallbackError);
-          setChapters([]);
-        }
+        setChapters([]);
       } finally {
         setIsLoading(false);
       }

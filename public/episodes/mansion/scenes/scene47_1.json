@@ -1,11 +1,9 @@
 {
   "id": "scene47_1",
-  "name": "Добро пожаловать в игру (Успех)",
+  "chapterId": "1",
+  "name": "Поиск Миши - Успешный допрос Елизаветы",
   "background": "sprites/episodes/locations/mansion/guest_room_bedroom_11zon.png",
-  "characters": [
-
-   
-  ],
+  "characters": [],
   "dialogue": [
     {
       "speaker": "dulapeepa",
@@ -18,40 +16,58 @@
       "emotion": "angry"
     }
   ],
-  "choices": [    
-    
-      {
-        "id": "choice1",
-        "text": "Хорошо, пойду его искать",
-        "nextScene": "scene26",
-        "requirements": {
-          "importantChoice": {
-            "svet_meet": null
-          }
-        }
-      },
-      {
-        "id": "dulapeepa_found",
-        "text": "Я нашел Мишу, он на чердаке",
-        "nextScene": "scene47_found",
-        "important": true,
-        "value": "true",
-        "description": "Поиск Миши",
-        "consequences": ["выбор 1"],
-        "requirements": {
-          "importantChoice": {
-            "svet_meet": "true"
-          }
-        },
-        "relationships": {
-          "dulapeepa": 20,
-          "svet": -20
+  "choices": [
+    {
+      "id": "choice1",
+      "text": "Хорошо, пойду его искать",
+      "nextScene": "scene26",
+      "requirements": {
+        "importantChoice": {
+          "svet_meet": null
         }
       }
-  ],
-  "requirements": {},
-  "rewards": {
-    "experience": 0,
-    "coins": 0
-  }
-} 
+    },
+    {
+      "id": "dulapeepa_found",
+      "text": "Я нашел Мишу, он на чердаке",
+      "nextScene": "scene47_found",
+      "important": true,
+      "value": "true",
+      "description": "Поиск Миши",
+      "consequences": [
+        "выбор 1"
+      ],
+      "requirements": {
+        "importantChoice": {
+          "svet_room_camin": null,
+          "svet_meet": "true"
+        }
+      },
+      "relationships": {
+        "dulapeepa": 20,
+        "svet": -20
+      }
+    },
+    {
+      "id": "dulapeepa_found",
+      "text": "Я нашел Мишу, он спрятался в комнате с камином",
+      "nextScene": "",
+      "important": true,
+      "value": "true",
+      "description": "",
+      "consequences": [
+        ""
+      ],
+      "diceCheck": null,
+      "specialInteraction": "",
+      "requiredItem": "",
+      "conditions": {},
+      "requirements": {
+        "importantChoice": {
+          "svet_room_camin": "true",
+          "svet_meet": "true"
+        }
+      }
+    }
+  ]
+}

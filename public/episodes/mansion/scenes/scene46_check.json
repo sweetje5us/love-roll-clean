@@ -1,6 +1,6 @@
 {
-  "id": "scene46_1",
-  "name": "Добро пожаловать в игру",
+  "id": "scene46_check",
+  "name": "Дополнительные действия - Помощь Мадуку",
   "background": "sprites/episodes/locations/mansion/mansion_room_camin_11zon.png",
   "characters": [
 

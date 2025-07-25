@@ -1,29 +1,24 @@
 {
-    "id": "scene58",
-    "name": "Открытие двери (успех)",
-    "background": "sprites/episodes/locations/mansion/attic_inside_day.png",
-    "characters": [
-  
-     
-    ],
-    "dialogue": [
-      {
-        "speaker": "svet",
-        "text": "Отлично, ну и куда спрятаться?",
-        "emotion": "happy"
-      }
-    ],
-    "choices": [
-      {
-        "id": "choice1",
-        "text": "В комнату с камином",
-        "nextScene": "scene59_1"
-      }
-    ],
-
-    "requirements": {},
-    "rewards": {
-      "experience": 0,
-      "coins": 0
+  "id": "scene58_1",
+  "chapterId": "1",
+  "name": "Чердак — куда спрятаться? (успех)",
+  "background": "sprites/episodes/locations/mansion/attic_inside_day.png",
+  "characters": [],
+  "dialogue": [
+    {
+      "speaker": "svet",
+      "text": "Отлично, ну и куда спрятаться?",
+      "emotion": "happy"
     }
-  } 
+  ],
+  "choices": [
+    {
+      "id": "svet_room_camin",
+      "text": "В комнату с камином",
+      "nextScene": "scene59_1",
+      "important": true,
+      "value": "true",
+      "description": "Свет спрятался в комнате с камином"
+    }
+  ]
+}

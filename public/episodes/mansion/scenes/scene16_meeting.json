@@ -1,6 +1,6 @@
 {
-  "id": "scene16",
-  "name": "Добро пожаловать в игру",
+  "id": "scene16_meeting",
+  "name": "Знакомство с Дэном - Тайный приглашающий",
   "background": "sprites/episodes/locations/mansion/mansion_room_with_people_11zon.png",
   "characters": [
 

@@ -54,6 +54,120 @@ app.get('/api/episodes', async (req, res) => {
   }
 });
 
+// Новый API endpoint для динамической загрузки эпизодов в формате episodes.json
+app.get('/api/episodes/dynamic', async (req, res) => {
+  try {
+    const episodes = {};
+    const types = {};
+    const ageRatings = {};
+    
+    const episodeFolders = await fs.readdir(EPISODES_PATH);
+    
+    for (const folder of episodeFolders) {
+      const configPath = path.join(EPISODES_PATH, folder, 'config.json');
+      if (await fs.pathExists(configPath)) {
+        const config = await fs.readJson(configPath);
+        
+        // Убеждаемся, что у всех эпизодов есть массив chapters
+        config.chapters = config.chapters || [];
+        
+        // Добавляем эпизод в объект episodes
+        episodes[config.id] = config;
+        
+        // Собираем типы эпизодов
+        const type = config.type || 'story';
+        if (!types[type]) {
+          types[type] = {
+            name: getTypeName(type),
+            color: getTypeColor(type),
+            icon: getTypeIcon(type)
+          };
+        }
+        
+        // Собираем возрастные рейтинги
+        const ageRating = config.ageRating || '0+';
+        if (!ageRatings[ageRating]) {
+          ageRatings[ageRating] = {
+            name: ageRating,
+            color: getAgeRatingColor(ageRating),
+            description: getAgeRatingDescription(ageRating)
+          };
+        }
+      }
+    }
+    
+    const episodesData = {
+      episodes,
+      types,
+      ageRatings
+    };
+    
+    res.json(episodesData);
+  } catch (error) {
+    console.error('Ошибка генерации episodes.json:', error);
+    res.status(500).json({ error: 'Ошибка генерации episodes.json' });
+  }
+});
+
+// Вспомогательные функции для типов и рейтингов
+function getTypeName(type) {
+  const typeNames = {
+    tutorial: 'Обучение',
+    detective: 'Детектив',
+    romance: 'Романтика',
+    mystery: 'Мистика',
+    adventure: 'Приключения',
+    story: 'История'
+  };
+  return typeNames[type] || type;
+}
+
+function getTypeColor(type) {
+  const typeColors = {
+    tutorial: '#4ade80',
+    detective: '#8b5cf6',
+    romance: '#ec4899',
+    mystery: '#7c3aed',
+    adventure: '#f59e0b',
+    story: '#3b82f6'
+  };
+  return typeColors[type] || '#6b7280';
+}
+
+function getTypeIcon(type) {
+  const typeIcons = {
+    tutorial: 'fas fa-graduation-cap',
+    detective: 'fas fa-search',
+    romance: 'fas fa-heart',
+    mystery: 'fas fa-ghost',
+    adventure: 'fas fa-compass',
+    story: 'fas fa-book'
+  };
+  return typeIcons[type] || 'fas fa-file-alt';
+}
+
+function getAgeRatingColor(rating) {
+  const ratingColors = {
+    '0+': '#22c55e',
+    '6+': '#16a34a',
+    '12+': '#f59e0b',
+    '16+': '#ef4444',
+    '18+': '#dc2626'
+  };
+  return ratingColors[rating] || '#22c55e';
+}
+
+function getAgeRatingDescription(rating) {
+  const ratingDescriptions = {
+    '0+': 'Для всех возрастов',
+    '6+': 'Для детей от 6 лет',
+    '12+': 'Для подростков от 12 лет',
+    '16+': 'Для подростков от 16 лет',
+    '18+': 'Только для взрослых'
+  };
+  return ratingDescriptions[rating] || 'Для всех возрастов';
+}
+
 // Создание нового эпизода
 app.post('/api/episodes', async (req, res) => {
   try {
@@ -95,21 +209,8 @@ app.post('/api/episodes', async (req, res) => {
     // Определяем финальное имя превью
     const finalPreview = episodeData.preview && episodeData.preview.startsWith('temp_') ? 'preview.png' : (episodeData.preview || '');
     
-    // Создаем config.json
+    // Создаем config.json с полными данными
     const config = {
-      id: episodeId,
-      name: episodeData.name,
-      description: episodeData.description,
-      type: episodeData.type,
-      duration: episodeData.duration,
-      difficulty: episodeData.difficulty,
-      preview: finalPreview,
-      chapters: [],
-      unlocked: true
-    };
-    
-    // Создаем данные для episodes.json
-    const episodeDataForJson = {
       id: episodeId,
       name: episodeData.name,
       description: episodeData.description,
@@ -122,28 +223,58 @@ app.post('/api/episodes', async (req, res) => {
       unlocked: true,
       completed: false,
       tags: episodeData.tags || [],
+      characters: episodeData.characters || [],
       chapters: []
     };
     
     await fs.writeJson(path.join(episodePath, 'config.json'), config, { spaces: 2 });
     
-    // Обновляем episodes.json
-    const episodesJsonPath = path.join(__dirname, '..', '..', 'public', 'episodes.json');
-    let episodesData = { episodes: {} };
-    
-    if (await fs.pathExists(episodesJsonPath)) {
-      episodesData = await fs.readJson(episodesJsonPath);
+    // Автоматически добавляем эпизод в список KNOWN_EPISODES
+    try {
+      const episodeListPath = path.join(__dirname, '..', '..', 'src', 'utils', 'episodeList.js');
+      
+      // Читаем текущий файл
+      let content = await fs.readFile(episodeListPath, 'utf8');
+      
+      // Находим массив KNOWN_EPISODES
+      const regex = /KNOWN_EPISODES\s*=\s*\[([\s\S]*?)\]/;
+      const match = content.match(regex);
+      
+      if (match) {
+        const currentEpisodes = match[1]
+          .split(',')
+          .map(ep => ep.trim().replace(/['"]/g, ''))
+          .filter(ep => ep.length > 0);
+        
+        // Проверяем, есть ли уже такой эпизод
+        if (!currentEpisodes.includes(episodeId)) {
+          // Добавляем новый эпизод
+          currentEpisodes.push(episodeId);
+          
+          // Формируем новый массив
+          const newEpisodesArray = `KNOWN_EPISODES = [\n  '${currentEpisodes.join("',\n  '")}'\n];`;
+          
+          // Заменяем старый массив новым
+          const newContent = content.replace(regex, newEpisodesArray);
+          
+          // Записываем обновленный файл
+          await fs.writeFile(episodeListPath, newContent, 'utf8');
+          
+          console.log(`✅ Эпизод ${episodeId} автоматически добавлен в список KNOWN_EPISODES`);
+        }
+      }
+    } catch (addToListError) {
+      console.warn('Ошибка при автоматическом добавлении эпизода в список:', addToListError);
     }
     
-    episodesData.episodes[episodeId] = episodeDataForJson;
-    await fs.writeJson(episodesJsonPath, episodesData, { spaces: 2 });
-    
-    res.json(episodeDataForJson);
+    res.json(config);
   } catch (error) {
     console.error('Ошибка создания эпизода:', error);
     res.status(500).json({ error: 'Ошибка создания эпизода' });
   }
 });
+
+
 
 // Обновление эпизода
 app.put('/api/episodes/:id', async (req, res) => {
@@ -163,32 +294,7 @@ app.put('/api/episodes/:id', async (req, res) => {
     
     await fs.writeJson(configPath, updatedConfig, { spaces: 2 });
     
-    // Создаем данные для episodes.json
-    const episodeDataForJson = {
-      id: episodeId,
-      name: episodeData.name || config.name,
-      description: episodeData.description || config.description,
-      longDescription: episodeData.longDescription || config.longDescription || episodeData.description || config.description,
-      type: episodeData.type || config.type,
-      ageRating: episodeData.ageRating || config.ageRating || '0+',
-      duration: episodeData.duration || config.duration,
-      difficulty: episodeData.difficulty || config.difficulty,
-      preview: episodeData.preview || config.preview || 'preview.png',
-      unlocked: episodeData.unlocked !== undefined ? episodeData.unlocked : config.unlocked,
-      completed: episodeData.completed !== undefined ? episodeData.completed : config.completed,
-      tags: episodeData.tags || config.tags || [],
-      chapters: config.chapters || []
-    };
-    
-    // Обновляем episodes.json
-    const episodesJsonPath = path.join(__dirname, '..', '..', 'public', 'episodes.json');
-    if (await fs.pathExists(episodesJsonPath)) {
-      const episodesData = await fs.readJson(episodesJsonPath);
-      episodesData.episodes[episodeId] = episodeDataForJson;
-      await fs.writeJson(episodesJsonPath, episodesData, { spaces: 2 });
-    }
-    
-    res.json(episodeDataForJson);
+    res.json(updatedConfig);
   } catch (error) {
     console.error('Ошибка обновления эпизода:', error);
     res.status(500).json({ error: 'Ошибка обновления эпизода' });
@@ -208,12 +314,36 @@ app.delete('/api/episodes/:id', async (req, res) => {
     // Удаляем папку эпизода
     await fs.remove(episodePath);
     
-    // Удаляем из episodes.json
-    const episodesJsonPath = path.join(__dirname, '..', '..', 'public', 'episodes.json');
-    if (await fs.pathExists(episodesJsonPath)) {
-      const episodesData = await fs.readJson(episodesJsonPath);
-      delete episodesData.episodes[episodeId];
-      await fs.writeJson(episodesJsonPath, episodesData, { spaces: 2 });
+    // Удаляем эпизод из списка KNOWN_EPISODES
+    try {
+      const episodeListPath = path.join(__dirname, '..', '..', 'src', 'utils', 'episodeList.js');
+      
+      // Читаем текущий файл
+      let content = await fs.readFile(episodeListPath, 'utf8');
+      
+      // Находим массив KNOWN_EPISODES
+      const regex = /KNOWN_EPISODES\s*=\s*\[([\s\S]*?)\]/;
+      const match = content.match(regex);
+      
+      if (match) {
+        const currentEpisodes = match[1]
+          .split(',')
+          .map(ep => ep.trim().replace(/['"]/g, ''))
+          .filter(ep => ep.length > 0 && ep !== episodeId);
+        
+        // Формируем новый массив без удаленного эпизода
+        const newEpisodesArray = `KNOWN_EPISODES = [\n  '${currentEpisodes.join("',\n  '")}'\n];`;
+        
+        // Заменяем старый массив новым
+        const newContent = content.replace(regex, newEpisodesArray);
+        
+        // Записываем обновленный файл
+        await fs.writeFile(episodeListPath, newContent, 'utf8');
+        
+        console.log(`✅ Эпизод ${episodeId} удален из списка KNOWN_EPISODES`);
+      }
+    } catch (removeFromListError) {
+      console.warn('Ошибка при удалении эпизода из списка:', removeFromListError);
     }
     
     res.json({ success: true });

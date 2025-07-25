@@ -5,13 +5,11 @@
   "duration": "3-5 минут",
   "scenes": [
     "scene1", "scene2", "scene3", "scene4", "scene5", "scene6", "scene7", "scene8", "scene9", "scene10",
-    "scene11", "scene12", "scene13", "scene14", "scene15", "scene16", "scene17", "scene18", "scene19", "scene20",
-    "scene21", "scene22", "scene23", "scene24", "scene25", "scene26", "scene27", "scene28", "scene29_1", "scene29_2",
-    "scene29_3", "scene29_4", "scene30", "scene31", "scene32", "scene32!", "scene33", "scene34", "scene35", "scene36_1",
-    "scene37", "scene38_1", "scene38_2", "scene38_3", "scene38_4", "scene38_1!", "scene38_2!", "scene38_3!", "scene38_4!",
-    "scene39", "scene40", "scene41_1", "scene41_2", "scene41_3", "scene41_4", "scene42", "scene44", "scene46_1!", "scene46_2!",
-    "scene46_3!", "scene46_4!", "scene48", "scene50", "scene52", "scene53_1", "scene53_2", "scene53_3", "scene53_4",
-    "scene54_1", "scene54_2", "scene54_3", "scene54_4", "scene55", "scene60", "scene61", "scene62", "scene63", "scene64", "scene65"
+    "scene11", "scene12", "scene13", "scene14", "scene15", "scene16", "scene16_meeting", "scene17", "scene17_full_meeting", "scene17_meeting", "scene18", "scene19", "scene20",
+    "scene21", "scene22", "scene23", "scene24", "scene25", "scene26", "scene27", "scene28", "scene28_check", "scene29_1", "scene29_2",
+    "scene29_3", "scene29_4", "scene29_check", "scene30", "scene31", "scene31_meeting", "scene32", "scene33", "scene34", "scene35", "scene36_1", "scene36_2", "scene36_3", "scene36_4", "scene36_meeting",
+    "scene37", "scene38_1", "scene38_2", "scene38_3", "scene38_4", "scene39", "scene39_meeting", "scene40", "scene41_1", "scene41_2", "scene41_3", "scene41_4", "scene41_check", "scene42", "scene43", "scene43_1", "scene43_2", "scene43_3", "scene43_4", "scene43_meeting", "scene44", "scene44_meeting", "scene45", "scene45_1", "scene45_2", "scene45_3", "scene45_4", "scene45_meeting", "scene46_1", "scene46_2", "scene46_3", "scene46_4", "scene46_check", "scene47_1", "scene47_2", "scene47_3", "scene47_4", "scene47_check", "scene47_found", "scene48", "scene48_1", "scene48_2", "scene48_3", "scene48_4", "scene48_check", "scene49", "scene50", "scene51", "scene52", "scene53_1", "scene53_2", "scene53_3", "scene53_4", "scene53_check",
+    "scene54_1", "scene54_2", "scene54_3", "scene54_4", "scene54_check", "scene55", "scene56_1", "scene56_2", "scene56_3", "scene56_4", "scene56_check", "scene56_meeting", "scene58", "scene58_1", "scene58_2", "scene58_3", "scene58_4", "scene58_check", "scene59_1", "scene59_2", "scene60", "scene61", "scene62", "scene63_meeting", "scene64", "scene65"
   ],
   "unlocked": true,
   "completed": false,

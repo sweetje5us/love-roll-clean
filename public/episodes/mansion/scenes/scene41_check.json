@@ -1,6 +1,6 @@
 {
-  "id": "scene41_1",
-  "name": "Добро пожаловать в игру",
+  "id": "scene41_check",
+  "name": "Дополнительные действия - Попытка входа в кабинет",
   "background": "sprites/episodes/locations/mansion/mansion_door_cab_11zon.png",
   "characters": [
 
