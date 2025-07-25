@@ -68,6 +68,57 @@
       "specialInteraction": "",
       "requiredItem": "",
       "conditions": {}
+    },
+    {
+      "id": "scene_1753470119035_choice3",
+      "text": "тест проверки квестового предмета",
+      "nextScene": "",
+      "important": false,
+      "value": "",
+      "description": "",
+      "consequences": [
+        ""
+      ],
+      "diceCheck": null,
+      "specialInteraction": "",
+      "requiredItem": "",
+      "conditions": {},
+      "requirements": {
+        "questItemId": "test_item",
+        "questItem": "quest_snow_globe"
+      },
+      "effects": {
+        "items": {
+          "removeQuestItems": [
+            "test_item"
+          ]
+        }
+      }
+    },
+    {
+      "id": "scene_1753470119035_choice4",
+      "text": "тест проверки и изъятия предмета",
+      "nextScene": "",
+      "important": false,
+      "value": "",
+      "description": "",
+      "consequences": [
+        ""
+      ],
+      "effects": {
+        "items": {
+          "remove": [
+            "gingerbread"
+          ]
+        }
+      },
+      "diceCheck": null,
+      "specialInteraction": "",
+      "requiredItem": "",
+      "conditions": {},
+      "requirements": {
+        "item": "gingerbread"
+      }
     }
   ]
 }

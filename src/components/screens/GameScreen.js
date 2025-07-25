@@ -230,7 +230,7 @@ const GameCharacterAvatar = ({ characterData, inventory, emotion = 'normal', isI
 const GameScreen = () => {
   const { goBack, navigateTo, getNavigationParams } = useScreen();
   const { addExperience, getCharacter, getLevelInfo } = useCharacters();
-  const { inventory, updateInventory, addItem, removeItem } = useInventory();
+  const { inventory, updateInventory, addItem, removeItem, getAllItems } = useInventory();
   const { initializeRelationships, changeRelationship, getRelationship, updateRelationship } = useRelationships();
   const { 
     activePetId, 
@@ -482,14 +482,11 @@ const GameScreen = () => {
           // Используем removeItem из InventoryContext
           removeItem(itemId, count);
         },
-        getInventory: () => {
-          // Преобразуем формат инвентаря для совместимости с episodeManager
-          const simpleInventory = {};
-          Object.entries(inventory).forEach(([itemId, itemData]) => {
-            simpleInventory[itemId] = itemData.quantity || 0;
-          });
-          console.log(`EpisodeManager.getInventory - текущий инвентарь:`, simpleInventory);
-          return simpleInventory;
+        getAllItems: () => {
+          // Возвращаем актуальный инвентарь из InventoryContext
+          const currentInventory = getAllItems();
+          console.log(`EpisodeManager.getAllItems - текущий инвентарь:`, currentInventory);
+          return currentInventory;
         }
       });
 
@@ -720,10 +717,13 @@ const GameScreen = () => {
         }, 200);
         } else {
           // Обычная обработка выбора (например, изменение отношений без смены сцены)
-        setGameState(prev => ({
-          ...prev,
-          isLoading: false
-        }));
+          // Обновляем доступные выборы после изменения инвентаря
+          const availableChoices = episodeManager.getAvailableChoices();
+          setGameState(prev => ({
+            ...prev,
+            isLoading: false,
+            choices: availableChoices
+          }));
         }
       } else {
         // Ошибка обработки выбора
@@ -1704,6 +1704,11 @@ const GameScreen = () => {
                   {!isAvailable && choice.requiredItem && (
                     <span className="choice-requirement">
                       (требуется: {episodeManager.getItemName ? episodeManager.getItemName(choice.requiredItem) : choice.requiredItem})
+                    </span>
+                  )}
+                  {!isAvailable && choice.requirements?.questItem && (
+                    <span className="choice-requirement">
+                      (требуется квестовый предмет: {episodeManager.getItemName ? episodeManager.getItemName(choice.requirements.questItem) : choice.requirements.questItem})
                     </span>
                   )}
                 </motion.button>

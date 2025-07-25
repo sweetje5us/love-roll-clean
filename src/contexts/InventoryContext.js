@@ -91,6 +91,7 @@ export const InventoryProvider = ({ children }) => {
 
   // Удалить предмет из инвентаря
   const removeItem = (itemId, quantity = 1) => {
+    console.log('InventoryContext.removeItem - изымаем предмет:', itemId, 'количество:', quantity);
     setInventory(prev => {
       const currentQuantity = prev[itemId]?.quantity || 0;
       const newQuantity = Math.max(0, currentQuantity - quantity);

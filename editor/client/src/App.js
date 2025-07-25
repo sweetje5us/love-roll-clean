@@ -107,7 +107,9 @@ function App() {
       
       // Для эпизодов mansion и tutorial используем формат chapter[id]
       if (selectedEpisode.id === 'mansion' || selectedEpisode.id === 'tutorial') {
-        if (!selectedChapter.id.startsWith('chapter')) {
+        // Преобразуем id в строку для проверки
+        const chapterIdStr = String(selectedChapter.id);
+        if (!chapterIdStr.startsWith('chapter')) {
           chapterPath = `chapter${selectedChapter.id}`;
         }
       }

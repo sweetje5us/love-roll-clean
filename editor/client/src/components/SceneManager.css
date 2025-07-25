@@ -549,6 +549,14 @@
   background: #f59e0b;
 }
 
+.effect-type-badge.remove_item {
+  background: #dc2626;
+}
+
+.effect-type-badge.remove_quest_item {
+  background: #7c2d12;
+}
+
 .effect-details {
   flex: 1;
   display: flex;
@@ -602,6 +610,22 @@
 
 .add-effect-button.quest:hover {
   background: #d97706;
+}
+
+.add-effect-button.remove_item {
+  background: #dc2626;
+}
+
+.add-effect-button.remove_item:hover {
+  background: #b91c1c;
+}
+
+.add-effect-button.remove_quest_item {
+  background: #7c2d12;
+}
+
+.add-effect-button.remove_quest_item:hover {
+  background: #5c1d0e;
 }
 
 .modal-actions {

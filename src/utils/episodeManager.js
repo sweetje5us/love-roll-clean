@@ -730,6 +730,31 @@ class EpisodeManager {
         }
       });
     }
+
+    // Удаление квестовых предметов по ID
+    if (itemEffects.removeQuestItems) {
+      const questItemsToRemove = Array.isArray(itemEffects.removeQuestItems) ? itemEffects.removeQuestItems : [itemEffects.removeQuestItems];
+      questItemsToRemove.forEach(itemId => {
+        this.inventoryManager.removeItem(itemId, 1);
+        
+        // Показываем уведомление об изъятии квестового предмета
+        if (window.addNotification) {
+          // Пытаемся получить имя предмета из инвентаря
+          const currentInventory = this.getCurrentInventory();
+          const itemData = currentInventory[itemId];
+          let itemName = itemId;
+          
+          if (itemData && typeof itemData === 'object' && itemData.name) {
+            itemName = itemData.name;
+          }
+          
+          window.addNotification('quest_item_removed', {
+            message: `Изъят квестовый предмет "${itemName}"`,
+            itemName: itemName
+          });
+        }
+      });
+    }
   }
 
   /**
@@ -874,7 +899,7 @@ class EpisodeManager {
       effects.forEach(effect => {
         switch (effect.type) {
           case 'item':
-            // Обрабатываем обычный предмет
+            // Обрабатываем обычный предмет (добавление)
             if (this.inventoryManager && effect.targetId) {
               this.inventoryManager.addItem(effect.targetId, effect.value || 1);
               
@@ -888,6 +913,7 @@ class EpisodeManager {
               }
             }
             break;
+
           case 'relationship':
             // Обрабатываем отношения
             if (this.relationshipsManager && effect.targetId) {
@@ -1065,13 +1091,26 @@ class EpisodeManager {
   getCurrentInventory() {
     // Получаем инвентарь из менеджера инвентаря
     if (this.inventoryManager) {
-      const inventory = this.inventoryManager.getInventory();
+      const inventory = this.inventoryManager.getAllItems();
       console.log(`EpisodeManager.getCurrentInventory - получен инвентарь:`, inventory);
       return inventory;
     }
     
     // Fallback - возвращаем пустой инвентарь
     console.log(`EpisodeManager.getCurrentInventory - inventoryManager недоступен, возвращаем пустой инвентарь`);
+    return {};
+  }
+
+  /**
+   * Принудительное обновление инвентаря
+   */
+  refreshInventory() {
+    if (this.inventoryManager && this.inventoryManager.getAllItems) {
+      // Принудительно получаем актуальный инвентарь
+      const inventory = this.inventoryManager.getAllItems();
+      console.log(`EpisodeManager.refreshInventory - обновлен инвентарь:`, inventory);
+      return inventory;
+    }
     return {};
   }
 
@@ -1125,9 +1164,9 @@ class EpisodeManager {
     
     console.log(`Проверка доступных выборов для сцены ${this.currentScene}:`, this.sceneData.choices);
     
-    // Получаем текущий инвентарь
-    const currentInventory = this.getCurrentInventory();
-    console.log(`EpisodeManager.getAvailableChoices - текущий инвентарь:`, currentInventory);
+    // Принудительно обновляем инвентарь перед проверкой
+    const currentInventory = this.refreshInventory();
+    console.log(`EpisodeManager.getAvailableChoices - обновленный инвентарь:`, currentInventory);
     
     // Проверяем все выборы
     const availableChoices = this.sceneData.choices.filter(choice => {
@@ -1142,9 +1181,18 @@ class EpisodeManager {
         if (typeof itemQuantity === 'number') {
           // Простой формат: { itemId: number }
           hasItem = itemQuantity > 0;
-        } else if (itemQuantity && typeof itemQuantity === 'object' && itemQuantity.quantity !== undefined) {
+        } else if (itemQuantity && typeof itemQuantity === 'object') {
           // Сложный формат: { itemId: { quantity: number, ... } }
-          hasItem = itemQuantity.quantity > 0;
+          if (itemQuantity.quantity !== undefined) {
+            // Если есть поле quantity, проверяем его
+            hasItem = itemQuantity.quantity > 0;
+          } else if (itemQuantity.id) {
+            // Если есть поле id, значит предмет существует (количество по умолчанию 1)
+            hasItem = true;
+          } else {
+            // Если объект существует, но нет ни quantity ни id, считаем что предмет есть
+            hasItem = true;
+          }
         } else {
           // Предмет не найден
           hasItem = false;
@@ -1152,6 +1200,45 @@ class EpisodeManager {
         
         console.log(`Выбор ${choice.id} требует предмет ${choice.requiredItem}: ${hasItem ? 'есть' : 'нет'}`);
         if (!hasItem) return false;
+      }
+      
+      // Проверяем требуемые квестовые предметы
+      if (choice.requirements && choice.requirements.questItem) {
+        // Определяем ID предмета для проверки
+        let itemIdToCheck = choice.requirements.questItem;
+        
+        // Если указан конкретный ID квестового предмета, используем его
+        if (choice.requirements.questItemId && choice.requirements.questItemId.trim() !== '') {
+          itemIdToCheck = choice.requirements.questItemId;
+          console.log(`EpisodeManager.getAvailableChoices - проверяем конкретный экземпляр квестового предмета: ${itemIdToCheck}`);
+        }
+        
+        const itemQuantity = currentInventory[itemIdToCheck];
+        console.log(`EpisodeManager.getAvailableChoices - проверяем квестовый предмет ${itemIdToCheck}:`, itemQuantity);
+        let hasQuestItem = false;
+        
+        if (typeof itemQuantity === 'number') {
+          // Простой формат: { itemId: number }
+          hasQuestItem = itemQuantity > 0;
+        } else if (itemQuantity && typeof itemQuantity === 'object') {
+          // Сложный формат: { itemId: { quantity: number, ... } }
+          if (itemQuantity.quantity !== undefined) {
+            // Если есть поле quantity, проверяем его
+            hasQuestItem = itemQuantity.quantity > 0;
+          } else if (itemQuantity.id) {
+            // Если есть поле id, значит предмет существует (количество по умолчанию 1)
+            hasQuestItem = true;
+          } else {
+            // Если объект существует, но нет ни quantity ни id, считаем что предмет есть
+            hasQuestItem = true;
+          }
+        } else {
+          // Предмет не найден
+          hasQuestItem = false;
+        }
+        
+        console.log(`Выбор ${choice.id} требует квестовый предмет ${itemIdToCheck}: ${hasQuestItem ? 'есть' : 'нет'}`);
+        if (!hasQuestItem) return false;
       }
       
       // Проверяем требуемые отношения
@@ -1274,8 +1361,92 @@ class EpisodeManager {
           }
           console.log(`EpisodeManager.checkChoiceRequirements - все требования важных выборов выполнены`);
           break;
+        case 'item':
+          // Проверяем наличие обычного предмета в инвентаре
+          console.log(`EpisodeManager.checkChoiceRequirements - проверка обычного предмета:`, value);
+          const regularItemInventory = this.refreshInventory();
+          const regularItemQuantity = regularItemInventory[value];
+          console.log(`EpisodeManager.checkChoiceRequirements - обычный предмет ${value} в инвентаре:`, regularItemQuantity);
+          
+          let hasRegularItem = false;
+          if (typeof regularItemQuantity === 'number') {
+            // Простой формат: { itemId: number }
+            hasRegularItem = regularItemQuantity > 0;
+          } else if (regularItemQuantity && typeof regularItemQuantity === 'object') {
+            // Сложный формат: { itemId: { quantity: number, ... } }
+            if (regularItemQuantity.quantity !== undefined) {
+              // Если есть поле quantity, проверяем его
+              hasRegularItem = regularItemQuantity.quantity > 0;
+            } else if (regularItemQuantity.id) {
+              // Если есть поле id, значит предмет существует (количество по умолчанию 1)
+              hasRegularItem = true;
+            } else {
+              // Если объект существует, но нет ни quantity ни id, считаем что предмет есть
+              hasRegularItem = true;
+            }
+          } else {
+            // Предмет не найден
+            hasRegularItem = false;
+          }
+          
+          console.log(`EpisodeManager.checkChoiceRequirements - обычный предмет ${value}: ${hasRegularItem ? 'есть' : 'нет'}`);
+          if (!hasRegularItem) {
+            console.log(`EpisodeManager.checkChoiceRequirements - требование не выполнено: обычный предмет ${value} отсутствует`);
+            return false;
+          }
+          console.log(`EpisodeManager.checkChoiceRequirements - требование выполнено: обычный предмет ${value} найден`);
+          break;
         case 'items':
           // Здесь можно добавить проверку предметов в инвентаре
+          break;
+        case 'questItem':
+          // Проверяем наличие квестового предмета в инвентаре
+          console.log(`EpisodeManager.checkChoiceRequirements - проверка квестового предмета:`, value);
+          const currentInventory = this.refreshInventory();
+          
+          // Определяем ID предмета для проверки
+          let itemIdToCheck = value;
+          
+          // Если есть поле questItemId в requirements, используем его
+          if (requirements.questItemId && requirements.questItemId.trim() !== '') {
+            itemIdToCheck = requirements.questItemId;
+            console.log(`EpisodeManager.checkChoiceRequirements - проверяем конкретный экземпляр квестового предмета: ${itemIdToCheck}`);
+          }
+          
+          const itemQuantity = currentInventory[itemIdToCheck];
+          console.log(`EpisodeManager.checkChoiceRequirements - квестовый предмет ${itemIdToCheck} в инвентаре:`, itemQuantity);
+          
+          let hasQuestItem = false;
+          if (typeof itemQuantity === 'number') {
+            // Простой формат: { itemId: number }
+            hasQuestItem = itemQuantity > 0;
+          } else if (itemQuantity && typeof itemQuantity === 'object') {
+            // Сложный формат: { itemId: { quantity: number, ... } }
+            if (itemQuantity.quantity !== undefined) {
+              // Если есть поле quantity, проверяем его
+              hasQuestItem = itemQuantity.quantity > 0;
+            } else if (itemQuantity.id) {
+              // Если есть поле id, значит предмет существует (количество по умолчанию 1)
+              hasQuestItem = true;
+            } else {
+              // Если объект существует, но нет ни quantity ни id, считаем что предмет есть
+              hasQuestItem = true;
+            }
+          } else {
+            // Предмет не найден
+            hasQuestItem = false;
+          }
+          
+          console.log(`EpisodeManager.checkChoiceRequirements - квестовый предмет ${itemIdToCheck}: ${hasQuestItem ? 'есть' : 'нет'}`);
+          if (!hasQuestItem) {
+            console.log(`EpisodeManager.checkChoiceRequirements - требование не выполнено: квестовый предмет ${itemIdToCheck} отсутствует`);
+            return false;
+          }
+          console.log(`EpisodeManager.checkChoiceRequirements - требование выполнено: квестовый предмет ${itemIdToCheck} найден`);
+          break;
+        case 'questItemId':
+          // Пропускаем проверку questItemId, так как она обрабатывается в case 'questItem'
+          console.log(`EpisodeManager.checkChoiceRequirements - пропускаем проверку questItemId: ${value}`);
           break;
         default:
           break;

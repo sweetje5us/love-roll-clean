@@ -376,6 +376,56 @@ const SceneModal = ({
     });
   };
 
+  // Добавление изъятия обычного предмета
+  const addRemoveItemEffect = (choiceIndex) => {
+    setFormData(prev => {
+      const newChoices = [...prev.choices];
+      
+      // Если effects является массивом или не существует, создаем новую структуру
+      if (!newChoices[choiceIndex].effects || Array.isArray(newChoices[choiceIndex].effects)) {
+        newChoices[choiceIndex].effects = {
+          items: {
+            remove: []
+          }
+        };
+      } else if (!newChoices[choiceIndex].effects.items) {
+        newChoices[choiceIndex].effects.items = {
+          remove: []
+        };
+      } else if (!newChoices[choiceIndex].effects.items.remove) {
+        newChoices[choiceIndex].effects.items.remove = [];
+      }
+      
+      newChoices[choiceIndex].effects.items.remove.push('');
+      return { ...prev, choices: newChoices };
+    });
+  };
+
+  // Добавление изъятия квестового предмета
+  const addRemoveQuestItemEffect = (choiceIndex) => {
+    setFormData(prev => {
+      const newChoices = [...prev.choices];
+      
+      // Если effects является массивом или не существует, создаем новую структуру
+      if (!newChoices[choiceIndex].effects || Array.isArray(newChoices[choiceIndex].effects)) {
+        newChoices[choiceIndex].effects = {
+          items: {
+            removeQuestItems: []
+          }
+        };
+      } else if (!newChoices[choiceIndex].effects.items) {
+        newChoices[choiceIndex].effects.items = {
+          removeQuestItems: []
+        };
+      } else if (!newChoices[choiceIndex].effects.items.removeQuestItems) {
+        newChoices[choiceIndex].effects.items.removeQuestItems = [];
+      }
+      
+      newChoices[choiceIndex].effects.items.removeQuestItems.push('');
+      return { ...prev, choices: newChoices };
+    });
+  };
+
   const updateEffect = (choiceIndex, effectIndex, field, value) => {
     setFormData(prev => {
       const newChoices = [...prev.choices];
@@ -423,6 +473,40 @@ const SceneModal = ({
     });
   };
 
+  // Удаление элемента изъятия обычного предмета
+  const removeRemoveItem = (choiceIndex, itemIndex) => {
+    setFormData(prev => {
+      const newChoices = [...prev.choices];
+      if (newChoices[choiceIndex].effects && 
+          newChoices[choiceIndex].effects.items && 
+          newChoices[choiceIndex].effects.items.remove) {
+        newChoices[choiceIndex].effects.items.remove.splice(itemIndex, 1);
+        // Если массив пустой, удаляем весь объект effects
+        if (newChoices[choiceIndex].effects.items.remove.length === 0) {
+          delete newChoices[choiceIndex].effects;
+        }
+      }
+      return { ...prev, choices: newChoices };
+    });
+  };
+
+  // Удаление элемента изъятия квестового предмета
+  const removeRemoveQuestItem = (choiceIndex, itemIndex) => {
+    setFormData(prev => {
+      const newChoices = [...prev.choices];
+      if (newChoices[choiceIndex].effects && 
+          newChoices[choiceIndex].effects.items && 
+          newChoices[choiceIndex].effects.items.removeQuestItems) {
+        newChoices[choiceIndex].effects.items.removeQuestItems.splice(itemIndex, 1);
+        // Если массив пустой, удаляем весь объект effects
+        if (newChoices[choiceIndex].effects.items.removeQuestItems.length === 0) {
+          delete newChoices[choiceIndex].effects;
+        }
+      }
+      return { ...prev, choices: newChoices };
+    });
+  };
+
   const updateRequirements = (choiceIndex, type, field, value) => {
     setFormData(prev => {
       const newChoices = [...prev.choices];
@@ -430,7 +514,9 @@ const SceneModal = ({
         newChoices[choiceIndex].requirements = {
           importantChoice: {},
           relationship: {},
-          item: ''
+          item: '',
+          questItem: '',
+          questItemId: ''
         };
       }
       if (type === 'importantChoice') {
@@ -497,6 +583,9 @@ const SceneModal = ({
           if (!updatedChoice.requirements.questItem || updatedChoice.requirements.questItem.trim() === '') {
             delete updatedChoice.requirements.questItem;
           }
+          if (!updatedChoice.requirements.questItemId || updatedChoice.requirements.questItemId.trim() === '') {
+            delete updatedChoice.requirements.questItemId;
+          }
           if (Object.keys(updatedChoice.requirements).length === 0) {
             delete updatedChoice.requirements;
           }
@@ -522,13 +611,37 @@ const SceneModal = ({
             if (updatedChoice.effects.length === 0) {
               delete updatedChoice.effects;
             }
-          } else if (updatedChoice.effects.items && updatedChoice.effects.items.add) {
-            // Новая структура (объект с items/add)
-            updatedChoice.effects.items.add = updatedChoice.effects.items.add.filter(item => 
-              item.id && item.id.trim() !== '' && 
-              item.name && item.name.trim() !== ''
-            );
-            if (updatedChoice.effects.items.add.length === 0) {
+          } else if (updatedChoice.effects.items) {
+            // Новая структура (объект с items)
+            
+            // Очищаем пустые элементы добавления
+            if (updatedChoice.effects.items.add) {
+              updatedChoice.effects.items.add = updatedChoice.effects.items.add.filter(item => 
+                item.id && item.id.trim() !== '' && 
+                item.name && item.name.trim() !== ''
+              );
+            }
+            
+            // Очищаем пустые элементы изъятия обычных предметов
+            if (updatedChoice.effects.items.remove) {
+              updatedChoice.effects.items.remove = updatedChoice.effects.items.remove.filter(itemId => 
+                itemId && itemId.trim() !== ''
+              );
+            }
+            
+            // Очищаем пустые элементы изъятия квестовых предметов
+            if (updatedChoice.effects.items.removeQuestItems) {
+              updatedChoice.effects.items.removeQuestItems = updatedChoice.effects.items.removeQuestItems.filter(itemId => 
+                itemId && itemId.trim() !== ''
+              );
+            }
+            
+            // Если все массивы пустые, удаляем весь объект effects
+            const hasAddItems = updatedChoice.effects.items.add && updatedChoice.effects.items.add.length > 0;
+            const hasRemoveItems = updatedChoice.effects.items.remove && updatedChoice.effects.items.remove.length > 0;
+            const hasRemoveQuestItems = updatedChoice.effects.items.removeQuestItems && updatedChoice.effects.items.removeQuestItems.length > 0;
+            
+            if (!hasAddItems && !hasRemoveItems && !hasRemoveQuestItems) {
               delete updatedChoice.effects;
             }
           }
@@ -1204,19 +1317,33 @@ const SceneModal = ({
                       
                       <div className="requirements-section">
                         <h6>Требуемый квестовый предмет</h6>
-                        <div className="form-group">
-                          <label>Квестовый предмет:</label>
-                          <select
-                            value={choice.requirements?.questItem || ''}
-                            onChange={(e) => updateRequirements(index, 'questItem', '', e.target.value)}
-                          >
-                            <option value="">Выберите квестовый предмет</option>
-                            {getAllQuestItems().map(item => (
-                              <option key={item.isCustom ? 'custom_' + item.id : item.id} value={item.id}>
-                                {item.name} ({item.id}){item.isCustom ? ' [Кастомный]' : ''}
-                              </option>
-                            ))}
-                          </select>
+                        <div className="form-row">
+                          <div className="form-group">
+                            <label>Квестовый предмет:</label>
+                            <select
+                              value={choice.requirements?.questItem || ''}
+                              onChange={(e) => updateRequirements(index, 'questItem', '', e.target.value)}
+                            >
+                              <option value="">Выберите квестовый предмет</option>
+                              {getAllQuestItems().map(item => (
+                                <option key={item.isCustom ? 'custom_' + item.id : item.id} value={item.id}>
+                                  {item.name} ({item.id}){item.isCustom ? ' [Кастомный]' : ''}
+                                </option>
+                              ))}
+                            </select>
+                          </div>
+                          <div className="form-group">
+                            <label>ID квестового предмета:</label>
+                            <input
+                              type="text"
+                              value={choice.requirements?.questItemId || ''}
+                              onChange={(e) => updateRequirements(index, 'questItemId', '', e.target.value)}
+                              placeholder="custom_key_1"
+                            />
+                            <small className="form-help">
+                              Оставьте пустым для проверки по шаблону предмета, или введите уникальный ID для проверки конкретного экземпляра
+                            </small>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -1421,6 +1548,90 @@ const SceneModal = ({
                           ))}
                         </div>
                       )}
+
+                      {/* Изъятие обычных предметов */}
+                      {choice.effects && choice.effects.items && choice.effects.items.remove && choice.effects.items.remove.length > 0 && (
+                        <div>
+                          <h6>Изъятие предметов</h6>
+                          {choice.effects.items.remove.map((itemId, itemIndex) => (
+                            <div key={itemIndex} className="effect-item">
+                              <span className="effect-type-badge remove_item">
+                                Изъять предмет
+                              </span>
+                              <div className="effect-details">
+                                <div className="form-group" style={{ margin: 0, flex: 1 }}>
+                                  <label>Предмет:</label>
+                                  <select
+                                    value={itemId}
+                                    onChange={(e) => {
+                                      const newEffects = { ...choice.effects };
+                                      newEffects.items.remove[itemIndex] = e.target.value;
+                                      updateChoice(index, 'effects', newEffects);
+                                    }}
+                                  >
+                                    <option value="">Выберите предмет</option>
+                                    {getAllItems().map(item => (
+                                      <option key={item.category + '_' + item.id} value={item.id}>
+                                        {item.name} ({item.id})
+                                      </option>
+                                    ))}
+                                  </select>
+                                </div>
+                              </div>
+                              
+                              <button
+                                type="button"
+                                className="remove-button small"
+                                onClick={() => removeRemoveItem(index, itemIndex)}
+                                title="Удалить изъятие предмета"
+                              >
+                                ✕
+                              </button>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+
+                      {/* Изъятие квестовых предметов */}
+                      {choice.effects && choice.effects.items && choice.effects.items.removeQuestItems && choice.effects.items.removeQuestItems.length > 0 && (
+                        <div>
+                          <h6>Изъятие квестовых предметов</h6>
+                          {choice.effects.items.removeQuestItems.map((itemId, itemIndex) => (
+                            <div key={itemIndex} className="effect-item">
+                              <span className="effect-type-badge remove_quest_item">
+                                Изъять квестовый предмет
+                              </span>
+                              <div className="effect-details">
+                                <div className="form-group" style={{ margin: 0, flex: 1 }}>
+                                  <label>ID квестового предмета:</label>
+                                  <input
+                                    type="text"
+                                    value={itemId}
+                                    onChange={(e) => {
+                                      const newEffects = { ...choice.effects };
+                                      newEffects.items.removeQuestItems[itemIndex] = e.target.value;
+                                      updateChoice(index, 'effects', newEffects);
+                                    }}
+                                    placeholder="custom_item_id"
+                                  />
+                                  <small className="form-help">
+                                    Введите уникальный ID квестового предмета для изъятия
+                                  </small>
+                                </div>
+                              </div>
+                              
+                              <button
+                                type="button"
+                                className="remove-button small"
+                                onClick={() => removeRemoveQuestItem(index, itemIndex)}
+                                title="Удалить изъятие квестового предмета"
+                              >
+                                ✕
+                              </button>
+                            </div>
+                          ))}
+                        </div>
+                      )}
                       
                       <div style={{ display: 'flex', gap: '12px', marginTop: '16px', flexWrap: 'wrap' }}>
                         <button
@@ -1443,6 +1654,20 @@ const SceneModal = ({
                           onClick={() => addQuestItemEffect(index)}
                         >
                           + Добавить квестовый предмет
+                        </button>
+                        <button
+                          type="button"
+                          className="add-effect-button remove_item"
+                          onClick={() => addRemoveItemEffect(index)}
+                        >
+                          + Удалить предмет
+                        </button>
+                        <button
+                          type="button"
+                          className="add-effect-button remove_quest_item"
+                          onClick={() => addRemoveQuestItemEffect(index)}
+                        >
+                          + Удалить квестовый предмет
                         </button>
                       </div>
                     </div>
