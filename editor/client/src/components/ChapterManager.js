@@ -34,7 +34,12 @@ const ChapterManager = ({ episode, selectedChapter, onChapterSelect, onEpisodeUp
   const handleDeleteChapter = async (chapterId) => {
     if (window.confirm('Вы уверены, что хотите удалить эту главу?')) {
       try {
-        const response = await fetch(`${API_BASE_URL}/episodes/${episode.id}/chapters/${chapterId}`, {
+        // Определяем правильный путь к главе (как в App.js)
+        const chapterPath = (episode.id === 'mansion' || episode.id === 'tutorial')
+          ? `chapter${chapterId}`
+          : chapterId;
+        
+        const response = await fetch(`${API_BASE_URL}/episodes/${episode.id}/chapters/${chapterPath}`, {
           method: 'DELETE'
         });
 
@@ -62,8 +67,15 @@ const ChapterManager = ({ episode, selectedChapter, onChapterSelect, onEpisodeUp
     e.preventDefault();
     
     try {
+      // Определяем правильный путь к главе (как в App.js)
+      const chapterPath = editingChapter 
+        ? ((episode.id === 'mansion' || episode.id === 'tutorial')
+            ? `chapter${editingChapter.id}`
+            : editingChapter.id)
+        : null;
+      
       const url = editingChapter 
-        ? `${API_BASE_URL}/episodes/${episode.id}/chapters/${editingChapter.id}`
+        ? `${API_BASE_URL}/episodes/${episode.id}/chapters/${chapterPath}`
         : `${API_BASE_URL}/episodes/${episode.id}/chapters`;
       
       const method = editingChapter ? 'PUT' : 'POST';

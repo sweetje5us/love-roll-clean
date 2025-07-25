@@ -63,7 +63,12 @@ const ShopModal = ({ isOpen, onClose }) => {
   const [currentDiscountIndex, setCurrentDiscountIndex] = useState(0);
   
   // Проверяем, есть ли предметы, которые не найдены в данных
-  const missingItems = Object.keys(inventoryData).filter(itemId => !getItemById(itemId));
+  const missingItems = Object.keys(inventoryData).filter(itemId => {
+    const item = getItemById(itemId, inventoryData);
+    const inventoryItem = inventoryData[itemId];
+    // Предмет считается найденным, если он есть в стандартных данных ИЛИ имеет полные данные в инвентаре
+    return !item && (!inventoryItem || !inventoryItem.name || !inventoryItem.description);
+  });
   if (missingItems.length > 0) {
     console.warn('ShopModal - Предметы не найдены в данных:', missingItems);
   }
@@ -456,6 +461,7 @@ const ShopModal = ({ isOpen, onClose }) => {
                     <option value="all">Все предметы</option>
                     <option value="consumable">Расходники</option>
                     <option value="gift">Подарки</option>
+                    <option value="quest">Квестовые</option>
                     <option value="clothing">Одежда</option>
                     <option value="pet">Питомцы</option>
                     <option value="chest">Сундуки</option>

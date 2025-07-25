@@ -1,6 +1,7 @@
 // Универсальный менеджер для загрузки и управления эпизодами
 import { getEpisodeSave, saveEpisodeProgress, saveGameState, getLastSave, saveImportantChoice, getImportantChoices } from './saveUtils';
 import itemsData from '../data/items.json';
+import { isCustomQuestItem } from './questItemUtils';
 
 class EpisodeManager {
   constructor() {
@@ -639,16 +640,53 @@ class EpisodeManager {
     // Добавление предметов
     if (itemEffects.add) {
       const itemsToAdd = Array.isArray(itemEffects.add) ? itemEffects.add : [itemEffects.add];
-      itemsToAdd.forEach(itemId => {
-        this.inventoryManager.addItem(itemId, 1);
+      itemsToAdd.forEach(item => {
+        let itemId, itemData;
         
-        // Показываем уведомление о получении предмета
-        if (window.addNotification) {
-          const itemName = this.getItemName(itemId);
-          window.addNotification('item_received', {
-            message: `Получен предмет "${itemName}"`,
-            itemName: itemName
-          });
+        if (typeof item === 'string') {
+          // Старый формат: передается только ID
+          itemId = item;
+          itemData = this.getItemById(itemId);
+        } else if (typeof item === 'object' && isCustomQuestItem(item)) {
+          // Новый формат: передается объект кастомного квестового предмета
+          itemId = item.id;
+          itemData = item;
+        } else {
+          console.warn('Неподдерживаемый формат предмета:', item);
+          return;
+        }
+        
+        if (!itemId) {
+          console.warn('Не удалось определить ID предмета');
+          return;
+        }
+        
+        // Добавляем предмет с полными данными
+        if (itemData && typeof itemData === 'object' && itemData.name) {
+          console.log('Добавляем кастомный предмет:', { itemId, itemData });
+          // Передаем объект кастомного предмета как первый параметр
+          this.inventoryManager.addItem(itemData, 1);
+          
+          // Показываем квестовое уведомление
+          if (window.addNotification) {
+            const notificationType = itemData.type === 'quest' ? 'quest_item_received' : 'item_received';
+            window.addNotification(notificationType, {
+              message: `Получен ${itemData.type === 'quest' ? 'квестовый предмет' : 'предмет'} "${itemData.name}"`,
+              itemName: itemData.name
+            });
+          }
+        } else {
+          // Обычный предмет - добавляем только по ID
+          this.inventoryManager.addItem(itemId, 1);
+          
+          // Показываем обычное уведомление
+          if (window.addNotification) {
+            const itemName = this.getItemName(itemId);
+            window.addNotification('item_received', {
+              message: `Получен предмет "${itemName}"`,
+              itemName: itemName
+            });
+          }
         }
       });
     }
@@ -672,6 +710,68 @@ class EpisodeManager {
   }
 
   /**
+   * Получение предмета по ID
+   * @param {string} itemId - ID предмета
+   * @returns {Object|null} - Объект предмета или null
+   */
+  getItemById(itemId) {
+    console.log(`EpisodeManager.getItemById вызвана для: ${itemId}`);
+    
+    // Проверяем в импортированных данных предметов
+    if (itemsData && itemsData.items) {
+      console.log('EpisodeManager: импортированные itemsData доступны');
+      
+      // Проверяем все категории предметов
+      const categories = ['consumable', 'quest', 'pet', 'clothing', 'chest', 'key', 'gifts'];
+      
+      for (const category of categories) {
+        const categoryItems = itemsData.items[category];
+        if (categoryItems && categoryItems[itemId]) {
+          console.log(`EpisodeManager: найден предмет в категории ${category}: ${itemId}`);
+          return categoryItems[itemId];
+        }
+      }
+      console.log(`EpisodeManager: предмет ${itemId} не найден в импортированных itemsData`);
+    } else {
+      console.log('EpisodeManager: импортированные itemsData недоступны');
+    }
+    
+    // Проверяем в загруженных данных предметов (для обратной совместимости)
+    if (this.itemsData && this.itemsData.items) {
+      console.log('EpisodeManager: загруженные itemsData доступны');
+      
+      const categories = ['consumable', 'quest', 'pet', 'clothing', 'chest', 'key', 'gifts'];
+      
+      for (const category of categories) {
+        const categoryItems = this.itemsData.items[category];
+        if (categoryItems && categoryItems[itemId]) {
+          console.log(`EpisodeManager: найден предмет в загруженных itemsData категории ${category}: ${itemId}`);
+          return categoryItems[itemId];
+        }
+      }
+      console.log(`EpisodeManager: предмет ${itemId} не найден в загруженных itemsData`);
+    }
+    
+    // Проверяем в episodeData.items (для обратной совместимости)
+    if (this.episodeData && this.episodeData.items && this.episodeData.items.items) {
+      console.log('EpisodeManager: episodeData.items доступен');
+      
+      const categories = ['consumable', 'quest', 'pet', 'clothing', 'chest', 'key', 'gifts'];
+      
+      for (const category of categories) {
+        const categoryItems = this.episodeData.items.items[category];
+        if (categoryItems && categoryItems[itemId]) {
+          console.log(`EpisodeManager: найден предмет в episodeData.items категории ${category}: ${itemId}`);
+          return categoryItems[itemId];
+        }
+      }
+      console.log(`EpisodeManager: предмет ${itemId} не найден в episodeData.items`);
+    }
+    
+    return null;
+  }
+
+  /**
    * Получение имени предмета по ID
    * @param {string} itemId - ID предмета
    * @returns {string} - Имя предмета
@@ -684,7 +784,7 @@ class EpisodeManager {
       console.log('EpisodeManager: импортированные itemsData доступны');
       
       // Проверяем все категории предметов
-      const categories = ['consumable', 'material', 'special', 'pet', 'clothing', 'chest', 'key'];
+      const categories = ['consumable', 'quest', 'pet', 'clothing', 'chest', 'key', 'gifts'];
       
       for (const category of categories) {
         const categoryItems = itemsData.items[category];
@@ -703,7 +803,7 @@ class EpisodeManager {
     if (this.itemsData && this.itemsData.items) {
       console.log('EpisodeManager: загруженные itemsData доступны');
       
-      const categories = ['consumable', 'material', 'special', 'pet', 'clothing', 'chest', 'key'];
+      const categories = ['consumable', 'quest', 'pet', 'clothing', 'chest', 'key', 'gifts'];
       
       for (const category of categories) {
         const categoryItems = this.itemsData.items[category];
@@ -720,7 +820,7 @@ class EpisodeManager {
     if (this.episodeData && this.episodeData.items && this.episodeData.items.items) {
       console.log('EpisodeManager: episodeData.items доступен');
       
-      const categories = ['consumable', 'material', 'special', 'pet', 'clothing', 'chest', 'key'];
+      const categories = ['consumable', 'quest', 'pet', 'clothing', 'chest', 'key', 'gifts'];
       
       for (const category of categories) {
         const categoryItems = this.episodeData.items.items[category];
@@ -745,54 +845,92 @@ class EpisodeManager {
   applyChoiceEffects(effects) {
     if (!effects) return;
     
-    for (const [effectType, value] of Object.entries(effects)) {
-      switch (effectType) {
-        case 'experience':
-          if (this.characterManager && value.characterId && value.amount) {
-            this.addExperienceToCharacter(value.characterId, value.amount);
-          }
-          break;
-        case 'relationship':
-        case 'relationships':
-          // Обновляем отношения с персонажами
-          if (this.relationshipsManager) {
-            // Используем глобальную систему отношений
-            for (const [characterId, change] of Object.entries(value)) {
-              // Получаем ID текущего персонажа игрока
-              const playerCharacterId = this.getCurrentPlayerCharacterId();
+    // Проверяем, является ли effects массивом (старая структура)
+    if (Array.isArray(effects)) {
+      // Старая структура: массив эффектов
+      effects.forEach(effect => {
+        switch (effect.type) {
+          case 'item':
+            // Обрабатываем обычный предмет
+            if (this.inventoryManager && effect.targetId) {
+              this.inventoryManager.addItem(effect.targetId, effect.value || 1);
               
-              if (playerCharacterId) {
-                const oldValue = this.relationshipsManager.getRelationship(playerCharacterId, characterId, 'friendship');
-                this.relationshipsManager.changeRelationship(playerCharacterId, characterId, 'friendship', change);
-                // Читаем актуальное значение из localStorage после изменения
-                const newValue = this.relationshipsManager.getRelationship(playerCharacterId, characterId, 'friendship');
-                console.log(`RELATIONSHIP: ${playerCharacterId} -> ${characterId}: ${oldValue} -> ${newValue} (+${change})`);
-              } else {
-                console.warn(`EpisodeManager: не удалось получить ID персонажа игрока`);
+              // Показываем уведомление о получении предмета
+              if (window.addNotification) {
+                const itemName = this.getItemName(effect.targetId);
+                window.addNotification('item_received', {
+                  message: `Получен предмет "${itemName}"`,
+                  itemName: itemName
+                });
               }
             }
-          } else {
-            // Fallback на локальную систему прогресса
-            for (const [characterId, change] of Object.entries(value)) {
-              const currentValue = this.episodeProgress.progress[`relation_${characterId}`] || 0;
-              this.episodeProgress.progress[`relation_${characterId}`] = currentValue + change;
+            break;
+          case 'relationship':
+            // Обрабатываем отношения
+            if (this.relationshipsManager && effect.targetId) {
+              this.relationshipsManager.changeRelationship(
+                this.episodeProgress.playerCharacterId,
+                effect.targetId,
+                'friendship',
+                effect.value || 0
+              );
             }
-          }
-          break;
-        case 'items':
-          // Обрабатываем предметы
-          this.processItemEffects(value);
-          break;
-        case 'stats':
-          // Обновляем характеристики
-          for (const [statName, change] of Object.entries(value)) {
-            const currentValue = this.episodeProgress.progress[`stat_${statName}`] || 0;
-            this.episodeProgress.progress[`stat_${statName}`] = currentValue + change;
-          }
-          break;
-        default:
-          console.log(`EpisodeManager: неизвестный тип эффекта: ${effectType}`);
-          break;
+            break;
+          default:
+            console.warn(`Неизвестный тип эффекта: ${effect.type}`);
+        }
+      });
+    } else {
+      // Новая структура: объект с items/relationships
+      for (const [effectType, value] of Object.entries(effects)) {
+        switch (effectType) {
+          case 'experience':
+            if (this.characterManager && value.characterId && value.amount) {
+              this.addExperienceToCharacter(value.characterId, value.amount);
+            }
+            break;
+          case 'relationship':
+          case 'relationships':
+            // Обновляем отношения с персонажами
+            if (this.relationshipsManager) {
+              // Используем глобальную систему отношений
+              for (const [characterId, change] of Object.entries(value)) {
+                // Получаем ID текущего персонажа игрока
+                const playerCharacterId = this.getCurrentPlayerCharacterId();
+                
+                if (playerCharacterId) {
+                  const oldValue = this.relationshipsManager.getRelationship(playerCharacterId, characterId, 'friendship');
+                  this.relationshipsManager.changeRelationship(playerCharacterId, characterId, 'friendship', change);
+                  // Читаем актуальное значение из localStorage после изменения
+                  const newValue = this.relationshipsManager.getRelationship(playerCharacterId, characterId, 'friendship');
+                  console.log(`RELATIONSHIP: ${playerCharacterId} -> ${characterId}: ${oldValue} -> ${newValue} (+${change})`);
+                } else {
+                  console.warn(`EpisodeManager: не удалось получить ID персонажа игрока`);
+                }
+              }
+            } else {
+              // Fallback на локальную систему прогресса
+              for (const [characterId, change] of Object.entries(value)) {
+                const currentValue = this.episodeProgress.progress[`relation_${characterId}`] || 0;
+                this.episodeProgress.progress[`relation_${characterId}`] = currentValue + change;
+              }
+            }
+            break;
+          case 'items':
+            // Обрабатываем предметы
+            this.processItemEffects(value);
+            break;
+          case 'stats':
+            // Обновляем характеристики
+            for (const [statName, change] of Object.entries(value)) {
+              const currentValue = this.episodeProgress.progress[`stat_${statName}`] || 0;
+              this.episodeProgress.progress[`stat_${statName}`] = currentValue + change;
+            }
+            break;
+          default:
+            console.log(`EpisodeManager: неизвестный тип эффекта: ${effectType}`);
+            break;
+        }
       }
     }
     

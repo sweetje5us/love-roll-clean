@@ -1,5 +1,6 @@
 {
   "id": "scene1",
+  "chapterId": "1",
   "name": "Добро пожаловать в игру",
   "background": "sprites/episodes/locations/mansion/mansion_outside.png",
   "characters": [],
@@ -25,12 +26,57 @@
       "id": "choice1",
       "text": "Тогда начнем.",
       "nextScene": "scene2"
-     
+    },
+    {
+      "id": "scene1_choice2",
+      "text": "получить обычный предмет",
+      "nextScene": "scene2",
+      "important": false,
+      "value": "",
+      "description": "",
+      "consequences": [
+        ""
+      ],
+      "effects": [
+        {
+          "id": "effect_1753455992774_5xa4jii59",
+          "type": "item",
+          "targetId": "basic_charisma_potion",
+          "value": 1
+        }
+      ],
+      "diceCheck": null,
+      "specialInteraction": "",
+      "requiredItem": "",
+      "conditions": {}
+    },
+    {
+      "id": "scene1_choice3",
+      "text": "получить квестовый предмет",
+      "nextScene": "scene2",
+      "important": false,
+      "value": "",
+      "description": "",
+      "consequences": [
+        ""
+      ],
+      "effects": {
+        "items": {
+          "add": [
+            {
+              "id": "test_quest_item2",
+              "name": "Тестовый квестовый предмет 2",
+              "description": "Описание тестового квестового предмета 2",
+              "type": "quest",
+              "type_of_quest_item": "coral"
+            }
+          ]
+        }
+      },
+      "diceCheck": null,
+      "specialInteraction": "",
+      "requiredItem": "",
+      "conditions": {}
     }
-  ],
-  "requirements": {},
-  "rewards": {
-    "experience": 0,
-    "coins": 0
-  }
-} 
+  ]
+}

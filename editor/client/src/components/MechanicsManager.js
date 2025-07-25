@@ -35,8 +35,14 @@ const MechanicsManager = ({ selectedEpisode, selectedChapter }) => {
 
     try {
       setLoading(true);
-      console.log(`MechanicsManager: Загружаем сцены для эпизода: ${selectedEpisode.id}, главы: ${selectedChapter.id}`);
-      const response = await fetch(`${API_BASE_URL}/episodes/${selectedEpisode.id}/chapters/${selectedChapter.id}/scenes`);
+      
+      // Определяем правильный путь к главе (как в App.js)
+      const chapterPath = (selectedEpisode.id === 'mansion' || selectedEpisode.id === 'tutorial')
+        ? `chapter${selectedChapter.id}`
+        : selectedChapter.id;
+      
+      console.log(`MechanicsManager: Загружаем сцены для эпизода: ${selectedEpisode.id}, главы: ${chapterPath}`);
+      const response = await fetch(`${API_BASE_URL}/episodes/${selectedEpisode.id}/chapters/${chapterPath}/scenes`);
       if (response.ok) {
         const data = await response.json();
         console.log(`MechanicsManager: Получено сцен: ${data.length}`);
@@ -59,7 +65,12 @@ const MechanicsManager = ({ selectedEpisode, selectedChapter }) => {
 
   const handleSaveMechanics = async (updatedScene) => {
     try {
-      const response = await fetch(`${API_BASE_URL}/episodes/${selectedEpisode.id}/scenes/${updatedScene.id}`, {
+      // Определяем правильный путь к главе (как в App.js)
+      const chapterPath = (selectedEpisode.id === 'mansion' || selectedEpisode.id === 'tutorial')
+        ? `chapter${selectedChapter.id}`
+        : selectedChapter.id;
+      
+      const response = await fetch(`${API_BASE_URL}/episodes/${selectedEpisode.id}/chapters/${chapterPath}/scenes/${updatedScene.id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json'

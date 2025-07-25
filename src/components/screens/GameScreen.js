@@ -17,6 +17,7 @@ import InventoryModal from '../ui/InventoryModal';
 import PauseMenuModal from '../ui/PauseMenuModal';
 import PetModal from '../ui/PetModal';
 import NotificationSystem from '../ui/NotificationSystem';
+import GameNotificationSystem from '../ui/GameNotificationSystem';
 import InlineDiceRoll from '../ui/InlineDiceRoll';
 import EpisodeCompleteScreen from '../ui/EpisodeCompleteScreen';
 import { buildCharacterSprite } from '../../utils/characterUtils';
@@ -1789,6 +1790,7 @@ const GameScreen = () => {
 
       {/* Система уведомлений */}
       <NotificationSystem />
+      <GameNotificationSystem />
 
       {/* Экран завершения эпизода */}
       <EpisodeCompleteScreen

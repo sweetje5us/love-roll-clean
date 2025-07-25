@@ -545,6 +545,10 @@
   background: #8b5cf6;
 }
 
+.effect-type-badge.quest_item {
+  background: #f59e0b;
+}
+
 .effect-details {
   flex: 1;
   display: flex;
@@ -590,6 +594,14 @@
 
 .add-effect-button.relationship:hover {
   background: #7c3aed;
+}
+
+.add-effect-button.quest {
+  background: #f59e0b;
+}
+
+.add-effect-button.quest:hover {
+  background: #d97706;
 }
 
 .modal-actions {

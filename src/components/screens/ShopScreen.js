@@ -786,6 +786,7 @@ const ShopScreen = () => {
                 <option value="all">Все предметы</option>
                 <option value="consumable">Расходуемые</option>
                 <option value="gift">Подарки</option>
+                <option value="quest">Квестовые</option>
                 <option value="key">Ключи</option>
                 <option value="pet">Питомцы</option>
                 <option value="clothing">Одежда</option>

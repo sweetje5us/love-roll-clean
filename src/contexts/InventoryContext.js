@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { getItemById } from '../utils/itemUtils';
+import { isCustomQuestItem } from '../utils/questItemUtils';
 import itemsData from '../data/items.json';
 
 const InventoryContext = createContext();
@@ -46,15 +47,50 @@ export const InventoryProvider = ({ children }) => {
   }, []); // Выполняется только при первой загрузке
 
   // Добавить предмет в инвентарь
-  const addItem = (itemId, quantity = 1) => {
-    setInventory(prev => ({
-      ...prev,
-      [itemId]: {
-        ...prev[itemId],
-        quantity: (prev[itemId]?.quantity || 0) + quantity,
+  const addItem = (itemIdOrObject, quantity = 1, customData = null) => {
+    let itemId, itemData;
+
+    if (typeof itemIdOrObject === 'string') {
+      // Старый формат: передается только ID
+      itemId = itemIdOrObject;
+      itemData = getItemById(itemId);
+    } else if (typeof itemIdOrObject === 'object' && isCustomQuestItem(itemIdOrObject)) {
+      // Новый формат: передается объект кастомного квестового предмета
+      itemId = itemIdOrObject.id;
+      itemData = itemIdOrObject;
+    } else {
+      console.warn('Неподдерживаемый формат предмета:', itemIdOrObject);
+      return;
+    }
+
+    if (!itemId) {
+      console.warn('Не удалось определить ID предмета');
+      return;
+    }
+
+    console.log('InventoryContext.addItem - входные данные:', { itemId, itemData, customData });
+
+    setInventory(prev => {
+      const existingItem = prev[itemId] || {};
+      const newQuantity = (existingItem.quantity || 0) + quantity;
+      
+      // Если переданы кастомные данные, используем их
+      const finalItemData = customData || itemData || {};
+      
+      const newItem = {
+        ...existingItem,
+        ...finalItemData, // Добавляем данные предмета (имя, описание, тип и т.д.)
+        quantity: newQuantity,
         lastAdded: new Date().toISOString()
-      }
-    }));
+      };
+      
+      console.log('InventoryContext.addItem - новый предмет:', { itemId, newItem });
+      
+      return {
+        ...prev,
+        [itemId]: newItem
+      };
+    });
   };
 
   // Удалить предмет из инвентаря

@@ -5,6 +5,8 @@ import { useCharacters } from '../../contexts/CharacterContext';
 import { useRelationships } from '../../contexts/RelationshipsContext';
 import { useInventory } from '../../contexts/InventoryContext';
 import { useCurrency } from '../../contexts/CurrencyContext';
+import { createCustomQuestItem } from '../../utils/questItemUtils';
+import itemsData from '../../data/items.json';
 import './PauseMenuModal.css';
 
 const PauseMenuModal = ({ isOpen, onClose, onContinue }) => {
@@ -21,6 +23,31 @@ const PauseMenuModal = ({ isOpen, onClose, onContinue }) => {
   const [testItemId, setTestItemId] = useState('apple');
   const [testGold, setTestGold] = useState(100);
   const [testGems, setTestGems] = useState(10);
+  
+  // Состояние для кастомных квестовых предметов
+  const [customQuestItemId, setCustomQuestItemId] = useState('door_key_1');
+  const [customQuestItemName, setCustomQuestItemName] = useState('Ключ от двери чердака');
+  const [customQuestItemDescription, setCustomQuestItemDescription] = useState('Загадочный ключ от неизвестной двери');
+
+  // Получаем все квестовые предметы из items.json
+  const questTemplates = Object.values(itemsData.items.quest || {});
+
+  // Обработчик выбора шаблона
+  const handleQuestTemplateChange = (e) => {
+    const selectedId = e.target.value;
+    const template = questTemplates.find(q => q.id === selectedId);
+    if (template) {
+      setCustomQuestItemId(template.id);
+      setCustomQuestItemName(template.name);
+      setCustomQuestItemDescription(template.description);
+      setCustomQuestItemSprite(template.sprite || '');
+      setCustomQuestItemRarity(template.rarity || 'common');
+    }
+  };
+
+  // Состояния для всех полей кастомного предмета
+  const [customQuestItemSprite, setCustomQuestItemSprite] = useState('');
+  const [customQuestItemRarity, setCustomQuestItemRarity] = useState('common');
 
   // Получаем данные выбранного персонажа
   const { getNavigationParams } = useScreen();
@@ -79,6 +106,19 @@ const PauseMenuModal = ({ isOpen, onClose, onContinue }) => {
     const testItems = ['apple', 'health_potion', 'mana_potion', 'basic_chest', 'old_key'];
     testItems.forEach(itemId => addItem(itemId, 5));
     alert('Добавлены тестовые предметы!');
+  };
+
+  const handleAddCustomQuestItem = () => {
+    const customQuestItem = createCustomQuestItem({
+      id: customQuestItemId,
+      name: customQuestItemName,
+      description: customQuestItemDescription,
+      rarity: customQuestItemRarity,
+      sprite: customQuestItemSprite
+    });
+    
+    addItem(customQuestItem, 1);
+    alert(`Добавлен кастомный квестовый предмет "${customQuestItemName}"!`);
   };
 
   return (
@@ -213,6 +253,52 @@ const PauseMenuModal = ({ isOpen, onClose, onContinue }) => {
                   <button onClick={handleAddAllTestItems} className="test-btn">
                     <i className="fas fa-boxes"></i>
                     Добавить тестовые предметы
+                  </button>
+                </div>
+
+                {/* Кастомные квестовые предметы */}
+                <div className="test-function-group">
+                  <label>Кастомный квестовый предмет:</label>
+                  <select value={customQuestItemId} onChange={handleQuestTemplateChange}>
+                    <option value="">Выберите шаблон...</option>
+                    {questTemplates.map(q => (
+                      <option key={q.id} value={q.id}>{q.name} ({q.id})</option>
+                    ))}
+                  </select>
+                  <input
+                    type="text"
+                    value={customQuestItemId}
+                    onChange={(e) => setCustomQuestItemId(e.target.value)}
+                    placeholder="door_key_1"
+                  />
+                  <input
+                    type="text"
+                    value={customQuestItemName}
+                    onChange={(e) => setCustomQuestItemName(e.target.value)}
+                    placeholder="Ключ от двери чердака"
+                  />
+                  <input
+                    type="text"
+                    value={customQuestItemDescription}
+                    onChange={(e) => setCustomQuestItemDescription(e.target.value)}
+                    placeholder="Загадочный ключ от неизвестной двери"
+                  />
+                  <input
+                    type="text"
+                    value={customQuestItemSprite}
+                    onChange={(e) => setCustomQuestItemSprite(e.target.value)}
+                    placeholder="sprites/items/quest/key.png"
+                  />
+                  <select value={customQuestItemRarity} onChange={e => setCustomQuestItemRarity(e.target.value)}>
+                    <option value="common">Обычное</option>
+                    <option value="uncommon">Необычное</option>
+                    <option value="rare">Редкое</option>
+                    <option value="legendary">Невероятное</option>
+                    <option value="mythical">Мистическое</option>
+                  </select>
+                  <button onClick={handleAddCustomQuestItem} className="test-btn quest-btn">
+                    <i className="fas fa-key"></i>
+                    Добавить квестовый предмет
                   </button>
                 </div>
 

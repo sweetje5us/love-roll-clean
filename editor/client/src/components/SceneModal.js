@@ -28,12 +28,18 @@ const SceneModal = ({
   const [items, setItems] = useState({});
   const [loadingItems, setLoadingItems] = useState(false);
   const [storedImportantChoices, setStoredImportantChoices] = useState([]);
+  const [questItems, setQuestItems] = useState([]);
+  const [loadingQuestItems, setLoadingQuestItems] = useState(false);
+  const [episodeQuestItems, setEpisodeQuestItems] = useState([]);
+  const [loadingEpisodeQuestItems, setLoadingEpisodeQuestItems] = useState(false);
 
   // Загружаем персонажей эпизода и предметы
   useEffect(() => {
     if (episodeId) {
       loadEpisodeCharacters();
       loadItems();
+      loadQuestItems();
+      loadEpisodeQuestItems();
       loadStoredImportantChoices();
     }
   }, [episodeId, chapterId]);
@@ -75,6 +81,46 @@ const SceneModal = ({
       setItems({});
     } finally {
       setLoadingItems(false);
+    }
+  };
+
+  const loadQuestItems = async () => {
+    try {
+      setLoadingQuestItems(true);
+      const response = await fetch(`${API_BASE_URL}/quest-items`);
+      if (response.ok) {
+        const data = await response.json();
+        setQuestItems(data);
+      } else {
+        console.error('Ошибка загрузки квестовых предметов');
+        setQuestItems([]);
+      }
+    } catch (error) {
+      console.error('Ошибка загрузки квестовых предметов:', error);
+      setQuestItems([]);
+    } finally {
+      setLoadingQuestItems(false);
+    }
+  };
+
+  const loadEpisodeQuestItems = async () => {
+    if (!episodeId) return;
+    
+    try {
+      setLoadingEpisodeQuestItems(true);
+      const response = await fetch(`${API_BASE_URL}/episodes/${episodeId}/quest-items`);
+      if (response.ok) {
+        const data = await response.json();
+        setEpisodeQuestItems(data);
+      } else {
+        console.error('Ошибка загрузки квестовых предметов эпизода');
+        setEpisodeQuestItems([]);
+      }
+    } catch (error) {
+      console.error('Ошибка загрузки квестовых предметов эпизода:', error);
+      setEpisodeQuestItems([]);
+    } finally {
+      setLoadingEpisodeQuestItems(false);
     }
   };
 
@@ -284,6 +330,37 @@ const SceneModal = ({
     });
   };
 
+  // Добавление квестового предмета в эффекты
+  const addQuestItemEffect = (choiceIndex) => {
+    setFormData(prev => {
+      const newChoices = [...prev.choices];
+      if (!newChoices[choiceIndex].effects) {
+        newChoices[choiceIndex].effects = {
+          items: {
+            add: []
+          }
+        };
+      } else if (!newChoices[choiceIndex].effects.items) {
+        newChoices[choiceIndex].effects.items = {
+          add: []
+        };
+      } else if (!newChoices[choiceIndex].effects.items.add) {
+        newChoices[choiceIndex].effects.items.add = [];
+      }
+      
+      const newQuestItem = {
+        id: '',
+        name: '',
+        description: '',
+        type: 'quest',
+        type_of_quest_item: ''
+      };
+      
+      newChoices[choiceIndex].effects.items.add.push(newQuestItem);
+      return { ...prev, choices: newChoices };
+    });
+  };
+
   const updateEffect = (choiceIndex, effectIndex, field, value) => {
     setFormData(prev => {
       const newChoices = [...prev.choices];
@@ -292,10 +369,41 @@ const SceneModal = ({
     });
   };
 
+  const updateQuestItemEffect = (choiceIndex, itemIndex, field, value) => {
+    setFormData(prev => {
+      const newChoices = [...prev.choices];
+      if (newChoices[choiceIndex].effects && 
+          newChoices[choiceIndex].effects.items && 
+          newChoices[choiceIndex].effects.items.add && 
+          newChoices[choiceIndex].effects.items.add[itemIndex]) {
+        newChoices[choiceIndex].effects.items.add[itemIndex][field] = value;
+      }
+      return { ...prev, choices: newChoices };
+    });
+  };
+
   const removeEffect = (choiceIndex, effectIndex) => {
     setFormData(prev => {
       const newChoices = [...prev.choices];
-      newChoices[choiceIndex].effects.splice(effectIndex, 1);
+      if (Array.isArray(newChoices[choiceIndex].effects)) {
+        newChoices[choiceIndex].effects.splice(effectIndex, 1);
+      }
+      return { ...prev, choices: newChoices };
+    });
+  };
+
+  const removeQuestItem = (choiceIndex, itemIndex) => {
+    setFormData(prev => {
+      const newChoices = [...prev.choices];
+      if (newChoices[choiceIndex].effects && 
+          newChoices[choiceIndex].effects.items && 
+          newChoices[choiceIndex].effects.items.add) {
+        newChoices[choiceIndex].effects.items.add.splice(itemIndex, 1);
+        // Если массив пустой, удаляем весь объект effects
+        if (newChoices[choiceIndex].effects.items.add.length === 0) {
+          delete newChoices[choiceIndex].effects;
+        }
+      }
       return { ...prev, choices: newChoices };
     });
   };
@@ -371,6 +479,9 @@ const SceneModal = ({
           if (!updatedChoice.requirements.item || updatedChoice.requirements.item.trim() === '') {
             delete updatedChoice.requirements.item;
           }
+          if (!updatedChoice.requirements.questItem || updatedChoice.requirements.questItem.trim() === '') {
+            delete updatedChoice.requirements.questItem;
+          }
           if (Object.keys(updatedChoice.requirements).length === 0) {
             delete updatedChoice.requirements;
           }
@@ -378,11 +489,33 @@ const SceneModal = ({
         
         // Очищаем пустые эффекты
         if (updatedChoice.effects) {
-          updatedChoice.effects = updatedChoice.effects.filter(effect => 
-            effect.targetId && effect.targetId.trim() !== ''
-          );
-          if (updatedChoice.effects.length === 0) {
-            delete updatedChoice.effects;
+          if (Array.isArray(updatedChoice.effects)) {
+            // Старая структура (массив эффектов)
+            updatedChoice.effects = updatedChoice.effects.filter(effect => {
+              if (effect.type === 'quest_item') {
+                // Для квестовых предметов проверяем наличие данных
+                return effect.questItemData && 
+                       effect.questItemData.id && 
+                       effect.questItemData.id.trim() !== '' &&
+                       effect.questItemData.name && 
+                       effect.questItemData.name.trim() !== '';
+              } else {
+                // Для обычных эффектов проверяем targetId
+                return effect.targetId && effect.targetId.trim() !== '';
+              }
+            });
+            if (updatedChoice.effects.length === 0) {
+              delete updatedChoice.effects;
+            }
+          } else if (updatedChoice.effects.items && updatedChoice.effects.items.add) {
+            // Новая структура (объект с items/add)
+            updatedChoice.effects.items.add = updatedChoice.effects.items.add.filter(item => 
+              item.id && item.id.trim() !== '' && 
+              item.name && item.name.trim() !== ''
+            );
+            if (updatedChoice.effects.items.add.length === 0) {
+              delete updatedChoice.effects;
+            }
           }
         }
         
@@ -407,6 +540,21 @@ const SceneModal = ({
       });
     });
     return allItems;
+  };
+
+  // Получаем все доступные квестовые предметы (стандартные + кастомные)
+  const getAllQuestItems = () => {
+    const allQuestItems = [...questItems];
+    
+    // Добавляем кастомные квестовые предметы эпизода
+    episodeQuestItems.forEach(item => {
+      allQuestItems.push({
+        ...item,
+        isCustom: true
+      });
+    });
+    
+    return allQuestItems;
   };
 
   return (
@@ -1017,8 +1165,26 @@ const SceneModal = ({
                           >
                             <option value="">Выберите предмет</option>
                             {getAllItems().map(item => (
-                              <option key={item.id} value={item.id}>
+                              <option key={item.category + '_' + item.id} value={item.id}>
                                 {item.name} ({item.id})
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+                      </div>
+                      
+                      <div className="requirements-section">
+                        <h6>Требуемый квестовый предмет</h6>
+                        <div className="form-group">
+                          <label>Квестовый предмет:</label>
+                          <select
+                            value={choice.requirements?.questItem || ''}
+                            onChange={(e) => updateRequirements(index, 'questItem', '', e.target.value)}
+                          >
+                            <option value="">Выберите квестовый предмет</option>
+                            {getAllQuestItems().map(item => (
+                              <option key={item.isCustom ? 'custom_' + item.id : item.id} value={item.id}>
+                                {item.name} ({item.id}){item.isCustom ? ' [Кастомный]' : ''}
                               </option>
                             ))}
                           </select>
@@ -1029,51 +1195,104 @@ const SceneModal = ({
                     <div className="choice-effects-section">
                       <h5>Эффекты</h5>
                       
-                      {choice.effects && choice.effects.map((effect, effectIndex) => (
+                      {/* Старая структура эффектов (массив) */}
+                      {choice.effects && Array.isArray(choice.effects) && choice.effects.map((effect, effectIndex) => (
                         <div key={effect.id} className="effect-item">
                           <span className={`effect-type-badge ${effect.type}`}>
-                            {effect.type === 'item' ? 'Предмет' : 'Отношения'}
+                            {effect.type === 'item' ? 'Предмет' : 
+                             effect.type === 'quest_item' ? 'Квестовый предмет' : 'Отношения'}
                           </span>
-                          
                           <div className="effect-details">
-                            <div className="form-group" style={{ margin: 0, flex: 1 }}>
-                              <label>ID:</label>
-                              {effect.type === 'item' ? (
-                                <select
-                                  value={effect.targetId}
-                                  onChange={(e) => updateEffect(index, effectIndex, 'targetId', e.target.value)}
-                                >
-                                  <option value="">Выберите предмет</option>
-                                  {getAllItems().map(item => (
-                                    <option key={item.id} value={item.id}>
-                                      {item.name} ({item.id})
-                                    </option>
-                                  ))}
-                                </select>
-                              ) : (
-                                <select
-                                  value={effect.targetId}
-                                  onChange={(e) => updateEffect(index, effectIndex, 'targetId', e.target.value)}
-                                >
-                                  <option value="">Выберите персонажа</option>
-                                  {episodeCharacters.map(char => (
-                                    <option key={char.id} value={char.id}>
-                                      {char.name} ({char.id})
-                                    </option>
-                                  ))}
-                                </select>
-                              )}
-                            </div>
+                            {effect.type === 'quest_item' ? (
+                              <div style={{ width: '100%' }}>
+                                <div className="form-row">
+                                  <div className="form-group">
+                                    <label>ID квестового предмета:</label>
+                                    <input
+                                      type="text"
+                                      value={effect.questItemData?.id || ''}
+                                      onChange={(e) => updateQuestItemEffect(index, effectIndex, 'id', e.target.value)}
+                                      placeholder="custom_key_1"
+                                    />
+                                  </div>
+                                  <div className="form-group">
+                                    <label>Название:</label>
+                                    <input
+                                      type="text"
+                                      value={effect.questItemData?.name || ''}
+                                      onChange={(e) => updateQuestItemEffect(index, effectIndex, 'name', e.target.value)}
+                                      placeholder="Ключ от двери"
+                                    />
+                                  </div>
+                                </div>
+                                <div className="form-row">
+                                  <div className="form-group">
+                                    <label>Описание:</label>
+                                    <input
+                                      type="text"
+                                      value={effect.questItemData?.description || ''}
+                                      onChange={(e) => updateQuestItemEffect(index, effectIndex, 'description', e.target.value)}
+                                      placeholder="Ключ от запертой двери"
+                                    />
+                                  </div>
+                                  <div className="form-group">
+                                    <label>Шаблон предмета:</label>
+                                    <select
+                                      value={effect.questItemData?.type_of_quest_item || ''}
+                                      onChange={(e) => updateQuestItemEffect(index, effectIndex, 'type_of_quest_item', e.target.value)}
+                                    >
+                                      <option value="">Выберите шаблон</option>
+                                      {questItems.map(item => (
+                                        <option key={item.id} value={item.id}>
+                                          {item.name} ({item.id})
+                                        </option>
+                                      ))}
+                                    </select>
+                                  </div>
+                                </div>
+                              </div>
+                            ) : (
+                              <div className="form-group" style={{ margin: 0, flex: 1 }}>
+                                <label>ID:</label>
+                                {effect.type === 'item' ? (
+                                  <select
+                                    value={effect.targetId}
+                                    onChange={(e) => updateEffect(index, effectIndex, 'targetId', e.target.value)}
+                                  >
+                                    <option value="">Выберите предмет</option>
+                                    {getAllItems().map(item => (
+                                      <option key={item.category + '_' + item.id} value={item.id}>
+                                        {item.name} ({item.id})
+                                      </option>
+                                    ))}
+                                  </select>
+                                ) : (
+                                  <select
+                                    value={effect.targetId}
+                                    onChange={(e) => updateEffect(index, effectIndex, 'targetId', e.target.value)}
+                                  >
+                                    <option value="">Выберите персонажа</option>
+                                    {episodeCharacters.map(char => (
+                                      <option key={char.id} value={char.id}>
+                                        {char.name} ({char.id})
+                                      </option>
+                                    ))}
+                                  </select>
+                                )}
+                              </div>
+                            )}
                             
-                            <div className="form-group" style={{ margin: 0, minWidth: '120px' }}>
-                              <label>Значение:</label>
-                              <input
-                                type="number"
-                                value={effect.value}
-                                onChange={(e) => updateEffect(index, effectIndex, 'value', parseInt(e.target.value) || 0)}
-                                placeholder={effect.type === 'item' ? 'Количество' : 'Изменение'}
-                              />
-                            </div>
+                            {effect.type !== 'quest_item' && (
+                              <div className="form-group" style={{ margin: 0, minWidth: '120px' }}>
+                                <label>Значение:</label>
+                                <input
+                                  type="number"
+                                  value={effect.value}
+                                  onChange={(e) => updateEffect(index, effectIndex, 'value', parseInt(e.target.value) || 0)}
+                                  placeholder={effect.type === 'item' ? 'Количество' : 'Изменение'}
+                                />
+                              </div>
+                            )}
                           </div>
                           
                           <button
@@ -1087,7 +1306,94 @@ const SceneModal = ({
                         </div>
                       ))}
                       
-                      <div style={{ display: 'flex', gap: '12px', marginTop: '16px' }}>
+                      {/* Новая структура эффектов (объект с items/add) */}
+                      {choice.effects && !Array.isArray(choice.effects) && choice.effects.items && choice.effects.items.add && (
+                        <div>
+                          {choice.effects.items.add.map((item, itemIndex) => (
+                            <div key={itemIndex} className="effect-item">
+                              <span className="effect-type-badge quest_item">
+                                Квестовый предмет
+                              </span>
+                              <div className="effect-details">
+                                <div style={{ width: '100%' }}>
+                                  <div className="form-row">
+                                    <div className="form-group">
+                                      <label>ID предмета:</label>
+                                      <input
+                                        type="text"
+                                        value={item.id || ''}
+                                        onChange={(e) => {
+                                          const newEffects = { ...choice.effects };
+                                          newEffects.items.add[itemIndex].id = e.target.value;
+                                          updateChoice(index, 'effects', newEffects);
+                                        }}
+                                        placeholder="custom_item_id"
+                                      />
+                                    </div>
+                                    <div className="form-group">
+                                      <label>Название:</label>
+                                      <input
+                                        type="text"
+                                        value={item.name || ''}
+                                        onChange={(e) => {
+                                          const newEffects = { ...choice.effects };
+                                          newEffects.items.add[itemIndex].name = e.target.value;
+                                          updateChoice(index, 'effects', newEffects);
+                                        }}
+                                        placeholder="Название предмета"
+                                      />
+                                    </div>
+                                  </div>
+                                  <div className="form-row">
+                                    <div className="form-group">
+                                      <label>Описание:</label>
+                                      <input
+                                        type="text"
+                                        value={item.description || ''}
+                                        onChange={(e) => {
+                                          const newEffects = { ...choice.effects };
+                                          newEffects.items.add[itemIndex].description = e.target.value;
+                                          updateChoice(index, 'effects', newEffects);
+                                        }}
+                                        placeholder="Описание предмета"
+                                      />
+                                    </div>
+                                    <div className="form-group">
+                                      <label>Шаблон предмета:</label>
+                                      <select
+                                        value={item.type_of_quest_item || ''}
+                                        onChange={(e) => {
+                                          const newEffects = { ...choice.effects };
+                                          newEffects.items.add[itemIndex].type_of_quest_item = e.target.value;
+                                          updateChoice(index, 'effects', newEffects);
+                                        }}
+                                      >
+                                        <option value="">Выберите шаблон</option>
+                                        {questItems.map(questItem => (
+                                          <option key={questItem.id} value={questItem.id}>
+                                            {questItem.name} ({questItem.id})
+                                          </option>
+                                        ))}
+                                      </select>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                              
+                              <button
+                                type="button"
+                                className="remove-button small"
+                                onClick={() => removeQuestItem(index, itemIndex)}
+                                title="Удалить квестовый предмет"
+                              >
+                                ✕
+                              </button>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                      
+                      <div style={{ display: 'flex', gap: '12px', marginTop: '16px', flexWrap: 'wrap' }}>
                         <button
                           type="button"
                           className="add-effect-button"
@@ -1101,6 +1407,13 @@ const SceneModal = ({
                           onClick={() => addEffect(index, 'relationship')}
                         >
                           + Добавить отношения
+                        </button>
+                        <button
+                          type="button"
+                          className="add-effect-button quest"
+                          onClick={() => addQuestItemEffect(index)}
+                        >
+                          + Добавить квестовый предмет
                         </button>
                       </div>
                     </div>

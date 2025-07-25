@@ -18,9 +18,14 @@ const SceneTreeView = ({ selectedEpisode, selectedChapter, onSceneEdit, onSceneC
 
     setIsLoading(true);
     try {
+      // Определяем правильный путь к главе (как в App.js)
+      const chapterPath = (selectedEpisode.id === 'mansion' || selectedEpisode.id === 'tutorial')
+        ? `chapter${selectedChapter.id}`
+        : selectedChapter.id;
+      
       // Загружаем сцены через API
-      console.log(`SceneTreeView: Загружаем сцены для эпизода: ${selectedEpisode.id}, главы: ${selectedChapter.id}`);
-      const response = await fetch(`${API_BASE_URL}/episodes/${selectedEpisode.id}/chapters/${selectedChapter.id}/scenes`);
+      console.log(`SceneTreeView: Загружаем сцены для эпизода: ${selectedEpisode.id}, главы: ${chapterPath}`);
+      const response = await fetch(`${API_BASE_URL}/episodes/${selectedEpisode.id}/chapters/${chapterPath}/scenes`);
       if (response.ok) {
         const scenesData = await response.json();
         console.log(`SceneTreeView: Получено сцен: ${scenesData.length}`);

@@ -19,9 +19,15 @@ export const getItemsByType = (type, inventory = {}) => {
   if (type === 'all') {
     return getShopItemsWithInventoryFilter(inventory);
   }
-  // Исключаем сундуки и особые предметы из всех категорий
-  if (type === 'chest' || type === 'special') {
+  // Исключаем сундуки из всех категорий
+  if (type === 'chest') {
     return [];
+  }
+  
+  // Для квестовых предметов возвращаем все предметы этого типа
+  if (type === 'quest') {
+    const allItems = getAllItems();
+    return allItems.filter(item => item.type === type);
   }
   
   // Получаем все предметы магазина с фильтрацией и фильтруем по типу
@@ -36,9 +42,30 @@ export const getItemsByRarity = (rarity) => {
 };
 
 // Получить предмет по ID
-export const getItemById = (id) => {
+export const getItemById = (id, inventory = {}) => {
+  // Сначала ищем в стандартных предметах
   const allItems = getAllItems();
-  return allItems.find(item => item.id === id);
+  const standardItem = allItems.find(item => item.id === id);
+  if (standardItem) {
+    return standardItem;
+  }
+  
+  // Затем ищем в инвентаре (для кастомных предметов)
+  const inventoryItem = inventory[id];
+  if (inventoryItem && inventoryItem.name && inventoryItem.type) {
+    return {
+      id: id,
+      name: inventoryItem.name,
+      description: inventoryItem.description || '',
+      type: inventoryItem.type,
+      rarity: inventoryItem.rarity || 'common',
+      sprite: inventoryItem.sprite || '',
+      price: inventoryItem.price || null,
+      canSell: inventoryItem.canSell || false
+    };
+  }
+  
+  return null;
 };
 
 // Получить информацию о редкости
@@ -54,7 +81,7 @@ export const getTypeInfo = (type) => {
 // Получить все типы предметов
 export const getAllTypes = () => {
   return Object.keys(itemsData.types).filter(type => 
-    type !== 'chest' && type !== 'special'
+    type !== 'chest'
   );
 };
 
@@ -183,7 +210,7 @@ export const getShopItems = () => {
     item.price && 
     item.price.amount > 0 && 
     item.type !== 'chest' && 
-    item.type !== 'special' // Специальные предметы недоступны в магазине
+    item.type !== 'quest' // Квестовые предметы недоступны в магазине
   );
   
   // Применяем ротацию ассортимента (влияет только на питомцев)
@@ -216,8 +243,13 @@ export const getShopItems = () => {
 export const getShopItemsWithInventoryFilter = (inventory = {}) => {
   const allShopItems = getShopItems();
   
-  // Фильтруем предметы, исключая уже купленные питомцы и одежду
+  // Фильтруем предметы, исключая уже купленные питомцы, одежду и квестовые предметы
   const filteredItems = allShopItems.filter(item => {
+    // Квестовые предметы не показываются в магазине
+    if (item.type === 'quest') {
+      return false;
+    }
+    
     // Если это питомец или одежда, проверяем, есть ли уже в инвентаре
     if (item.type === 'pet' || item.type === 'clothing') {
       return !inventory[item.id]; // Исключаем, если уже есть в инвентаре

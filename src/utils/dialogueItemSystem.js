@@ -3,6 +3,7 @@
  */
 
 import itemsData from '../data/items.json';
+import { isCustomQuestItem } from './questItemUtils';
 
 /**
  * Обработка эффектов выбора в диалоге
@@ -49,15 +50,42 @@ function processItemEffects(itemEffects, inventory, showNotification) {
   // Добавление предметов
   if (itemEffects.add) {
     const itemsToAdd = Array.isArray(itemEffects.add) ? itemEffects.add : [itemEffects.add];
-    itemsToAdd.forEach(itemId => {
-      if (!newInventory[itemId]) {
-        newInventory[itemId] = 0;
+    itemsToAdd.forEach(item => {
+      let itemId, itemData;
+      
+      if (typeof item === 'string') {
+        // Старый формат: передается только ID
+        itemId = item;
+        itemData = getItemById(itemId);
+      } else if (typeof item === 'object' && isCustomQuestItem(item)) {
+        // Новый формат: передается объект кастомного квестового предмета
+        itemId = item.id;
+        itemData = item;
+      } else {
+        console.warn('Неподдерживаемый формат предмета:', item);
+        return;
       }
-      newInventory[itemId]++;
+      
+      if (!itemId) {
+        console.warn('Не удалось определить ID предмета');
+        return;
+      }
+      
+      if (!newInventory[itemId]) {
+        newInventory[itemId] = { quantity: 0, lastAdded: new Date().toISOString() };
+      }
+      
+      // Добавляем данные предмета (имя, описание, тип и т.д.)
+      newInventory[itemId] = {
+        ...newInventory[itemId],
+        ...itemData,
+        quantity: newInventory[itemId].quantity + 1,
+        lastAdded: new Date().toISOString()
+      };
       
       // Показываем уведомление о получении предмета
       if (showNotification) {
-        const itemName = getItemName(itemId);
+        const itemName = itemData?.name || getItemName(itemId);
         showNotification(`Получен предмет "${itemName}"`, 'success');
       }
     });
@@ -151,6 +179,33 @@ export function isChoiceAvailable(choice, inventory) {
 
   console.log('isChoiceAvailable - выбор доступен (нет требований)');
   return true;
+}
+
+/**
+ * Получение предмета по ID
+ * @param {string} itemId - ID предмета
+ * @returns {Object|null} - Объект предмета или null
+ */
+function getItemById(itemId) {
+  console.log(`DialogueItemSystem.getItemById вызвана для: ${itemId}`);
+  
+  try {
+    // Проверяем все категории предметов
+    const categories = ['consumable', 'quest', 'pet', 'clothing', 'chest', 'key', 'gifts'];
+    
+    for (const category of categories) {
+      const categoryItems = itemsData.items[category];
+      if (categoryItems && categoryItems[itemId]) {
+        console.log(`DialogueItemSystem: найден предмет в категории ${category}: ${itemId}`);
+        return categoryItems[itemId];
+      }
+    }
+    console.log(`DialogueItemSystem: предмет ${itemId} не найден в itemsData`);
+  } catch (error) {
+    console.warn('DialogueItemSystem: ошибка при загрузке items.json:', error);
+  }
+  
+  return null;
 }
 
 /**

@@ -3,18 +3,64 @@ import { getItemById } from './itemUtils';
 // Получить предметы инвентаря с полной информацией
 export const getInventoryItemsWithInfo = (inventoryData) => {
   const items = [];
+  const itemsData = require('../data/items.json');
   
   Object.entries(inventoryData).forEach(([itemId, inventoryItem]) => {
-    const itemInfo = getItemById(itemId);
-    if (itemInfo) {
+    // Сначала проверяем квестовые предметы с шаблоном
+    if (inventoryItem && inventoryItem.type === 'quest' && inventoryItem.type_of_quest_item) {
+      const questTemplate = itemsData.items.quest[inventoryItem.type_of_quest_item];
+      if (questTemplate) {
+        items.push({
+          ...questTemplate, // Спрайт, редкость и другие данные из шаблона
+          ...inventoryItem, // Переопределяем id, name, description из инвентаря
+          id: itemId, // Уникальный ID квестового предмета
+          quantity: inventoryItem.quantity,
+          lastAdded: inventoryItem.lastAdded
+        });
+      } else {
+        console.warn(`Шаблон ${inventoryItem.type_of_quest_item} не найден для предмета ${itemId}`);
+        // Шаблон не найден, используем данные из инвентаря
+        items.push({
+          ...inventoryItem,
+          id: itemId,
+          name: inventoryItem.name || `Квестовый предмет ${itemId}`,
+          description: inventoryItem.description || 'Описание отсутствует',
+          quantity: inventoryItem.quantity,
+          lastAdded: inventoryItem.lastAdded
+        });
+      }
+    } else if (inventoryItem && inventoryItem.name && inventoryItem.description) {
+      // Предмет уже имеет полные данные (кастомный квестовый предмет без шаблона)
       items.push({
-        ...itemInfo,
+        ...inventoryItem,
+        id: itemId,
         quantity: inventoryItem.quantity,
         lastAdded: inventoryItem.lastAdded
       });
+    } else {
+      // Обычный предмет - ищем в стандартных данных
+      const itemInfo = getItemById(itemId, inventoryData);
+      if (itemInfo) {
+        items.push({
+          ...itemInfo,
+          quantity: inventoryItem.quantity,
+          lastAdded: inventoryItem.lastAdded
+        });
+      } else {
+        // Предмет не найден в стандартных данных, но есть в инвентаре
+        console.warn(`Предмет ${itemId} не найден в стандартных данных, но присутствует в инвентаре`);
+        items.push({
+          id: itemId,
+          name: inventoryItem.name || `Предмет ${itemId}`,
+          description: inventoryItem.description || 'Описание отсутствует',
+          type: inventoryItem.type || 'unknown',
+          rarity: inventoryItem.rarity || 'unknown',
+          quantity: inventoryItem.quantity,
+          lastAdded: inventoryItem.lastAdded
+        });
+      }
     }
   });
-  
   return items;
 };
 

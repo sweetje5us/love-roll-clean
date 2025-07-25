@@ -776,6 +776,169 @@ app.delete('/api/episodes/:episodeId/characters/:characterId', async (req, res) 
   }
 });
 
+// API для работы с квестовыми предметами
+app.get('/api/quest-items', async (req, res) => {
+  try {
+    const itemsPath = path.join(__dirname, '..', '..', 'src', 'data', 'items.json');
+    if (!await fs.pathExists(itemsPath)) {
+      return res.status(404).json({ error: 'Файл items.json не найден' });
+    }
+    
+    const itemsData = await fs.readJson(itemsPath);
+    const questItems = itemsData.items?.quest || {};
+    
+    // Преобразуем в массив с id
+    const questItemsArray = Object.keys(questItems).map(itemId => ({
+      id: itemId,
+      ...questItems[itemId]
+    }));
+    
+    res.json(questItemsArray);
+  } catch (error) {
+    console.error('Ошибка загрузки квестовых предметов:', error);
+    res.status(500).json({ error: 'Ошибка загрузки квестовых предметов' });
+  }
+});
+
+// Получение конкретного квестового предмета по ID
+app.get('/api/quest-items/:itemId', async (req, res) => {
+  try {
+    const { itemId } = req.params;
+    const itemsPath = path.join(__dirname, '..', '..', 'src', 'data', 'items.json');
+    
+    if (!await fs.pathExists(itemsPath)) {
+      return res.status(404).json({ error: 'Файл items.json не найден' });
+    }
+    
+    const itemsData = await fs.readJson(itemsPath);
+    const questItem = itemsData.items?.quest?.[itemId];
+    
+    if (!questItem) {
+      return res.status(404).json({ error: 'Квестовый предмет не найден' });
+    }
+    
+    res.json({
+      id: itemId,
+      ...questItem
+    });
+  } catch (error) {
+    console.error('Ошибка загрузки квестового предмета:', error);
+    res.status(500).json({ error: 'Ошибка загрузки квестового предмета' });
+  }
+});
+
+// API для работы с кастомными квестовыми предметами эпизода
+app.get('/api/episodes/:episodeId/quest-items', async (req, res) => {
+  try {
+    const episodeId = req.params.episodeId;
+    const configPath = path.join(EPISODES_PATH, episodeId, 'config.json');
+    
+    if (!await fs.pathExists(configPath)) {
+      return res.status(404).json({ error: 'Эпизод не найден' });
+    }
+    
+    const config = await fs.readJson(configPath);
+    const questItems = config.questItems || [];
+    
+    res.json(questItems);
+  } catch (error) {
+    console.error('Ошибка загрузки квестовых предметов эпизода:', error);
+    res.status(500).json({ error: 'Ошибка загрузки квестовых предметов эпизода' });
+  }
+});
+
+// Создание кастомного квестового предмета для эпизода
+app.post('/api/episodes/:episodeId/quest-items', async (req, res) => {
+  try {
+    const episodeId = req.params.episodeId;
+    const questItemData = req.body;
+    const configPath = path.join(EPISODES_PATH, episodeId, 'config.json');
+    
+    if (!await fs.pathExists(configPath)) {
+      return res.status(404).json({ error: 'Эпизод не найден' });
+    }
+    
+    const config = await fs.readJson(configPath);
+    config.questItems = config.questItems || [];
+    
+    // Проверяем, что ID уникален
+    if (config.questItems.find(item => item.id === questItemData.id)) {
+      return res.status(400).json({ error: 'Квестовый предмет с таким ID уже существует' });
+    }
+    
+    // Добавляем тип quest если не указан
+    const newQuestItem = {
+      ...questItemData,
+      type: 'quest'
+    };
+    
+    config.questItems.push(newQuestItem);
+    await fs.writeJson(configPath, config, { spaces: 2 });
+    
+    res.json(newQuestItem);
+  } catch (error) {
+    console.error('Ошибка создания квестового предмета:', error);
+    res.status(500).json({ error: 'Ошибка создания квестового предмета' });
+  }
+});
+
+// Обновление кастомного квестового предмета
+app.put('/api/episodes/:episodeId/quest-items/:itemId', async (req, res) => {
+  try {
+    const { episodeId, itemId } = req.params;
+    const questItemData = req.body;
+    const configPath = path.join(EPISODES_PATH, episodeId, 'config.json');
+    
+    if (!await fs.pathExists(configPath)) {
+      return res.status(404).json({ error: 'Эпизод не найден' });
+    }
+    
+    const config = await fs.readJson(configPath);
+    config.questItems = config.questItems || [];
+    
+    const itemIndex = config.questItems.findIndex(item => item.id === itemId);
+    if (itemIndex === -1) {
+      return res.status(404).json({ error: 'Квестовый предмет не найден' });
+    }
+    
+    config.questItems[itemIndex] = { ...questItemData, id: itemId, type: 'quest' };
+    await fs.writeJson(configPath, config, { spaces: 2 });
+    
+    res.json(config.questItems[itemIndex]);
+  } catch (error) {
+    console.error('Ошибка обновления квестового предмета:', error);
+    res.status(500).json({ error: 'Ошибка обновления квестового предмета' });
+  }
+});
+
+// Удаление кастомного квестового предмета
+app.delete('/api/episodes/:episodeId/quest-items/:itemId', async (req, res) => {
+  try {
+    const { episodeId, itemId } = req.params;
+    const configPath = path.join(EPISODES_PATH, episodeId, 'config.json');
+    
+    if (!await fs.pathExists(configPath)) {
+      return res.status(404).json({ error: 'Эпизод не найден' });
+    }
+    
+    const config = await fs.readJson(configPath);
+    config.questItems = config.questItems || [];
+    
+    const itemIndex = config.questItems.findIndex(item => item.id === itemId);
+    if (itemIndex === -1) {
+      return res.status(404).json({ error: 'Квестовый предмет не найден' });
+    }
+    
+    config.questItems.splice(itemIndex, 1);
+    await fs.writeJson(configPath, config, { spaces: 2 });
+    
+    res.json({ success: true });
+  } catch (error) {
+    console.error('Ошибка удаления квестового предмета:', error);
+    res.status(500).json({ error: 'Ошибка удаления квестового предмета' });
+  }
+});
+
 app.listen(PORT, () => {
   console.log(`Сервер редактора эпизодов запущен на порту ${PORT}`);
   console.log(`API доступен по адресу: http://localhost:${PORT}`);

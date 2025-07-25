@@ -212,792 +212,409 @@
         "sprite": "sprites/items/consumable/antidote.png"
       }
     },
-    "special": {
+    "quest": {
       "ancient_tablet": {
         "id": "ancient_tablet",
         "name": "Древняя табличка",
         "description": "Загадочная древняя табличка с неизвестными символами",
-        "type": "special",
+        "type": "quest",
         "rarity": "legendary",
-        "price": {
-          "currency": "gems",
-          "amount": 100
-        },
-        "sellPrice": 0,
-        "canSell": false,
-        "sprite": "sprites/items/special/ancient tablet.png"
+        "sprite": "sprites/items/quest/ancient tablet.png"
       },
-      "basic_antidote": {
-        "id": "basic_antidote",
-        "name": "Простое противоядие",
+      "antidote": {
+        "id": "antidote",
+        "name": "Противоядие",
         "description": "Базовое противоядие от простых ядов",
-        "type": "special",
+        "type": "quest",
         "rarity": "uncommon",
-        "price": {
-          "currency": "coins",
-          "amount": 25
-        },
-        "sellPrice": 0,
-        "canSell": false,
-        "sprite": "sprites/items/special/basic antidote.png"
+        "sprite": "sprites/items/quest/antidote.png"
       },
-      "bear_trap": {
-        "id": "bear_trap",
-        "name": "Медвежий капкан",
-        "description": "Опасный капкан для ловли крупных животных",
-        "type": "special",
-        "rarity": "rare",
-        "price": {
-          "currency": "coins",
-          "amount": 80
-        },
-        "sellPrice": 0,
-        "canSell": false,
-        "sprite": "sprites/items/special/bear trap.png"
+      "quest_apple": {
+        "id": "quest_apple",
+        "name": "Яблоко",
+        "description": "Свежее красное яблоко",
+        "type": "quest",
+        "rarity": "common",
+        "sprite": "sprites/items/quest/apple.png"
       },
       "bone": {
         "id": "bone",
         "name": "Кость",
         "description": "Древняя кость неизвестного происхождения",
-        "type": "special",
+        "type": "quest",
         "rarity": "common",
-        "price": {
-          "currency": "coins",
-          "amount": 10
-        },
-        "sellPrice": 0,
-        "canSell": false,
-        "sprite": "sprites/items/special/bone.png"
+        "sprite": "sprites/items/quest/bone.png"
+      },
+      "book": {
+        "id": "book",
+        "name": "Книга",
+        "description": "Старая книга с тайными знаниями",
+        "type": "quest",
+        "rarity": "rare",
+        "sprite": "sprites/items/quest/book.png"
+      },
+      "bouquet_1": {
+        "id": "bouquet_1",
+        "name": "Букет цветов",
+        "description": "Красивый букет свежих цветов",
+        "type": "quest",
+        "rarity": "uncommon",
+        "sprite": "sprites/items/quest/bouqet_1.png"
+      },
+      "quest_candy_cane": {
+        "id": "quest_candy_cane",
+        "name": "Леденец",
+        "description": "Красный и белый леденец в форме трости",
+        "type": "quest",
+        "rarity": "common",
+        "sprite": "sprites/items/quest/candy cane.png"
+      },
+      "quest_candy_icon": {
+        "id": "quest_candy_icon",
+        "name": "Конфета",
+        "description": "Сладкая конфета",
+        "type": "quest",
+        "rarity": "common",
+        "sprite": "sprites/items/quest/candy icon.png"
+      },
+      "quest_chocolate": {
+        "id": "quest_chocolate",
+        "name": "Шоколад",
+        "description": "Вкусный шоколад",
+        "type": "quest",
+        "rarity": "common",
+        "sprite": "sprites/items/quest/chocolate.png"
+      },
+      "christmas_candle": {
+        "id": "christmas_candle",
+        "name": "Рождественская свеча",
+        "description": "Ароматная рождественская свеча",
+        "type": "quest",
+        "rarity": "uncommon",
+        "sprite": "sprites/items/quest/christmas candle.png"
+      },
+      "christmas_stocking": {
+        "id": "christmas_stocking",
+        "name": "Рождественский носок",
+        "description": "Традиционный рождественский носок",
+        "type": "quest",
+        "rarity": "uncommon",
+        "sprite": "sprites/items/quest/christmas stocking.png"
+      },
+      "christmas_sweater": {
+        "id": "christmas_sweater",
+        "name": "Рождественский свитер",
+        "description": "Уютный рождественский свитер",
+        "type": "quest",
+        "rarity": "rare",
+        "sprite": "sprites/items/quest/christmas sweater.png"
       },
       "christmas_tree": {
         "id": "christmas_tree",
         "name": "Рождественская елка",
         "description": "Красиво украшенная рождественская елка",
-        "type": "special",
+        "type": "quest",
         "rarity": "rare",
-        "price": {
-          "currency": "coins",
-          "amount": 150
-        },
-        "sellPrice": 0,
-        "canSell": false,
-        "sprite": "sprites/items/special/christmas tree.png"
+        "sprite": "sprites/items/quest/christmas tree.png"
       },
-      "colorful_coral": {
-        "id": "colorful_coral",
+      "coral": {
+        "id": "coral",
         "name": "Цветной коралл",
         "description": "Яркий цветной коралл с морского дна",
-        "type": "special",
+        "type": "quest",
         "rarity": "uncommon",
-        "price": {
-          "currency": "coins",
-          "amount": 45
-        },
-        "sellPrice": 0,
-        "canSell": false,
-        "sprite": "sprites/items/special/colorful coral.png"
-      },
-      "crab_claw": {
-        "id": "crab_claw",
-        "name": "Клешня краба",
-        "description": "Острая клешня морского краба",
-        "type": "special",
-        "rarity": "common",
-        "price": {
-          "currency": "coins",
-          "amount": 15
-        },
-        "sellPrice": 0,
-        "canSell": false,
-        "sprite": "sprites/items/special/crab claw.png"
-      },
-      "cursed_potion": {
-        "id": "cursed_potion",
-        "name": "Проклятое зелье",
-        "description": "Опасное зелье с проклятием",
-        "type": "special",
-        "rarity": "legendary",
-        "price": {
-          "currency": "gems",
-          "amount": 50
-        },
-        "sellPrice": 0,
-        "canSell": false,
-        "sprite": "sprites/items/special/cursed potion.png"
-      },
-      "dark_mushroom": {
-        "id": "dark_mushroom",
-        "name": "Темный гриб",
-        "description": "Загадочный темный гриб с необычными свойствами",
-        "type": "special",
-        "rarity": "uncommon",
-        "price": {
-          "currency": "coins",
-          "amount": 35
-        },
-        "sellPrice": 0,
-        "canSell": false,
-        "sprite": "sprites/items/special/dark mushroom.png"
+        "sprite": "sprites/items/quest/coral.png"
       },
       "darkness_crystal": {
         "id": "darkness_crystal",
         "name": "Кристалл тьмы",
         "description": "Магический кристалл, поглощающий свет",
-        "type": "special",
+        "type": "quest",
         "rarity": "legendary",
-        "price": {
-          "currency": "gems",
-          "amount": 75
-        },
-        "sellPrice": 0,
-        "canSell": false,
-        "sprite": "sprites/items/special/darkness crystal.png"
-      },
-      "darkness_potion": {
-        "id": "darkness_potion",
-        "name": "Зелье тьмы",
-        "description": "Зелье, дарующее силу тьмы",
-        "type": "special",
-        "rarity": "rare",
-        "price": {
-          "currency": "coins",
-          "amount": 120
-        },
-        "sellPrice": 0,
-        "canSell": false,
-        "sprite": "sprites/items/special/darkness potion.png"
+        "sprite": "sprites/items/quest/darkness crystal.png"
       },
       "darkness_spellbook": {
         "id": "darkness_spellbook",
         "name": "Книга заклинаний тьмы",
         "description": "Древняя книга с заклинаниями тьмы",
-        "type": "special",
+        "type": "quest",
         "rarity": "legendary",
-        "price": {
-          "currency": "gems",
-          "amount": 150
-        },
-        "sellPrice": 0,
-        "canSell": false,
-        "sprite": "sprites/items/special/darkness spellbook.png"
+        "sprite": "sprites/items/quest/darkness spellbook.png"
       },
       "decorated_tree_bulb": {
         "id": "decorated_tree_bulb",
         "name": "Украшенная елочная игрушка",
         "description": "Красиво украшенная елочная игрушка",
-        "type": "special",
+        "type": "quest",
         "rarity": "uncommon",
-        "price": {
-          "currency": "coins",
-          "amount": 30
-        },
-        "sellPrice": 0,
-        "canSell": false,
-        "sprite": "sprites/items/special/decorated tree bulb.png"
-      },
-      "dryed_nightshade": {
-        "id": "dryed_nightshade",
-        "name": "Высушенная белладонна",
-        "description": "Высушенная ядовитая белладонна",
-        "type": "special",
-        "rarity": "rare",
-        "price": {
-          "currency": "coins",
-          "amount": 90
-        },
-        "sellPrice": 0,
-        "canSell": false,
-        "sprite": "sprites/items/special/dryed nightshade.png"
+        "sprite": "sprites/items/quest/decorated tree bulb.png"
       },
       "earth_crystal": {
         "id": "earth_crystal",
         "name": "Кристалл земли",
         "description": "Магический кристалл силы земли",
-        "type": "special",
+        "type": "quest",
         "rarity": "rare",
-        "price": {
-          "currency": "coins",
-          "amount": 100
-        },
-        "sellPrice": 0,
-        "canSell": false,
-        "sprite": "sprites/items/special/earth crystal.png"
-      },
-      "earth_potion": {
-        "id": "earth_potion",
-        "name": "Зелье земли",
-        "description": "Зелье, дарующее силу земли",
-        "type": "special",
-        "rarity": "uncommon",
-        "price": {
-          "currency": "coins",
-          "amount": 60
-        },
-        "sellPrice": 0,
-        "canSell": false,
-        "sprite": "sprites/items/special/earth potion.png"
-      },
-      "elven_dew": {
-        "id": "elven_dew",
-        "name": "Эльфийская роса",
-        "description": "Магическая роса, собранная в эльфийских лесах",
-        "type": "special",
-        "rarity": "rare",
-        "price": {
-          "currency": "coins",
-          "amount": 85
-        },
-        "sellPrice": 0,
-        "canSell": false,
-        "sprite": "sprites/items/special/elven dew.png"
+        "sprite": "sprites/items/quest/earth crystal.png"
       },
       "fabric": {
         "id": "fabric",
         "name": "Ткань",
         "description": "Качественная ткань для пошива",
-        "type": "special",
+        "type": "quest",
         "rarity": "common",
-        "price": {
-          "currency": "coins",
-          "amount": 20
-        },
-        "sellPrice": 0,
-        "canSell": false,
-        "sprite": "sprites/items/special/fabric.png"
+        "sprite": "sprites/items/quest/fabric.png"
       },
       "fairy_pollen": {
         "id": "fairy_pollen",
         "name": "Пыльца фей",
         "description": "Волшебная пыльца, собранная с крыльев фей",
-        "type": "special",
+        "type": "quest",
         "rarity": "legendary",
-        "price": {
-          "currency": "gems",
-          "amount": 200
-        },
-        "sellPrice": 0,
-        "canSell": false,
-        "sprite": "sprites/items/special/fairy pollen.png"
+        "sprite": "sprites/items/quest/fairy pollen.png"
       },
       "fire_crystal": {
         "id": "fire_crystal",
         "name": "Кристалл огня",
         "description": "Магический кристалл силы огня",
-        "type": "special",
+        "type": "quest",
         "rarity": "rare",
-        "price": {
-          "currency": "coins",
-          "amount": 100
-        },
-        "sellPrice": 0,
-        "canSell": false,
-        "sprite": "sprites/items/special/fire crystal.png"
-      },
-      "fire_spellbook": {
-        "id": "fire_spellbook",
-        "name": "Книга заклинаний огня",
-        "description": "Древняя книга с заклинаниями огня",
-        "type": "special",
-        "rarity": "legendary",
-        "price": {
-          "currency": "gems",
-          "amount": 150
-        },
-        "sellPrice": 0,
-        "canSell": false,
-        "sprite": "sprites/items/special/fire spellbook.png"
+        "sprite": "sprites/items/quest/fire crystal.png"
       },
       "ghost_essence": {
         "id": "ghost_essence",
         "name": "Сущность призрака",
         "description": "Эфирная сущность призрака",
-        "type": "special",
+        "type": "quest",
         "rarity": "legendary",
-        "price": {
-          "currency": "gems",
-          "amount": 300
-        },
-        "sellPrice": 0,
-        "canSell": false,
-        "sprite": "sprites/items/special/ghost essence.png"
+        "sprite": "sprites/items/quest/ghost essence.png"
+      },
+      "quest_gingerbread": {
+        "id": "quest_gingerbread",
+        "name": "Имбирное печенье",
+        "description": "Ароматное имбирное печенье",
+        "type": "quest",
+        "rarity": "common",
+        "sprite": "sprites/items/quest/gingerbread.png"
       },
       "glowshroom": {
         "id": "glowshroom",
         "name": "Светящийся гриб",
         "description": "Гриб, излучающий мягкий свет",
-        "type": "special",
+        "type": "quest",
         "rarity": "uncommon",
-        "price": {
-          "currency": "coins",
-          "amount": 40
-        },
-        "sellPrice": 0,
-        "canSell": false,
-        "sprite": "sprites/items/special/glowshroom.png"
+        "sprite": "sprites/items/quest/glowshroom.png"
       },
-      "holly": {
-        "id": "holly",
-        "name": "Остролист",
-        "description": "Рождественский остролист",
-        "type": "special",
-        "rarity": "common",
-        "price": {
-          "currency": "coins",
-          "amount": 12
-        },
-        "sellPrice": 0,
-        "canSell": false,
-        "sprite": "sprites/items/special/holly.png"
+      "quest_gold_ingot": {
+        "id": "quest_gold_ingot",
+        "name": "Золотой слиток",
+        "description": "Драгоценный золотой слиток",
+        "type": "quest",
+        "rarity": "rare",
+        "sprite": "sprites/items/quest/gold ingot.png"
       },
       "holy_book": {
         "id": "holy_book",
         "name": "Святая книга",
         "description": "Древняя святая книга с молитвами",
-        "type": "special",
+        "type": "quest",
         "rarity": "rare",
-        "price": {
-          "currency": "coins",
-          "amount": 110
-        },
-        "sellPrice": 0,
-        "canSell": false,
-        "sprite": "sprites/items/special/holy book.png"
+        "sprite": "sprites/items/quest/holy book.png"
       },
       "ice_crystal": {
         "id": "ice_crystal",
         "name": "Кристалл льда",
         "description": "Магический кристалл силы льда",
-        "type": "special",
+        "type": "quest",
         "rarity": "rare",
-        "price": {
-          "currency": "coins",
-          "amount": 100
-        },
-        "sellPrice": 0,
-        "canSell": false,
-        "sprite": "sprites/items/special/ice crystal.png"
+        "sprite": "sprites/items/quest/ice crystal.png"
       },
-      "ice_potion": {
-        "id": "ice_potion",
-        "name": "Зелье льда",
-        "description": "Зелье, дарующее силу льда",
-        "type": "special",
+      "quest_key": {
+        "id": "quest_key",
+        "name": "Ключ",
+        "description": "Загадочный ключ от неизвестной двери",
+        "type": "quest",
         "rarity": "uncommon",
-        "price": {
-          "currency": "coins",
-          "amount": 60
-        },
-        "sellPrice": 0,
-        "canSell": false,
-        "sprite": "sprites/items/special/ice potion.png"
-      },
-      "ice_spellbook": {
-        "id": "ice_spellbook",
-        "name": "Книга заклинаний льда",
-        "description": "Древняя книга с заклинаниями льда",
-        "type": "special",
-        "rarity": "legendary",
-        "price": {
-          "currency": "gems",
-          "amount": 150
-        },
-        "sellPrice": 0,
-        "canSell": false,
-        "sprite": "sprites/items/special/ice spellbook.png"
+        "sprite": "sprites/items/quest/key.png"
       },
       "light_crystal": {
         "id": "light_crystal",
         "name": "Кристалл света",
         "description": "Магический кристалл силы света",
-        "type": "special",
+        "type": "quest",
         "rarity": "rare",
-        "price": {
-          "currency": "coins",
-          "amount": 100
-        },
-        "sellPrice": 0,
-        "canSell": false,
-        "sprite": "sprites/items/special/light crystal.png"
-      },
-      "light_potion": {
-        "id": "light_potion",
-        "name": "Зелье света",
-        "description": "Зелье, дарующее силу света",
-        "type": "special",
-        "rarity": "uncommon",
-        "price": {
-          "currency": "coins",
-          "amount": 60
-        },
-        "sellPrice": 0,
-        "canSell": false,
-        "sprite": "sprites/items/special/light potion.png"
-      },
-      "light_spellbook": {
-        "id": "light_spellbook",
-        "name": "Книга заклинаний света",
-        "description": "Древняя книга с заклинаниями света",
-        "type": "special",
-        "rarity": "legendary",
-        "price": {
-          "currency": "gems",
-          "amount": 150
-        },
-        "sellPrice": 0,
-        "canSell": false,
-        "sprite": "sprites/items/special/light spellbook.png"
-      },
-      "magic_potion": {
-        "id": "magic_potion",
-        "name": "Магическое зелье",
-        "description": "Мощное магическое зелье",
-        "type": "special",
-        "rarity": "rare",
-        "price": {
-          "currency": "coins",
-          "amount": 95
-        },
-        "sellPrice": 0,
-        "canSell": false,
-        "sprite": "sprites/items/special/magic potion.png"
+        "sprite": "sprites/items/quest/light crystal.png"
       },
       "medicinal_herb": {
         "id": "medicinal_herb",
         "name": "Лечебная трава",
         "description": "Целебная трава с лечебными свойствами",
-        "type": "special",
+        "type": "quest",
         "rarity": "common",
-        "price": {
-          "currency": "coins",
-          "amount": 18
-        },
-        "sellPrice": 0,
-        "canSell": false,
-        "sprite": "sprites/items/special/medicinal herb.png"
+        "sprite": "sprites/items/quest/medicinal herb.png"
       },
-      "milk_bottle": {
-        "id": "milk_bottle",
-        "name": "Бутылка молока",
-        "description": "Свежее молоко в бутылке",
-        "type": "special",
+      "milk": {
+        "id": "milk",
+        "name": "Молоко",
+        "description": "Свежее молоко",
+        "type": "quest",
         "rarity": "common",
-        "price": {
-          "currency": "coins",
-          "amount": 8
-        },
-        "sellPrice": 0,
-        "canSell": false,
-        "sprite": "sprites/items/special/milk bottle.png"
-      },
-      "mistletoe": {
-        "id": "mistletoe",
-        "name": "Омела",
-        "description": "Рождественская омела",
-        "type": "special",
-        "rarity": "common",
-        "price": {
-          "currency": "coins",
-          "amount": 15
-        },
-        "sellPrice": 0,
-        "canSell": false,
-        "sprite": "sprites/items/special/mistletoe.png"
+        "sprite": "sprites/items/quest/milk.png"
       },
       "moondust": {
         "id": "moondust",
         "name": "Лунная пыль",
         "description": "Магическая пыль, собранная при свете луны",
-        "type": "special",
+        "type": "quest",
         "rarity": "rare",
-        "price": {
-          "currency": "coins",
-          "amount": 75
-        },
-        "sellPrice": 0,
-        "canSell": false,
-        "sprite": "sprites/items/special/moondust.png"
+        "sprite": "sprites/items/quest/moondust.png"
       },
-      "parchment": {
-        "id": "parchment",
-        "name": "Пергамент",
+      "moonlit_pearl": {
+        "id": "moonlit_pearl",
+        "name": "Жемчужина лунного света",
+        "description": "Магическая жемчужина, светящаяся лунным светом",
+        "type": "quest",
+        "rarity": "legendary",
+        "sprite": "sprites/items/quest/moonlit pearl.png"
+      },
+      "paper": {
+        "id": "paper",
+        "name": "Бумага",
         "description": "Древний пергамент для записей",
-        "type": "special",
+        "type": "quest",
         "rarity": "common",
-        "price": {
-          "currency": "coins",
-          "amount": 22
-        },
-        "sellPrice": 0,
-        "canSell": false,
-        "sprite": "sprites/items/special/parchment.png"
+        "sprite": "sprites/items/quest/paper.png"
+      },
+      "quest_pine_cone": {
+        "id": "quest_pine_cone",
+        "name": "Сосновая шишка",
+        "description": "Ароматная сосновая шишка",
+        "type": "quest",
+        "rarity": "common",
+        "sprite": "sprites/items/quest/pine cone.png"
       },
       "poison_potion": {
         "id": "poison_potion",
         "name": "Ядовитое зелье",
         "description": "Опасное ядовитое зелье",
-        "type": "special",
+        "type": "quest",
         "rarity": "rare",
-        "price": {
-          "currency": "coins",
-          "amount": 85
-        },
-        "sellPrice": 0,
-        "canSell": false,
-        "sprite": "sprites/items/special/poison potion.png"
+        "sprite": "sprites/items/quest/poison potion.png"
       },
-      "regeneration_potion": {
-        "id": "regeneration_potion",
-        "name": "Зелье регенерации",
-        "description": "Зелье, ускоряющее восстановление",
-        "type": "special",
+      "quest_present": {
+        "id": "quest_present",
+        "name": "Подарок",
+        "description": "Загадочный подарок",
+        "type": "quest",
+        "rarity": "uncommon",
+        "sprite": "sprites/items/quest/present.png"
+      },
+      "quest_red_tree_bulb": {
+        "id": "quest_red_tree_bulb",
+        "name": "Красная елочная игрушка",
+        "description": "Красивая красная елочная игрушка",
+        "type": "quest",
+        "rarity": "common",
+        "sprite": "sprites/items/quest/red tree bulb.png"
+      },
+      "quest_santa_hat": {
+        "id": "quest_santa_hat",
+        "name": "Шапка Санты",
+        "description": "Традиционная красная шапка Санты",
+        "type": "quest",
         "rarity": "rare",
-        "price": {
-          "currency": "coins",
-          "amount": 90
-        },
-        "sellPrice": 0,
-        "canSell": false,
-        "sprite": "sprites/items/special/regeneration potion.png"
+        "sprite": "sprites/items/quest/santa hat.png"
       },
-      "royal_book": {
-        "id": "royal_book",
-        "name": "Королевская книга",
-        "description": "Драгоценная королевская книга",
-        "type": "special",
-        "rarity": "legendary",
-        "price": {
-          "currency": "gems",
-          "amount": 200
-        },
-        "sellPrice": 0,
-        "canSell": false,
-        "sprite": "sprites/items/special/royal book.png"
+      "scroll": {
+        "id": "scroll",
+        "name": "Свиток",
+        "description": "Древний свиток с тайными знаниями",
+        "type": "quest",
+        "rarity": "rare",
+        "sprite": "sprites/items/quest/scroll.png"
       },
       "silk": {
         "id": "silk",
         "name": "Шелк",
         "description": "Дорогой шелк высшего качества",
-        "type": "special",
+        "type": "quest",
         "rarity": "uncommon",
-        "price": {
-          "currency": "coins",
-          "amount": 55
-        },
-        "sellPrice": 0,
-        "canSell": false,
-        "sprite": "sprites/items/special/silk.png"
+        "sprite": "sprites/items/quest/silk.png"
       },
-      "silver_ingot": {
-        "id": "silver_ingot",
+      "quest_silver_ingot": {
+        "id": "quest_silver_ingot",
         "name": "Серебряный слиток",
         "description": "Блестящий серебряный слиток",
-        "type": "special",
+        "type": "quest",
         "rarity": "uncommon",
-        "price": {
-          "currency": "coins",
-          "amount": 45
-        },
-        "sellPrice": 0,
-        "canSell": false,
-        "sprite": "sprites/items/special/silver ingot.png"
+        "sprite": "sprites/items/quest/silver ingot.png"
       },
-      "snowflake": {
-        "id": "snowflake",
+      "quest_snow_globe": {
+        "id": "quest_snow_globe",
+        "name": "Снежный шар",
+        "description": "Волшебный снежный шар",
+        "type": "quest",
+        "rarity": "rare",
+        "sprite": "sprites/items/quest/snow globe.png"
+      },
+      "quest_snowflake": {
+        "id": "quest_snowflake",
         "name": "Снежинка",
         "description": "Красивая снежинка",
-        "type": "special",
+        "type": "quest",
         "rarity": "common",
-        "price": {
-          "currency": "coins",
-          "amount": 5
-        },
-        "sellPrice": 0,
-        "canSell": false,
-        "sprite": "sprites/items/special/snowflake.png"
-      },
-      "sugar_cane": {
-        "id": "sugar_cane",
-        "name": "Сахарный тростник",
-        "description": "Сладкий сахарный тростник",
-        "type": "special",
-        "rarity": "common",
-        "price": {
-          "currency": "coins",
-          "amount": 12
-        },
-        "sellPrice": 0,
-        "canSell": false,
-        "sprite": "sprites/items/special/sugar cane.png"
+        "sprite": "sprites/items/quest/snowflake.png"
       },
       "thunder_crystal": {
         "id": "thunder_crystal",
         "name": "Кристалл грома",
         "description": "Магический кристалл силы грома",
-        "type": "special",
+        "type": "quest",
         "rarity": "rare",
-        "price": {
-          "currency": "coins",
-          "amount": 100
-        },
-        "sellPrice": 0,
-        "canSell": false,
-        "sprite": "sprites/items/special/thunder crystal.png"
+        "sprite": "sprites/items/quest/thunder crystal.png"
       },
-      "thunder_potion": {
-        "id": "thunder_potion",
-        "name": "Зелье грома",
-        "description": "Зелье, дарующее силу грома",
-        "type": "special",
-        "rarity": "uncommon",
-        "price": {
-          "currency": "coins",
-          "amount": 60
-        },
-        "sellPrice": 0,
-        "canSell": false,
-        "sprite": "sprites/items/special/thunder potion.png"
-      },
-      "thunder_spellbook": {
-        "id": "thunder_spellbook",
-        "name": "Книга заклинаний грома",
-        "description": "Древняя книга с заклинаниями грома",
-        "type": "special",
-        "rarity": "legendary",
-        "price": {
-          "currency": "gems",
-          "amount": 150
-        },
-        "sellPrice": 0,
-        "canSell": false,
-        "sprite": "sprites/items/special/thunder spellbook.png"
+      "trap": {
+        "id": "trap",
+        "name": "Капкан",
+        "description": "Опасный капкан для ловли животных",
+        "type": "quest",
+        "rarity": "rare",
+        "sprite": "sprites/items/quest/trap.png"
       },
       "water_berry": {
         "id": "water_berry",
         "name": "Водная ягода",
         "description": "Сочная ягода с водными свойствами",
-        "type": "special",
+        "type": "quest",
         "rarity": "uncommon",
-        "price": {
-          "currency": "coins",
-          "amount": 35
-        },
-        "sellPrice": 0,
-        "canSell": false,
-        "sprite": "sprites/items/special/water berry.png"
+        "sprite": "sprites/items/quest/water berry.png"
       },
       "water_crystal": {
         "id": "water_crystal",
         "name": "Кристалл воды",
         "description": "Магический кристалл силы воды",
-        "type": "special",
+        "type": "quest",
         "rarity": "rare",
-        "price": {
-          "currency": "coins",
-          "amount": 100
-        },
-        "sellPrice": 0,
-        "canSell": false,
-        "sprite": "sprites/items/special/water crystal.png"
-      },
-      "water_potion": {
-        "id": "water_potion",
-        "name": "Зелье воды",
-        "description": "Зелье, дарующее силу воды",
-        "type": "special",
-        "rarity": "uncommon",
-        "price": {
-          "currency": "coins",
-          "amount": 60
-        },
-        "sellPrice": 0,
-        "canSell": false,
-        "sprite": "sprites/items/special/water potion.png"
-      },
-      "water": {
-        "id": "water",
-        "name": "Вода",
-        "description": "Чистая вода",
-        "type": "special",
-        "rarity": "common",
-        "price": {
-          "currency": "coins",
-          "amount": 3
-        },
-        "sellPrice": 0,
-        "canSell": false,
-        "sprite": "sprites/items/special/water.png"
-      },
-      "will_potion": {
-        "id": "will_potion",
-        "name": "Зелье воли",
-        "description": "Зелье, укрепляющее силу воли",
-        "type": "special",
-        "rarity": "rare",
-        "price": {
-          "currency": "coins",
-          "amount": 95
-        },
-        "sellPrice": 0,
-        "canSell": false,
-        "sprite": "sprites/items/special/will potion.png"
+        "sprite": "sprites/items/quest/water crystal.png"
       },
       "wind_crystal": {
         "id": "wind_crystal",
         "name": "Кристалл ветра",
         "description": "Магический кристалл силы ветра",
-        "type": "special",
+        "type": "quest",
         "rarity": "rare",
-        "price": {
-          "currency": "coins",
-          "amount": 100
-        },
-        "sellPrice": 0,
-        "canSell": false,
-        "sprite": "sprites/items/special/wind crystal.png"
-      },
-      "wind_potion": {
-        "id": "wind_potion",
-        "name": "Зелье ветра",
-        "description": "Зелье, дарующее силу ветра",
-        "type": "special",
-        "rarity": "uncommon",
-        "price": {
-          "currency": "coins",
-          "amount": 60
-        },
-        "sellPrice": 0,
-        "canSell": false,
-        "sprite": "sprites/items/special/wind potion.png"
-      },
-      "wind_spellbook": {
-        "id": "wind_spellbook",
-        "name": "Книга заклинаний ветра",
-        "description": "Древняя книга с заклинаниями ветра",
-        "type": "special",
-        "rarity": "legendary",
-        "price": {
-          "currency": "gems",
-          "amount": 150
-        },
-        "sellPrice": 0,
-        "canSell": false,
-        "sprite": "sprites/items/special/wind spellbook.png"
+        "sprite": "sprites/items/quest/wind crystal.png"
       },
       "wolf_fur": {
         "id": "wolf_fur",
         "name": "Волчья шкура",
         "description": "Теплая волчья шкура",
-        "type": "special",
+        "type": "quest",
         "rarity": "uncommon",
-        "price": {
-          "currency": "coins",
-          "amount": 50
-        },
-        "sellPrice": 0,
-        "canSell": false,
-        "sprite": "sprites/items/special/wolf fur.png"
+        "sprite": "sprites/items/quest/wolf fur.png"
       }
     },
+
     "pet": {
       "slime": {
         "id": "slime",
@@ -3604,8 +3221,8 @@
       "name": "Подарок",
       "color": "#f97316"
     },
-    "special": {
-      "name": "Особое",
+    "quest": {
+      "name": "Квестовое",
       "color": "#8b5cf6"
     },
     "pet": {

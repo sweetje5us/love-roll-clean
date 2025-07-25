@@ -35,6 +35,20 @@
         "расследование",
         "поместье"
       ]
+    },
+    "episode_1753453398261": {
+      "id": "episode_1753453398261",
+      "name": "Тестовый эпизод",
+      "description": "пвап",
+      "longDescription": "пвап",
+      "type": "romance",
+      "ageRating": "0+",
+      "duration": "30-60 мин",
+      "difficulty": "easy",
+      "preview": "",
+      "unlocked": true,
+      "completed": false,
+      "tags": []
     }
   },
   "types": {
