@@ -20,14 +20,14 @@ export const getInventoryItemsWithInfo = (inventoryData) => {
       } else {
         console.warn(`Шаблон ${inventoryItem.type_of_quest_item} не найден для предмета ${itemId}`);
         // Шаблон не найден, используем данные из инвентаря
-        items.push({
+      items.push({
           ...inventoryItem,
           id: itemId,
           name: inventoryItem.name || `Квестовый предмет ${itemId}`,
           description: inventoryItem.description || 'Описание отсутствует',
-          quantity: inventoryItem.quantity,
-          lastAdded: inventoryItem.lastAdded
-        });
+        quantity: inventoryItem.quantity,
+        lastAdded: inventoryItem.lastAdded
+      });
       }
     } else if (inventoryItem && inventoryItem.name && inventoryItem.description) {
       // Предмет уже имеет полные данные (кастомный квестовый предмет без шаблона)

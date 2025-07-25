@@ -48,44 +48,40 @@ export const InventoryProvider = ({ children }) => {
 
   // Добавить предмет в инвентарь
   const addItem = (itemIdOrObject, quantity = 1, customData = null) => {
-    let itemId, itemData;
-
-    if (typeof itemIdOrObject === 'string') {
-      // Старый формат: передается только ID
-      itemId = itemIdOrObject;
-      itemData = getItemById(itemId);
-    } else if (typeof itemIdOrObject === 'object' && isCustomQuestItem(itemIdOrObject)) {
-      // Новый формат: передается объект кастомного квестового предмета
-      itemId = itemIdOrObject.id;
-      itemData = itemIdOrObject;
-    } else {
-      console.warn('Неподдерживаемый формат предмета:', itemIdOrObject);
-      return;
-    }
-
-    if (!itemId) {
-      console.warn('Не удалось определить ID предмета');
-      return;
-    }
-
-    console.log('InventoryContext.addItem - входные данные:', { itemId, itemData, customData });
-
     setInventory(prev => {
+      let itemId, itemData;
+
+      if (typeof itemIdOrObject === 'string') {
+        // Старый формат: передается только ID
+        itemId = itemIdOrObject;
+        itemData = getItemById(itemId);
+      } else if (typeof itemIdOrObject === 'object' && isCustomQuestItem(itemIdOrObject)) {
+        // Новый формат: передается объект кастомного квестового предмета
+        itemId = itemIdOrObject.id;
+        itemData = itemIdOrObject;
+      } else {
+        console.warn('Неподдерживаемый формат предмета:', itemIdOrObject);
+        return prev;
+      }
+
+      if (!itemId) {
+        console.warn('Не удалось определить ID предмета');
+        return prev;
+      }
+
       const existingItem = prev[itemId] || {};
       const newQuantity = (existingItem.quantity || 0) + quantity;
       
-      // Если переданы кастомные данные, используем их
-      const finalItemData = customData || itemData || {};
-      
+      // Если переданы кастомные данные, используем их, иначе используем itemData
+      const dataToStore = customData || itemData || {};
+
       const newItem = {
-        ...existingItem,
-        ...finalItemData, // Добавляем данные предмета (имя, описание, тип и т.д.)
+        ...existingItem, // Сохраняем все существующие свойства
+        ...dataToStore, // Добавляем или обновляем полные данные предмета (имя, описание, тип и т.д.)
         quantity: newQuantity,
         lastAdded: new Date().toISOString()
       };
-      
-      console.log('InventoryContext.addItem - новый предмет:', { itemId, newItem });
-      
+
       return {
         ...prev,
         [itemId]: newItem

@@ -35,10 +35,15 @@ const SceneManager = ({ selectedEpisode, selectedChapter, onSceneEdit, onSceneCr
     try {
       setLoading(true);
       
-      // Определяем правильный путь к главе (как в App.js)
-      const chapterPath = (selectedEpisode.id === 'mansion' || selectedEpisode.id === 'tutorial')
-        ? `chapter${selectedChapter.id}`
-        : selectedChapter.id;
+      // Определяем правильный путь к главе
+      let chapterPath = selectedChapter.id;
+      
+      // Для эпизодов mansion и tutorial используем формат chapter[id]
+      if (selectedEpisode.id === 'mansion' || selectedEpisode.id === 'tutorial') {
+        if (!selectedChapter.id.startsWith('chapter')) {
+          chapterPath = `chapter${selectedChapter.id}`;
+        }
+      }
       
       console.log(`Загружаем сцены для эпизода: ${selectedEpisode.id}, главы: ${chapterPath}`);
       const response = await fetch(`${API_BASE_URL}/episodes/${selectedEpisode.id}/chapters/${chapterPath}/scenes`);
@@ -59,7 +64,8 @@ const SceneManager = ({ selectedEpisode, selectedChapter, onSceneEdit, onSceneCr
 
   const handleCreateScene = () => {
     if (onSceneCreate) {
-      onSceneCreate(null);
+      const sceneId = `scene_${Date.now()}`;
+      onSceneCreate(sceneId);
     }
   };
 
@@ -75,10 +81,15 @@ const SceneManager = ({ selectedEpisode, selectedChapter, onSceneEdit, onSceneCr
     }
 
     try {
-      // Определяем правильный путь к главе (как в App.js)
-      const chapterPath = (selectedEpisode.id === 'mansion' || selectedEpisode.id === 'tutorial')
-        ? `chapter${selectedChapter.id}`
-        : selectedChapter.id;
+      // Определяем правильный путь к главе
+      let chapterPath = selectedChapter.id;
+      
+      // Для эпизодов mansion и tutorial используем формат chapter[id]
+      if (selectedEpisode.id === 'mansion' || selectedEpisode.id === 'tutorial') {
+        if (!selectedChapter.id.startsWith('chapter')) {
+          chapterPath = `chapter${selectedChapter.id}`;
+        }
+      }
       
       const response = await fetch(`${API_BASE_URL}/episodes/${selectedEpisode.id}/chapters/${chapterPath}/scenes/${sceneId}`, {
         method: 'DELETE'

@@ -92,7 +92,7 @@ const SceneModal = ({
         const data = await response.json();
         setQuestItems(data);
       } else {
-        console.error('Ошибка загрузки квестовых предметов');
+        console.error('Ошибка загрузки квестовых предметов:', response.status, response.statusText);
         setQuestItems([]);
       }
     } catch (error) {
@@ -181,8 +181,21 @@ const SceneModal = ({
     }
   }, [scene, chapterId, initialSceneId]);
 
+  const validateSceneId = (id) => {
+    // Проверяем, что ID содержит только буквы, цифры и подчеркивания
+    const idRegex = /^[a-zA-Z0-9_]+$/;
+    return idRegex.test(id) && id.length > 0;
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
+    
+    // Валидация ID
+    if (!validateSceneId(formData.id)) {
+      alert('ID сцены может содержать только буквы, цифры и подчеркивания');
+      return;
+    }
+    
     const cleanedData = cleanDataForSave(formData, episodeId);
     onSave(cleanedData);
   };
@@ -334,6 +347,7 @@ const SceneModal = ({
   const addQuestItemEffect = (choiceIndex) => {
     setFormData(prev => {
       const newChoices = [...prev.choices];
+      
       if (!newChoices[choiceIndex].effects) {
         newChoices[choiceIndex].effects = {
           items: {
@@ -603,13 +617,27 @@ const SceneModal = ({
                 <div className="form-row">
                   <div className="form-group">
                     <label>ID сцены:</label>
-                    <input
-                      type="text"
-                      value={formData.id}
-                      onChange={(e) => setFormData({ ...formData, id: e.target.value })}
-                      placeholder="scene1"
-                      required
-                    />
+                    <div className="input-group">
+                      <input
+                        type="text"
+                        value={formData.id}
+                        onChange={(e) => setFormData({ ...formData, id: e.target.value })}
+                        placeholder="scene1"
+                        required
+                        disabled={!!scene} // Запрещаем изменение ID при редактировании
+                        title="ID может содержать только буквы, цифры и подчеркивания"
+                      />
+                      {!scene && (
+                        <button
+                          type="button"
+                          className="button secondary"
+                          onClick={() => setFormData(prev => ({ ...prev, id: `scene_${Date.now()}` }))}
+                          title="Сгенерировать ID автоматически"
+                        >
+                          Авто
+                        </button>
+                      )}
+                    </div>
                   </div>
                   
                   <div className="form-group">

@@ -56,8 +56,19 @@ app.get('/api/episodes', async (req, res) => {
 app.post('/api/episodes', async (req, res) => {
   try {
     const episodeData = req.body;
-    const episodeId = episodeData.id || `episode_${Date.now()}`;
+    
+    // Проверяем, что ID предоставлен
+    if (!episodeData.id) {
+      return res.status(400).json({ error: 'ID эпизода обязателен' });
+    }
+    
+    const episodeId = episodeData.id;
     const episodePath = path.join(EPISODES_PATH, episodeId);
+    
+    // Проверяем, что папка с таким ID не существует
+    if (await fs.pathExists(episodePath)) {
+      return res.status(400).json({ error: 'Эпизод с таким ID уже существует' });
+    }
     
     // Создаем папку эпизода
     await fs.ensureDir(episodePath);
@@ -239,8 +250,28 @@ app.post('/api/episodes/:episodeId/chapters', async (req, res) => {
       return res.status(404).json({ error: 'Эпизод не найден' });
     }
     
-    const chapterId = chapterData.id || `chapter_${Date.now()}`;
-    const chapterPath = path.join(episodePath, 'chapters', chapterId);
+    // Проверяем, что ID предоставлен
+    if (!chapterData.id) {
+      return res.status(400).json({ error: 'ID главы обязателен' });
+    }
+    
+    const chapterId = chapterData.id;
+    
+    // Для эпизодов mansion и tutorial используем формат chapter[id]
+    let chapterFolderName = chapterId;
+    if (episodeId === 'mansion' || episodeId === 'tutorial') {
+      // Если ID уже содержит "chapter", используем как есть
+      if (!chapterId.startsWith('chapter')) {
+        chapterFolderName = `chapter${chapterId}`;
+      }
+    }
+    
+    const chapterPath = path.join(episodePath, 'chapters', chapterFolderName);
+    
+    // Проверяем, что папка с таким ID не существует
+    if (await fs.pathExists(chapterPath)) {
+      return res.status(400).json({ error: 'Глава с таким ID уже существует' });
+    }
     
     // Создаем папку главы
     await fs.ensureDir(chapterPath);
@@ -353,6 +384,51 @@ app.delete('/api/episodes/:episodeId/chapters/:chapterId', async (req, res) => {
   } catch (error) {
     console.error('Ошибка удаления главы:', error);
     res.status(500).json({ error: 'Ошибка удаления главы' });
+  }
+});
+
+// Удаляем дублирующий endpoint - он уже есть ниже
+
+// Загрузка квестовых предметов (шаблонов из items.json)
+app.get('/api/quest-items', async (req, res) => {
+  try {
+    const itemsPath = path.join(__dirname, '..', '..', 'src', 'data', 'items.json');
+    
+    if (await fs.pathExists(itemsPath)) {
+      const itemsData = await fs.readJson(itemsPath);
+      const questItems = itemsData.items?.quest || {};
+      
+      // Преобразуем в массив с id
+      const questItemsArray = Object.keys(questItems).map(itemId => ({
+        id: itemId,
+        ...questItems[itemId]
+      }));
+      
+      res.json(questItemsArray);
+    } else {
+      res.json([]);
+    }
+  } catch (error) {
+    console.error('Ошибка загрузки квестовых предметов:', error);
+    res.status(500).json({ error: 'Ошибка загрузки квестовых предметов' });
+  }
+});
+
+// Загрузка квестовых предметов эпизода
+app.get('/api/episodes/:episodeId/quest-items', async (req, res) => {
+  try {
+    const episodeId = req.params.episodeId;
+    const questItemsPath = path.join(EPISODES_PATH, episodeId, 'quest-items.json');
+    
+    if (await fs.pathExists(questItemsPath)) {
+      const questItems = await fs.readJson(questItemsPath);
+      res.json(questItems);
+    } else {
+      res.json([]);
+    }
+  } catch (error) {
+    console.error('Ошибка загрузки квестовых предметов эпизода:', error);
+    res.status(500).json({ error: 'Ошибка загрузки квестовых предметов эпизода' });
   }
 });
 
@@ -484,8 +560,18 @@ app.post('/api/episodes/:episodeId/chapters/:chapterId/scenes', async (req, res)
     console.log(`Создание сцены для эпизода ${episodeId}, главы ${chapterId}`);
     console.log('Данные сцены:', JSON.stringify(sceneData, null, 2));
     
-    const sceneId = sceneData.id || `scene_${Date.now()}`;
+    // Проверяем, что ID предоставлен
+    if (!sceneData.id) {
+      return res.status(400).json({ error: 'ID сцены обязателен' });
+    }
+    
+    const sceneId = sceneData.id;
     const scenePath = path.join(EPISODES_PATH, episodeId, 'scenes', `${sceneId}.json`);
+    
+    // Проверяем, что файл с таким ID не существует
+    if (await fs.pathExists(scenePath)) {
+      return res.status(400).json({ error: 'Сцена с таким ID уже существует' });
+    }
     
     // Сохраняем сцену
     const scene = {
@@ -497,13 +583,13 @@ app.post('/api/episodes/:episodeId/chapters/:chapterId/scenes', async (req, res)
     await fs.writeJson(scenePath, scene, { spaces: 2 });
     console.log(`Сцена сохранена: ${scenePath}`);
     
-    // Проверяем, есть ли папка главы (для новых глав)
+    // Определяем правильный путь к конфигурации главы
     let chapterConfigPath = path.join(EPISODES_PATH, episodeId, 'chapters', chapterId, 'config.json');
     console.log(`Проверяем config.json главы: ${chapterConfigPath}`);
     console.log(`Файл существует: ${await fs.pathExists(chapterConfigPath)}`);
     
-    // Если файл не найден, пробуем путь с префиксом chapter
-    if (!await fs.pathExists(chapterConfigPath)) {
+    // Если файл не найден, пробуем путь с префиксом chapter для mansion и tutorial
+    if (!await fs.pathExists(chapterConfigPath) && (episodeId === 'mansion' || episodeId === 'tutorial')) {
       chapterConfigPath = path.join(EPISODES_PATH, episodeId, 'chapters', `chapter${chapterId}`, 'config.json');
       console.log(`Попробуем путь с префиксом chapter: ${chapterConfigPath}`);
       console.log(`Файл существует: ${await fs.pathExists(chapterConfigPath)}`);
@@ -779,7 +865,7 @@ app.delete('/api/episodes/:episodeId/characters/:characterId', async (req, res) 
 // API для работы с квестовыми предметами
 app.get('/api/quest-items', async (req, res) => {
   try {
-    const itemsPath = path.join(__dirname, '..', '..', 'src', 'data', 'items.json');
+    const itemsPath = path.join(__dirname, '..', 'client', 'public', 'items.json');
     if (!await fs.pathExists(itemsPath)) {
       return res.status(404).json({ error: 'Файл items.json не найден' });
     }
@@ -804,7 +890,7 @@ app.get('/api/quest-items', async (req, res) => {
 app.get('/api/quest-items/:itemId', async (req, res) => {
   try {
     const { itemId } = req.params;
-    const itemsPath = path.join(__dirname, '..', '..', 'src', 'data', 'items.json');
+    const itemsPath = path.join(__dirname, '..', 'client', 'public', 'items.json');
     
     if (!await fs.pathExists(itemsPath)) {
       return res.status(404).json({ error: 'Файл items.json не найден' });

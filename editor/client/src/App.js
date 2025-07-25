@@ -105,9 +105,11 @@ function App() {
       // Определяем правильный путь к главе
       let chapterPath = selectedChapter.id;
       
-      // Для существующих глав (mansion, tutorial) используем префикс chapter
+      // Для эпизодов mansion и tutorial используем формат chapter[id]
       if (selectedEpisode.id === 'mansion' || selectedEpisode.id === 'tutorial') {
-        chapterPath = `chapter${selectedChapter.id}`;
+        if (!selectedChapter.id.startsWith('chapter')) {
+          chapterPath = `chapter${selectedChapter.id}`;
+        }
       }
       
       const url = isNew 
@@ -136,9 +138,9 @@ function App() {
           window.dispatchEvent(event);
         }, 100);
       } else {
-        console.error('Ошибка сохранения сцены');
-        const errorText = await response.text();
-        console.error('Детали ошибки:', errorText);
+        const errorData = await response.json();
+        alert(`Ошибка сохранения сцены: ${errorData.error || 'Неизвестная ошибка'}`);
+        console.error('Детали ошибки:', errorData);
       }
     } catch (error) {
       console.error('Ошибка сохранения сцены:', error);

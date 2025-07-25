@@ -6,6 +6,7 @@ const ChapterManager = ({ episode, selectedChapter, onChapterSelect, onEpisodeUp
   const [showModal, setShowModal] = useState(false);
   const [editingChapter, setEditingChapter] = useState(null);
   const [formData, setFormData] = useState({
+    id: '',
     name: '',
     description: '',
     duration: '15-30 мин'
@@ -14,6 +15,7 @@ const ChapterManager = ({ episode, selectedChapter, onChapterSelect, onEpisodeUp
   const handleCreateChapter = () => {
     setEditingChapter(null);
     setFormData({
+      id: `chapter${Date.now()}`,
       name: '',
       description: '',
       duration: '15-30 мин'
@@ -24,6 +26,7 @@ const ChapterManager = ({ episode, selectedChapter, onChapterSelect, onEpisodeUp
   const handleEditChapter = (chapter) => {
     setEditingChapter(chapter);
     setFormData({
+      id: chapter.id || '',
       name: chapter.name || '',
       description: chapter.description || '',
       duration: chapter.duration || '15-30 мин'
@@ -34,10 +37,15 @@ const ChapterManager = ({ episode, selectedChapter, onChapterSelect, onEpisodeUp
   const handleDeleteChapter = async (chapterId) => {
     if (window.confirm('Вы уверены, что хотите удалить эту главу?')) {
       try {
-        // Определяем правильный путь к главе (как в App.js)
-        const chapterPath = (episode.id === 'mansion' || episode.id === 'tutorial')
-          ? `chapter${chapterId}`
-          : chapterId;
+        // Определяем правильный путь к главе
+        let chapterPath = chapterId;
+        
+        // Для эпизодов mansion и tutorial используем формат chapter[id]
+        if (episode.id === 'mansion' || episode.id === 'tutorial') {
+          if (!chapterId.startsWith('chapter')) {
+            chapterPath = `chapter${chapterId}`;
+          }
+        }
         
         const response = await fetch(`${API_BASE_URL}/episodes/${episode.id}/chapters/${chapterPath}`, {
           method: 'DELETE'
@@ -55,7 +63,8 @@ const ChapterManager = ({ episode, selectedChapter, onChapterSelect, onEpisodeUp
             onChapterSelect(null);
           }
         } else {
-          console.error('Ошибка удаления главы');
+          const errorData = await response.json();
+          alert(`Ошибка удаления главы: ${errorData.error || 'Неизвестная ошибка'}`);
         }
       } catch (error) {
         console.error('Ошибка удаления главы:', error);
@@ -63,16 +72,34 @@ const ChapterManager = ({ episode, selectedChapter, onChapterSelect, onEpisodeUp
     }
   };
 
+  const validateChapterId = (id) => {
+    // Проверяем, что ID содержит только буквы, цифры и подчеркивания
+    const idRegex = /^[a-zA-Z0-9_]+$/;
+    return idRegex.test(id) && id.length > 0;
+  };
+
   const handleSaveChapter = async (e) => {
     e.preventDefault();
     
+    // Валидация ID
+    if (!validateChapterId(formData.id)) {
+      alert('ID главы может содержать только буквы, цифры и подчеркивания');
+      return;
+    }
+    
     try {
-      // Определяем правильный путь к главе (как в App.js)
-      const chapterPath = editingChapter 
-        ? ((episode.id === 'mansion' || episode.id === 'tutorial')
-            ? `chapter${editingChapter.id}`
-            : editingChapter.id)
-        : null;
+      // Определяем правильный путь к главе
+      let chapterPath = null;
+      if (editingChapter) {
+        chapterPath = editingChapter.id;
+        
+        // Для эпизодов mansion и tutorial используем формат chapter[id]
+        if (episode.id === 'mansion' || episode.id === 'tutorial') {
+          if (!editingChapter.id.startsWith('chapter')) {
+            chapterPath = `chapter${editingChapter.id}`;
+          }
+        }
+      }
       
       const url = editingChapter 
         ? `${API_BASE_URL}/episodes/${episode.id}/chapters/${chapterPath}`
@@ -110,7 +137,8 @@ const ChapterManager = ({ episode, selectedChapter, onChapterSelect, onEpisodeUp
         setShowModal(false);
         setEditingChapter(null);
       } else {
-        console.error('Ошибка сохранения главы');
+        const errorData = await response.json();
+        alert(`Ошибка сохранения главы: ${errorData.error || 'Неизвестная ошибка'}`);
       }
     } catch (error) {
       console.error('Ошибка сохранения главы:', error);
@@ -208,6 +236,34 @@ const ChapterManager = ({ episode, selectedChapter, onChapterSelect, onEpisodeUp
             </div>
 
             <form onSubmit={handleSaveChapter} className="modal-content">
+              <div className="form-group">
+                <label htmlFor="id">ID главы *</label>
+                <div className="input-group">
+                  <input
+                    type="text"
+                    id="id"
+                    name="id"
+                    value={formData.id}
+                    onChange={handleInputChange}
+                    className="form-control"
+                    required
+                    disabled={!!editingChapter} // Запрещаем изменение ID при редактировании
+                    placeholder="chapter_1234567890"
+                    title="ID может содержать только буквы, цифры и подчеркивания"
+                  />
+                                        {!editingChapter && (
+                        <button
+                          type="button"
+                          className="button secondary"
+                          onClick={() => setFormData(prev => ({ ...prev, id: `chapter${Date.now()}` }))}
+                          title="Сгенерировать ID автоматически"
+                        >
+                          Авто
+                        </button>
+                      )}
+                </div>
+              </div>
+
               <div className="form-group">
                 <label htmlFor="name">Название *</label>
                 <input

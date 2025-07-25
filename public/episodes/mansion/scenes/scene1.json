@@ -25,7 +25,20 @@
     {
       "id": "choice1",
       "text": "Тогда начнем.",
-      "nextScene": "scene2"
+      "nextScene": "scene2",
+      "effects": {
+        "items": {
+          "add": [
+            {
+              "id": "test2",
+              "name": "test2",
+              "description": "test2",
+              "type": "quest",
+              "type_of_quest_item": "book"
+            }
+          ]
+        }
+      }
     },
     {
       "id": "scene1_choice2",
@@ -64,11 +77,11 @@
         "items": {
           "add": [
             {
-              "id": "test_quest_item2",
-              "name": "Тестовый квестовый предмет 2",
-              "description": "Описание тестового квестового предмета 2",
+              "id": "test_quest_item",
+              "name": "Тестовый квестовый предмет",
+              "description": "Описание тестового квестового предмета",
               "type": "quest",
-              "type_of_quest_item": "coral"
+              "type_of_quest_item": "fabric"
             }
           ]
         }

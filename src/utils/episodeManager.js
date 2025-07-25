@@ -677,15 +677,15 @@ class EpisodeManager {
           }
         } else {
           // Обычный предмет - добавляем только по ID
-          this.inventoryManager.addItem(itemId, 1);
-          
+        this.inventoryManager.addItem(itemId, 1);
+        
           // Показываем обычное уведомление
-          if (window.addNotification) {
+        if (window.addNotification) {
             const itemName = this.getItemName(itemId);
-            window.addNotification('item_received', {
-              message: `Получен предмет "${itemName}"`,
-              itemName: itemName
-            });
+          window.addNotification('item_received', {
+            message: `Получен предмет "${itemName}"`,
+            itemName: itemName
+          });
           }
         }
       });
@@ -882,54 +882,54 @@ class EpisodeManager {
       });
     } else {
       // Новая структура: объект с items/relationships
-      for (const [effectType, value] of Object.entries(effects)) {
-        switch (effectType) {
-          case 'experience':
-            if (this.characterManager && value.characterId && value.amount) {
-              this.addExperienceToCharacter(value.characterId, value.amount);
-            }
-            break;
-          case 'relationship':
-          case 'relationships':
-            // Обновляем отношения с персонажами
-            if (this.relationshipsManager) {
-              // Используем глобальную систему отношений
-              for (const [characterId, change] of Object.entries(value)) {
-                // Получаем ID текущего персонажа игрока
-                const playerCharacterId = this.getCurrentPlayerCharacterId();
-                
-                if (playerCharacterId) {
-                  const oldValue = this.relationshipsManager.getRelationship(playerCharacterId, characterId, 'friendship');
-                  this.relationshipsManager.changeRelationship(playerCharacterId, characterId, 'friendship', change);
-                  // Читаем актуальное значение из localStorage после изменения
-                  const newValue = this.relationshipsManager.getRelationship(playerCharacterId, characterId, 'friendship');
-                  console.log(`RELATIONSHIP: ${playerCharacterId} -> ${characterId}: ${oldValue} -> ${newValue} (+${change})`);
-                } else {
-                  console.warn(`EpisodeManager: не удалось получить ID персонажа игрока`);
-                }
-              }
-            } else {
-              // Fallback на локальную систему прогресса
-              for (const [characterId, change] of Object.entries(value)) {
-                const currentValue = this.episodeProgress.progress[`relation_${characterId}`] || 0;
-                this.episodeProgress.progress[`relation_${characterId}`] = currentValue + change;
+    for (const [effectType, value] of Object.entries(effects)) {
+      switch (effectType) {
+        case 'experience':
+          if (this.characterManager && value.characterId && value.amount) {
+            this.addExperienceToCharacter(value.characterId, value.amount);
+          }
+          break;
+        case 'relationship':
+        case 'relationships':
+          // Обновляем отношения с персонажами
+          if (this.relationshipsManager) {
+            // Используем глобальную систему отношений
+            for (const [characterId, change] of Object.entries(value)) {
+              // Получаем ID текущего персонажа игрока
+              const playerCharacterId = this.getCurrentPlayerCharacterId();
+              
+              if (playerCharacterId) {
+                const oldValue = this.relationshipsManager.getRelationship(playerCharacterId, characterId, 'friendship');
+                this.relationshipsManager.changeRelationship(playerCharacterId, characterId, 'friendship', change);
+                // Читаем актуальное значение из localStorage после изменения
+                const newValue = this.relationshipsManager.getRelationship(playerCharacterId, characterId, 'friendship');
+                console.log(`RELATIONSHIP: ${playerCharacterId} -> ${characterId}: ${oldValue} -> ${newValue} (+${change})`);
+              } else {
+                console.warn(`EpisodeManager: не удалось получить ID персонажа игрока`);
               }
             }
-            break;
-          case 'items':
-            // Обрабатываем предметы
-            this.processItemEffects(value);
-            break;
-          case 'stats':
-            // Обновляем характеристики
-            for (const [statName, change] of Object.entries(value)) {
-              const currentValue = this.episodeProgress.progress[`stat_${statName}`] || 0;
-              this.episodeProgress.progress[`stat_${statName}`] = currentValue + change;
+          } else {
+            // Fallback на локальную систему прогресса
+            for (const [characterId, change] of Object.entries(value)) {
+              const currentValue = this.episodeProgress.progress[`relation_${characterId}`] || 0;
+              this.episodeProgress.progress[`relation_${characterId}`] = currentValue + change;
             }
-            break;
-          default:
-            console.log(`EpisodeManager: неизвестный тип эффекта: ${effectType}`);
-            break;
+          }
+          break;
+        case 'items':
+          // Обрабатываем предметы
+          this.processItemEffects(value);
+          break;
+        case 'stats':
+          // Обновляем характеристики
+          for (const [statName, change] of Object.entries(value)) {
+            const currentValue = this.episodeProgress.progress[`stat_${statName}`] || 0;
+            this.episodeProgress.progress[`stat_${statName}`] = currentValue + change;
+          }
+          break;
+        default:
+          console.log(`EpisodeManager: неизвестный тип эффекта: ${effectType}`);
+          break;
         }
       }
     }

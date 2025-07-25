@@ -71,7 +71,8 @@ const EpisodeManager = ({
         setShowModal(false);
         setEditingEpisode(null);
       } else {
-        console.error('Ошибка сохранения эпизода');
+        const errorData = await response.json();
+        alert(`Ошибка сохранения эпизода: ${errorData.error || 'Неизвестная ошибка'}`);
       }
     } catch (error) {
       console.error('Ошибка сохранения эпизода:', error);

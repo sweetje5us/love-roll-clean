@@ -472,10 +472,10 @@ const GameScreen = () => {
 
       // Устанавливаем менеджер инвентаря для episodeManager
       episodeManager.setInventoryManager({
-        addItem: (itemId, count = 1) => {
-          console.log(`EpisodeManager.addItem - добавляем ${count} ${itemId}`);
+        addItem: (itemIdOrObject, count = 1) => {
+          console.log(`EpisodeManager.addItem - добавляем ${count} ${itemIdOrObject}`);
           // Используем addItem из InventoryContext
-          addItem(itemId, count);
+          addItem(itemIdOrObject, count);
         },
         removeItem: (itemId, count = 1) => {
           console.log(`EpisodeManager.removeItem - убираем ${count} ${itemId}`);
