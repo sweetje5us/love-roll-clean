@@ -1,8 +1,8 @@
 {
   "id": "scene153",
   "chapterId": 8,
-  "location": "corridor",
-  "background": "school_corridor",
+  "name": "",
+  "background": "sprites/episodes/locations/tutorial/school_corridor",
   "characters": [
     {
       "id": "student",
@@ -22,31 +22,19 @@
       "id": "scene153_choice1",
       "text": "Спасибо! Обязательно встретимся",
       "nextScene": "scene154",
-      "effects": {
-        "relationships": {
-          "student": 2
-        },
-        "items": {
-          "add": [
-            "chocolate"
-          ]
+      "effects": [
+        {
+          "id": "effect_1753467767511_pzqh8m8b8",
+          "type": "item",
+          "targetId": "chocolate",
+          "value": 1
         }
-      }
+      ]
     },
     {
       "id": "scene153_choice2",
       "text": "Спасибо за подарок",
-      "nextScene": "scene154",
-      "effects": {
-        "relationships": {
-          "student": 1
-        },
-        "items": {
-          "add": [
-            "chocolate"
-          ]
-        }
-      }
+      "nextScene": "scene154"
     }
   ]
 }

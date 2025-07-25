@@ -7,6 +7,7 @@
   "scripts": {
     "start": "react-scripts start",
     "start-alt": "node start.js",
+    "start-dev": "node start.js",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",

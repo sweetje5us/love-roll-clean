@@ -40,11 +40,9 @@ const ChapterManager = ({ episode, selectedChapter, onChapterSelect, onEpisodeUp
         // Определяем правильный путь к главе
         let chapterPath = chapterId;
         
-        // Для эпизодов mansion и tutorial используем формат chapter[id]
-        if (episode.id === 'mansion' || episode.id === 'tutorial') {
-          if (!chapterId.startsWith('chapter')) {
-            chapterPath = `chapter${chapterId}`;
-          }
+        // Всегда используем формат chapter[id] для совместимости с игровой системой
+        if (!chapterId.startsWith('chapter')) {
+          chapterPath = `chapter${chapterId}`;
         }
         
         const response = await fetch(`${API_BASE_URL}/episodes/${episode.id}/chapters/${chapterPath}`, {
@@ -53,9 +51,10 @@ const ChapterManager = ({ episode, selectedChapter, onChapterSelect, onEpisodeUp
 
         if (response.ok) {
           // Обновляем эпизод после удаления главы
+          const currentChapters = episode.chapters || [];
           const updatedEpisode = {
             ...episode,
-            chapters: episode.chapters.filter(ch => ch.id !== chapterId)
+            chapters: currentChapters.filter(ch => ch.id !== chapterId)
           };
           onEpisodeUpdate(updatedEpisode);
           
@@ -73,9 +72,9 @@ const ChapterManager = ({ episode, selectedChapter, onChapterSelect, onEpisodeUp
   };
 
   const validateChapterId = (id) => {
-    // Проверяем, что ID содержит только буквы, цифры и подчеркивания
-    const idRegex = /^[a-zA-Z0-9_]+$/;
-    return idRegex.test(id) && id.length > 0;
+    // Проверяем, что ID является числом от 1 до 999
+    const numId = parseInt(id);
+    return !isNaN(numId) && numId >= 1 && numId <= 999;
   };
 
   const handleSaveChapter = async (e) => {
@@ -83,7 +82,7 @@ const ChapterManager = ({ episode, selectedChapter, onChapterSelect, onEpisodeUp
     
     // Валидация ID
     if (!validateChapterId(formData.id)) {
-      alert('ID главы может содержать только буквы, цифры и подчеркивания');
+      alert('ID главы должен быть числом от 1 до 999');
       return;
     }
     
@@ -93,11 +92,9 @@ const ChapterManager = ({ episode, selectedChapter, onChapterSelect, onEpisodeUp
       if (editingChapter) {
         chapterPath = editingChapter.id;
         
-        // Для эпизодов mansion и tutorial используем формат chapter[id]
-        if (episode.id === 'mansion' || episode.id === 'tutorial') {
-          if (!editingChapter.id.startsWith('chapter')) {
-            chapterPath = `chapter${editingChapter.id}`;
-          }
+        // Всегда используем формат chapter[id] для совместимости с игровой системой
+        if (!editingChapter.id.startsWith('chapter')) {
+          chapterPath = `chapter${editingChapter.id}`;
         }
       }
       
@@ -119,13 +116,14 @@ const ChapterManager = ({ episode, selectedChapter, onChapterSelect, onEpisodeUp
         const savedChapter = await response.json();
         
         // Обновляем список глав в эпизоде
+        const currentChapters = episode.chapters || [];
         let updatedChapters;
         if (editingChapter) {
-          updatedChapters = episode.chapters.map(ch => 
+          updatedChapters = currentChapters.map(ch => 
             ch.id === editingChapter.id ? savedChapter : ch
           );
         } else {
-          updatedChapters = [...episode.chapters, savedChapter];
+          updatedChapters = [...currentChapters, savedChapter];
         }
         
         const updatedEpisode = {
@@ -240,7 +238,7 @@ const ChapterManager = ({ episode, selectedChapter, onChapterSelect, onEpisodeUp
                 <label htmlFor="id">ID главы *</label>
                 <div className="input-group">
                   <input
-                    type="text"
+                    type="number"
                     id="id"
                     name="id"
                     value={formData.id}
@@ -248,20 +246,27 @@ const ChapterManager = ({ episode, selectedChapter, onChapterSelect, onEpisodeUp
                     className="form-control"
                     required
                     disabled={!!editingChapter} // Запрещаем изменение ID при редактировании
-                    placeholder="chapter_1234567890"
-                    title="ID может содержать только буквы, цифры и подчеркивания"
+                    placeholder="1"
+                    min="1"
+                    max="999"
+                    title="ID главы должен быть числом от 1 до 999"
                   />
-                                        {!editingChapter && (
-                        <button
-                          type="button"
-                          className="button secondary"
-                          onClick={() => setFormData(prev => ({ ...prev, id: `chapter${Date.now()}` }))}
-                          title="Сгенерировать ID автоматически"
-                        >
-                          Авто
-                        </button>
-                      )}
+                  {!editingChapter && (
+                    <button
+                      type="button"
+                      className="button secondary"
+                      onClick={() => {
+                        // Автоматически генерируем следующий номер главы
+                        const nextChapterNumber = (episode.chapters || []).length + 1;
+                        setFormData(prev => ({ ...prev, id: nextChapterNumber.toString() }));
+                      }}
+                      title="Сгенерировать следующий номер главы"
+                    >
+                      Авто
+                    </button>
+                  )}
                 </div>
+                <small className="form-help">ID главы должен быть числом. Система автоматически создаст папку chapter[id]</small>
               </div>
 
               <div className="form-group">

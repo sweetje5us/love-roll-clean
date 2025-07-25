@@ -4,6 +4,7 @@ const API_BASE_URL = 'http://localhost:3001/api';
 
 const EpisodeModal = ({ episode, onSave, onClose }) => {
   const [formData, setFormData] = useState({
+    id: '',
     name: '',
     description: '',
     longDescription: '',
@@ -21,6 +22,7 @@ const EpisodeModal = ({ episode, onSave, onClose }) => {
   useEffect(() => {
     if (episode) {
       setFormData({
+        id: episode.id || '',
         name: episode.name || '',
         description: episode.description || '',
         longDescription: episode.longDescription || episode.description || '',
@@ -92,6 +94,25 @@ const EpisodeModal = ({ episode, onSave, onClose }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
+    // Валидация ID эпизода
+    if (!formData.id.trim()) {
+      alert('ID эпизода обязателен');
+      return;
+    }
+    const idRegex = /^[a-zA-Z0-9_]+$/;
+    if (!idRegex.test(formData.id)) {
+      alert('ID эпизода может содержать только буквы, цифры и подчеркивания');
+      return;
+    }
+    if (formData.id.length < 2) {
+      alert('ID эпизода должен содержать минимум 2 символа');
+      return;
+    }
+    if (formData.id.length > 50) {
+      alert('ID эпизода не должен превышать 50 символов');
+      return;
+    }
+    
     let finalPreview = formData.preview;
     
     // Если есть новый файл для загрузки, загружаем его
@@ -153,6 +174,39 @@ const EpisodeModal = ({ episode, onSave, onClose }) => {
         </div>
 
         <form onSubmit={handleSubmit} className="modal-content">
+          <div className="form-group">
+            <label htmlFor="id">ID эпизода *</label>
+            <div className="input-group">
+              <input
+                type="text"
+                id="id"
+                name="id"
+                value={formData.id}
+                onChange={handleInputChange}
+                className="form-control"
+                required
+                disabled={!!episode} // ID нельзя изменять для существующих эпизодов
+                placeholder="например: episode_1"
+                pattern="^[a-zA-Z0-9_]+$"
+                title="Только буквы, цифры и подчеркивания"
+              />
+              {!episode && (
+                <button
+                  type="button"
+                  className="button secondary"
+                  onClick={() => {
+                    const timestamp = Date.now();
+                    setFormData(prev => ({ ...prev, id: `episode_${timestamp}` }));
+                  }}
+                  title="Сгенерировать ID автоматически"
+                >
+                  Авто
+                </button>
+              )}
+            </div>
+            <small className="form-help">ID может содержать только буквы, цифры и подчеркивания. Рекомендуется формат: episode_1, episode_2 и т.д.</small>
+          </div>
+
           <div className="grid grid-2">
             <div className="form-group">
               <label htmlFor="name">Название *</label>

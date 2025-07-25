@@ -348,7 +348,8 @@ const SceneModal = ({
     setFormData(prev => {
       const newChoices = [...prev.choices];
       
-      if (!newChoices[choiceIndex].effects) {
+      // Если effects является массивом или не существует, создаем новую структуру
+      if (!newChoices[choiceIndex].effects || Array.isArray(newChoices[choiceIndex].effects)) {
         newChoices[choiceIndex].effects = {
           items: {
             add: []
@@ -1335,7 +1336,7 @@ const SceneModal = ({
                       ))}
                       
                       {/* Новая структура эффектов (объект с items/add) */}
-                      {choice.effects && !Array.isArray(choice.effects) && choice.effects.items && choice.effects.items.add && (
+                      {choice.effects && choice.effects.items && choice.effects.items.add && choice.effects.items.add.length > 0 && (
                         <div>
                           {choice.effects.items.add.map((item, itemIndex) => (
                             <div key={itemIndex} className="effect-item">

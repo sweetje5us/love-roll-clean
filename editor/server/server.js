@@ -41,6 +41,8 @@ app.get('/api/episodes', async (req, res) => {
       const configPath = path.join(EPISODES_PATH, folder, 'config.json');
       if (await fs.pathExists(configPath)) {
         const config = await fs.readJson(configPath);
+        // Убеждаемся, что у всех эпизодов есть массив chapters
+        config.chapters = config.chapters || [];
         episodes.push(config);
       }
     }
@@ -119,7 +121,8 @@ app.post('/api/episodes', async (req, res) => {
       preview: finalPreview,
       unlocked: true,
       completed: false,
-      tags: episodeData.tags || []
+      tags: episodeData.tags || [],
+      chapters: []
     };
     
     await fs.writeJson(path.join(episodePath, 'config.json'), config, { spaces: 2 });
@@ -173,7 +176,8 @@ app.put('/api/episodes/:id', async (req, res) => {
       preview: episodeData.preview || config.preview || 'preview.png',
       unlocked: episodeData.unlocked !== undefined ? episodeData.unlocked : config.unlocked,
       completed: episodeData.completed !== undefined ? episodeData.completed : config.completed,
-      tags: episodeData.tags || config.tags || []
+      tags: episodeData.tags || config.tags || [],
+      chapters: config.chapters || []
     };
     
     // Обновляем episodes.json
@@ -257,13 +261,17 @@ app.post('/api/episodes/:episodeId/chapters', async (req, res) => {
     
     const chapterId = chapterData.id;
     
-    // Для эпизодов mansion и tutorial используем формат chapter[id]
+    // Всегда используем формат chapter[id] для совместимости с игровой системой
     let chapterFolderName = chapterId;
-    if (episodeId === 'mansion' || episodeId === 'tutorial') {
-      // Если ID уже содержит "chapter", используем как есть
-      if (!chapterId.startsWith('chapter')) {
-        chapterFolderName = `chapter${chapterId}`;
-      }
+    
+    // Если ID уже содержит "chapter", используем как есть
+    if (!chapterId.startsWith('chapter')) {
+      chapterFolderName = `chapter${chapterId}`;
+    }
+    
+    // Убеждаемся, что ID главы установлен
+    if (!chapterData.id || chapterData.id.trim() === '') {
+      chapterData.id = chapterId;
     }
     
     const chapterPath = path.join(episodePath, 'chapters', chapterFolderName);
@@ -278,7 +286,7 @@ app.post('/api/episodes/:episodeId/chapters', async (req, res) => {
     
     // Создаем config.json для главы
     const chapterConfig = {
-      id: chapterId,
+      id: chapterData.id, // Используем обновленный ID
       name: chapterData.name,
       description: chapterData.description,
       duration: chapterData.duration,
@@ -294,6 +302,16 @@ app.post('/api/episodes/:episodeId/chapters', async (req, res) => {
     config.chapters.push(chapterConfig);
     
     await fs.writeJson(configPath, config, { spaces: 2 });
+    
+    // Обновляем episodes.json
+    const episodesJsonPath = path.join(__dirname, '..', '..', 'public', 'episodes.json');
+    if (await fs.pathExists(episodesJsonPath)) {
+      const episodesData = await fs.readJson(episodesJsonPath);
+      if (episodesData.episodes && episodesData.episodes[episodeId]) {
+        episodesData.episodes[episodeId].chapters = config.chapters;
+        await fs.writeJson(episodesJsonPath, episodesData, { spaces: 2 });
+      }
+    }
     
     res.json(chapterConfig);
   } catch (error) {
@@ -333,8 +351,23 @@ app.put('/api/episodes/:episodeId/chapters/:chapterId', async (req, res) => {
     config.chapters[chapterIndex] = updatedChapter;
     await fs.writeJson(configPath, config, { spaces: 2 });
     
+    // Обновляем episodes.json
+    const episodesJsonPath = path.join(__dirname, '..', '..', 'public', 'episodes.json');
+    if (await fs.pathExists(episodesJsonPath)) {
+      const episodesData = await fs.readJson(episodesJsonPath);
+      if (episodesData.episodes && episodesData.episodes[episodeId]) {
+        episodesData.episodes[episodeId].chapters = config.chapters;
+        await fs.writeJson(episodesJsonPath, episodesData, { spaces: 2 });
+      }
+    }
+    
     // Также обновляем config.json главы, если он существует
-    const chapterPath = path.join(episodePath, 'chapters', chapterId);
+    let chapterFolderName = chapterId;
+    if (!chapterId.startsWith('chapter')) {
+      chapterFolderName = `chapter${chapterId}`;
+    }
+    
+    const chapterPath = path.join(episodePath, 'chapters', chapterFolderName);
     const chapterConfigPath = path.join(chapterPath, 'config.json');
     
     if (await fs.pathExists(chapterConfigPath)) {
@@ -359,7 +392,14 @@ app.delete('/api/episodes/:episodeId/chapters/:chapterId', async (req, res) => {
   try {
     const { episodeId, chapterId } = req.params;
     const episodePath = path.join(EPISODES_PATH, episodeId);
-    const chapterPath = path.join(episodePath, 'chapters', chapterId);
+    
+    // Определяем правильный путь к главе
+    let chapterFolderName = chapterId;
+    if (!chapterId.startsWith('chapter')) {
+      chapterFolderName = `chapter${chapterId}`;
+    }
+    
+    const chapterPath = path.join(episodePath, 'chapters', chapterFolderName);
     
     if (!await fs.pathExists(episodePath)) {
       return res.status(404).json({ error: 'Эпизод не найден' });
@@ -380,6 +420,16 @@ app.delete('/api/episodes/:episodeId/chapters/:chapterId', async (req, res) => {
     
     await fs.writeJson(configPath, config, { spaces: 2 });
     
+    // Обновляем episodes.json
+    const episodesJsonPath = path.join(__dirname, '..', '..', 'public', 'episodes.json');
+    if (await fs.pathExists(episodesJsonPath)) {
+      const episodesData = await fs.readJson(episodesJsonPath);
+      if (episodesData.episodes && episodesData.episodes[episodeId]) {
+        episodesData.episodes[episodeId].chapters = config.chapters;
+        await fs.writeJson(episodesJsonPath, episodesData, { spaces: 2 });
+      }
+    }
+    
     res.json({ success: true });
   } catch (error) {
     console.error('Ошибка удаления главы:', error);
@@ -392,7 +442,7 @@ app.delete('/api/episodes/:episodeId/chapters/:chapterId', async (req, res) => {
 // Загрузка квестовых предметов (шаблонов из items.json)
 app.get('/api/quest-items', async (req, res) => {
   try {
-    const itemsPath = path.join(__dirname, '..', '..', 'src', 'data', 'items.json');
+    const itemsPath = path.join(__dirname, '..', 'client', 'public', 'items.json');
     
     if (await fs.pathExists(itemsPath)) {
       const itemsData = await fs.readJson(itemsPath);
@@ -437,13 +487,12 @@ app.get('/api/episodes/:episodeId/chapters/:chapterId/scenes', async (req, res) 
   try {
     const { episodeId, chapterId } = req.params;
     
-    // Сначала проверяем, есть ли папка главы (для новых глав)
+    // Определяем правильный путь к главе
     let chapterPath = path.join(EPISODES_PATH, episodeId, 'chapters', chapterId);
     
-    // Если папка не найдена, попробуем с префиксом "chapter"
-    if (!await fs.pathExists(chapterPath)) {
+    // Всегда используем формат chapter[id] для совместимости с игровой системой
+    if (!chapterId.startsWith('chapter')) {
       chapterPath = path.join(EPISODES_PATH, episodeId, 'chapters', `chapter${chapterId}`);
-      console.log(`Попробуем путь с префиксом chapter: ${chapterPath}`);
     }
     
     // Если и этот путь не найден, попробуем найти папку главы по ID
@@ -588,8 +637,8 @@ app.post('/api/episodes/:episodeId/chapters/:chapterId/scenes', async (req, res)
     console.log(`Проверяем config.json главы: ${chapterConfigPath}`);
     console.log(`Файл существует: ${await fs.pathExists(chapterConfigPath)}`);
     
-    // Если файл не найден, пробуем путь с префиксом chapter для mansion и tutorial
-    if (!await fs.pathExists(chapterConfigPath) && (episodeId === 'mansion' || episodeId === 'tutorial')) {
+    // Всегда используем формат chapter[id] для совместимости с игровой системой
+    if (!chapterId.startsWith('chapter')) {
       chapterConfigPath = path.join(EPISODES_PATH, episodeId, 'chapters', `chapter${chapterId}`, 'config.json');
       console.log(`Попробуем путь с префиксом chapter: ${chapterConfigPath}`);
       console.log(`Файл существует: ${await fs.pathExists(chapterConfigPath)}`);
@@ -862,29 +911,7 @@ app.delete('/api/episodes/:episodeId/characters/:characterId', async (req, res) 
   }
 });
 
-// API для работы с квестовыми предметами
-app.get('/api/quest-items', async (req, res) => {
-  try {
-    const itemsPath = path.join(__dirname, '..', 'client', 'public', 'items.json');
-    if (!await fs.pathExists(itemsPath)) {
-      return res.status(404).json({ error: 'Файл items.json не найден' });
-    }
-    
-    const itemsData = await fs.readJson(itemsPath);
-    const questItems = itemsData.items?.quest || {};
-    
-    // Преобразуем в массив с id
-    const questItemsArray = Object.keys(questItems).map(itemId => ({
-      id: itemId,
-      ...questItems[itemId]
-    }));
-    
-    res.json(questItemsArray);
-  } catch (error) {
-    console.error('Ошибка загрузки квестовых предметов:', error);
-    res.status(500).json({ error: 'Ошибка загрузки квестовых предметов' });
-  }
-});
+
 
 // Получение конкретного квестового предмета по ID
 app.get('/api/quest-items/:itemId', async (req, res) => {

@@ -138,24 +138,32 @@ export const updateEpisodeProgress = (episodeId, progress, userProgress = {}) =>
 export const loadEpisodeConfig = async (episodeId) => {
   try {
     console.log(`loadEpisodeConfig: загружаем конфигурацию для эпизода ${episodeId}`);
-    const response = await fetch(`/episodes/${episodeId}/config.json`);
-    if (!response.ok) {
-      throw new Error(`Не удалось загрузить конфигурацию эпизода ${episodeId}`);
+    
+    // Загружаем данные из episodes.json
+    const episodesResponse = await fetch('/episodes.json');
+    if (!episodesResponse.ok) {
+      throw new Error('Не удалось загрузить episodes.json');
     }
-    const config = await response.json();
+    const episodesData = await episodesResponse.json();
+    
+    // Ищем эпизод в episodes.json
+    const episodeData = episodesData.episodes[episodeId];
+    if (!episodeData) {
+      throw new Error(`Эпизод ${episodeId} не найден в episodes.json`);
+    }
     
     console.log(`loadEpisodeConfig: конфигурация загружена для ${episodeId}:`, {
-      id: config.id,
-      name: config.name,
-      preview: config.preview,
-      type: config.type
+      id: episodeData.id,
+      name: episodeData.name,
+      preview: episodeData.preview,
+      type: episodeData.type
     });
     
     // Добавляем прогресс из сохранений
     const save = getEpisodeSave(episodeId);
-    config.progress = save || {};
+    episodeData.progress = save || {};
     
-    return config;
+    return episodeData;
   } catch (error) {
     console.error('Ошибка загрузки конфигурации эпизода:', error);
     return null;
@@ -167,7 +175,7 @@ export const loadAllEpisodeConfigs = async () => {
   const episodes = [];
   
   try {
-    // Сначала пытаемся загрузить из episodes.json
+    // Загружаем из episodes.json
     const episodesResponse = await fetch('/episodes.json');
     if (episodesResponse.ok) {
       const episodesData = await episodesResponse.json();
@@ -178,12 +186,7 @@ export const loadAllEpisodeConfigs = async () => {
         try {
           const config = await loadEpisodeConfig(episodeId);
           if (config) {
-            // Объединяем данные из episodes.json с конфигурацией
-            const episodeData = episodesData.episodes[episodeId];
-            episodes.push({
-              ...config,
-              ...episodeData
-            });
+            episodes.push(config);
           }
         } catch (error) {
           console.error(`Ошибка загрузки эпизода ${episodeId}:`, error);
@@ -207,14 +210,14 @@ export const loadAllEpisodeConfigs = async () => {
     console.error('Ошибка загрузки списка эпизодов:', error);
     // Fallback: используем статический список
     const EPISODE_FOLDERS = ['tutorial', 'mansion'];
-  for (const folder of EPISODE_FOLDERS) {
-    try {
-      const config = await loadEpisodeConfig(folder);
-      if (config) {
-        episodes.push(config);
-      }
-    } catch (error) {
-      console.error(`Ошибка загрузки эпизода ${folder}:`, error);
+    for (const folder of EPISODE_FOLDERS) {
+      try {
+        const config = await loadEpisodeConfig(folder);
+        if (config) {
+          episodes.push(config);
+        }
+      } catch (error) {
+        console.error(`Ошибка загрузки эпизода ${folder}:`, error);
       }
     }
   }

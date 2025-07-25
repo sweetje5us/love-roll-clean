@@ -1,0 +1,73 @@
+{
+  "id": "scene_1753470119035",
+  "chapterId": "1",
+  "name": "test",
+  "background": "",
+  "characters": [
+    {
+      "id": "player",
+      "position": "center",
+      "name": "Игрок"
+    }
+  ],
+  "dialogue": [
+    {
+      "speaker": "narrator",
+      "text": "test",
+      "emotion": "normal"
+    }
+  ],
+  "choices": [
+    {
+      "id": "scene_1753470119035_choice1",
+      "text": "квестовый предмет",
+      "nextScene": "",
+      "important": false,
+      "value": "",
+      "description": "",
+      "consequences": [
+        ""
+      ],
+      "diceCheck": null,
+      "specialInteraction": "",
+      "requiredItem": "",
+      "conditions": {},
+      "effects": {
+        "items": {
+          "add": [
+            {
+              "id": "test_item",
+              "name": "снежный шар",
+              "description": "простой снежный шар",
+              "type": "quest",
+              "type_of_quest_item": "quest_snow_globe"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "scene_1753470119035_choice2",
+      "text": "обычный предмет",
+      "nextScene": "",
+      "important": false,
+      "value": "",
+      "description": "",
+      "consequences": [
+        ""
+      ],
+      "effects": [
+        {
+          "id": "effect_1753470767947_96e2k8w62",
+          "type": "item",
+          "targetId": "gingerbread",
+          "value": 1
+        }
+      ],
+      "diceCheck": null,
+      "specialInteraction": "",
+      "requiredItem": "",
+      "conditions": {}
+    }
+  ]
+}

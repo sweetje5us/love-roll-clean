@@ -226,6 +226,408 @@
         "sprite": "sprites/items/consumable/present.png"
       }
     },
+    "quest": {
+      "ancient_tablet": {
+        "id": "ancient_tablet",
+        "name": "Древняя табличка",
+        "description": "Загадочная древняя табличка с неизвестными символами",
+        "type": "quest",
+        "rarity": "legendary",
+        "sprite": "sprites/items/quest/ancient tablet.png"
+      },
+      "antidote": {
+        "id": "antidote",
+        "name": "Противоядие",
+        "description": "Базовое противоядие от простых ядов",
+        "type": "quest",
+        "rarity": "uncommon",
+        "sprite": "sprites/items/quest/antidote.png"
+      },
+      "quest_apple": {
+        "id": "quest_apple",
+        "name": "Яблоко",
+        "description": "Свежее красное яблоко",
+        "type": "quest",
+        "rarity": "common",
+        "sprite": "sprites/items/quest/apple.png"
+      },
+      "bone": {
+        "id": "bone",
+        "name": "Кость",
+        "description": "Древняя кость неизвестного происхождения",
+        "type": "quest",
+        "rarity": "common",
+        "sprite": "sprites/items/quest/bone.png"
+      },
+      "book": {
+        "id": "book",
+        "name": "Книга",
+        "description": "Старая книга с тайными знаниями",
+        "type": "quest",
+        "rarity": "rare",
+        "sprite": "sprites/items/quest/book.png"
+      },
+      "bouquet_1": {
+        "id": "bouquet_1",
+        "name": "Букет цветов",
+        "description": "Красивый букет свежих цветов",
+        "type": "quest",
+        "rarity": "uncommon",
+        "sprite": "sprites/items/quest/bouqet_1.png"
+      },
+      "quest_candy_cane": {
+        "id": "quest_candy_cane",
+        "name": "Леденец",
+        "description": "Красный и белый леденец в форме трости",
+        "type": "quest",
+        "rarity": "common",
+        "sprite": "sprites/items/quest/candy cane.png"
+      },
+      "quest_candy_icon": {
+        "id": "quest_candy_icon",
+        "name": "Конфета",
+        "description": "Сладкая конфета",
+        "type": "quest",
+        "rarity": "common",
+        "sprite": "sprites/items/quest/candy icon.png"
+      },
+      "quest_chocolate": {
+        "id": "quest_chocolate",
+        "name": "Шоколад",
+        "description": "Вкусный шоколад",
+        "type": "quest",
+        "rarity": "common",
+        "sprite": "sprites/items/quest/chocolate.png"
+      },
+      "christmas_candle": {
+        "id": "christmas_candle",
+        "name": "Рождественская свеча",
+        "description": "Ароматная рождественская свеча",
+        "type": "quest",
+        "rarity": "uncommon",
+        "sprite": "sprites/items/quest/christmas candle.png"
+      },
+      "christmas_stocking": {
+        "id": "christmas_stocking",
+        "name": "Рождественский носок",
+        "description": "Традиционный рождественский носок",
+        "type": "quest",
+        "rarity": "uncommon",
+        "sprite": "sprites/items/quest/christmas stocking.png"
+      },
+      "christmas_sweater": {
+        "id": "christmas_sweater",
+        "name": "Рождественский свитер",
+        "description": "Уютный рождественский свитер",
+        "type": "quest",
+        "rarity": "rare",
+        "sprite": "sprites/items/quest/christmas sweater.png"
+      },
+      "christmas_tree": {
+        "id": "christmas_tree",
+        "name": "Рождественская елка",
+        "description": "Красиво украшенная рождественская елка",
+        "type": "quest",
+        "rarity": "rare",
+        "sprite": "sprites/items/quest/christmas tree.png"
+      },
+      "coral": {
+        "id": "coral",
+        "name": "Цветной коралл",
+        "description": "Яркий цветной коралл с морского дна",
+        "type": "quest",
+        "rarity": "uncommon",
+        "sprite": "sprites/items/quest/coral.png"
+      },
+      "darkness_crystal": {
+        "id": "darkness_crystal",
+        "name": "Кристалл тьмы",
+        "description": "Магический кристалл, поглощающий свет",
+        "type": "quest",
+        "rarity": "legendary",
+        "sprite": "sprites/items/quest/darkness crystal.png"
+      },
+      "darkness_spellbook": {
+        "id": "darkness_spellbook",
+        "name": "Книга заклинаний тьмы",
+        "description": "Древняя книга с заклинаниями тьмы",
+        "type": "quest",
+        "rarity": "legendary",
+        "sprite": "sprites/items/quest/darkness spellbook.png"
+      },
+      "decorated_tree_bulb": {
+        "id": "decorated_tree_bulb",
+        "name": "Украшенная елочная игрушка",
+        "description": "Красиво украшенная елочная игрушка",
+        "type": "quest",
+        "rarity": "uncommon",
+        "sprite": "sprites/items/quest/decorated tree bulb.png"
+      },
+      "earth_crystal": {
+        "id": "earth_crystal",
+        "name": "Кристалл земли",
+        "description": "Магический кристалл силы земли",
+        "type": "quest",
+        "rarity": "rare",
+        "sprite": "sprites/items/quest/earth crystal.png"
+      },
+      "fabric": {
+        "id": "fabric",
+        "name": "Ткань",
+        "description": "Качественная ткань для пошива",
+        "type": "quest",
+        "rarity": "common",
+        "sprite": "sprites/items/quest/fabric.png"
+      },
+      "fairy_pollen": {
+        "id": "fairy_pollen",
+        "name": "Пыльца фей",
+        "description": "Волшебная пыльца, собранная с крыльев фей",
+        "type": "quest",
+        "rarity": "legendary",
+        "sprite": "sprites/items/quest/fairy pollen.png"
+      },
+      "fire_crystal": {
+        "id": "fire_crystal",
+        "name": "Кристалл огня",
+        "description": "Магический кристалл силы огня",
+        "type": "quest",
+        "rarity": "rare",
+        "sprite": "sprites/items/quest/fire crystal.png"
+      },
+      "ghost_essence": {
+        "id": "ghost_essence",
+        "name": "Сущность призрака",
+        "description": "Эфирная сущность призрака",
+        "type": "quest",
+        "rarity": "legendary",
+        "sprite": "sprites/items/quest/ghost essence.png"
+      },
+      "quest_gingerbread": {
+        "id": "quest_gingerbread",
+        "name": "Имбирное печенье",
+        "description": "Ароматное имбирное печенье",
+        "type": "quest",
+        "rarity": "common",
+        "sprite": "sprites/items/quest/gingerbread.png"
+      },
+      "glowshroom": {
+        "id": "glowshroom",
+        "name": "Светящийся гриб",
+        "description": "Гриб, излучающий мягкий свет",
+        "type": "quest",
+        "rarity": "uncommon",
+        "sprite": "sprites/items/quest/glowshroom.png"
+      },
+      "quest_gold_ingot": {
+        "id": "quest_gold_ingot",
+        "name": "Золотой слиток",
+        "description": "Драгоценный золотой слиток",
+        "type": "quest",
+        "rarity": "rare",
+        "sprite": "sprites/items/quest/gold ingot.png"
+      },
+      "holy_book": {
+        "id": "holy_book",
+        "name": "Святая книга",
+        "description": "Древняя святая книга с молитвами",
+        "type": "quest",
+        "rarity": "rare",
+        "sprite": "sprites/items/quest/holy book.png"
+      },
+      "ice_crystal": {
+        "id": "ice_crystal",
+        "name": "Кристалл льда",
+        "description": "Магический кристалл силы льда",
+        "type": "quest",
+        "rarity": "rare",
+        "sprite": "sprites/items/quest/ice crystal.png"
+      },
+      "quest_key": {
+        "id": "quest_key",
+        "name": "Ключ",
+        "description": "Загадочный ключ от неизвестной двери",
+        "type": "quest",
+        "rarity": "uncommon",
+        "sprite": "sprites/items/quest/key.png"
+      },
+      "light_crystal": {
+        "id": "light_crystal",
+        "name": "Кристалл света",
+        "description": "Магический кристалл силы света",
+        "type": "quest",
+        "rarity": "rare",
+        "sprite": "sprites/items/quest/light crystal.png"
+      },
+      "medicinal_herb": {
+        "id": "medicinal_herb",
+        "name": "Лечебная трава",
+        "description": "Целебная трава с лечебными свойствами",
+        "type": "quest",
+        "rarity": "common",
+        "sprite": "sprites/items/quest/medicinal herb.png"
+      },
+      "milk": {
+        "id": "milk",
+        "name": "Молоко",
+        "description": "Свежее молоко",
+        "type": "quest",
+        "rarity": "common",
+        "sprite": "sprites/items/quest/milk.png"
+      },
+      "moondust": {
+        "id": "moondust",
+        "name": "Лунная пыль",
+        "description": "Магическая пыль, собранная при свете луны",
+        "type": "quest",
+        "rarity": "rare",
+        "sprite": "sprites/items/quest/moondust.png"
+      },
+      "moonlit_pearl": {
+        "id": "moonlit_pearl",
+        "name": "Жемчужина лунного света",
+        "description": "Магическая жемчужина, светящаяся лунным светом",
+        "type": "quest",
+        "rarity": "legendary",
+        "sprite": "sprites/items/quest/moonlit pearl.png"
+      },
+      "paper": {
+        "id": "paper",
+        "name": "Бумага",
+        "description": "Древний пергамент для записей",
+        "type": "quest",
+        "rarity": "common",
+        "sprite": "sprites/items/quest/paper.png"
+      },
+      "quest_pine_cone": {
+        "id": "quest_pine_cone",
+        "name": "Сосновая шишка",
+        "description": "Ароматная сосновая шишка",
+        "type": "quest",
+        "rarity": "common",
+        "sprite": "sprites/items/quest/pine cone.png"
+      },
+      "poison_potion": {
+        "id": "poison_potion",
+        "name": "Ядовитое зелье",
+        "description": "Опасное ядовитое зелье",
+        "type": "quest",
+        "rarity": "rare",
+        "sprite": "sprites/items/quest/poison potion.png"
+      },
+      "quest_present": {
+        "id": "quest_present",
+        "name": "Подарок",
+        "description": "Загадочный подарок",
+        "type": "quest",
+        "rarity": "uncommon",
+        "sprite": "sprites/items/quest/present.png"
+      },
+      "quest_red_tree_bulb": {
+        "id": "quest_red_tree_bulb",
+        "name": "Красная елочная игрушка",
+        "description": "Красивая красная елочная игрушка",
+        "type": "quest",
+        "rarity": "common",
+        "sprite": "sprites/items/quest/red tree bulb.png"
+      },
+      "quest_santa_hat": {
+        "id": "quest_santa_hat",
+        "name": "Шапка Санты",
+        "description": "Традиционная красная шапка Санты",
+        "type": "quest",
+        "rarity": "rare",
+        "sprite": "sprites/items/quest/santa hat.png"
+      },
+      "scroll": {
+        "id": "scroll",
+        "name": "Свиток",
+        "description": "Древний свиток с тайными знаниями",
+        "type": "quest",
+        "rarity": "rare",
+        "sprite": "sprites/items/quest/scroll.png"
+      },
+      "silk": {
+        "id": "silk",
+        "name": "Шелк",
+        "description": "Дорогой шелк высшего качества",
+        "type": "quest",
+        "rarity": "uncommon",
+        "sprite": "sprites/items/quest/silk.png"
+      },
+      "quest_silver_ingot": {
+        "id": "quest_silver_ingot",
+        "name": "Серебряный слиток",
+        "description": "Блестящий серебряный слиток",
+        "type": "quest",
+        "rarity": "uncommon",
+        "sprite": "sprites/items/quest/silver ingot.png"
+      },
+      "quest_snow_globe": {
+        "id": "quest_snow_globe",
+        "name": "Снежный шар",
+        "description": "Волшебный снежный шар",
+        "type": "quest",
+        "rarity": "rare",
+        "sprite": "sprites/items/quest/snow globe.png"
+      },
+      "quest_snowflake": {
+        "id": "quest_snowflake",
+        "name": "Снежинка",
+        "description": "Красивая снежинка",
+        "type": "quest",
+        "rarity": "common",
+        "sprite": "sprites/items/quest/snowflake.png"
+      },
+      "thunder_crystal": {
+        "id": "thunder_crystal",
+        "name": "Кристалл грома",
+        "description": "Магический кристалл силы грома",
+        "type": "quest",
+        "rarity": "rare",
+        "sprite": "sprites/items/quest/thunder crystal.png"
+      },
+      "trap": {
+        "id": "trap",
+        "name": "Капкан",
+        "description": "Опасный капкан для ловли животных",
+        "type": "quest",
+        "rarity": "rare",
+        "sprite": "sprites/items/quest/trap.png"
+      },
+      "water_berry": {
+        "id": "water_berry",
+        "name": "Водная ягода",
+        "description": "Сочная ягода с водными свойствами",
+        "type": "quest",
+        "rarity": "uncommon",
+        "sprite": "sprites/items/quest/water berry.png"
+      },
+      "water_crystal": {
+        "id": "water_crystal",
+        "name": "Кристалл воды",
+        "description": "Магический кристалл силы воды",
+        "type": "quest",
+        "rarity": "rare",
+        "sprite": "sprites/items/quest/water crystal.png"
+      },
+      "wind_crystal": {
+        "id": "wind_crystal",
+        "name": "Кристалл ветра",
+        "description": "Магический кристалл силы ветра",
+        "type": "quest",
+        "rarity": "rare",
+        "sprite": "sprites/items/quest/wind crystal.png"
+      },
+      "wolf_fur": {
+        "id": "wolf_fur",
+        "name": "Волчья шкура",
+        "description": "Теплая волчья шкура",
+        "type": "quest",
+        "rarity": "uncommon",
+        "sprite": "sprites/items/quest/wolf fur.png"
+      }
+    },
     "special": {
       "ancient_tablet": {
         "id": "ancient_tablet",

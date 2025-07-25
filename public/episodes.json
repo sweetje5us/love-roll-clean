@@ -16,7 +16,8 @@
         "обучение",
         "введение",
         "механики"
-      ]
+      ],
+      "chapters": []
     },
     "mansion": {
       "id": "mansion",
@@ -34,21 +35,33 @@
         "детектив",
         "расследование",
         "поместье"
-      ]
+      ],
+      "chapters": []
     },
-    "episode_1753453398261": {
-      "id": "episode_1753453398261",
-      "name": "Тестовый эпизод",
-      "description": "пвап",
-      "longDescription": "пвап",
-      "type": "romance",
+    "test_1": {
+      "id": "test_1",
+      "name": "test",
+      "description": "test",
+      "longDescription": "test",
+      "type": "story",
       "ageRating": "0+",
       "duration": "30-60 мин",
       "difficulty": "easy",
       "preview": "",
       "unlocked": true,
       "completed": false,
-      "tags": []
+      "tags": [],
+      "chapters": [
+        {
+          "id": "1",
+          "name": "test",
+          "description": "test",
+          "duration": "15-30 мин",
+          "scenes": [
+            "scene_1753470119035"
+          ]
+        }
+      ]
     }
   },
   "types": {

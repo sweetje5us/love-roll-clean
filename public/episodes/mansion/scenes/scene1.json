@@ -25,71 +25,7 @@
     {
       "id": "choice1",
       "text": "Тогда начнем.",
-      "nextScene": "scene2",
-      "effects": {
-        "items": {
-          "add": [
-            {
-              "id": "test2",
-              "name": "test2",
-              "description": "test2",
-              "type": "quest",
-              "type_of_quest_item": "book"
-            }
-          ]
-        }
-      }
-    },
-    {
-      "id": "scene1_choice2",
-      "text": "получить обычный предмет",
-      "nextScene": "scene2",
-      "important": false,
-      "value": "",
-      "description": "",
-      "consequences": [
-        ""
-      ],
-      "effects": [
-        {
-          "id": "effect_1753455992774_5xa4jii59",
-          "type": "item",
-          "targetId": "basic_charisma_potion",
-          "value": 1
-        }
-      ],
-      "diceCheck": null,
-      "specialInteraction": "",
-      "requiredItem": "",
-      "conditions": {}
-    },
-    {
-      "id": "scene1_choice3",
-      "text": "получить квестовый предмет",
-      "nextScene": "scene2",
-      "important": false,
-      "value": "",
-      "description": "",
-      "consequences": [
-        ""
-      ],
-      "effects": {
-        "items": {
-          "add": [
-            {
-              "id": "test_quest_item",
-              "name": "Тестовый квестовый предмет",
-              "description": "Описание тестового квестового предмета",
-              "type": "quest",
-              "type_of_quest_item": "fabric"
-            }
-          ]
-        }
-      },
-      "diceCheck": null,
-      "specialInteraction": "",
-      "requiredItem": "",
-      "conditions": {}
+      "nextScene": "scene2"
     }
   ]
 }

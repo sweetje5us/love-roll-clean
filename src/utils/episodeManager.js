@@ -87,14 +87,27 @@ class EpisodeManager {
    */
   async initializeEpisode(episodeId, startChapter = 1, playerCharacterId = null) {
     try {
-      // Загружаем конфигурацию эпизода
-      const response = await fetch(`/episodes/${episodeId}/config.json`);
-      if (!response.ok) {
-        throw new Error(`Не удалось загрузить конфигурацию эпизода ${episodeId}`);
+      // Загружаем конфигурацию эпизода из episodes.json
+      const episodesResponse = await fetch('/episodes.json');
+      if (!episodesResponse.ok) {
+        throw new Error('Не удалось загрузить episodes.json');
       }
       
-      this.episodeData = await response.json();
+      const episodesData = await episodesResponse.json();
+      const episodeData = episodesData.episodes[episodeId];
+      
+      if (!episodeData) {
+        throw new Error(`Эпизод ${episodeId} не найден в episodes.json`);
+      }
+      
+      this.episodeData = episodeData;
       this.currentEpisode = episodeId;
+      
+      console.log('EpisodeManager.initializeEpisode - загруженные данные эпизода:', {
+        id: this.episodeData.id,
+        name: this.episodeData.name,
+        chapters: this.episodeData.chapters
+      });
       
       // Загружаем данные предметов
       try {
@@ -238,20 +251,22 @@ class EpisodeManager {
       const actualChapterId = this.resolveChapterId(chapterId);
       console.log('EpisodeManager.loadChapter - actualChapterId:', actualChapterId);
       
-      // Загружаем данные главы
-      const chapterConfigUrl = `/episodes/${this.currentEpisode}/chapters/chapter${actualChapterId}/config.json`;
-      console.log('EpisodeManager.loadChapter - пытаемся загрузить:', chapterConfigUrl);
-      
-      const response = await fetch(chapterConfigUrl);
-      console.log('EpisodeManager.loadChapter - response status:', response.status);
-      console.log('EpisodeManager.loadChapter - response ok:', response.ok);
-      
-      if (!response.ok) {
-        console.error('EpisodeManager.loadChapter - HTTP ошибка:', response.status, response.statusText);
-        throw new Error(`Не удалось загрузить главу ${actualChapterId}: ${response.status} ${response.statusText}`);
+      // Загружаем данные главы из конфигурации эпизода
+      if (!this.episodeData || !this.episodeData.chapters) {
+        throw new Error('Данные эпизода не загружены или не содержат глав');
       }
       
-      this.chapterData = await response.json();
+      console.log('EpisodeManager.loadChapter - episodeData.chapters:', this.episodeData.chapters);
+      console.log('EpisodeManager.loadChapter - ищем главу с ID:', actualChapterId);
+      
+      // Ищем главу в конфигурации эпизода
+      const chapterData = this.episodeData.chapters.find(ch => ch.id.toString() === actualChapterId.toString());
+      if (!chapterData) {
+        console.error('EpisodeManager.loadChapter - доступные главы:', this.episodeData.chapters.map(ch => ({ id: ch.id, name: ch.name })));
+        throw new Error(`Глава ${actualChapterId} не найдена в конфигурации эпизода`);
+      }
+      
+      this.chapterData = chapterData;
       console.log('EpisodeManager.loadChapter - chapterData загружена:', this.chapterData);
       
       this.currentChapter = actualChapterId;
@@ -285,7 +300,15 @@ class EpisodeManager {
   async loadScene(sceneId) {
     try {
       console.log(`EpisodeManager.loadScene - загрузка сцены: ${sceneId}`);
-      const response = await fetch(`/episodes/${this.currentEpisode}/scenes/${sceneId}.json`);
+      
+      // Пытаемся загрузить сцену из папки scenes эпизода
+      let response = await fetch(`/episodes/${this.currentEpisode}/scenes/${sceneId}.json`);
+      
+      if (!response.ok) {
+        // Если не найдено в папке scenes, пробуем найти в папке chapters
+        console.log(`Сцена не найдена в /episodes/${this.currentEpisode}/scenes/, пробуем в chapters`);
+        response = await fetch(`/episodes/${this.currentEpisode}/chapters/chapter${this.currentChapter}/scenes/${sceneId}.json`);
+      }
       
       if (!response.ok) {
         console.error(`EpisodeManager.loadScene - HTTP ошибка: ${response.status} ${response.statusText}`);
