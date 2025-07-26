@@ -21,7 +21,7 @@
     {
       "id": "scene155_choice1",
       "text": "[Холод] Ты думаешь что сможешь меня обидеть?",
-
+      "nextScene": "scene156",
       "diceCheck": {
         "stat": "coldness",
         "difficulty": 12,

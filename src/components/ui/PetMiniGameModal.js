@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { getStaticPath } from '../../utils/pathUtils';
 import './PetMiniGameModal.css';
 import { usePets } from '../../contexts/PetContext';
-import Joystick from 'react-nipple';
+import { Joystick } from 'react-joystick-component';
 
 // Длительность анимаций Zuma (мс)
 const ANIMATION_DURATION = 300;
@@ -925,16 +925,39 @@ const ZumaGame = React.forwardRef(({ petSprite, onClose, petId }, ref) => {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  // Обработчики для react-nipple джойстика
+  // Обработчики для react-joystick-component джойстика
   const handleJoystickMove = (evt, data) => {
-    if (data && data.angle && typeof data.angle.radian === 'number' && !isNaN(data.angle.radian)) {
-      // react-nipple возвращает угол где 0 = вправо, π/2 = вниз
-      // Наша система: 0 = вверх, π/2 = вправо
-      // Инвертируем оба направления для правильного соответствия
-      const correctedAngle = -data.angle.radian + Math.PI / 2;
-      aimAngle.current = correctedAngle;
-      setJoystickActive(true);
+    console.log('Joystick move event:', evt);
+    console.log('Joystick move data:', data);
+    
+    // react-joystick-component может передавать данные в разных форматах
+    let x, y;
+    
+    if (data && typeof data.x === 'number' && typeof data.y === 'number') {
+      // Формат: { x, y }
+      x = data.x;
+      y = data.y;
+    } else if (data && data.direction && data.direction.x !== undefined && data.direction.y !== undefined) {
+      // Формат: { direction: { x, y } }
+      x = data.direction.x;
+      y = data.direction.y;
+    } else if (evt && evt.x !== undefined && evt.y !== undefined) {
+      // Формат: данные прямо в событии
+      x = evt.x;
+      y = evt.y;
+    } else {
+      console.log('Unknown joystick data format:', { evt, data });
+      return;
     }
+    
+    // Вычисляем угол из координат
+    const angle = Math.atan2(y, x);
+    // Наша система: 0 = вверх, π/2 = вправо
+    // Инвертируем для правильного соответствия
+    const correctedAngle = -angle + Math.PI / 2;
+    aimAngle.current = correctedAngle;
+    setJoystickActive(true);
+    console.log('Corrected angle:', correctedAngle * 180 / Math.PI);
   };
 
   const handleJoystickEnd = (evt) => {
@@ -947,7 +970,9 @@ const ZumaGame = React.forwardRef(({ petSprite, onClose, petId }, ref) => {
 
   // Кнопка стрельбы для мобильных
   const handleMobileShoot = (e) => {
-    e.preventDefault();
+    if (e && e.preventDefault) {
+      e.preventDefault();
+    }
     shoot();
   };
 
@@ -1509,10 +1534,10 @@ const PetMiniGameModal = ({ isOpen, onClose, pet }) => {
 
 // Компоненты мобильного управления
 const DoodleJumpMobileControls = () => {
-  const handleLeftDown = (e) => { e.stopPropagation(); window.doodleJumpMoveDir = -1; };
-  const handleLeftUp = (e) => { e.stopPropagation(); window.doodleJumpMoveDir = 0; };
-  const handleRightDown = (e) => { e.stopPropagation(); window.doodleJumpMoveDir = 1; };
-  const handleRightUp = (e) => { e.stopPropagation(); window.doodleJumpMoveDir = 0; };
+  const handleLeftDown = (e) => { if (e && e.stopPropagation) e.stopPropagation(); window.doodleJumpMoveDir = -1; };
+  const handleLeftUp = (e) => { if (e && e.stopPropagation) e.stopPropagation(); window.doodleJumpMoveDir = 0; };
+  const handleRightDown = (e) => { if (e && e.stopPropagation) e.stopPropagation(); window.doodleJumpMoveDir = 1; };
+  const handleRightUp = (e) => { if (e && e.stopPropagation) e.stopPropagation(); window.doodleJumpMoveDir = 0; };
   return (
     <div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', padding: '0 12px 8px 12px', boxSizing: 'border-box', pointerEvents: 'none' }}>
       <button style={{ width: 52, height: 52, borderRadius: '50%', background: '#fbbf24', color: '#fff', fontSize: 28, border: 'none', pointerEvents: 'auto' }}
@@ -1536,25 +1561,25 @@ const OneShotButton = ({ onAction, children, style }) => {
   const pressedRef = React.useRef(false);
 
   const handleTouchStart = (e) => {
-    e.stopPropagation();
+    if (e && e.stopPropagation) e.stopPropagation();
     if (!pressedRef.current) {
       pressedRef.current = true;
       onAction(e);
     }
   };
   const handleTouchEnd = (e) => {
-    e.stopPropagation();
+    if (e && e.stopPropagation) e.stopPropagation();
     pressedRef.current = false;
   };
   const handleMouseDown = (e) => {
-    e.stopPropagation();
+    if (e && e.stopPropagation) e.stopPropagation();
     if (!pressedRef.current) {
       pressedRef.current = true;
       onAction(e);
     }
   };
   const handleMouseUp = (e) => {
-    e.stopPropagation();
+    if (e && e.stopPropagation) e.stopPropagation();
     pressedRef.current = false;
   };
 
@@ -1582,10 +1607,10 @@ const OneShotButton = ({ onAction, children, style }) => {
 };
 
 const CrossyRoadMobileControls = () => {
-  const handleLeftDown = (e) => { e.stopPropagation(); window.crossyMoveDir = -1; };
-  const handleLeftUp = (e) => { e.stopPropagation(); window.crossyMoveDir = 0; };
-  const handleRightDown = (e) => { e.stopPropagation(); window.crossyMoveDir = 1; };
-  const handleRightUp = (e) => { e.stopPropagation(); window.crossyMoveDir = 0; };
+  const handleLeftDown = (e) => { if (e && e.stopPropagation) e.stopPropagation(); window.crossyMoveDir = -1; };
+  const handleLeftUp = (e) => { if (e && e.stopPropagation) e.stopPropagation(); window.crossyMoveDir = 0; };
+  const handleRightDown = (e) => { if (e && e.stopPropagation) e.stopPropagation(); window.crossyMoveDir = 1; };
+  const handleRightUp = (e) => { if (e && e.stopPropagation) e.stopPropagation(); window.crossyMoveDir = 0; };
   const handleUpAction = (e) => {
     window.crossyMoveForward = true;
   };
@@ -1619,14 +1644,14 @@ const ZumaMobileControls = ({ onJoystickMove, onJoystickEnd, onShoot }) => (
     {/* Джойстик */}
     <div style={{ width: 100, height: 100, position: 'relative', pointerEvents: 'auto' }}>
       <Joystick
-        options={{ 
-          mode: 'static', 
-          position: { left: '50%', top: '50%' }, 
-          color: '#64748b'
-        }}
-        style={{ width: 100, height: 100 }}
-        onMove={onJoystickMove}
-        onEnd={onJoystickEnd}
+        size={100}
+        baseColor="#64748b"
+        stickColor="#94a3b8"
+        move={onJoystickMove}
+        stop={onJoystickEnd}
+        throttle={50}
+        minDistance={10}
+        mode="static"
       />
     </div>
     <div style={{ flex: 1 }} />
