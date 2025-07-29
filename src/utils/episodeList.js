@@ -2,9 +2,8 @@
 // Этот файл можно обновлять при добавлении новых эпизодов
 export const KNOWN_EPISODES = [
   'mansion',
-  'test_1',
   'tutorial'
-];;;;;;;;;
+];;;;;;;;;;;;
 
 // Функция для проверки существования эпизода
 export const checkEpisodeExists = async (episodeId) => {

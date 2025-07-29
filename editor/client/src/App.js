@@ -258,6 +258,7 @@ function App() {
       {/* Модальное окно создания/редактирования сцены */}
       {showSceneModal && (
         <SceneModal
+          isOpen={showSceneModal}
           scene={editingScene}
           episodeId={selectedEpisode?.id}
           chapterId={selectedChapter?.id}

@@ -14,9 +14,14 @@ const ChapterCredits = ({
   const [hasCompleted, setHasCompleted] = useState(false);
 
   const triggerComplete = () => {
-    if (!hasCompleted && onComplete) {
+    if (!hasCompleted && onComplete && !ChapterCredits._isCompleting) {
       setHasCompleted(true);
+      ChapterCredits._isCompleting = true;
       onComplete();
+      // Сбрасываем флаг через небольшую задержку
+      setTimeout(() => {
+        ChapterCredits._isCompleting = false;
+      }, 100);
     }
   };
 

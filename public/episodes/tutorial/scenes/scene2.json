@@ -1,5 +1,6 @@
 {
   "id": "scene2",
+  "chapterId": 1,
   "name": "Основы интерфейса",
   "background": "sprites/episodes/locations/school/school_building.png",
   "characters": [
@@ -39,21 +40,6 @@
           "teacher": 3
         }
       }
-    },
-    {
-      "id": "choice2",
-      "text": "Можете показать еще раз?",
-      "nextScene": "scene2_repeat",
-      "effects": {
-        "relationship": {
-          "teacher": 1
-        }
-      }
     }
-  ],
-  "requirements": {},
-  "rewards": {
-    "experience": 0,
-    "coins": 0
-  }
-} 
+  ]
+}

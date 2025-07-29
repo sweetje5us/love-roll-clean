@@ -3,6 +3,41 @@ import { getEpisodeSave, getCompletedChapters } from './saveUtils';
 import { KNOWN_EPISODES, getExistingEpisodes } from './episodeList';
 
 /**
+ * Принудительно очищает кэш для персонажей эпизода
+ * @param {string} episodeId - ID эпизода
+ */
+export const clearEpisodeCharactersCache = async (episodeId) => {
+  try {
+    // Очищаем кэш браузера для config.json эпизода
+    if ('caches' in window) {
+      const cacheNames = await caches.keys();
+      for (const cacheName of cacheNames) {
+        if (cacheName.includes('episodes') || cacheName.includes('static')) {
+          await caches.delete(cacheName);
+        }
+      }
+    }
+    
+    // Принудительно загружаем config.json с новым timestamp
+    const timestamp = Date.now();
+    const response = await fetch(`/episodes/${episodeId}/config.json?t=${timestamp}`, {
+      cache: 'no-cache',
+      headers: {
+        'Cache-Control': 'no-cache, no-store, must-revalidate',
+        'Pragma': 'no-cache',
+        'Expires': '0'
+      }
+    });
+    
+    if (response.ok) {
+      console.log(`Кэш персонажей эпизода ${episodeId} очищен`);
+    }
+  } catch (error) {
+    console.error(`Ошибка очистки кэша для эпизода ${episodeId}:`, error);
+  }
+};
+
+/**
  * Автоматически сканирует папки эпизодов и возвращает список ID
  */
 export const scanEpisodeFolders = async () => {
@@ -215,9 +250,17 @@ export const loadEpisodeConfig = async (episodeId) => {
   try {
     console.log(`loadEpisodeConfig: загружаем конфигурацию для эпизода ${episodeId}`);
     
+    // Принудительно очищаем кэш для персонажей
+    await clearEpisodeCharactersCache(episodeId);
+    
     // Загружаем конфигурацию из отдельного файла эпизода с принудительным обновлением кэша
     const configResponse = await fetch(`/episodes/${episodeId}/config.json?t=${Date.now()}`, {
-      cache: 'no-cache'
+      cache: 'no-cache',
+      headers: {
+        'Cache-Control': 'no-cache, no-store, must-revalidate',
+        'Pragma': 'no-cache',
+        'Expires': '0'
+      }
     });
     if (!configResponse.ok) {
       throw new Error(`Не удалось загрузить конфигурацию эпизода ${episodeId}`);
@@ -228,12 +271,12 @@ export const loadEpisodeConfig = async (episodeId) => {
       id: episodeData.id,
       name: episodeData.name,
       preview: episodeData.preview,
-      type: episodeData.type
+      type: episodeData.type,
+      charactersCount: episodeData.characters ? episodeData.characters.length : 0
     });
     
-    // Добавляем прогресс из сохранений
-    const save = getEpisodeSave(episodeId);
-    episodeData.progress = save || {};
+    // Инициализируем пустой прогресс
+    episodeData.progress = {};
     
     return episodeData;
   } catch (error) {

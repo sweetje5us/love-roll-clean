@@ -25,22 +25,31 @@ class SceneManager {
   }
 
   /**
-   * Инициализация менеджера сцен
+   * Инициализация менеджера сцен с персонажами эпизода
    * @param {Array} episodeCharacters - Массив персонажей эпизода
    */
-  initialize(episodeCharacters = []) {
-    // Убеждаемся, что episodeCharacters является массивом
-    if (!Array.isArray(episodeCharacters)) {
-      this.episodeCharacters = [];
+  initialize(episodeCharacters) {
+    console.log('SceneManager.initialize - инициализация с персонажами:', episodeCharacters);
+    
+    // Принудительно обновляем данные персонажей
+    if (episodeCharacters && Array.isArray(episodeCharacters)) {
+      // Создаем копию массива персонажей для избежания мутаций
+      this.episodeCharacters = [...episodeCharacters];
+      console.log(`SceneManager.initialize - загружено ${this.episodeCharacters.length} персонажей`);
+      
+      // Логируем информацию о персонажах для отладки
+      this.episodeCharacters.forEach(char => {
+        console.log(`Персонаж: ${char.id} (${char.name}) - одежда: ${char.appearance?.dress || 'не указана'}`);
+      });
     } else {
-      this.episodeCharacters = episodeCharacters;
+      console.warn('SceneManager.initialize - персонажи не переданы или не являются массивом');
+      this.episodeCharacters = [];
     }
     
+    // Сбрасываем эмоции персонажей
     this.characterEmotions = {};
-    this.resetAnimations();
     
-    // Очищаем кэш эмоций при инициализации
-    clearEmotionCache();
+    console.log('SceneManager.initialize - инициализация завершена');
   }
 
   /**

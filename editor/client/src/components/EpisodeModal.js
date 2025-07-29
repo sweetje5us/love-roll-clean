@@ -136,10 +136,12 @@ const EpisodeModal = ({ episode, onSave, onClose }) => {
   };
 
   const episodeTypes = [
+    { value: 'tutorial', label: 'Обучение' },
     { value: 'story', label: 'История' },
     { value: 'adventure', label: 'Приключение' },
     { value: 'romance', label: 'Романтика' },
     { value: 'mystery', label: 'Детектив' },
+    { value: 'detective', label: 'Детектив' },
     { value: 'horror', label: 'Ужасы' },
     { value: 'comedy', label: 'Комедия' }
   ];

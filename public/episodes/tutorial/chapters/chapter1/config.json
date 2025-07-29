@@ -3,7 +3,7 @@
   "name": "Глава 1: Знакомство с основами",
   "description": "Знакомство с игрой и основными элементами интерфейса",
   "duration": "3-5 минут",
-  "scenes": ["scene1", "scene2"],
+  "scenes": ["scene1", "scene2", "scene3", "scene4", "scene5", "scene6", "scene7", "scene8", "scene9", "scene10", "scene11"],
   "unlocked": true,
   "completed": false,
   "background": "sprites/episodes/locations/school/school_building.png"

@@ -5,7 +5,7 @@ import { getEpisodePreview, getEpisodeStats } from '../../utils/episodeUtils';
 import { getStaticPath } from '../../utils/pathUtils';
 import './EpisodeModal.css';
 
-const EpisodeModal = ({ episode, episodeData, isOpen, onClose, onStartEpisode }) => {
+const EpisodeModal = ({ episode, episodeData, isOpen, onClose, onStartEpisode, characterId }) => {
   if (!episode || !episodeData) return null;
 
   const typeInfo = episodeData.types[episode.type] || {
@@ -22,9 +22,9 @@ const EpisodeModal = ({ episode, episodeData, isOpen, onClose, onStartEpisode })
   const chapters = episode.chapters || [];
 
   // Получаем данные о сохранении
-  const episodeSave = getEpisodeSave(episode.id);
-  const completedChapters = getCompletedChapters(episode.id);
-  const isCompleted = isEpisodeCompleted(episode.id);
+  const episodeSave = getEpisodeSave(episode.id, characterId);
+  const completedChapters = getCompletedChapters(episode.id, characterId);
+  const isCompleted = isEpisodeCompleted(episode.id, characterId);
   
   // Проверяем, есть ли сохранение
   const hasSave = episodeSave !== null;
@@ -32,7 +32,7 @@ const EpisodeModal = ({ episode, episodeData, isOpen, onClose, onStartEpisode })
 
   const handleStartEpisode = () => {
     if (onStartEpisode) {
-      onStartEpisode(episode.id, hasSave ? currentChapter.id : 1);
+      onStartEpisode(episode.id, hasSave ? currentChapter : 1);
     }
   };
 

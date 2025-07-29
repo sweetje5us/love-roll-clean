@@ -1,0 +1,62 @@
+/* Стили для селектора фонов */
+.background-selector {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.background-selector select {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+  background: white;
+  cursor: pointer;
+}
+
+.background-selector select:disabled {
+  background: #f5f5f5;
+  cursor: not-allowed;
+}
+
+.background-selector select:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+.background-preview {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 8px;
+  background: #f8f9fa;
+  border-radius: 4px;
+  border: 1px solid #e9ecef;
+}
+
+.background-preview img {
+  transition: opacity 0.3s ease;
+}
+
+.background-preview small {
+  color: #6c757d;
+  font-size: 12px;
+  word-break: break-all;
+}
+
+/* Стили для опций в селекторе */
+.background-selector select option {
+  padding: 4px 8px;
+}
+
+/* Анимация загрузки */
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.fa-spinner {
+  animation: spin 1s linear infinite;
+} 

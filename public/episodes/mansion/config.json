@@ -375,7 +375,8 @@
         "dress": "pajama",
         "dressPaid": false,
         "accessory": "",
-        "accessoryPaid": false
+        "accessoryPaid": false,
+        "bush": ""
       }
     },
     {

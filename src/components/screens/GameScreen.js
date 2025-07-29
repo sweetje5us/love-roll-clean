@@ -29,6 +29,54 @@ import { canPetImproveRelations } from '../../utils/diceSystem';
 import itemsData from '../../data/items.json';
 import './GameScreen.css';
 
+/**
+ * Принудительно обновляет кэш персонажей эпизода
+ * @param {string} episodeId - ID эпизода
+ */
+const forceRefreshEpisodeCharacters = async (episodeId) => {
+  try {
+    console.log(`GameScreen: принудительное обновление персонажей эпизода ${episodeId}`);
+    
+    // Очищаем кэш браузера
+    if ('caches' in window) {
+      const cacheNames = await caches.keys();
+      for (const cacheName of cacheNames) {
+        if (cacheName.includes('episodes') || cacheName.includes('static')) {
+          await caches.delete(cacheName);
+          console.log(`GameScreen: удален кэш ${cacheName}`);
+        }
+      }
+    }
+    
+    // Принудительно загружаем config.json с новым timestamp
+    const timestamp = Date.now();
+    const response = await fetch(`/episodes/${episodeId}/config.json?t=${timestamp}`, {
+      cache: 'no-cache',
+      headers: {
+        'Cache-Control': 'no-cache, no-store, must-revalidate',
+        'Pragma': 'no-cache',
+        'Expires': '0'
+      }
+    });
+    
+    if (response.ok) {
+      const config = await response.json();
+      console.log(`GameScreen: обновлены данные персонажей эпизода ${episodeId}, персонажей: ${config.characters ? config.characters.length : 0}`);
+      
+      // Логируем информацию о персонажах для отладки
+      if (config.characters) {
+        config.characters.forEach(char => {
+          console.log(`Персонаж ${char.id} (${char.name}): одежда = ${char.appearance?.dress || 'не указана'}`);
+        });
+      }
+    } else {
+      console.warn(`GameScreen: не удалось обновить данные персонажей эпизода ${episodeId}`);
+    }
+  } catch (error) {
+    console.error(`GameScreen: ошибка обновления персонажей эпизода ${episodeId}:`, error);
+  }
+};
+
 // Компонент для отображения персонажа в сцене
 const SceneCharacter = ({ characterId, position = 'center', emotion = 'normal', episodeCharacters, characterType = '' }) => {
   const [layers, setLayers] = useState([]);
@@ -360,11 +408,23 @@ const GameScreen = () => {
 
   // Отслеживание изменений в инвентаре
   useEffect(() => {
+    // Инициализируем lastInventoryState при первом рендере
+    if (Object.keys(lastInventoryState).length === 0) {
+      setLastInventoryState(inventory);
+      return;
+    }
+    
     const currentInventory = Object.keys(inventory);
     const lastInventory = Object.keys(lastInventoryState);
     
+    // Проверяем, есть ли изменения в инвентаре
+    const hasInventoryChanged = JSON.stringify(inventory) !== JSON.stringify(lastInventoryState);
+    
     // Проверяем, есть ли новые предметы
     const hasNewItemsInInventory = currentInventory.some(itemId => !lastInventory.includes(itemId));
+    
+    // Проверяем, есть ли удаленные предметы
+    const hasRemovedItems = lastInventory.some(itemId => !currentInventory.includes(itemId));
     
     if (hasNewItemsInInventory && !hasNewItems) {
       setHasNewItems(true);
@@ -372,6 +432,40 @@ const GameScreen = () => {
     
     // Обновляем состояние последнего инвентаря
     setLastInventoryState(inventory);
+    
+    // Обновляем доступные выборы при изменении инвентаря
+    if (hasInventoryChanged && gameState.choices.length > 0) {
+      console.log('GameScreen: обновляем доступные выборы из-за изменения инвентаря');
+      console.log('GameScreen: изменения в инвентаре:', { hasNewItemsInInventory, hasRemovedItems, inventory });
+      
+      // Проверяем, что episodeManager инициализирован
+      if (episodeManager && typeof episodeManager.getAvailableChoices === 'function') {
+        // Используем setTimeout для обеспечения того, что inventory обновился
+        setTimeout(() => {
+          console.log('GameScreen: обновляем выборы после изменения инвентаря');
+          console.log('GameScreen: текущий inventory из React:', inventory);
+          console.log('GameScreen: текущий inventory из getAllItems:', getAllItems());
+          
+          // Принудительно обновляем inventoryManager в episodeManager
+          if (episodeManager && episodeManager.inventoryManager) {
+            episodeManager.inventoryManager.getAllItems = () => {
+              const currentInventory = getAllItems();
+              console.log('GameScreen: принудительно обновленный инвентарь:', currentInventory);
+              return currentInventory;
+            };
+          }
+          
+          const availableChoices = episodeManager.getAvailableChoices();
+          console.log('GameScreen: полученные доступные выборы:', availableChoices);
+          setGameState(prev => ({
+            ...prev,
+            choices: availableChoices
+          }));
+        }, 0);
+      } else {
+        console.warn('GameScreen: episodeManager не инициализирован, пропускаем обновление выборов');
+      }
+    }
   }, [inventory, lastInventoryState, hasNewItems]);
 
   // Отслеживаем изменения в selectedCharacter для принудительного обновления
@@ -418,6 +512,9 @@ const GameScreen = () => {
         setGameState(prev => ({ ...prev, isLoading: false }));
         return;
       }
+
+      // Принудительно обновляем кэш персонажей эпизода
+      await forceRefreshEpisodeCharacters(episodeId);
 
       // Устанавливаем менеджер персонажей для episodeManager
       episodeManager.setCharacterManager({
@@ -1016,6 +1113,12 @@ const GameScreen = () => {
         } else {
           setIsPauseMenuOpen(true);
         }
+      } else if (event.key === 'Enter' || event.key === ' ') {
+        // Enter или пробел для продолжения диалога
+        if (gameState.choices.length === 0) {
+          event.preventDefault();
+          handleDialogueClick();
+        }
       }
     };
 
@@ -1160,6 +1263,25 @@ const GameScreen = () => {
     }
   };
 
+  // Обработчик клика по сцене для продолжения диалогов
+  const handleSceneClick = (event) => {
+    // Проверяем, что клик не по диалоговому окну или другим интерактивным элементам
+    if (event.target.closest('.dialogue-box') || 
+        event.target.closest('.game-top-panel') || 
+        event.target.closest('.choices-container') ||
+        event.target.closest('.game-nav-button')) {
+      return;
+    }
+
+    // Если есть варианты ответа, не обрабатываем клик по сцене
+    if (gameState.choices.length > 0) {
+      return;
+    }
+
+    // Обрабатываем клик так же, как клик по диалогу
+    handleDialogueClick();
+  };
+
   // Показать титры начала главы
   const showChapterStartCredits = () => {
     const creditsData = episodeManager.getChapterStartCredits();
@@ -1262,10 +1384,13 @@ const GameScreen = () => {
   // Обработка завершения титров конца главы
   const handleEndCreditsComplete = () => {
     // Защита от повторного вызова
-    if (gameState.isLoading || creditsState.isTransitioning) {
+    if (gameState.isLoading || creditsState.isTransitioning || handleEndCreditsComplete._isExecuting) {
       console.log('handleEndCreditsComplete: уже выполняется, пропускаем');
       return;
     }
+    
+    // Устанавливаем флаг выполнения
+    handleEndCreditsComplete._isExecuting = true;
     
     console.log('handleEndCreditsComplete: начало выполнения');
     
@@ -1329,8 +1454,14 @@ const GameScreen = () => {
         }
       }
       
+      // Сбрасываем флаг выполнения
+      handleEndCreditsComplete._isExecuting = false;
+      
       // Сбрасываем флаг перехода
       setCreditsState(prev => ({ ...prev, isTransitioning: false }));
+      
+      // Сбрасываем флаг выполнения
+      handleEndCreditsComplete._isExecuting = false;
     });
   };
 
@@ -1389,11 +1520,11 @@ const GameScreen = () => {
   if (gameState.isLoading) {
     return (
       <div className="game-screen loading">
-        <div className="game-container">
-          <div className="loading-spinner">
-            <i className="fas fa-spinner fa-spin"></i>
-            <p>Загрузка игры...</p>
+        <div className="loading-spinner">
+          <div className="spinner-icon">
+            <div className="spinner-circle"></div>
           </div>
+          <p>Загрузка игры...</p>
         </div>
       </div>
     );
@@ -1420,11 +1551,11 @@ const GameScreen = () => {
   if (!gameState.isLoaded) {
     return (
       <div className="game-screen loading">
-        <div className="game-container">
-          <div className="loading-spinner">
-            <i className="fas fa-spinner fa-spin"></i>
-            <p>Загрузка игры...</p>
+        <div className="loading-spinner">
+          <div className="spinner-icon">
+            <div className="spinner-circle"></div>
           </div>
+          <p>Загрузка игры...</p>
         </div>
       </div>
     );
@@ -1527,7 +1658,10 @@ const GameScreen = () => {
       </div>
 
       {/* Основная игровая область с диалогом */}
-      <div className={sceneManager.getMainAreaClasses(sceneAnimation)}>
+      <div 
+        className={`${sceneManager.getMainAreaClasses(sceneAnimation)} ${gameState.choices.length === 0 ? 'clickable' : ''}`}
+        onClick={handleSceneClick}
+      >
         {/* Фон */}
         <div className={sceneManager.getBackgroundLayerClasses(sceneAnimation)}>
           {gameState.background ? (
@@ -1627,6 +1761,14 @@ const GameScreen = () => {
             />
           )}
         </div>
+        
+        {/* Подсказка для продолжения диалога - вне диалогового окна */}
+        {textAnimation.isComplete && gameState.choices.length === 0 && (
+          <div className="scene-continue-hint">
+            <i className="fas fa-mouse-pointer"></i>
+            <span>Кликните для продолжения</span>
+          </div>
+        )}
       </div>
 
       {/* Выборы - всегда внизу экрана */}

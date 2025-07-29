@@ -17,7 +17,9 @@
     "electron-dev-simple": "npm start & timeout 5 && electron .",
     "electron-pack": "npm run build && electron-builder",
     "dist": "npm run build && npx electron-builder --publish=never",
-    "vercel-build": "react-scripts build"
+    "vercel-build": "react-scripts build",
+    "refresh-cache": "node scripts/refresh_episode_cache.js",
+    "refresh-cache-episode": "node scripts/refresh_episode_cache.js"
   },
   "dependencies": {
     "@huggingface/inference": "^4.5.2",

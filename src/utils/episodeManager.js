@@ -87,8 +87,15 @@ class EpisodeManager {
    */
   async initializeEpisode(episodeId, startChapter = 1, playerCharacterId = null) {
     try {
-      // Загружаем конфигурацию эпизода из его папки
-      const configResponse = await fetch(`/episodes/${episodeId}/config.json`);
+      // Загружаем конфигурацию эпизода из его папки с принудительным обновлением кэша
+      const configResponse = await fetch(`/episodes/${episodeId}/config.json?t=${Date.now()}`, {
+        cache: 'no-cache',
+        headers: {
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
+          'Pragma': 'no-cache',
+          'Expires': '0'
+        }
+      });
       if (!configResponse.ok) {
         throw new Error(`Не удалось загрузить конфигурацию эпизода ${episodeId}`);
       }
@@ -100,7 +107,8 @@ class EpisodeManager {
       console.log('EpisodeManager.initializeEpisode - загруженные данные эпизода:', {
         id: this.episodeData.id,
         name: this.episodeData.name,
-        chapters: this.episodeData.chapters
+        chapters: this.episodeData.chapters,
+        charactersCount: this.episodeData.characters ? this.episodeData.characters.length : 0
       });
       
       // Загружаем данные предметов
@@ -119,10 +127,23 @@ class EpisodeManager {
       }
       
       // Загружаем сохраненный прогресс
-      this.episodeProgress = getEpisodeSave(episodeId);
+      console.log(`EpisodeManager.initializeEpisode - ищем сохранение для эпизода ${episodeId} и персонажа ${playerCharacterId}`);
+      this.episodeProgress = getEpisodeSave(episodeId, playerCharacterId);
+      console.log(`EpisodeManager.initializeEpisode - результат поиска сохранения:`, this.episodeProgress ? 'найдено' : 'не найдено');
       
       if (this.episodeProgress) {
         console.log(`EpisodeManager.initializeEpisode - загружен прогресс для эпизода ${episodeId}:`, this.episodeProgress);
+        
+        // Инициализируем недостающие поля
+        if (!this.episodeProgress.progress) {
+          this.episodeProgress.progress = {};
+        }
+        if (!this.episodeProgress.stats) {
+          this.episodeProgress.stats = {};
+        }
+        if (!this.episodeProgress.completedChapters) {
+          this.episodeProgress.completedChapters = [];
+        }
         
         // Проверяем, есть ли персонаж игрока в прогрессе
         if (!this.episodeProgress.playerCharacterId && playerCharacterId) {
@@ -145,7 +166,9 @@ class EpisodeManager {
           importantChoices: {},
           relationships: {},
           inventory: [],
+          progress: {},
           stats: {},
+          completedChapters: [],
           lastPlayed: new Date().toISOString(),
           playerCharacterId: playerCharacterId
         };
@@ -909,6 +932,7 @@ class EpisodeManager {
           for (const [statName, change] of Object.entries(value)) {
             const currentValue = this.episodeProgress.progress[`stat_${statName}`] || 0;
             this.episodeProgress.progress[`stat_${statName}`] = currentValue + change;
+            console.log(`EpisodeManager: обновлена характеристика ${statName}: ${currentValue} -> ${currentValue + change} (+${change})`);
           }
           break;
         default:
@@ -926,6 +950,11 @@ class EpisodeManager {
    * Завершение главы
    */
   completeChapter() {
+    // Инициализируем массив завершенных глав, если его нет
+    if (!this.episodeProgress.completedChapters) {
+      this.episodeProgress.completedChapters = [];
+    }
+    
     if (!this.episodeProgress.completedChapters.includes(this.currentChapter)) {
       this.episodeProgress.completedChapters.push(this.currentChapter);
     }
@@ -1439,7 +1468,7 @@ class EpisodeManager {
     if (!this.episodeData) return null;
     
     const totalChapters = this.episodeData.chapters.length;
-    const completedChapters = this.episodeProgress?.completedChapters.length || 0;
+    const completedChapters = this.episodeProgress?.completedChapters?.length || 0;
     
     return {
       totalChapters,
@@ -1528,18 +1557,21 @@ class EpisodeManager {
    */
   async nextChapter() {
     // Защита от повторного вызова
-    if (this._nextChapterInProgress) {
+    if (this._nextChapterInProgress || EpisodeManager._globalNextChapterInProgress) {
       console.log('EpisodeManager.nextChapter: уже выполняется, пропускаем');
       return false;
     }
     
     this._nextChapterInProgress = true;
+    EpisodeManager._globalNextChapterInProgress = true;
     console.log('EpisodeManager.nextChapter - начало выполнения');
     console.log('EpisodeManager.nextChapter - episodeData:', this.episodeData);
     console.log('EpisodeManager.nextChapter - currentChapter:', this.currentChapter);
     
     if (!this.episodeData || !this.episodeData.chapters) {
       console.log('EpisodeManager.nextChapter - нет данных эпизода или глав');
+      this._nextChapterInProgress = false;
+      EpisodeManager._globalNextChapterInProgress = false;
       return false;
     }
 
@@ -1555,6 +1587,7 @@ class EpisodeManager {
       // Это последняя глава эпизода
       console.log('EpisodeManager.nextChapter - это последняя глава эпизода');
       this._nextChapterInProgress = false;
+      EpisodeManager._globalNextChapterInProgress = false;
       return false;
     }
 
@@ -1573,6 +1606,7 @@ class EpisodeManager {
     console.log('EpisodeManager.nextChapter - прогресс обновлен для главы:', nextChapter.id);
     
     this._nextChapterInProgress = false;
+    EpisodeManager._globalNextChapterInProgress = false;
     return true;
   }
 }

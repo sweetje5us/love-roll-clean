@@ -33,13 +33,17 @@ const EpisodeSelectScreen = ({ onBack }) => {
           }
         }
         
+        // Получаем characterId из параметров навигации
+        const navigationParams = getNavigationParams();
+        const characterId = navigationParams.characterId;
+        
         // Загружаем эпизоды из их папок
         const episodes = await loadAllEpisodeConfigs();
         if (episodes && episodes.length > 0) {
           // Добавляем информацию о завершении и сохранениях для каждого эпизода
           const episodesWithStatus = episodes.map(episode => {
-            const isCompleted = isEpisodeCompleted(episode.id);
-            const hasSave = getEpisodeSave(episode.id) !== null;
+            const isCompleted = isEpisodeCompleted(episode.id, characterId);
+            const hasSave = getEpisodeSave(episode.id, characterId) !== null;
             
             return {
               ...episode,
@@ -68,6 +72,10 @@ const EpisodeSelectScreen = ({ onBack }) => {
           });
           setFilteredEpisodes(episodesWithStatus);
         } else {
+          // Получаем characterId из параметров навигации
+          const navigationParams = getNavigationParams();
+          const characterId = navigationParams.characterId;
+          
           // Fallback данные только для tutorial
           const fallbackEpisode = {
             id: 'tutorial',
@@ -77,8 +85,8 @@ const EpisodeSelectScreen = ({ onBack }) => {
             ageRating: '0+',
             duration: '15-20 минут',
             unlocked: true,
-            completed: isEpisodeCompleted('tutorial'),
-            hasSave: getEpisodeSave('tutorial') !== null
+            completed: isEpisodeCompleted('tutorial', characterId),
+            hasSave: getEpisodeSave('tutorial', characterId) !== null
           };
 
           setEpisodesData({
@@ -98,6 +106,9 @@ const EpisodeSelectScreen = ({ onBack }) => {
       } catch (error) {
         console.error('Ошибка загрузки эпизодов:', error);
         // Fallback: только tutorial
+        const navigationParams = getNavigationParams();
+        const characterId = navigationParams.characterId;
+        
         const fallbackEpisode = {
           id: 'tutorial',
           name: 'Обучение',
@@ -106,8 +117,8 @@ const EpisodeSelectScreen = ({ onBack }) => {
           ageRating: '0+',
           duration: '15-20 минут',
           unlocked: true,
-          completed: isEpisodeCompleted('tutorial'),
-          hasSave: getEpisodeSave('tutorial') !== null
+          completed: isEpisodeCompleted('tutorial', characterId),
+          hasSave: getEpisodeSave('tutorial', characterId) !== null
         };
 
         setEpisodesData({
@@ -326,6 +337,7 @@ const EpisodeSelectScreen = ({ onBack }) => {
         isOpen={isModalOpen}
         onClose={handleCloseModal}
         onStartEpisode={handleStartEpisode}
+        characterId={getNavigationParams().characterId}
       />
       </div>
     </div>

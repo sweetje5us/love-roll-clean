@@ -1182,6 +1182,101 @@ app.delete('/api/episodes/:episodeId/quest-items/:itemId', async (req, res) => {
   }
 });
 
+// API для получения списка всех доступных фонов
+app.get('/api/backgrounds', async (req, res) => {
+  try {
+    const backgroundsPath = path.join(__dirname, '..', '..', 'public', 'sprites', 'episodes');
+    const backgrounds = await getAllBackgrounds(backgroundsPath);
+    res.json(backgrounds);
+  } catch (error) {
+    console.error('Ошибка при получении списка фонов:', error);
+    res.status(500).json({ error: 'Ошибка при получении списка фонов' });
+  }
+});
+
+/**
+ * Рекурсивно получает все файлы изображений из папки sprites/episodes
+ * @param {string} basePath - Базовый путь к папке sprites/episodes
+ * @returns {Array} - Массив объектов с информацией о фонах
+ */
+async function getAllBackgrounds(basePath) {
+  const backgrounds = [];
+  
+  try {
+    // Проверяем, существует ли базовая папка
+    if (!fs.existsSync(basePath)) {
+      console.warn(`Папка ${basePath} не существует`);
+      return backgrounds;
+    }
+
+    // Получаем все файлы и папки в базовой директории
+    const items = await fs.readdir(basePath);
+    
+    for (const item of items) {
+      const itemPath = path.join(basePath, item);
+      const stats = await fs.stat(itemPath);
+      
+      if (stats.isDirectory()) {
+        // Рекурсивно обрабатываем подпапки
+        const subBackgrounds = await getAllBackgrounds(itemPath);
+        backgrounds.push(...subBackgrounds);
+      } else if (stats.isFile()) {
+        // Проверяем, является ли файл изображением
+        const ext = path.extname(item).toLowerCase();
+        if (['.png', '.jpg', '.jpeg', '.gif', '.webp', '.jfif'].includes(ext)) {
+          // Получаем относительный путь от папки sprites/episodes
+          const relativePath = path.relative(path.join(__dirname, '..', '..', 'public', 'sprites', 'episodes'), itemPath);
+          const normalizedPath = relativePath.replace(/\\/g, '/'); // Заменяем обратные слеши на прямые
+          
+          backgrounds.push({
+            name: item,
+            path: `sprites/episodes/${normalizedPath}`,
+            fullPath: `/sprites/episodes/${normalizedPath}`,
+            category: getBackgroundCategory(normalizedPath),
+            size: stats.size,
+            modified: stats.mtime
+          });
+        }
+      }
+    }
+    
+    // Сортируем по категории и имени
+    backgrounds.sort((a, b) => {
+      if (a.category !== b.category) {
+        return a.category.localeCompare(b.category);
+      }
+      return a.name.localeCompare(b.name);
+    });
+    
+  } catch (error) {
+    console.error('Ошибка при сканировании фонов:', error);
+  }
+  
+  return backgrounds;
+}
+
+/**
+ * Определяет категорию фона по пути
+ * @param {string} filePath - Путь к файлу
+ * @returns {string} - Категория фона
+ */
+function getBackgroundCategory(filePath) {
+  const parts = filePath.split('/');
+  
+  // Если есть папка locations, используем следующую папку как категорию
+  const locationsIndex = parts.indexOf('locations');
+  if (locationsIndex !== -1 && locationsIndex + 1 < parts.length) {
+    return parts[locationsIndex + 1];
+  }
+  
+  // Иначе используем первую папку после sprites/episodes
+  if (parts.length > 2) {
+    return parts[2];
+  }
+  
+  return 'other';
+}
+
 app.listen(PORT, () => {
   console.log(`Сервер редактора эпизодов запущен на порту ${PORT}`);
   console.log(`API доступен по адресу: http://localhost:${PORT}`);

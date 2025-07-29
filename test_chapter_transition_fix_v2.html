@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тест исправления перехода между главами v2</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .success { color: green; }
+        .error { color: red; }
+        .warning { color: orange; }
+        .info { color: blue; }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .log {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>Тест исправления перехода между главами v2</h1>
+    
+    <div class="test-section">
+        <h2>Проблема</h2>
+        <p>После завершения 2 главы игра должна была загрузить 3 главу (scene40), но вместо этого сразу перескочила на 4 главу (scene60).</p>
+        <p><strong>Причина:</strong> Двойной вызов <code>handleEndCreditsComplete</code> из-за автоматического таймера и клика пользователя в <code>ChapterCredits</code>.</p>
+    </div>
+
+    <div class="test-section">
+        <h2>Исправления</h2>
+        <ul>
+            <li><strong>Защита в handleEndCreditsComplete:</strong> Добавлен флаг <code>_isExecuting</code></li>
+            <li><strong>Защита в ChapterCredits:</strong> Добавлен глобальный флаг <code>_isCompleting</code></li>
+            <li><strong>Защита в EpisodeManager.nextChapter:</strong> Добавлен глобальный флаг <code>_globalNextChapterInProgress</code></li>
+        </ul>
+    </div>
+
+    <div class="test-section">
+        <h2>Тестирование</h2>
+        <button onclick="testSingleCall()">Тест одиночного вызова</button>
+        <button onclick="testDoubleCall()">Тест двойного вызова</button>
+        <button onclick="testTripleCall()">Тест тройного вызова</button>
+        <button onclick="clearLog()">Очистить лог</button>
+        
+        <div id="log" class="log"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>Результаты</h2>
+        <div id="results"></div>
+    </div>
+
+    <script>
+        let logElement = document.getElementById('log');
+        let resultsElement = document.getElementById('results');
+        let testResults = [];
+
+        function log(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            const logMessage = `[${timestamp}] ${message}\n`;
+            logElement.textContent += logMessage;
+            logElement.scrollTop = logElement.scrollHeight;
+        }
+
+        function clearLog() {
+            logElement.textContent = '';
+            testResults = [];
+            resultsElement.innerHTML = '';
+        }
+
+        // Имитация handleEndCreditsComplete с защитой
+        function mockHandleEndCreditsComplete() {
+            if (mockHandleEndCreditsComplete._isExecuting) {
+                log('handleEndCreditsComplete: уже выполняется, пропускаем', 'warning');
+                return false;
+            }
+            
+            mockHandleEndCreditsComplete._isExecuting = true;
+            log('handleEndCreditsComplete: начало выполнения', 'info');
+            
+            // Имитация асинхронной операции
+            return new Promise((resolve) => {
+                setTimeout(() => {
+                    log('handleEndCreditsComplete: завершение выполнения', 'success');
+                    mockHandleEndCreditsComplete._isExecuting = false;
+                    resolve(true);
+                }, 100);
+            });
+        }
+
+        // Имитация ChapterCredits.triggerComplete с защитой
+        function mockTriggerComplete() {
+            if (mockTriggerComplete._isCompleting) {
+                log('triggerComplete: уже выполняется, пропускаем', 'warning');
+                return false;
+            }
+            
+            mockTriggerComplete._isCompleting = true;
+            log('triggerComplete: начало выполнения', 'info');
+            
+            // Имитация вызова onComplete
+            mockHandleEndCreditsComplete().then(() => {
+                setTimeout(() => {
+                    mockTriggerComplete._isCompleting = false;
+                }, 100);
+            });
+            
+            return true;
+        }
+
+        // Имитация EpisodeManager.nextChapter с защитой
+        function mockNextChapter() {
+            if (mockNextChapter._isInProgress || mockNextChapter._globalInProgress) {
+                log('nextChapter: уже выполняется, пропускаем', 'warning');
+                return false;
+            }
+            
+            mockNextChapter._isInProgress = true;
+            mockNextChapter._globalInProgress = true;
+            log('nextChapter: начало выполнения', 'info');
+            
+            // Имитация асинхронной операции
+            return new Promise((resolve) => {
+                setTimeout(() => {
+                    log('nextChapter: завершение выполнения', 'success');
+                    mockNextChapter._isInProgress = false;
+                    mockNextChapter._globalInProgress = false;
+                    resolve(true);
+                }, 150);
+            });
+        }
+
+        async function testSingleCall() {
+            log('=== Тест одиночного вызова ===', 'info');
+            
+            const result = await mockHandleEndCreditsComplete();
+            const success = result === true;
+            
+            testResults.push({
+                test: 'Одиночный вызов',
+                success: success,
+                expected: true
+            });
+            
+            updateResults();
+        }
+
+        async function testDoubleCall() {
+            log('=== Тест двойного вызова ===', 'info');
+            
+            // Первый вызов
+            const promise1 = mockHandleEndCreditsComplete();
+            // Второй вызов (должен быть заблокирован)
+            const promise2 = mockHandleEndCreditsComplete();
+            
+            const [result1, result2] = await Promise.all([promise1, promise2]);
+            
+            const success = result1 === true && result2 === false;
+            
+            testResults.push({
+                test: 'Двойной вызов',
+                success: success,
+                expected: 'Первый успешен, второй заблокирован'
+            });
+            
+            updateResults();
+        }
+
+        async function testTripleCall() {
+            log('=== Тест тройного вызова ===', 'info');
+            
+            // Три одновременных вызова
+            const promises = [
+                mockHandleEndCreditsComplete(),
+                mockHandleEndCreditsComplete(),
+                mockHandleEndCreditsComplete()
+            ];
+            
+            const results = await Promise.all(promises);
+            
+            const successCount = results.filter(r => r === true).length;
+            const success = successCount === 1; // Только один должен выполниться
+            
+            testResults.push({
+                test: 'Тройной вызов',
+                success: success,
+                expected: 'Только один успешен, остальные заблокированы'
+            });
+            
+            updateResults();
+        }
+
+        function updateResults() {
+            const successCount = testResults.filter(r => r.success).length;
+            const totalCount = testResults.length;
+            
+            let html = `<h3>Результаты тестов (${successCount}/${totalCount} успешно)</h3>`;
+            
+            testResults.forEach((result, index) => {
+                const status = result.success ? '✅' : '❌';
+                const color = result.success ? 'success' : 'error';
+                html += `<p class="${color}">${status} ${result.test}: ${result.expected}</p>`;
+            });
+            
+            resultsElement.innerHTML = html;
+        }
+
+        // Инициализация
+        log('Тест исправления перехода между главами v2 готов', 'info');
+    </script>
+</body>
+</html> 

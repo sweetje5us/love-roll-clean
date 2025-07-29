@@ -95,6 +95,27 @@ const CharacterManager = ({ episodeId }) => {
     }
   };
 
+  const handleRefreshCache = async () => {
+    try {
+      // Принудительно очищаем кэш браузера
+      if ('caches' in window) {
+        const cacheNames = await caches.keys();
+        for (const cacheName of cacheNames) {
+          if (cacheName.includes('episodes') || cacheName.includes('static')) {
+            await caches.delete(cacheName);
+          }
+        }
+      }
+      
+      // Перезагружаем персонажей
+      await loadCharacters();
+      alert('Кэш персонажей обновлен! Теперь изменения должны отображаться в игре.');
+    } catch (error) {
+      console.error('Ошибка обновления кэша:', error);
+      alert('Ошибка обновления кэша персонажей');
+    }
+  };
+
   if (loading) {
     return (
       <div className="character-manager">
@@ -118,11 +139,15 @@ const CharacterManager = ({ episodeId }) => {
   return (
     <div className="character-manager">
       <div className="character-manager-header">
-        <h3>Персонажи ({characters.length})</h3>
-        <button className="create-character-btn" onClick={handleCreateCharacter}>
-          <i className="fas fa-plus"></i>
-          Создать персонажа
-        </button>
+        <h2>Управление персонажами эпизода</h2>
+        <div className="character-manager-actions">
+          <button className="button secondary" onClick={handleRefreshCache}>
+            <i className="fas fa-sync-alt"></i> Обновить кэш
+          </button>
+          <button className="button primary" onClick={handleCreateCharacter}>
+            <i className="fas fa-plus"></i> Создать персонажа
+          </button>
+        </div>
       </div>
       
       <div className="character-manager-content">

@@ -5,6 +5,7 @@ import { saveImportantChoice, loadImportantChoices } from '../utils/importantCho
 const API_BASE_URL = 'http://localhost:3001/api';
 
 const SceneModal = ({ 
+  isOpen,
   scene, 
   episodeId, 
   chapterId, 
@@ -32,17 +33,50 @@ const SceneModal = ({
   const [loadingQuestItems, setLoadingQuestItems] = useState(false);
   const [episodeQuestItems, setEpisodeQuestItems] = useState([]);
   const [loadingEpisodeQuestItems, setLoadingEpisodeQuestItems] = useState(false);
+  const [backgrounds, setBackgrounds] = useState([]);
+  const [loadingBackgrounds, setLoadingBackgrounds] = useState(false);
+  const [selectedBackground, setSelectedBackground] = useState(null);
+  const [showBackgroundPreview, setShowBackgroundPreview] = useState(false);
 
   // Загружаем персонажей эпизода и предметы
   useEffect(() => {
-    if (episodeId) {
+    console.log('🔄 useEffect triggered:', { isOpen, episodeId });
+    if (isOpen && episodeId) {
+      console.log('✅ Условия выполнены, загружаем данные...');
       loadEpisodeCharacters();
+      loadEpisodeQuestItems();
+      loadBackgrounds();
       loadItems();
       loadQuestItems();
-      loadEpisodeQuestItems();
-      loadStoredImportantChoices();
+    } else {
+      console.log('❌ Условия не выполнены:', { isOpen, episodeId });
     }
-  }, [episodeId, chapterId]);
+  }, [isOpen, episodeId]);
+
+  // Загружаем список всех доступных фонов
+  const loadBackgrounds = async () => {
+    console.log('🔄 Начинаем загрузку фонов...');
+    try {
+      setLoadingBackgrounds(true);
+      console.log('📡 Отправляем запрос к API...');
+      const response = await fetch('http://localhost:3001/api/backgrounds');
+      console.log('📡 Получен ответ:', response.status, response.statusText);
+      
+      if (response.ok) {
+        const data = await response.json();
+        console.log('✅ Данные получены:', data.length, 'фонов');
+        setBackgrounds(data);
+        console.log('✅ Фоны установлены в состояние');
+      } else {
+        console.error('❌ Ошибка загрузки фонов:', response.statusText);
+      }
+    } catch (error) {
+      console.error('❌ Ошибка загрузки фонов:', error);
+    } finally {
+      setLoadingBackgrounds(false);
+      console.log('🔄 Загрузка фонов завершена');
+    }
+  };
 
   const loadEpisodeCharacters = async () => {
     if (!episodeId) return;
@@ -66,40 +100,48 @@ const SceneModal = ({
   };
 
   const loadItems = async () => {
+    console.log('🔄 Начинаем загрузку предметов...');
     try {
       setLoadingItems(true);
       const response = await fetch('/items.json');
+      console.log('📡 Ответ загрузки предметов:', response.status, response.statusText);
       if (response.ok) {
         const data = await response.json();
+        console.log('✅ Предметы загружены:', Object.keys(data.items || {}).length, 'категорий');
         setItems(data.items || {});
       } else {
-        console.error('Ошибка загрузки предметов');
+        console.error('❌ Ошибка загрузки предметов:', response.statusText);
         setItems({});
       }
     } catch (error) {
-      console.error('Ошибка загрузки предметов:', error);
+      console.error('❌ Ошибка загрузки предметов:', error);
       setItems({});
     } finally {
       setLoadingItems(false);
+      console.log('🔄 Загрузка предметов завершена');
     }
   };
 
   const loadQuestItems = async () => {
+    console.log('🔄 Начинаем загрузку квестовых предметов...');
     try {
       setLoadingQuestItems(true);
       const response = await fetch(`${API_BASE_URL}/quest-items`);
+      console.log('📡 Ответ загрузки квестовых предметов:', response.status, response.statusText);
       if (response.ok) {
         const data = await response.json();
+        console.log('✅ Квестовые предметы загружены:', data.length, 'предметов');
         setQuestItems(data);
       } else {
-        console.error('Ошибка загрузки квестовых предметов:', response.status, response.statusText);
+        console.error('❌ Ошибка загрузки квестовых предметов:', response.status, response.statusText);
         setQuestItems([]);
       }
     } catch (error) {
-      console.error('Ошибка загрузки квестовых предметов:', error);
+      console.error('❌ Ошибка загрузки квестовых предметов:', error);
       setQuestItems([]);
     } finally {
       setLoadingQuestItems(false);
+      console.log('🔄 Загрузка квестовых предметов завершена');
     }
   };
 
@@ -150,23 +192,26 @@ const SceneModal = ({
   // Обновляем данные формы при изменении сцены
   useEffect(() => {
     if (scene) {
-      // Извлекаем только имя файла из полного пути к фону
-      let backgroundName = scene.background || '';
-      if (backgroundName.startsWith('sprites/episodes/locations/')) {
-        const parts = backgroundName.split('/');
-        backgroundName = parts[parts.length - 1]; // Берем последнюю часть пути (имя файла)
-      }
+      // Используем полный путь к фону для совместимости с новым селектором
+      const backgroundPath = scene.background || '';
       
       const newFormData = {
         id: scene.id || '',
         chapterId: scene.chapterId || chapterId || '',
         name: scene.name || '',
-        background: backgroundName,
+        background: backgroundPath,
         characters: scene.characters || [],
         dialogue: scene.dialogue || [],
         choices: scene.choices || []
       };
       setFormData(newFormData);
+      
+      // Устанавливаем выбранный фон для предварительного просмотра
+      if (backgroundPath && backgrounds.length > 0) {
+        const foundBackground = backgrounds.find(bg => bg.path === backgroundPath);
+        setSelectedBackground(foundBackground || null);
+        setShowBackgroundPreview(false); // Сброс предварительного просмотра
+      }
     } else {
       const newFormData = {
         id: initialSceneId || '',
@@ -178,8 +223,10 @@ const SceneModal = ({
         choices: []
       };
       setFormData(newFormData);
+      setSelectedBackground(null);
+      setShowBackgroundPreview(false);
     }
-  }, [scene, chapterId, initialSceneId]);
+  }, [scene, backgrounds, chapterId, initialSceneId]);
 
   const validateSceneId = (id) => {
     // Проверяем, что ID содержит только буквы, цифры и подчеркивания
@@ -538,11 +585,13 @@ const SceneModal = ({
   const cleanDataForSave = (data, episodeId) => {
     const cleaned = { ...data };
     
-    // Автоматически формируем путь к фону
+    // Обрабатываем фон - если выбран из списка, используем полный путь
     if (cleaned.background && cleaned.background.trim() !== '') {
       // Если путь уже полный (содержит sprites/), оставляем как есть
-      if (!cleaned.background.startsWith('sprites/')) {
-        // Иначе формируем полный путь для эпизода
+      if (cleaned.background.startsWith('sprites/')) {
+        // Путь уже правильный, ничего не меняем
+      } else {
+        // Если указано только имя файла, формируем полный путь для эпизода
         cleaned.background = `sprites/episodes/locations/${episodeId}/${cleaned.background}`;
       }
     }
@@ -656,6 +705,7 @@ const SceneModal = ({
 
   // Получаем все доступные предметы для выбора
   const getAllItems = () => {
+    console.log('🔄 getAllItems вызвана, items:', items);
     const allItems = [];
     Object.keys(items).forEach(category => {
       Object.keys(items[category] || {}).forEach(itemId => {
@@ -667,11 +717,13 @@ const SceneModal = ({
         });
       });
     });
+    console.log('✅ getAllItems возвращает:', allItems.length, 'предметов');
     return allItems;
   };
 
   // Получаем все доступные квестовые предметы (стандартные + кастомные)
   const getAllQuestItems = () => {
+    console.log('🔄 getAllQuestItems вызвана, questItems:', questItems.length, 'episodeQuestItems:', episodeQuestItems.length);
     const allQuestItems = [...questItems];
     
     // Добавляем кастомные квестовые предметы эпизода
@@ -682,6 +734,7 @@ const SceneModal = ({
       });
     });
     
+    console.log('✅ getAllQuestItems возвращает:', allQuestItems.length, 'предметов');
     return allQuestItems;
   };
 
@@ -767,22 +820,52 @@ const SceneModal = ({
                 
                 <div className="form-group">
                   <label>Фон:</label>
-                  <input
-                    type="text"
-                    value={formData.background}
-                    onChange={(e) => setFormData({ ...formData, background: e.target.value })}
-                    placeholder="mansion_inside.png (только имя файла)"
-                  />
-                  {formData.background && (
-                    <small className="form-help">
-                      Полный путь: sprites/episodes/locations/{episodeId}/{formData.background}
-                    </small>
-                  )}
-                  {formData.background && !formData.background.match(/\.(png|jpg|jpeg|gif|webp)$/i) && (
-                    <small className="form-help" style={{ color: '#ef4444' }}>
-                      Рекомендуется указать расширение файла (.png, .jpg, .jpeg, .gif, .webp)
-                    </small>
-                  )}
+                  <div className="background-selector">
+                    {console.log('🎨 Рендерим селектор фонов:', { backgrounds: backgrounds.length, loadingBackgrounds })}
+                    <select
+                      value={formData.background}
+                      onChange={(e) => {
+                        const selected = backgrounds.find(bg => bg.path === e.target.value);
+                        setSelectedBackground(selected);
+                        setFormData({ ...formData, background: e.target.value });
+                      }}
+                      disabled={loadingBackgrounds}
+                    >
+                      <option value="">Выберите фон... ({backgrounds.length} доступно)</option>
+                      {backgrounds.map((bg, index) => (
+                        <option key={index} value={bg.path}>
+                          {bg.category} - {bg.name}
+                        </option>
+                      ))}
+                    </select>
+                    {loadingBackgrounds && (
+                      <small className="form-help">
+                        <i className="fas fa-spinner fa-spin"></i> Загрузка фонов...
+                      </small>
+                    )}
+                    {selectedBackground && (
+                      <div className="background-preview">
+                        <img 
+                          src={selectedBackground.fullPath} 
+                          alt={selectedBackground.name}
+                          onLoad={() => setShowBackgroundPreview(true)}
+                          onError={() => setShowBackgroundPreview(false)}
+                          style={{ 
+                            maxWidth: '200px', 
+                            maxHeight: '120px', 
+                            objectFit: 'cover',
+                            border: '1px solid #ddd',
+                            borderRadius: '4px',
+                            marginTop: '8px',
+                            display: showBackgroundPreview ? 'block' : 'none'
+                          }}
+                        />
+                        <small className="form-help">
+                          Путь: {selectedBackground.path}
+                        </small>
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
             )}

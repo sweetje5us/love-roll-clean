@@ -4,10 +4,9 @@ const SAVE_KEY = 'episode_saves';
 const GAME_STATE_KEY = 'game_state';
 
 const getSaveKey = (episodeId, playerCharacterId) => {
-  if (playerCharacterId) {
-    return `${episodeId}_${playerCharacterId}`;
-  }
-  return episodeId;
+  const key = playerCharacterId ? `${episodeId}_${playerCharacterId}` : episodeId;
+  console.log(`getSaveKey: создан ключ "${key}" для episodeId: ${episodeId}, playerCharacterId: ${playerCharacterId}`);
+  return key;
 };
 
 /**
@@ -168,78 +167,82 @@ export const saveImportantChoice = (episodeId, choiceId, choiceData, playerChara
 export const getEpisodeSave = (episodeId, playerCharacterId) => {
   const saves = getEpisodeSaves();
   const key = getSaveKey(episodeId, playerCharacterId);
-  return saves[key] || null;
+  console.log(`getEpisodeSave: ищем сохранение для ключа "${key}" (episodeId: ${episodeId}, playerCharacterId: ${playerCharacterId})`);
+  console.log(`getEpisodeSave: доступные ключи:`, Object.keys(saves));
+  const result = saves[key] || null;
+  console.log(`getEpisodeSave: результат:`, result ? 'найдено' : 'не найдено');
+  return result;
 };
 
 /**
  * Проверяет, есть ли сохранение для эпизода
  */
-export const hasEpisodeSave = (episodeId) => {
-  const save = getEpisodeSave(episodeId);
+export const hasEpisodeSave = (episodeId, playerCharacterId = null) => {
+  const save = getEpisodeSave(episodeId, playerCharacterId);
   return save !== null;
 };
 
 /**
  * Получает текущую главу эпизода
  */
-export const getCurrentChapter = (episodeId) => {
-  const save = getEpisodeSave(episodeId);
+export const getCurrentChapter = (episodeId, playerCharacterId = null) => {
+  const save = getEpisodeSave(episodeId, playerCharacterId);
   return save ? save.currentChapter : 1;
 };
 
 /**
  * Получает текущую сцену эпизода
  */
-export const getCurrentScene = (episodeId) => {
-  const save = getEpisodeSave(episodeId);
+export const getCurrentScene = (episodeId, playerCharacterId = null) => {
+  const save = getEpisodeSave(episodeId, playerCharacterId);
   return save ? save.currentScene : null;
 };
 
 /**
  * Получает список завершенных глав
  */
-export const getCompletedChapters = (episodeId) => {
-  const save = getEpisodeSave(episodeId);
+export const getCompletedChapters = (episodeId, playerCharacterId = null) => {
+  const save = getEpisodeSave(episodeId, playerCharacterId);
   return save ? save.completedChapters : [];
 };
 
 /**
  * Получает выборы игрока для эпизода
  */
-export const getPlayerChoices = (episodeId) => {
-  const save = getEpisodeSave(episodeId);
+export const getPlayerChoices = (episodeId, playerCharacterId = null) => {
+  const save = getEpisodeSave(episodeId, playerCharacterId);
   return save ? save.playerChoices : {};
 };
 
 /**
  * Получает важные выборы для эпизода
  */
-export const getImportantChoices = (episodeId) => {
-  const save = getEpisodeSave(episodeId);
+export const getImportantChoices = (episodeId, playerCharacterId = null) => {
+  const save = getEpisodeSave(episodeId, playerCharacterId);
   return save ? save.importantChoices : {};
 };
 
 /**
  * Проверяет, был ли сделан важный выбор
  */
-export const hasImportantChoice = (episodeId, choiceId) => {
-  const importantChoices = getImportantChoices(episodeId);
+export const hasImportantChoice = (episodeId, choiceId, playerCharacterId = null) => {
+  const importantChoices = getImportantChoices(episodeId, playerCharacterId);
   return choiceId in importantChoices;
 };
 
 /**
  * Получает значение важного выбора
  */
-export const getImportantChoiceValue = (episodeId, choiceId) => {
-  const importantChoices = getImportantChoices(episodeId);
+export const getImportantChoiceValue = (episodeId, choiceId, playerCharacterId = null) => {
+  const importantChoices = getImportantChoices(episodeId, playerCharacterId);
   return importantChoices[choiceId]?.value || null;
 };
 
 /**
  * Проверяет, завершена ли глава
  */
-export const isChapterCompleted = (episodeId, chapterId) => {
-  const completedChapters = getCompletedChapters(episodeId);
+export const isChapterCompleted = (episodeId, chapterId, playerCharacterId = null) => {
+  const completedChapters = getCompletedChapters(episodeId, playerCharacterId);
   return completedChapters.includes(chapterId);
 };
 
@@ -268,18 +271,19 @@ export const getLastSave = (episodeId, playerCharacterId = null) => {
 /**
  * Проверяет, завершен ли эпизод
  */
-export const isEpisodeCompleted = (episodeId) => {
-  const save = getEpisodeSave(episodeId);
+export const isEpisodeCompleted = (episodeId, playerCharacterId = null) => {
+  const save = getEpisodeSave(episodeId, playerCharacterId);
   return save ? save.completed === true : false;
 };
 
 /**
  * Удаляет сохранение эпизода
  */
-export const deleteEpisodeSave = (episodeId) => {
+export const deleteEpisodeSave = (episodeId, playerCharacterId = null) => {
   try {
     const saves = getEpisodeSaves();
-    delete saves[episodeId];
+    const key = getSaveKey(episodeId, playerCharacterId);
+    delete saves[key];
     localStorage.setItem(SAVE_KEY, JSON.stringify(saves));
     return true;
   } catch (error) {

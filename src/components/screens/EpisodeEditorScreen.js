@@ -1356,10 +1356,12 @@ const EpisodeForm = ({ onSave, onCancel, episode = null, isSaving = false }) => 
             value={formData.type}
             onChange={(e) => setFormData({...formData, type: e.target.value})}
           >
+            <option value="tutorial">Обучение</option>
             <option value="detective">Детектив</option>
             <option value="romance">Романтика</option>
             <option value="adventure">Приключения</option>
             <option value="mystery">Мистика</option>
+            <option value="story">История</option>
           </select>
         </div>
 
