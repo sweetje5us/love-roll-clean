@@ -38,7 +38,7 @@
     {
       "id": "end_chapter",
       "text": "Завершить главу",
-      "nextScene": "scene75",
+      "nextScene": "scene60",
       "effects": {
         "relationship": {
           "dima": 0

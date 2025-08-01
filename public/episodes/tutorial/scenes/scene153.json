@@ -2,7 +2,7 @@
   "id": "scene153",
   "chapterId": 8,
   "name": "",
-  "background": "sprites/episodes/locations/tutorial/school_corridor",
+  "background": "sprites/episodes/locations/school/school_class.png",
   "characters": [
     {
       "id": "student",

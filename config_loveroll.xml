@@ -1,0 +1,34 @@
+<?xml version='1.0' encoding='utf-8'?>
+<widget id="com.loveroll.game" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+    <name>LoveRoll</name>
+    <description>Визуальная новелла Love & Roll</description>
+    <author email="dev@example.com" href="http://example.com">
+        Your Team
+    </author>
+    <content src="index.html" />
+    <access origin="*" />
+    <allow-intent href="http://*/*" />
+    <allow-intent href="https://*/*" />
+    <allow-intent href="tel:*" />
+    <allow-intent href="sms:*" />
+    <allow-intent href="mailto:*" />
+    <allow-intent href="geo:*" />
+    <platform name="android">
+        <allow-intent href="market:*" />
+        <preference name="android-minSdkVersion" value="22" />
+        <preference name="android-targetSdkVersion" value="33" />
+        <preference name="android-compileSdkVersion" value="33" />
+        <preference name="android-buildToolsVersion" value="33.0.0" />
+        <preference name="android-allowBackup" value="false" />
+        <preference name="android-fullBackupContent" value="false" />
+        <preference name="android-usesCleartextTraffic" value="true" />
+        <preference name="android-requestLegacyExternalStorage" value="true" />
+    </platform>
+    <platform name="ios">
+        <allow-intent href="itms:*" />
+        <allow-intent href="itms-apps:*" />
+    </platform>
+    <plugin name="cordova-plugin-splashscreen" spec="~6.0.1" />
+    <plugin name="cordova-plugin-statusbar" spec="~2.4.3" />
+    <plugin name="cordova-plugin-app-version" spec="~0.1.12" />
+</widget> 

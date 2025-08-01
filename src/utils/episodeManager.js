@@ -1,5 +1,5 @@
 // Универсальный менеджер для загрузки и управления эпизодами
-import { getEpisodeSave, saveEpisodeProgress, saveGameState, getLastSave, saveImportantChoice, getImportantChoices } from './saveUtils';
+import { getEpisodeSave, saveEpisodeProgress, saveGameState, getLastSave, saveImportantChoice, getImportantChoices, validateAndRepairSaves } from './saveUtils';
 import itemsData from '../data/items.json';
 import { isCustomQuestItem } from './questItemUtils';
 
@@ -87,6 +87,12 @@ class EpisodeManager {
    */
   async initializeEpisode(episodeId, startChapter = 1, playerCharacterId = null) {
     try {
+      // Проверяем и исправляем поврежденные сохранения
+      const { valid, repaired } = validateAndRepairSaves();
+      if (repaired) {
+        console.log('EpisodeManager.initializeEpisode - поврежденные сохранения исправлены');
+      }
+      
       // Загружаем конфигурацию эпизода из его папки с принудительным обновлением кэша
       const configResponse = await fetch(`/episodes/${episodeId}/config.json?t=${Date.now()}`, {
         cache: 'no-cache',
@@ -128,8 +134,19 @@ class EpisodeManager {
       
       // Загружаем сохраненный прогресс
       console.log(`EpisodeManager.initializeEpisode - ищем сохранение для эпизода ${episodeId} и персонажа ${playerCharacterId}`);
-      this.episodeProgress = getEpisodeSave(episodeId, playerCharacterId);
-      console.log(`EpisodeManager.initializeEpisode - результат поиска сохранения:`, this.episodeProgress ? 'найдено' : 'не найдено');
+      const savedProgress = getEpisodeSave(episodeId, playerCharacterId);
+      console.log(`EpisodeManager.initializeEpisode - результат поиска сохранения:`, savedProgress ? 'найдено' : 'не найдено');
+      
+      if (savedProgress) {
+        // Очищаем циклические ссылки в сохраненном прогрессе
+        const { progress: progressField, ...cleanProgress } = savedProgress;
+        this.episodeProgress = cleanProgress;
+        
+        // Восстанавливаем поле progress как пустой объект
+        if (!this.episodeProgress.progress) {
+          this.episodeProgress.progress = {};
+        }
+      }
       
       if (this.episodeProgress) {
         console.log(`EpisodeManager.initializeEpisode - загружен прогресс для эпизода ${episodeId}:`, this.episodeProgress);
@@ -149,6 +166,15 @@ class EpisodeManager {
         if (!this.episodeProgress.playerCharacterId && playerCharacterId) {
           this.episodeProgress.playerCharacterId = playerCharacterId;
           console.log(`EpisodeManager.initializeEpisode - установлен playerCharacterId из параметра: ${playerCharacterId}`);
+        }
+        
+        // Загружаем важные выборы из сохранения в Map
+        if (this.episodeProgress.importantChoices) {
+          console.log(`EpisodeManager.initializeEpisode - загружаем важные выборы из сохранения:`, this.episodeProgress.importantChoices);
+          for (const [choiceId, choiceData] of Object.entries(this.episodeProgress.importantChoices)) {
+            this.importantChoices.set(choiceId, choiceData);
+            console.log(`EpisodeManager.initializeEpisode - загружен важный выбор: ${choiceId} =`, choiceData);
+          }
         }
         
         // Загружаем последнюю главу из прогресса
@@ -643,30 +669,31 @@ class EpisodeManager {
         }
         
         // Добавляем предмет с полными данными
-        if (itemData && typeof itemData === 'object' && itemData.name) {
-          console.log('Добавляем кастомный предмет:', { itemId, itemData });
-          // Передаем объект кастомного предмета как первый параметр
+        if (itemData && typeof itemData === 'object' && itemData.name && isCustomQuestItem(itemData)) {
+          console.log('Добавляем кастомный квестовый предмет:', { itemId, itemData });
+          console.log('EpisodeManager.processItemEffects - передаем в addItem:', itemData);
+          // Передаем объект кастомного квестового предмета как первый параметр
           this.inventoryManager.addItem(itemData, 1);
           
           // Показываем квестовое уведомление
           if (window.addNotification) {
-            const notificationType = itemData.type === 'quest' ? 'quest_item_received' : 'item_received';
-            window.addNotification(notificationType, {
-              message: `Получен ${itemData.type === 'quest' ? 'квестовый предмет' : 'предмет'} "${itemData.name}"`,
+            window.addNotification('quest_item_received', {
+              message: `Получен квестовый предмет "${itemData.name}"`,
               itemName: itemData.name
             });
           }
         } else {
           // Обычный предмет - добавляем только по ID
-        this.inventoryManager.addItem(itemId, 1);
-        
+          console.log('Добавляем обычный предмет по ID:', itemId);
+          this.inventoryManager.addItem(itemId, 1);
+          
           // Показываем обычное уведомление
-        if (window.addNotification) {
+          if (window.addNotification) {
             const itemName = this.getItemName(itemId);
-          window.addNotification('item_received', {
-            message: `Получен предмет "${itemName}"`,
-            itemName: itemName
-          });
+            window.addNotification('item_received', {
+              message: `Получен предмет "${itemName}"`,
+              itemName: itemName
+            });
           }
         }
       });
@@ -995,12 +1022,18 @@ class EpisodeManager {
     this.episodeProgress.currentScene = this.currentScene; // Сохраняем текущую сцену
     
     // Сохраняем важные выборы в прогресс
-    this.episodeProgress.importantChoices = {};
+    // Сначала копируем существующие важные выборы из episodeProgress
+    const existingImportantChoices = { ...this.episodeProgress.importantChoices };
+    
+    // Затем добавляем/обновляем важные выборы из Map
     for (const [choiceId, choiceData] of this.importantChoices.entries()) {
-      this.episodeProgress.importantChoices[choiceId] = choiceData;
+      existingImportantChoices[choiceId] = choiceData;
     }
     
+    this.episodeProgress.importantChoices = existingImportantChoices;
+    
     console.log(`EpisodeManager.saveProgress - сохраняем episodeProgress:`, this.episodeProgress);
+    console.log(`EpisodeManager.saveProgress - важные выборы в Map:`, Object.fromEntries(this.importantChoices));
     saveEpisodeProgress(this.currentEpisode, this.currentChapter, this.episodeProgress, this.episodeProgress.playerCharacterId);
     console.log(`Прогресс сохранен. Важные выборы:`, this.episodeProgress.importantChoices);
     console.log(`Прогресс сохранен. playerCharacterId:`, this.episodeProgress.playerCharacterId);
@@ -1136,7 +1169,7 @@ class EpisodeManager {
     const availableChoices = this.sceneData.choices.filter(choice => {
       console.log(`EpisodeManager.getAvailableChoices - проверяем выбор ${choice.id}:`, choice);
       
-      // Проверяем требуемые предметы
+      // Проверяем требуемые предметы (старый формат)
       if (choice.requiredItem) {
         const itemQuantity = currentInventory[choice.requiredItem];
         console.log(`EpisodeManager.getAvailableChoices - проверяем предмет ${choice.requiredItem}:`, itemQuantity);
@@ -1176,6 +1209,9 @@ class EpisodeManager {
           itemIdToCheck = choice.requirements.questItemId;
           console.log(`EpisodeManager.getAvailableChoices - проверяем конкретный экземпляр квестового предмета: ${itemIdToCheck}`);
         }
+        
+        console.log(`EpisodeManager.getAvailableChoices - полный инвентарь для проверки:`, currentInventory);
+        console.log(`EpisodeManager.getAvailableChoices - ищем предмет с ID: ${itemIdToCheck}`);
         
         const itemQuantity = currentInventory[itemIdToCheck];
         console.log(`EpisodeManager.getAvailableChoices - проверяем квестовый предмет ${itemIdToCheck}:`, itemQuantity);
@@ -1291,6 +1327,16 @@ class EpisodeManager {
           // Проверяем важные выборы
           console.log(`EpisodeManager.checkChoiceRequirements - проверка важных выборов для требования:`, value);
           console.log(`EpisodeManager.checkChoiceRequirements - текущие важные выборы:`, Object.fromEntries(this.importantChoices));
+          
+          // Если Map пустой, попробуем загрузить из episodeProgress
+          if (this.importantChoices.size === 0 && this.episodeProgress.importantChoices) {
+            console.log(`EpisodeManager.checkChoiceRequirements - Map пустой, загружаем из episodeProgress:`, this.episodeProgress.importantChoices);
+            for (const [choiceId, choiceData] of Object.entries(this.episodeProgress.importantChoices)) {
+              this.importantChoices.set(choiceId, choiceData);
+            }
+            console.log(`EpisodeManager.checkChoiceRequirements - загружены важные выборы в Map:`, Object.fromEntries(this.importantChoices));
+          }
+          
           for (const [choiceId, expectedValue] of Object.entries(value)) {
             const actualValue = this.importantChoices.get(choiceId)?.value;
             console.log(`EpisodeManager.checkChoiceRequirements - проверка ${choiceId}: ожидается ${expectedValue} (тип: ${typeof expectedValue}), получено ${actualValue} (тип: ${typeof actualValue})`);

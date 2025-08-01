@@ -48,6 +48,7 @@ export const InventoryProvider = ({ children }) => {
 
   // Добавить предмет в инвентарь
   const addItem = (itemIdOrObject, quantity = 1, customData = null) => {
+    console.log('InventoryContext.addItem - получен:', itemIdOrObject, 'количество:', quantity);
     setInventory(prev => {
       let itemId, itemData;
 
@@ -55,10 +56,12 @@ export const InventoryProvider = ({ children }) => {
         // Старый формат: передается только ID
         itemId = itemIdOrObject;
         itemData = getItemById(itemId);
+        console.log('InventoryContext.addItem - обрабатываем как строку, ID:', itemId, 'данные:', itemData);
       } else if (typeof itemIdOrObject === 'object' && isCustomQuestItem(itemIdOrObject)) {
         // Новый формат: передается объект кастомного квестового предмета
         itemId = itemIdOrObject.id;
         itemData = itemIdOrObject;
+        console.log('InventoryContext.addItem - обрабатываем как квестовый предмет, ID:', itemId, 'данные:', itemData);
       } else {
         console.warn('Неподдерживаемый формат предмета:', itemIdOrObject);
         return prev;

@@ -1,8 +1,8 @@
 {
   "id": "scene79",
   "chapterId": 6,
-  "location": "classroom",
-  "background": "school_class",
+  "name": "",
+  "background": "sprites/episodes/locations/school/school_class.png",
   "characters": [
     {
       "id": "arseniy",
@@ -31,17 +31,20 @@
     {
       "text": "Спасибо за яблоко!",
       "nextScene": "scene172",
+      "id": "scene79_choice1",
       "effects": {
         "items": {
           "add": [
-            "apple"
+            {
+              "id": "apple_quest",
+              "name": "Яблоко для квеста",
+              "description": "Яблоко для квеста",
+              "type": "quest",
+              "type_of_quest_item": "quest_apple"
+            }
           ]
-        },
-        "relationships": {
-          "arseniy": 3
         }
-      },
-      "id": "scene79_choice1"
+      }
     }
   ]
 }

@@ -390,6 +390,32 @@ const SceneModal = ({
     });
   };
 
+  // Добавление обычного предмета в новую структуру эффектов
+  const addItemEffect = (choiceIndex) => {
+    setFormData(prev => {
+      const newChoices = [...prev.choices];
+      
+      // Если effects является массивом или не существует, создаем новую структуру
+      if (!newChoices[choiceIndex].effects || Array.isArray(newChoices[choiceIndex].effects)) {
+        newChoices[choiceIndex].effects = {
+          items: {
+            add: []
+          }
+        };
+      } else if (!newChoices[choiceIndex].effects.items) {
+        newChoices[choiceIndex].effects.items = {
+          add: []
+        };
+      } else if (!newChoices[choiceIndex].effects.items.add) {
+        newChoices[choiceIndex].effects.items.add = [];
+      }
+      
+      // Добавляем пустую строку для обычного предмета
+      newChoices[choiceIndex].effects.items.add.push('');
+      return { ...prev, choices: newChoices };
+    });
+  };
+
   // Добавление квестового предмета в эффекты
   const addQuestItemEffect = (choiceIndex) => {
     setFormData(prev => {
@@ -665,10 +691,16 @@ const SceneModal = ({
             
             // Очищаем пустые элементы добавления
             if (updatedChoice.effects.items.add) {
-              updatedChoice.effects.items.add = updatedChoice.effects.items.add.filter(item => 
-                item.id && item.id.trim() !== '' && 
-                item.name && item.name.trim() !== ''
-              );
+              updatedChoice.effects.items.add = updatedChoice.effects.items.add.filter(item => {
+                if (typeof item === 'string') {
+                  // Это обычный предмет (строка) - проверяем, что строка не пустая
+                  return item && item.trim() !== '';
+                } else {
+                  // Это квестовый предмет (объект) - проверяем наличие обязательных полей
+                  return item.id && item.id.trim() !== '' && 
+                         item.name && item.name.trim() !== '';
+                }
+              });
             }
             
             // Очищаем пустые элементы изъятия обычных предметов
@@ -1548,87 +1580,144 @@ const SceneModal = ({
                       {/* Новая структура эффектов (объект с items/add) */}
                       {choice.effects && choice.effects.items && choice.effects.items.add && choice.effects.items.add.length > 0 && (
                         <div>
-                          {choice.effects.items.add.map((item, itemIndex) => (
-                            <div key={itemIndex} className="effect-item">
-                              <span className="effect-type-badge quest_item">
-                                Квестовый предмет
-                              </span>
-                              <div className="effect-details">
-                                <div style={{ width: '100%' }}>
-                                  <div className="form-row">
-                                    <div className="form-group">
-                                      <label>ID предмета:</label>
-                                      <input
-                                        type="text"
-                                        value={item.id || ''}
-                                        onChange={(e) => {
-                                          const newEffects = { ...choice.effects };
-                                          newEffects.items.add[itemIndex].id = e.target.value;
-                                          updateChoice(index, 'effects', newEffects);
-                                        }}
-                                        placeholder="custom_item_id"
-                                      />
+                          {/* Квестовые предметы (объекты) */}
+                          {choice.effects.items.add.map((item, itemIndex) => {
+                            // Проверяем, является ли item объектом (квестовый предмет) или строкой (обычный предмет)
+                            if (typeof item === 'string') {
+                              // Это обычный предмет (строка) - пропускаем его в этом разделе
+                              return null;
+                            }
+                            
+                            // Это квестовый предмет (объект)
+                            return (
+                              <div key={itemIndex} className="effect-item">
+                                <span className="effect-type-badge quest_item">
+                                  Квестовый предмет
+                                </span>
+                                <div className="effect-details">
+                                  <div style={{ width: '100%' }}>
+                                    <div className="form-row">
+                                      <div className="form-group">
+                                        <label>ID предмета:</label>
+                                        <input
+                                          type="text"
+                                          value={item.id || ''}
+                                          onChange={(e) => {
+                                            const newEffects = { ...choice.effects };
+                                            newEffects.items.add[itemIndex].id = e.target.value;
+                                            updateChoice(index, 'effects', newEffects);
+                                          }}
+                                          placeholder="custom_item_id"
+                                        />
+                                      </div>
+                                      <div className="form-group">
+                                        <label>Название:</label>
+                                        <input
+                                          type="text"
+                                          value={item.name || ''}
+                                          onChange={(e) => {
+                                            const newEffects = { ...choice.effects };
+                                            newEffects.items.add[itemIndex].name = e.target.value;
+                                            updateChoice(index, 'effects', newEffects);
+                                          }}
+                                          placeholder="Название предмета"
+                                        />
+                                      </div>
                                     </div>
-                                    <div className="form-group">
-                                      <label>Название:</label>
-                                      <input
-                                        type="text"
-                                        value={item.name || ''}
-                                        onChange={(e) => {
-                                          const newEffects = { ...choice.effects };
-                                          newEffects.items.add[itemIndex].name = e.target.value;
-                                          updateChoice(index, 'effects', newEffects);
-                                        }}
-                                        placeholder="Название предмета"
-                                      />
-                                    </div>
-                                  </div>
-                                  <div className="form-row">
-                                    <div className="form-group">
-                                      <label>Описание:</label>
-                                      <input
-                                        type="text"
-                                        value={item.description || ''}
-                                        onChange={(e) => {
-                                          const newEffects = { ...choice.effects };
-                                          newEffects.items.add[itemIndex].description = e.target.value;
-                                          updateChoice(index, 'effects', newEffects);
-                                        }}
-                                        placeholder="Описание предмета"
-                                      />
-                                    </div>
-                                    <div className="form-group">
-                                      <label>Шаблон предмета:</label>
-                                      <select
-                                        value={item.type_of_quest_item || ''}
-                                        onChange={(e) => {
-                                          const newEffects = { ...choice.effects };
-                                          newEffects.items.add[itemIndex].type_of_quest_item = e.target.value;
-                                          updateChoice(index, 'effects', newEffects);
-                                        }}
-                                      >
-                                        <option value="">Выберите шаблон</option>
-                                        {questItems.map(questItem => (
-                                          <option key={questItem.id} value={questItem.id}>
-                                            {questItem.name} ({questItem.id})
-                                          </option>
-                                        ))}
-                                      </select>
+                                    <div className="form-row">
+                                      <div className="form-group">
+                                        <label>Описание:</label>
+                                        <input
+                                          type="text"
+                                          value={item.description || ''}
+                                          onChange={(e) => {
+                                            const newEffects = { ...choice.effects };
+                                            newEffects.items.add[itemIndex].description = e.target.value;
+                                            updateChoice(index, 'effects', newEffects);
+                                          }}
+                                          placeholder="Описание предмета"
+                                        />
+                                      </div>
+                                      <div className="form-group">
+                                        <label>Шаблон предмета:</label>
+                                        <select
+                                          value={item.type_of_quest_item || ''}
+                                          onChange={(e) => {
+                                            const newEffects = { ...choice.effects };
+                                            newEffects.items.add[itemIndex].type_of_quest_item = e.target.value;
+                                            updateChoice(index, 'effects', newEffects);
+                                          }}
+                                        >
+                                          <option value="">Выберите шаблон</option>
+                                          {questItems.map(questItem => (
+                                            <option key={questItem.id} value={questItem.id}>
+                                              {questItem.name} ({questItem.id})
+                                            </option>
+                                          ))}
+                                        </select>
+                                      </div>
                                     </div>
                                   </div>
                                 </div>
+                                
+                                <button
+                                  type="button"
+                                  className="remove-button small"
+                                  onClick={() => removeQuestItem(index, itemIndex)}
+                                  title="Удалить квестовый предмет"
+                                >
+                                  ✕
+                                </button>
                               </div>
-                              
-                              <button
-                                type="button"
-                                className="remove-button small"
-                                onClick={() => removeQuestItem(index, itemIndex)}
-                                title="Удалить квестовый предмет"
-                              >
-                                ✕
-                              </button>
-                            </div>
-                          ))}
+                            );
+                          })}
+                          
+                          {/* Обычные предметы (строки) */}
+                          {choice.effects.items.add.map((item, itemIndex) => {
+                            // Проверяем, является ли item строкой (обычный предмет)
+                            if (typeof item !== 'string') {
+                              // Это квестовый предмет (объект) - пропускаем его в этом разделе
+                              return null;
+                            }
+                            
+                            // Это обычный предмет (строка)
+                            return (
+                              <div key={itemIndex} className="effect-item">
+                                <span className="effect-type-badge item">
+                                  Предмет
+                                </span>
+                                <div className="effect-details">
+                                  <div className="form-group" style={{ margin: 0, flex: 1 }}>
+                                    <label>Предмет:</label>
+                                    <select
+                                      value={item}
+                                      onChange={(e) => {
+                                        const newEffects = { ...choice.effects };
+                                        newEffects.items.add[itemIndex] = e.target.value;
+                                        updateChoice(index, 'effects', newEffects);
+                                      }}
+                                    >
+                                      <option value="">Выберите предмет</option>
+                                      {getAllItems().map(allItem => (
+                                        <option key={allItem.category + '_' + allItem.id} value={allItem.id}>
+                                          {allItem.name} ({allItem.id})
+                                        </option>
+                                      ))}
+                                    </select>
+                                  </div>
+                                </div>
+                                
+                                <button
+                                  type="button"
+                                  className="remove-button small"
+                                  onClick={() => removeQuestItem(index, itemIndex)}
+                                  title="Удалить предмет"
+                                >
+                                  ✕
+                                </button>
+                              </div>
+                            );
+                          })}
                         </div>
                       )}
 
@@ -1720,7 +1809,7 @@ const SceneModal = ({
                         <button
                           type="button"
                           className="add-effect-button"
-                          onClick={() => addEffect(index, 'item')}
+                          onClick={() => addItemEffect(index)}
                         >
                           + Добавить предмет
                         </button>

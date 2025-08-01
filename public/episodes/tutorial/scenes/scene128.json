@@ -1,8 +1,8 @@
 {
   "id": "scene128",
   "chapterId": 7,
-  "location": "pet_classroom",
-  "background": "school_class",
+  "name": "",
+  "background": "sprites/episodes/locations/tutorial/school_class.png",
   "characters": [
     {
       "id": "anna",

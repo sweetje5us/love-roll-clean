@@ -405,12 +405,12 @@ export const getCharacterSize = (gender, age) => {
 export const getCharacterPreviewScale = (gender, age) => {
   const type = getCharacterType(gender, age);
   
-  // Увеличиваем масштаб для female_mature, чтобы спрайт лучше заполнял контейнер
+  // Уменьшаем масштаб для лучшего отображения в аватаре
   if (type === 'female_mature') {
-    return 1.8;
+    return 1.0;
   }
   
-  return 1.2;
+  return 0.8;
 };
 
 /**

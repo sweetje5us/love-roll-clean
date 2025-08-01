@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Исправление поврежденных сохранений</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .warning {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 20px 0;
+        }
+        .success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 20px 0;
+        }
+        .error {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 20px 0;
+        }
+        button {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+        }
+        button:hover {
+            background: #c82333;
+        }
+        button.success-btn {
+            background: #28a745;
+        }
+        button.success-btn:hover {
+            background: #218838;
+        }
+        .log {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 Исправление поврежденных сохранений</h1>
+        
+        <div class="warning">
+            <strong>⚠️ Внимание!</strong> Эта страница поможет исправить поврежденные файлы сохранений игры.
+            Все текущие сохранения будут удалены.
+        </div>
+        
+        <div id="status"></div>
+        
+        <div>
+            <button onclick="checkSaves()">Проверить сохранения</button>
+            <button onclick="fixSaves()" class="success-btn">Исправить поврежденные сохранения</button>
+            <button onclick="clearAllSaves()">Очистить все сохранения</button>
+        </div>
+        
+        <div id="log" class="log"></div>
+    </div>
+
+    <script>
+        const SAVE_KEY = 'episode_saves';
+        const GAME_STATE_KEY = 'game_state';
+        
+        function log(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            const logElement = document.getElementById('log');
+            const statusElement = document.getElementById('status');
+            
+            const logMessage = `[${timestamp}] ${message}\n`;
+            logElement.textContent += logMessage;
+            logElement.scrollTop = logElement.scrollHeight;
+            
+            // Показываем статус
+            if (type === 'success') {
+                statusElement.innerHTML = `<div class="success">${message}</div>`;
+            } else if (type === 'error') {
+                statusElement.innerHTML = `<div class="error">${message}</div>`;
+            } else if (type === 'warning') {
+                statusElement.innerHTML = `<div class="warning">${message}</div>`;
+            }
+        }
+        
+        function checkSaves() {
+            log('Проверка сохранений...', 'info');
+            
+            try {
+                const saves = localStorage.getItem(SAVE_KEY);
+                if (!saves) {
+                    log('Сохранения не найдены', 'success');
+                    return;
+                }
+                
+                // Пытаемся распарсить JSON
+                const parsedSaves = JSON.parse(saves);
+                log(`Сохранения найдены: ${Object.keys(parsedSaves).length} эпизодов`, 'success');
+                log(`Размер данных: ${saves.length} символов`, 'info');
+                
+                // Показываем список эпизодов
+                Object.keys(parsedSaves).forEach(key => {
+                    const save = parsedSaves[key];
+                    log(`- ${key}: глава ${save.currentChapter}, сцена ${save.currentScene || 'нет'}`, 'info');
+                });
+                
+            } catch (error) {
+                log(`Ошибка при проверке сохранений: ${error.message}`, 'error');
+                log('Сохранения повреждены и требуют исправления', 'warning');
+            }
+        }
+        
+        function fixSaves() {
+            log('Исправление поврежденных сохранений...', 'info');
+            
+            try {
+                const saves = localStorage.getItem(SAVE_KEY);
+                if (!saves) {
+                    log('Сохранения не найдены, нечего исправлять', 'success');
+                    return;
+                }
+                
+                // Пытаемся распарсить JSON
+                JSON.parse(saves);
+                log('Сохранения в порядке, исправление не требуется', 'success');
+                
+            } catch (error) {
+                log(`Обнаружены поврежденные сохранения: ${error.message}`, 'warning');
+                
+                // Очищаем поврежденные данные
+                try {
+                    localStorage.removeItem(SAVE_KEY);
+                    localStorage.removeItem(GAME_STATE_KEY);
+                    log('Поврежденные сохранения удалены', 'success');
+                } catch (clearError) {
+                    log(`Ошибка при удалении поврежденных сохранений: ${clearError.message}`, 'error');
+                }
+            }
+        }
+        
+        function clearAllSaves() {
+            if (!confirm('Вы уверены, что хотите удалить ВСЕ сохранения? Это действие нельзя отменить.')) {
+                return;
+            }
+            
+            log('Удаление всех сохранений...', 'warning');
+            
+            try {
+                localStorage.removeItem(SAVE_KEY);
+                localStorage.removeItem(GAME_STATE_KEY);
+                log('Все сохранения удалены', 'success');
+            } catch (error) {
+                log(`Ошибка при удалении сохранений: ${error.message}`, 'error');
+            }
+        }
+        
+        // Автоматическая проверка при загрузке страницы
+        window.onload = function() {
+            log('Страница загружена. Готов к работе.', 'info');
+            checkSaves();
+        };
+    </script>
+</body>
+</html> 

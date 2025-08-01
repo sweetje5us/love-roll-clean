@@ -15,9 +15,24 @@ const getSaveKey = (episodeId, playerCharacterId) => {
 export const getEpisodeSaves = () => {
   try {
     const saves = localStorage.getItem(SAVE_KEY);
-    return saves ? JSON.parse(saves) : {};
+    if (!saves) {
+      return {};
+    }
+    
+    const parsedSaves = JSON.parse(saves);
+    return parsedSaves;
   } catch (error) {
     console.error('Ошибка загрузки сохранений:', error);
+    console.warn('Поврежденные сохранения обнаружены. Очищаем localStorage...');
+    
+    // Очищаем поврежденные сохранения
+    try {
+      localStorage.removeItem(SAVE_KEY);
+      console.log('Поврежденные сохранения удалены');
+    } catch (clearError) {
+      console.error('Ошибка при очистке поврежденных сохранений:', clearError);
+    }
+    
     return {};
   }
 };
@@ -58,8 +73,9 @@ export const saveEpisodeProgress = (episodeId, chapterId, progress = {}, playerC
       episodeSave.completedChapters = progress.completedChapters;
     }
     
-    // Обновляем прогресс
-    episodeSave.progress = { ...episodeSave.progress, ...progress };
+    // Обновляем прогресс (исключаем поле progress, чтобы избежать рекурсии)
+    const { progress: progressField, ...progressWithoutRecursion } = progress;
+    episodeSave.progress = { ...episodeSave.progress, ...progressWithoutRecursion };
     episodeSave.playerCharacterId = playerCharacterId || progress.playerCharacterId || episodeSave.playerCharacterId;
     episodeSave.lastPlayed = new Date().toISOString();
     
@@ -104,7 +120,9 @@ export const saveGameState = (episodeId, gameState, playerCharacterId = null) =>
     episodeSave.currentScene = gameState.currentScene || episodeSave.currentScene;
     episodeSave.playerChoices = gameState.playerChoices || episodeSave.playerChoices;
     episodeSave.importantChoices = gameState.importantChoices || episodeSave.importantChoices;
-    episodeSave.progress = { ...episodeSave.progress, ...gameState.progress };
+    // Обновляем прогресс (исключаем поле progress, чтобы избежать рекурсии)
+    const { progress: progressField, ...progressWithoutRecursion } = gameState.progress || {};
+    episodeSave.progress = { ...episodeSave.progress, ...progressWithoutRecursion };
     episodeSave.playerCharacterId = playerCharacterId || gameState.playerCharacterId || episodeSave.playerCharacterId;
     episodeSave.lastPlayed = new Date().toISOString();
     
@@ -379,5 +397,78 @@ export const clearEpisodeSaves = (episodeId = null, playerCharacterId = null) =>
   } catch (error) {
     console.error('Ошибка очистки сохранений:', error);
     return false;
+  }
+};
+
+/**
+ * Принудительно очищает все сохранения (используется при поврежденных данных)
+ */
+export const forceClearAllSaves = () => {
+  try {
+    console.log('Принудительная очистка всех сохранений...');
+    localStorage.removeItem(SAVE_KEY);
+    localStorage.removeItem(GAME_STATE_KEY);
+    console.log('Все сохранения очищены');
+    return true;
+  } catch (error) {
+    console.error('Ошибка при принудительной очистке сохранений:', error);
+    return false;
+  }
+};
+
+/**
+ * Проверяет целостность сохранений и исправляет поврежденные данные
+ */
+export const validateAndRepairSaves = () => {
+  try {
+    const saves = localStorage.getItem(SAVE_KEY);
+    if (!saves) {
+      return { valid: true, repaired: false };
+    }
+    
+    // Пытаемся распарсить JSON
+    const parsedSaves = JSON.parse(saves);
+    let hasRepairs = false;
+    
+    // Проверяем каждое сохранение на циклические ссылки
+    for (const [key, save] of Object.entries(parsedSaves)) {
+      if (save && typeof save === 'object') {
+        // Проверяем наличие циклических ссылок
+        try {
+          JSON.stringify(save);
+        } catch (error) {
+          console.warn(`Обнаружены циклические ссылки в сохранении ${key}, удаляем...`);
+          delete parsedSaves[key];
+          hasRepairs = true;
+          continue;
+        }
+        
+        // Проверяем и исправляем рекурсивные ссылки в поле progress
+        if (save.progress && typeof save.progress === 'object') {
+          try {
+            // Пытаемся сериализовать только поле progress
+            JSON.stringify(save.progress);
+          } catch (progressError) {
+            console.warn(`Обнаружены циклические ссылки в progress сохранения ${key}, очищаем...`);
+            save.progress = {};
+            hasRepairs = true;
+          }
+        }
+      }
+    }
+    
+    if (hasRepairs) {
+      localStorage.setItem(SAVE_KEY, JSON.stringify(parsedSaves));
+      console.log('Поврежденные сохранения исправлены');
+      return { valid: false, repaired: true };
+    }
+    
+    return { valid: true, repaired: false };
+  } catch (error) {
+    console.warn('Обнаружены поврежденные сохранения, исправляем...');
+    
+    // Очищаем поврежденные данные
+    const repaired = forceClearAllSaves();
+    return { valid: false, repaired };
   }
 }; 

@@ -10,6 +10,7 @@ import { DailyRewardsProvider } from './contexts/DailyRewardsContext';
 import { RelationshipsProvider } from './contexts/RelationshipsContext';
 import { NotificationProvider } from './contexts/NotificationContext';
 import { PetProvider } from './contexts/PetContext';
+import { validateAndRepairSaves } from './utils/saveUtils';
 import './styles/App.css';
 
 // Компонент для экспорта контекста в глобальную область видимости
@@ -34,6 +35,14 @@ const GameContextExporter = ({ children }) => {
 };
 
 function App() {
+  React.useEffect(() => {
+    // Проверяем и исправляем сохранения при загрузке приложения
+    const { valid, repaired } = validateAndRepairSaves();
+    if (!valid && repaired) {
+      console.log('Поврежденные сохранения были исправлены');
+    }
+  }, []);
+
   return (
     <Router>
       <ScreenProvider>

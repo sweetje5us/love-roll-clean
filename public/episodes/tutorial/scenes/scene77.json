@@ -1,13 +1,12 @@
 {
   "id": "scene77",
   "chapterId": 6,
-  "location": "classroom",
-  "background": "school_class",
+  "name": "",
+  "background": "sprites/episodes/locations/school/school_class.png",
   "characters": [
     {
       "id": "arseniy",
       "position": "center",
-
       "name": "Арсений"
     }
   ],
@@ -43,9 +42,6 @@
           "add": [
             "present"
           ]
-        },
-        "relationships": {
-          "arseniy": 5
         }
       }
     },

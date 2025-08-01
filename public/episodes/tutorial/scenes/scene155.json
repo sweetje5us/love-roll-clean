@@ -1,8 +1,8 @@
 {
   "id": "scene155",
   "chapterId": 8,
-  "location": "corridor",
-  "background": "school_corridor",
+  "name": "",
+  "background": "sprites/episodes/locations/school/school_corridor.png",
   "characters": [
     {
       "id": "eugene",
@@ -28,7 +28,13 @@
         "successScene": "scene156",
         "failureScene": "scene158",
         "critical_success": "scene173",
-        "critical_failure": "scene157"
+        "critical_failure": "scene157",
+        "results": {
+          "success": "scene156",
+          "failure": "scene158",
+          "critical_failure": "scene157",
+          "critical_success": "scene173"
+        }
       }
     },
     {

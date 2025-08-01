@@ -1,8 +1,8 @@
 {
   "id": "scene80",
   "chapterId": 6,
-  "location": "classroom",
-  "background": "school_class",
+  "name": "",
+  "background": "sprites/episodes/locations/school/school_class.png",
   "characters": [
     {
       "id": "arseniy",
@@ -36,18 +36,18 @@
     {
       "text": "Конечно, вот твоё яблоко!",
       "nextScene": "scene81",
-      "requiredItem": "apple",
+      "id": "scene80_choice1",
+      "requirements": {
+        "questItem": "quest_apple",
+        "questItemId": "apple_quest"
+      },
       "effects": {
         "items": {
-          "remove": [
-            "apple"
+          "removeQuestItems": [
+            "apple_quest"
           ]
-        },
-        "relationships": {
-          "arseniy": 10
         }
-      },
-      "id": "scene80_choice1"
+      }
     },
     {
       "text": "Извини, у меня нет яблока",

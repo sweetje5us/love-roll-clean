@@ -243,7 +243,7 @@
 
 /* Масштабирование для female age:2 спрайтов (компенсация пустого пространства) */
 .scene-character-container.female-mature .game-avatar-layer {
-  transform: scale(4.5);
+  transform: scale(3.0);
   transform-origin: bottom center;
 }
 
@@ -268,7 +268,7 @@
   
   /* Масштабирование для female age:2 на планшетах */
   .scene-character-container.female-mature .game-avatar-layer {
-    transform: scale(4.5);
+    transform: scale(3.0);
     transform-origin: bottom center;
   }
 }
@@ -287,7 +287,7 @@
   
   /* Масштабирование для female age:2 на мобильных */
   .scene-character-container.female-mature .game-avatar-layer {
-    transform: scale(4.5);
+    transform: scale(2.5);
     transform-origin: bottom center;
   }
 }
@@ -307,7 +307,7 @@
   
   /* Масштабирование для female age:2 на очень маленьких экранах */
   .scene-character-container.female-mature .game-avatar-layer {
-    transform: scale(4.5);
+    transform: scale(2.0);
     transform-origin: bottom center;
   }
 }
@@ -714,7 +714,7 @@
   max-width: 100%;
   max-height: 100%;
   object-fit: contain;
-  transform: scale(3.0);
+  transform: scale(2.0);
   transform-origin: center;
 }
 
@@ -860,7 +860,7 @@
   justify-content: center;
   transition: all 0.3s ease;
   box-shadow: 0 4px 12px rgba(255, 140, 198, 0.3);
-  margin: 0 8px;
+  margin: 0 4px;
 }
 
 .game-nav-button:hover {
@@ -1111,7 +1111,8 @@
     width: 36px;
     height: 36px;
     font-size: 14px;
-}
+    margin: 0 3px;
+  }
 
   /* Диалоговое окно для рассказчика на мобильных */
   .dialogue-box.narrator-only {
@@ -1179,6 +1180,7 @@
     width: 48px;
     height: 48px;
     font-size: 18px;
+    margin: 0 5px;
   }
   
   /* Диалоговое окно для планшетов */
@@ -1245,6 +1247,7 @@
     width: 56px;
     height: 56px;
     font-size: 20px;
+    margin: 0 6px;
   }
   
   /* Диалоговое окно для десктопа */
@@ -1582,6 +1585,7 @@
     width: 32px;
     height: 32px;
     font-size: 12px;
+    margin: 0 2px;
   }
   
   .dialogue-box.narrator-only {

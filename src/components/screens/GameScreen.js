@@ -21,7 +21,7 @@ import GameNotificationSystem from '../ui/GameNotificationSystem';
 import InlineDiceRoll from '../ui/InlineDiceRoll';
 import EpisodeCompleteScreen from '../ui/EpisodeCompleteScreen';
 import { buildCharacterSprite } from '../../utils/characterUtils';
-import { clearEpisodeSaves } from '../../utils/saveUtils';
+import { clearEpisodeSaves, forceClearAllSaves } from '../../utils/saveUtils';
 import { processChoiceEffects, isChoiceAvailable } from '../../utils/dialogueItemSystem';
 import { hasDiceCheck } from '../../utils/diceSystem';
 import { getPetSpecialText } from '../../utils/itemUtils';
@@ -897,7 +897,7 @@ const GameScreen = () => {
 
   const handleClearSaves = () => {
     if (window.confirm('Вы уверены, что хотите очистить все сохранения? Это действие нельзя отменить.')) {
-      clearEpisodeSaves();
+      forceClearAllSaves();
       alert('Сохранения очищены. Игра будет перезапущена.');
       window.location.reload();
     }
