@@ -19,5 +19,20 @@
         <preference name="android-usesCleartextTraffic" value="true" />
         <preference name="android-requestLegacyExternalStorage" value="true" />
         <preference name="android-gradleVersion" value="8.0.0" />
+        
+        <!-- Fullscreen настройки -->
+        <preference name="Fullscreen" value="true" />
+        <preference name="StatusBarOverlaysWebView" value="false" />
+        <preference name="StatusBarBackgroundColor" value="#000000" />
+        <preference name="StatusBarStyle" value="blacktranslucent" />
+        <preference name="SplashScreenDelay" value="0" />
+        <preference name="AutoHideSplashScreen" value="true" />
+        <preference name="HideKeyboardFormAccessoryBar" value="true" />
+        <preference name="DisallowOverscroll" value="true" />
+        
+        <!-- Системная навигация -->
+        <preference name="android-windowSoftInputMode" value="adjustResize" />
+        <preference name="android-hardwareAccelerated" value="true" />
+        <preference name="android-keepRunning" value="true" />
     </platform>
 </widget> 

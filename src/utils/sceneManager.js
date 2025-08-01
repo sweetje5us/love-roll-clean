@@ -533,13 +533,168 @@ class SceneManager {
   }
 
   /**
+   * Плавный переход к новой локации
+   * @param {Function} onUpdate - Callback для обновления состояния
+   * @param {Function} onMidTransition - Callback в середине перехода для смены контента
+   */
+  animateLocationTransition(onUpdate, onMidTransition) {
+    console.log('🎬 Начинаю плавный переход к новой локации');
+    
+    this.sceneAnimations.isLocationTransitioning = true;
+    this.sceneAnimations.isElementsFadingOut = true;
+    
+    if (onUpdate) {
+      onUpdate(this.sceneAnimations);
+    }
+    
+    // Фаза 1: Исчезновение элементов (500ms) - ЖДЕМ ПОЛНОГО ИСЧЕЗНОВЕНИЯ
+    setTimeout(() => {
+      console.log('🎬 Элементы исчезли, меняем контент');
+      this.sceneAnimations.isElementsFadingOut = false;
+      
+      // СРАЗУ меняем контент ПОСЛЕ исчезновения элементов
+      if (onMidTransition) {
+        onMidTransition();
+      }
+      
+      if (onUpdate) {
+        onUpdate(this.sceneAnimations);
+      }
+      
+      // Небольшая пауза для отрисовки нового контента
+      setTimeout(() => {
+        this.sceneAnimations.isBackgroundChanging = true;
+        
+        if (onUpdate) {
+          onUpdate(this.sceneAnimations);
+        }
+        
+        // Фаза 2: Смена фона (300ms)
+        setTimeout(() => {
+          this.sceneAnimations.isBackgroundChanging = false;
+          this.sceneAnimations.isElementsFadingIn = true;
+          
+          if (onUpdate) {
+            onUpdate(this.sceneAnimations);
+          }
+          
+          // Фаза 3: Появление новых элементов (600ms)
+          setTimeout(() => {
+            this.sceneAnimations.isElementsFadingIn = false;
+            this.sceneAnimations.isLocationTransitioning = false;
+            
+            if (onUpdate) {
+              onUpdate(this.sceneAnimations);
+            }
+            
+            console.log('🎬 Плавный переход к новой локации завершен');
+          }, 600);
+        }, 300);
+      }, 50);
+    }, 500);
+  }
+
+  /**
+   * Анимация исчезновения диалога и выборов
+   * @param {Function} onUpdate - Callback для обновления состояния
+   */
+  animateElementsFadeOut(onUpdate) {
+    this.sceneAnimations.isElementsFadingOut = true;
+    
+    if (onUpdate) {
+      onUpdate(this.sceneAnimations);
+    }
+    
+    setTimeout(() => {
+      this.sceneAnimations.isElementsFadingOut = false;
+      if (onUpdate) {
+        onUpdate(this.sceneAnimations);
+      }
+    }, 400);
+  }
+
+  /**
+   * Анимация появления новых элементов
+   * @param {Function} onUpdate - Callback для обновления состояния
+   */
+  animateElementsFadeIn(onUpdate) {
+    this.sceneAnimations.isElementsFadingIn = true;
+    
+    if (onUpdate) {
+      onUpdate(this.sceneAnimations);
+    }
+    
+    setTimeout(() => {
+      this.sceneAnimations.isElementsFadingIn = false;
+      if (onUpdate) {
+        onUpdate(this.sceneAnimations);
+      }
+    }, 600);
+  }
+
+  /**
+   * Анимация смены персонажей в той же локации
+   * @param {Function} onUpdate - Callback для обновления состояния
+   * @param {Function} onMidTransition - Callback в середине перехода для смены контента
+   */
+  animateCharacterTransition(onUpdate, onMidTransition) {
+    console.log('🎭 Начинаю анимацию смены персонажей');
+    
+    this.sceneAnimations.isCharacterTransitioning = true;
+    this.sceneAnimations.isElementsFadingOut = true;
+    
+    if (onUpdate) {
+      onUpdate(this.sceneAnimations);
+    }
+    
+    // Фаза 1: Исчезновение персонажей и диалогов (300ms)
+    setTimeout(() => {
+      this.sceneAnimations.isElementsFadingOut = false;
+      
+      if (onUpdate) {
+        onUpdate(this.sceneAnimations);
+      }
+      
+      // Фаза 2: Смена контента (100ms)
+      setTimeout(() => {
+        if (onMidTransition) {
+          onMidTransition();
+        }
+        
+        this.sceneAnimations.isElementsFadingIn = true;
+        
+        if (onUpdate) {
+          onUpdate(this.sceneAnimations);
+        }
+        
+        // Фаза 3: Появление новых персонажей (500ms)
+        setTimeout(() => {
+          this.sceneAnimations.isElementsFadingIn = false;
+          this.sceneAnimations.isCharacterTransitioning = false;
+          
+          if (onUpdate) {
+            onUpdate(this.sceneAnimations);
+          }
+          
+          console.log('🎭 Анимация смены персонажей завершена');
+        }, 500);
+      }, 100);
+    }, 300);
+  }
+
+  /**
    * Сброс всех анимаций
    */
   resetAnimations() {
     this.sceneAnimations = {
       isTransitioning: false,
       isBackgroundTransitioning: false,
-      isDialogueEntering: false
+      isDialogueEntering: false,
+      isLocationTransitioning: false,
+      isCharacterTransitioning: false,
+      isElementsFadingOut: false,
+      isElementsFadingIn: false,
+      isBackgroundChanging: false
     };
     
     this.textAnimation = {
@@ -595,6 +750,26 @@ class SceneManager {
     
     if (sceneAnimation.isTransitioning) {
       classes += ' scene-transition';
+    }
+    
+    if (sceneAnimation.isLocationTransitioning) {
+      classes += ' location-transitioning';
+    }
+    
+    if (sceneAnimation.isCharacterTransitioning) {
+      classes += ' character-transitioning';
+    }
+    
+    if (sceneAnimation.isElementsFadingOut) {
+      classes += ' elements-fading-out';
+    }
+    
+    if (sceneAnimation.isElementsFadingIn) {
+      classes += ' elements-fading-in';
+    }
+    
+    if (sceneAnimation.isBackgroundChanging) {
+      classes += ' background-changing';
     }
     
     return classes;

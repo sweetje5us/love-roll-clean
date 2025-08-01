@@ -4,6 +4,7 @@ import { getStaticPath } from '../../utils/pathUtils';
 import './PetMiniGameModal.css';
 import { usePets } from '../../contexts/PetContext';
 import { Joystick } from 'react-joystick-component';
+import { createAdaptiveGameLoop, getAdaptiveSpeed, detectRefreshRate } from '../../utils/cordovaUtils';
 
 // Длительность анимаций Zuma (мс)
 const ANIMATION_DURATION = 300;
@@ -71,19 +72,24 @@ const FlappyBirdGame = React.forwardRef(({ petSprite, onClose, petId }, ref) => 
     return () => window.removeEventListener('keydown', handleKey);
   });
 
-  // Основной игровой цикл
+  // Основной игровой цикл с адаптацией под частоту экрана
   useEffect(() => {
     if (gameOver) return;
-    let frame;
-    const loop = () => {
+    
+    // Адаптивные скорости (базовые значения для 60 FPS)
+    const ADAPTIVE_PIPE_SPEED = getAdaptiveSpeed(2); // базовая скорость 2 пикселя/кадр
+    const ADAPTIVE_GRAVITY = getAdaptiveSpeed(GRAVITY);
+    
+    const gameLoop = createAdaptiveGameLoop((deltaMultiplier) => {
       if (!started) {
         setRenderTick(t => t + 1);
-        frame = requestAnimationFrame(loop);
         return;
       }
-      // Физика питомца
-      velocity.current += GRAVITY;
-      petY.current += velocity.current;
+      
+      // Физика питомца с учетом delta time
+      velocity.current += ADAPTIVE_GRAVITY * deltaMultiplier;
+      petY.current += velocity.current * deltaMultiplier;
+      
       if (petY.current < 0) {
         petY.current = 0;
         velocity.current = 0;
@@ -92,9 +98,14 @@ const FlappyBirdGame = React.forwardRef(({ petSprite, onClose, petId }, ref) => 
         petY.current = GAME_HEIGHT - PET_SIZE;
         velocity.current = 0;
       }
-      // Движение труб
-      pipes.current = pipes.current.map(pipe => ({ ...pipe, x: pipe.x - 2 }));
+      
+      // Движение труб с адаптивной скоростью
+      pipes.current = pipes.current.map(pipe => ({ 
+        ...pipe, 
+        x: pipe.x - (ADAPTIVE_PIPE_SPEED * deltaMultiplier)
+      }));
       pipes.current = pipes.current.filter(pipe => pipe.x + PIPE_WIDTH > 0);
+      
       // Добавление новых труб
       if (Date.now() - lastPipeTime.current > PIPE_INTERVAL) {
         pipes.current.push({
@@ -104,6 +115,7 @@ const FlappyBirdGame = React.forwardRef(({ petSprite, onClose, petId }, ref) => 
         });
         lastPipeTime.current = Date.now();
       }
+      
       // Проверка столкновений
       for (let pipe of pipes.current) {
         if (
@@ -119,6 +131,7 @@ const FlappyBirdGame = React.forwardRef(({ petSprite, onClose, petId }, ref) => 
         setGameOver(true);
         return;
       }
+      
       // Подсчёт очков
       pipes.current = pipes.current.map(pipe => {
         if (!pipe.passed && pipe.x + PIPE_WIDTH < 60) {
@@ -127,11 +140,12 @@ const FlappyBirdGame = React.forwardRef(({ petSprite, onClose, petId }, ref) => 
         }
         return pipe;
       });
+      
       setRenderTick(t => t + 1); // триггерим рендер
-      frame = requestAnimationFrame(loop);
-    };
-    frame = requestAnimationFrame(loop);
-    return () => cancelAnimationFrame(frame);
+    });
+    
+    gameLoop.start();
+    return () => gameLoop.stop();
     // eslint-disable-next-line
   }, [started, gameOver]);
 
@@ -578,22 +592,28 @@ const CrossyRoadGame = ({ petSprite, onClose, petId }) => {
     };
   }, []);
 
-  // Основной игровой цикл
+  // Основной игровой цикл с адаптацией под частоту экрана
   useEffect(() => {
     if (gameOver || win) return;
-    let frame;
-    const loop = () => {
+    
+    // Адаптивные скорости (базовые значения для 60 FPS)
+    const ADAPTIVE_PET_SPEED = getAdaptiveSpeed(5); // базовая скорость 5 пикселей/кадр
+    const baseObstacleSpeed = CR_OBSTACLE_SPEED + (level - 1) * 0.7;
+    const ADAPTIVE_OBSTACLE_SPEED = getAdaptiveSpeed(baseObstacleSpeed);
+    
+    const gameLoop = createAdaptiveGameLoop((deltaMultiplier) => {
       if (!started) {
         setRenderTick(t => t + 1);
-        frame = requestAnimationFrame(loop);
         return;
       }
-      // Движение питомца по горизонтали
+      
+      // Движение питомца по горизонтали с адаптивной скоростью
       const currentMoveDir = window.crossyMoveDir || moveDir.current;
-      petX.current += currentMoveDir * 5;
+      petX.current += currentMoveDir * ADAPTIVE_PET_SPEED * deltaMultiplier;
       if (petX.current < 0) petX.current = 0;
       if (petX.current > CR_WIDTH - CR_PET_SIZE) petX.current = CR_WIDTH - CR_PET_SIZE;
-      // Движение питомца вперёд
+      
+      // Движение питомца вперёд (дискретное движение, не зависит от FPS)
       if (window.crossyMoveForward) {
         petY.current -= CR_LANE_HEIGHT;
         if (petY.current < 0) petY.current = 0;
@@ -605,14 +625,15 @@ const CrossyRoadGame = ({ petSprite, onClose, petId }) => {
         if (petY.current < 0) petY.current = 0;
         moveForward.current = false;
       }
-      // Движение препятствий
-      const speed = CR_OBSTACLE_SPEED + (level - 1) * 0.7;
+      
+      // Движение препятствий с адаптивной скоростью
       obstacles.current = obstacles.current.map(obs => {
-        let newX = obs.x + obs.dir * speed;
+        let newX = obs.x + obs.dir * ADAPTIVE_OBSTACLE_SPEED * deltaMultiplier;
         if (newX < -CR_OBSTACLE_WIDTH) newX = CR_WIDTH;
         if (newX > CR_WIDTH) newX = -CR_OBSTACLE_WIDTH;
         return { ...obs, x: newX };
       });
+      
       // Проверка столкновений
       for (let obs of obstacles.current) {
         if (
@@ -625,17 +646,19 @@ const CrossyRoadGame = ({ petSprite, onClose, petId }) => {
           return;
         }
       }
+      
       // Победа — дошёл до верхней границы
       if (petY.current <= 0) {
         setWin(true);
         setScore(s => s + 1);
         return;
       }
+      
       setRenderTick(t => t + 1);
-      frame = requestAnimationFrame(loop);
-    };
-    frame = requestAnimationFrame(loop);
-    return () => cancelAnimationFrame(frame);
+    });
+    
+    gameLoop.start();
+    return () => gameLoop.stop();
   }, [started, gameOver, win, level]);
 
   // Начисление счастья за победу и переход на следующий уровень
@@ -1002,19 +1025,22 @@ const ZumaGame = React.forwardRef(({ petSprite, onClose, petId }, ref) => {
     setNextBallColor(getRandomBallColor());
   };
 
-  // Основной игровой цикл
+  // Основной игровой цикл с адаптацией под частоту экрана
   useEffect(() => {
     if (gameOver || win) return;
-    let frame;
-    const loop = () => {
+    
+    // Адаптивные скорости (базовые значения для 60 FPS)
+    const ADAPTIVE_CHAIN_SPEED = getAdaptiveSpeed(ZUMA_CHAIN_SPEED);
+    
+    const gameLoop = createAdaptiveGameLoop((deltaMultiplier) => {
       if (!started) {
         setRenderTick(t => t + 1);
-        frame = requestAnimationFrame(loop);
         return;
       }
-      // Движение цепочки по пути
+      
+      // Движение цепочки по пути с адаптивной скоростью
       const { total: totalLength } = getPathSegments(ZUMA_PATH);
-      headDistRef.current += ZUMA_CHAIN_SPEED;
+      headDistRef.current += ADAPTIVE_CHAIN_SPEED * deltaMultiplier;
       for (let i = 0; i < chain.current.length; i++) {
         const t = (headDistRef.current - i * ZUMA_BALL_SPACING) / totalLength;
         chain.current[i].t = Math.max(0, t);
@@ -1065,10 +1091,10 @@ const ZumaGame = React.forwardRef(({ petSprite, onClose, petId }, ref) => {
         }));
         if (changed) setRenderTick(t => t + 1);
       }
-      // Движение выстрела
+      // Движение выстрела с адаптивной скоростью
       if (shot.current) {
-        shot.current.x += shot.current.dx;
-        shot.current.y += shot.current.dy;
+        shot.current.x += shot.current.dx * deltaMultiplier;
+        shot.current.y += shot.current.dy * deltaMultiplier;
         // Проверка выхода за пределы
         if (
           shot.current.x < 0 || shot.current.x > ZUMA_WIDTH ||
@@ -1175,10 +1201,10 @@ const ZumaGame = React.forwardRef(({ petSprite, onClose, petId }, ref) => {
         return;
       }
       setRenderTick(t => t + 1);
-      frame = requestAnimationFrame(loop);
-    };
-    frame = requestAnimationFrame(loop);
-    return () => cancelAnimationFrame(frame);
+    });
+    
+    gameLoop.start();
+    return () => gameLoop.stop();
   }, [started, gameOver, win, animations]);
 
   // Начисление счастья за победу

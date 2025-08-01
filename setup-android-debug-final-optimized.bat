@@ -49,8 +49,15 @@ echo Копирование Font Awesome файлов...
 xcopy /E /I /Y "%~dp0public\static\css\*" "www\static\css\"
 xcopy /E /I /Y "%~dp0public\static\webfonts\*" "www\static\webfonts\"
 
-echo Создание оптимизированного index.html для Cordova...
-echo ^<!doctype html^>^<html lang="ru"^>^<head^>^<meta charset="UTF-8"^>^<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"^>^<title^>Love ^& Roll - Визуальная новелла^</title^>^<link rel="stylesheet" href="./static/css/all.css"^>^<meta name="theme-color" content="#ff6b9a"^>^<meta name="apple-mobile-web-app-capable" content="yes"^>^<meta name="apple-mobile-web-app-status-bar-style" content="default"^>^<meta name="format-detection" content="telephone=no"^>^<meta name="msapplication-tap-highlight" content="no"^>^<script defer="defer" src="./static/js/main.0f011f7a.js"^>^</script^>^<link href="./static/css/main.8a598cb7.css" rel="stylesheet"^>^</head^>^<body^>^<noscript^>Для работы приложения необходимо включить JavaScript.^</noscript^>^<div id="root"^>^</div^>^</body^>^</html^> > www\index.html
+echo Адаптация готового index.html для Cordova...
+echo Замена CDN Font Awesome на локальную версию...
+powershell -Command "(Get-Content 'www\index.html') -replace 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css', './static/css/all.css' | Set-Content 'www\index.html'"
+
+echo Улучшение viewport для мобильного...
+powershell -Command "(Get-Content 'www\index.html') -replace 'width=device-width,initial-scale=1', 'width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no' | Set-Content 'www\index.html'"
+
+echo Добавление мета-тегов для Cordova...
+powershell -Command "(Get-Content 'www\index.html') -replace '<meta name=\"apple-mobile-web-app-status-bar-style\" content=\"default\">', '<meta name=\"apple-mobile-web-app-status-bar-style\" content=\"default\"><meta name=\"format-detection\" content=\"telephone=no\"><meta name=\"msapplication-tap-highlight\" content=\"no\">' | Set-Content 'www\index.html'"
 
 echo Копирование config.xml...
 copy /Y "%~dp0config_loveroll_clean.xml" "config.xml" 
@@ -133,8 +140,16 @@ echo ========================================
 echo Готово! Love & Roll должно быть запущено на эмуляторе.
 echo ========================================
 echo.
+echo ИСПРАВЛЕНИЯ В ЭТОЙ ВЕРСИИ:
+echo - ИСПРАВЛЕНО: Используем готовый index.html из React сборки
+echo - ИСПРАВЛЕНО: Автоматически подхватываются актуальные имена JS/CSS файлов
+echo - ИСПРАВЛЕНО: Добавлены настройки полноэкранного режима в config.xml
+echo - ИСПРАВЛЕНО: Скрытие статус бара и системных кнопок
+echo - ИСПРАВЛЕНО: Адаптация под 60/90/120 Hz экраны
+echo - ИСПРАВЛЕНО: Игровые циклы используют delta time
+echo - ИСПРАВЛЕНО: CSS анимации адаптируются под частоту экрана
+echo.
 echo ОПТИМИЗАЦИИ ВКЛЮЧЕНЫ:
-echo - Исправлены имена файлов JavaScript и CSS
 echo - Font Awesome подключен локально (все иконки доступны)
 echo - Отключено логирование в продакшн версии
 echo - Оптимизирована загрузка персонажей
@@ -144,6 +159,5 @@ echo - WebView оптимизации для производительност�
 echo - React Router оптимизации для быстрого переключения экранов
 echo - Оптимизация памяти и сборка мусора
 echo - Аппаратное ускорение включено
-echo - Использованы рабочие настройки из debug_free.bat
 echo.
 pause 

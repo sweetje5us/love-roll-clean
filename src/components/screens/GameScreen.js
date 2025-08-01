@@ -305,7 +305,7 @@ const GameScreen = () => {
 
   const [gameState, setGameState] = useState({
     isLoaded: false,
-    isLoading: true,
+    isLoading: false, // НЕ показываем loading экран при инициализации для предотвращения белого мерцания
     currentScene: null,
     characters: [],
     background: null,
@@ -499,7 +499,8 @@ const GameScreen = () => {
   // Инициализация игры с эпизодом
   const initGame = async () => {
     try {
-      setGameState(prev => ({ ...prev, isLoading: true, error: null }));
+      // НЕ УСТАНАВЛИВАЕМ loading для предотвращения белого мерцания при загрузке
+      setGameState(prev => ({ ...prev, error: null }));
       
       const params = getNavigationParams();
       const { episodeId, chapterId } = params;
@@ -509,7 +510,7 @@ const GameScreen = () => {
       // Если нет параметров эпизода, значит мы вернулись в главное меню
       if (!episodeId) {
         console.log('GameScreen.initGame - нет параметров эпизода, возвращаемся в главное меню');
-        setGameState(prev => ({ ...prev, isLoading: false }));
+        // Не сбрасываем loading, просто выходим
         return;
       }
 
@@ -635,7 +636,6 @@ const GameScreen = () => {
         setGameState(prev => ({
           ...prev,
           isLoaded: true,
-          isLoading: false,
           currentScene: currentData.scene,
           background: processedScene.background,
           characters: processedScene.characters,
@@ -667,7 +667,6 @@ const GameScreen = () => {
       console.error('Ошибка инициализации игры:', error);
       setGameState(prev => ({
         ...prev,
-        isLoading: false,
         error: error.message
       }));
     }
@@ -691,7 +690,8 @@ const GameScreen = () => {
 
   const handleChoice = async (choiceId) => {
     try {
-      setGameState(prev => ({ ...prev, isLoading: true }));
+      // НЕ УСТАНАВЛИВАЕМ isLoading сразу! Это вызывает белое мерцание
+      // Установим loading только если действительно переходим к новой сцене
       
       // Получаем текущую сцену и выбор
       const currentData = episodeManager.getCurrentData();
@@ -736,7 +736,7 @@ const GameScreen = () => {
           isVisible: true,
           choice: choice
         });
-        setGameState(prev => ({ ...prev, isLoading: false }));
+        // НЕ сбрасываем loading так как не устанавливали его
         return;
       }
       
@@ -751,28 +751,13 @@ const GameScreen = () => {
         episodeManager.saveGameState();
         
         if (result.endChapter) {
-          // Глава завершена
-          setGameState(prev => ({
-            ...prev,
-            isLoading: false
-          }));
-          // Показываем титры конца главы
+          // Глава завершена - БЕЗ loading состояния
           showChapterEndCredits();
         } else if (result.chapterTransition) {
-          // Переход к новой главе
-          setGameState(prev => ({
-            ...prev,
-            isLoading: false
-          }));
-          // Показываем титры начала новой главы
+          // Переход к новой главе - БЕЗ loading состояния
           showChapterStartCredits();
         } else if (result.nextScene === 'episode_complete') {
-          // Завершение эпизода
-          setGameState(prev => ({
-            ...prev,
-            isLoading: false
-          }));
-          // Сначала показываем титры конца главы, затем экран завершения эпизода
+          // Завершение эпизода - БЕЗ loading состояния
           showChapterEndCredits();
           // Сохраняем эффекты для использования после титров
           setEpisodeCompleteState(prev => ({
@@ -780,45 +765,80 @@ const GameScreen = () => {
             pendingEffects: result.effects
           }));
         } else if (result.nextScene) {
-        // Запускаем анимацию переключения сцен только при реальной смене сцены
-        animateSceneTransition();
+          // НЕ УСТАНАВЛИВАЕМ loading для предотвращения белого мерцания!
           
-          // Загружаем следующую сцену
+          // Предварительно загружаем следующую сцену
           await episodeManager.loadScene(result.nextScene);
-        
-        // Получаем обновленные данные
-        const updatedData = episodeManager.getCurrentData();
-        
-        // Запускаем анимацию смены фона, если фон изменился
-        const newBackground = updatedData.scene.background;
-        if (newBackground !== gameState.background) {
-          animateBackgroundTransition();
-        }
-        
-        // Обрабатываем новую сцену через sceneManager (асинхронно)
-        const processedScene = await sceneManager.processScene(updatedData.scene, selectedCharacter);
-        
-        setGameState(prev => ({
-          ...prev,
-          isLoading: false,
-          currentScene: updatedData.scene,
-          background: processedScene.background,
-          characters: processedScene.characters,
-          dialogue: processedScene.dialogue,
-          choices: [] // Очищаем выборы, так как переходим к новой сцене
-        }));
-        
-        // Запускаем анимацию появления диалогового окна
-        setTimeout(() => {
-          animateDialogueEnter();
-        }, 200);
+          const updatedData = episodeManager.getCurrentData();
+          const newBackground = updatedData.scene.background;
+          
+          // Нормализуем пути фонов для корректного сравнения
+          const currentBg = normalizeBackground(gameState.background);
+          const nextBg = normalizeBackground(newBackground);
+          
+          // Обрабатываем новую сцену для получения персонажей
+          const processedScene = await sceneManager.processScene(updatedData.scene, selectedCharacter);
+          
+          // Проверяем, что меняется: локация или персонажи
+          const locationChanged = nextBg !== currentBg;
+          const charactersChanged = !compareCharacters(gameState.characters, processedScene.characters);
+          
+          if (locationChanged) {
+            console.log('🎬 Смена локации обнаружена:', currentBg, '=>', nextBg);
+            
+            // Запускаем плавный переход к новой локации
+            animateLocationTransition(() => {
+              // Этот callback выполняется ПОСЛЕ исчезновения элементов
+              setGameState(prev => ({
+                ...prev,
+                currentScene: updatedData.scene,
+                background: processedScene.background,
+                characters: processedScene.characters,
+                dialogue: processedScene.dialogue,
+                choices: []
+              }));
+            });
+          } else if (charactersChanged) {
+            console.log('🎭 Смена персонажей в той же локации обнаружена');
+            
+            // Запускаем анимацию смены персонажей
+            animateCharacterTransition(() => {
+              // Этот callback выполняется ПОСЛЕ исчезновения персонажей
+              setGameState(prev => ({
+                ...prev,
+                currentScene: updatedData.scene,
+                background: processedScene.background,
+                characters: processedScene.characters,
+                dialogue: processedScene.dialogue,
+                choices: []
+              }));
+            });
+          } else {
+            // Обычная смена сцены без смены локации и персонажей - БЕЗ анимаций
+            console.log('🎬 Смена сцены без изменений локации/персонажей - только текст');
+            
+            setGameState(prev => ({
+              ...prev,
+              currentScene: updatedData.scene,
+              background: processedScene.background,
+              characters: processedScene.characters,
+              dialogue: processedScene.dialogue,
+              choices: []
+            }));
+            
+            // Запускаем только анимацию текста
+            if (processedScene.dialogue && processedScene.dialogue.text) {
+              setTimeout(() => {
+                sceneManager.animateText(processedScene.dialogue.text, 60, setTextAnimation);
+              }, 100);
+            }
+          }
         } else {
           // Обычная обработка выбора (например, изменение отношений без смены сцены)
-          // Обновляем доступные выборы после изменения инвентаря
+          // БЕЗ loading состояния для предотвращения мерцания
           const availableChoices = episodeManager.getAvailableChoices();
           setGameState(prev => ({
             ...prev,
-            isLoading: false,
             choices: availableChoices
           }));
         }
@@ -826,7 +846,6 @@ const GameScreen = () => {
         // Ошибка обработки выбора
         setGameState(prev => ({
           ...prev,
-          isLoading: false,
           error: result.error || 'Ошибка обработки выбора'
         }));
       }
@@ -843,7 +862,8 @@ const GameScreen = () => {
 
   const handleNext = async () => {
     try {
-      setGameState(prev => ({ ...prev, isLoading: true }));
+      // НЕ УСТАНАВЛИВАЕМ isLoading:true для простого перехода к следующему диалогу!
+      // Это вызывает белое мерцание из-за показа loading экрана
       
       // Переходим к следующему диалогу
       const currentData = episodeManager.getCurrentData();
@@ -860,21 +880,17 @@ const GameScreen = () => {
         
         setGameState(prev => ({
           ...prev,
-          isLoading: false,
           dialogue: nextDialogue,
           choices: [] // Очищаем выборы, так как переходим к диалогу
         }));
         
-        // Запускаем только анимацию появления диалогового окна
-        setTimeout(() => {
-          animateDialogueEnter();
-        }, 100);
+        // НЕ запускаем анимацию диалогового окна при простой смене текста
+        // Анимация текста будет запущена автоматически через useEffect
       } else {
         // Диалог закончился, показываем выборы
         const availableChoices = episodeManager.getAvailableChoices();
         setGameState(prev => ({
           ...prev,
-          isLoading: false,
           choices: availableChoices
         }));
       }
@@ -883,7 +899,6 @@ const GameScreen = () => {
       console.error('Ошибка перехода к следующему диалогу:', error);
       setGameState(prev => ({
         ...prev,
-        isLoading: false,
         error: error.message
       }));
     }
@@ -976,7 +991,7 @@ const GameScreen = () => {
   // Обработчик результата броска кубика
   const handleDiceRollResult = async (rollResult) => {
     try {
-      setGameState(prev => ({ ...prev, isLoading: true }));
+      // НЕ устанавливаем loading для предотвращения мерцания
       
       const { choice } = inlineDiceRoll;
       
@@ -1014,25 +1029,13 @@ const GameScreen = () => {
         episodeManager.saveGameState();
         
         if (result.endChapter) {
-          // Глава завершена
-          setGameState(prev => ({
-            ...prev,
-            isLoading: false
-          }));
+          // Глава завершена - БЕЗ loading состояния
           showChapterEndCredits();
         } else if (result.chapterTransition) {
-          // Переход к новой главе
-          setGameState(prev => ({
-            ...prev,
-            isLoading: false
-          }));
+          // Переход к новой главе - БЕЗ loading состояния
           showChapterStartCredits();
         } else if (result.nextScene === 'episode_complete') {
-          // Завершение эпизода
-          setGameState(prev => ({
-            ...prev,
-            isLoading: false
-          }));
+          // Завершение эпизода - БЕЗ loading состояния
           // Сначала показываем титры конца главы, затем экран завершения эпизода
           showChapterEndCredits();
           // Сохраняем эффекты для использования после титров
@@ -1041,61 +1044,102 @@ const GameScreen = () => {
             pendingEffects: result.effects
           }));
         } else if (nextScene) {
-          // Запускаем анимацию переключения сцен
-          animateSceneTransition();
-          
-          // Загружаем следующую сцену
+          // Предварительно загружаем следующую сцену
           await episodeManager.loadScene(nextScene);
-          
-          // Получаем обновленные данные
           const updatedData = episodeManager.getCurrentData();
-          
-          // Запускаем анимацию смены фона, если фон изменился
           const newBackground = updatedData.scene.background;
-          if (newBackground !== gameState.background) {
-            animateBackgroundTransition();
-          }
           
-          // Обрабатываем новую сцену через sceneManager
+          // Нормализуем пути фонов для корректного сравнения
+          const currentBg = normalizeBackground(gameState.background);
+          const nextBg = normalizeBackground(newBackground);
+          
+          // Обрабатываем новую сцену для получения персонажей
           const processedScene = await sceneManager.processScene(updatedData.scene, selectedCharacter);
           
-          setGameState(prev => ({
-            ...prev,
-            isLoading: false,
-            currentScene: updatedData.scene,
-            background: processedScene.background,
-            characters: processedScene.characters,
-            dialogue: processedScene.dialogue,
-            choices: []
-          }));
+          // Проверяем, что меняется: локация или персонажи
+          const locationChanged = nextBg !== currentBg;
+          const charactersChanged = !compareCharacters(gameState.characters, processedScene.characters);
           
-          // Запускаем анимацию появления диалогового окна
-          setTimeout(() => {
-            animateDialogueEnter();
-          }, 200);
+          if (locationChanged) {
+            console.log('🎬 Смена локации обнаружена после броска кубика:', currentBg, '=>', nextBg);
+            
+            // Запускаем плавный переход к новой локации
+            animateLocationTransition(() => {
+              // Этот callback выполняется ПОСЛЕ исчезновения элементов
+              setGameState(prev => ({
+                ...prev,
+                currentScene: updatedData.scene,
+                background: processedScene.background,
+                characters: processedScene.characters,
+                dialogue: processedScene.dialogue,
+                choices: []
+              }));
+            });
+          } else if (charactersChanged) {
+            console.log('🎭 Смена персонажей после броска кубика обнаружена');
+            
+            // Запускаем анимацию смены персонажей
+            animateCharacterTransition(() => {
+              // Этот callback выполняется ПОСЛЕ исчезновения персонажей
+              setGameState(prev => ({
+                ...prev,
+                currentScene: updatedData.scene,
+                background: processedScene.background,
+                characters: processedScene.characters,
+                dialogue: processedScene.dialogue,
+                choices: []
+              }));
+            });
+          } else {
+            // Обычная смена сцены без смены локации и персонажей - БЕЗ анимаций
+            console.log('🎬 Смена сцены после броска кубика без изменений - только текст');
+            
+            setGameState(prev => ({
+              ...prev,
+              currentScene: updatedData.scene,
+              background: processedScene.background,
+              characters: processedScene.characters,
+              dialogue: processedScene.dialogue,
+              choices: []
+            }));
+            
+            // Запускаем только анимацию текста
+            if (processedScene.dialogue && processedScene.dialogue.text) {
+              setTimeout(() => {
+                sceneManager.animateText(processedScene.dialogue.text, 60, setTextAnimation);
+              }, 100);
+            }
+          }
         } else {
-          // Обычная обработка выбора
-          setGameState(prev => ({
-            ...prev,
-            isLoading: false
-          }));
+          // Обычная обработка выбора - БЕЗ loading состояния
+          // Ничего не делаем, так как loading не был установлен
         }
       } else {
         // Ошибка обработки выбора
         setGameState(prev => ({
           ...prev,
-          isLoading: false,
           error: result.error || 'Ошибка обработки выбора'
         }));
       }
+      
+      // Закрываем модальное окно броска кубика
+      setInlineDiceRoll({
+        isVisible: false,
+        choice: null
+      });
       
     } catch (error) {
       console.error('Ошибка обработки результата броска кубика:', error);
       setGameState(prev => ({
         ...prev,
-        isLoading: false,
         error: error.message
       }));
+      
+      // Закрываем модальное окно даже при ошибке
+      setInlineDiceRoll({
+        isVisible: false,
+        choice: null
+      });
     }
   };
 
@@ -1182,12 +1226,32 @@ const GameScreen = () => {
 
   // Функция для анимации переключения сцен (использует sceneManager)
   const animateSceneTransition = () => {
-    sceneManager.animateSceneTransition(setSceneAnimation);
+    // Проверяем, если это мобильное устройство - используем более быстрые анимации
+    const isMobile = window.innerWidth <= 768;
+    if (isMobile) {
+      // Для мобильных устройств - мгновенный переход без анимации для предотвращения мерцания
+      setSceneAnimation(prev => ({ 
+        ...prev, 
+        isTransitioning: false 
+      }));
+    } else {
+      sceneManager.animateSceneTransition(setSceneAnimation);
+    }
   };
 
   // Функция для анимации смены фона (использует sceneManager)
   const animateBackgroundTransition = () => {
-    sceneManager.animateBackgroundTransition(setSceneAnimation);
+    // Проверяем, если это мобильное устройство - используем более быстрые анимации
+    const isMobile = window.innerWidth <= 768;
+    if (isMobile) {
+      // Для мобильных устройств - мгновенный переход без анимации для предотвращения мерцания
+      setSceneAnimation(prev => ({ 
+        ...prev, 
+        isBackgroundTransitioning: false 
+      }));
+    } else {
+      sceneManager.animateBackgroundTransition(setSceneAnimation);
+    }
   };
 
   // Функция для расчета позиции диалогового окна над персонажами
@@ -1252,6 +1316,36 @@ const GameScreen = () => {
     sceneManager.animateDialogueEnter(setSceneAnimation);
   };
 
+  // Функция для плавного перехода к новой локации
+  const animateLocationTransition = (onMidTransition) => {
+    console.log('🎬 Запуск плавного перехода к новой локации');
+    sceneManager.animateLocationTransition(setSceneAnimation, onMidTransition);
+  };
+
+  // Функция для нормализации путей фонов (убирает ведущий слеш)
+  const normalizeBackground = (bg) => {
+    if (!bg) return '';
+    return bg.startsWith('/') ? bg.substring(1) : bg;
+  };
+
+  // Функция для анимации смены персонажей
+  const animateCharacterTransition = (onMidTransition) => {
+    console.log('🎭 Запуск анимации смены персонажей');
+    sceneManager.animateCharacterTransition(setSceneAnimation, onMidTransition);
+  };
+
+  // Функция для сравнения персонажей в сценах
+  const compareCharacters = (current, next) => {
+    if (!current || !next) return false;
+    if (current.length !== next.length) return false;
+    
+    // Сравниваем ID персонажей
+    const currentIds = current.map(char => char.id).sort();
+    const nextIds = next.map(char => char.id).sort();
+    
+    return JSON.stringify(currentIds) === JSON.stringify(nextIds);
+  };
+
   // Обработчик клика по диалоговому окну
   const handleDialogueClick = () => {
     if (textAnimation.isAnimating) {
@@ -1265,6 +1359,17 @@ const GameScreen = () => {
 
   // Обработчик клика по сцене для продолжения диалогов
   const handleSceneClick = (event) => {
+    // Предотвращаем стандартное поведение и убираем выделение
+    event.preventDefault();
+    event.stopPropagation();
+    
+    // Убираем выделение текста
+    if (window.getSelection) {
+      window.getSelection().removeAllRanges();
+    } else if (document.selection) {
+      document.selection.empty();
+    }
+    
     // Проверяем, что клик не по диалоговому окну или другим интерактивным элементам
     if (event.target.closest('.dialogue-box') || 
         event.target.closest('.game-top-panel') || 
@@ -1401,8 +1506,8 @@ const GameScreen = () => {
       isTransitioning: true 
     }));
     
-    // Устанавливаем флаг загрузки
-    setGameState(prev => ({ ...prev, isLoading: true }));
+    // НЕ устанавливаем флаг загрузки для предотвращения мерцания
+    // setGameState(prev => ({ ...prev, isLoading: true }));
     
     // Сохраняем прогресс перед переходом к следующей главе
     episodeManager.saveGameState();
@@ -1437,8 +1542,7 @@ const GameScreen = () => {
           });
         });
       } else {
-        // Это последняя глава эпизода
-        setGameState(prev => ({ ...prev, isLoading: false }));
+        // Это последняя глава эпизода - БЕЗ loading состояния
         
         // Проверяем, есть ли ожидающие эффекты завершения эпизода
         if (episodeCompleteState.pendingEffects) {
@@ -1519,14 +1623,22 @@ const GameScreen = () => {
 
   if (gameState.isLoading) {
     return (
-      <div className="game-screen loading">
-        <div className="loading-spinner">
-          <div className="spinner-icon">
-            <div className="spinner-circle"></div>
+      <motion.div 
+        className="game-screen loading"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.2 }}
+      >
+        <div className="elegant-loading">
+          <div className="loading-dots">
+            <div className="dot"></div>
+            <div className="dot"></div>
+            <div className="dot"></div>
           </div>
-          <p>Загрузка игры...</p>
+          <p>Переход между сценами...</p>
         </div>
-      </div>
+      </motion.div>
     );
   }
 
@@ -1550,14 +1662,22 @@ const GameScreen = () => {
 
   if (!gameState.isLoaded) {
     return (
-      <div className="game-screen loading">
-        <div className="loading-spinner">
-          <div className="spinner-icon">
-            <div className="spinner-circle"></div>
+      <motion.div 
+        className="game-screen loading"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.3 }}
+      >
+        <div className="elegant-loading">
+          <div className="loading-dots">
+            <div className="dot"></div>
+            <div className="dot"></div>
+            <div className="dot"></div>
           </div>
-          <p>Загрузка игры...</p>
+          <p>Загрузка сцены...</p>
         </div>
-      </div>
+      </motion.div>
     );
   }
 
