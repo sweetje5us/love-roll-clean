@@ -1,15 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useScreen } from '../../contexts/ScreenContext';
+import { useScreen, SCREEN_TYPES } from '../../contexts/ScreenContext';
+import { useCharacters } from '../../contexts/CharacterContext';
 import EpisodeCard from '../ui/EpisodeCard';
 import EpisodeModal from '../ui/EpisodeModal';
 import { loadAllEpisodeConfigs, searchEpisodes, filterEpisodesByType } from '../../utils/episodeUtils';
 import { getEpisodeSave, isEpisodeCompleted } from '../../utils/saveUtils';
 import { getStaticPath } from '../../utils/pathUtils';
+import episodeManager from '../../utils/episodeManager';
 import './EpisodeSelectScreen.css';
+
+// Определяем мобильное устройство
+const isMobileDevice = () => {
+  return window.innerWidth < 768 || 
+         /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+};
 
 const EpisodeSelectScreen = ({ onBack }) => {
   const { navigateTo, getNavigationParams } = useScreen();
+  const { selectedCharacter } = useCharacters();
   const [episodesData, setEpisodesData] = useState(null);
   const [filteredEpisodes, setFilteredEpisodes] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
@@ -18,6 +27,11 @@ const EpisodeSelectScreen = ({ onBack }) => {
   const [selectedStatus, setSelectedStatus] = useState('all');
   const [modalEpisode, setModalEpisode] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    setIsMobile(isMobileDevice());
+  }, []);
 
   useEffect(() => {
     // Загружаем конфигурации эпизодов из их папок
@@ -189,7 +203,7 @@ const EpisodeSelectScreen = ({ onBack }) => {
     setModalEpisode(null);
   };
 
-  const handleStartEpisode = (episodeId, chapterId) => {
+  const handleStartEpisode = async (episodeId, chapterId) => {
     console.log('Запуск эпизода:', episodeId, 'Глава:', chapterId);
     
     // Получаем characterId из параметров навигации
@@ -198,6 +212,28 @@ const EpisodeSelectScreen = ({ onBack }) => {
     
     console.log('EpisodeSelectScreen - Параметры навигации:', navigationParams);
     console.log('EpisodeSelectScreen - characterId:', characterId);
+    
+    // Для мобильных устройств предварительно загружаем сцены
+    if (isMobile) {
+      try {
+        console.log('EpisodeSelectScreen.handleStartEpisode - предзагрузка сцен для мобильного устройства');
+        
+        // Загружаем конфигурацию эпизода для получения списка сцен
+        const response = await fetch(`/episodes/${episodeId}/config.json`);
+        if (response.ok) {
+          const episodeConfig = await response.json();
+          const chapter = episodeConfig.chapters.find(ch => ch.id === (chapterId || 1));
+          
+          if (chapter && chapter.scenes) {
+            // Предзагружаем первые несколько сцен
+            const scenesToPreload = chapter.scenes.slice(0, 5); // Первые 5 сцен
+            await episodeManager.preloadScenes(episodeId, scenesToPreload);
+          }
+        }
+      } catch (error) {
+        console.warn('EpisodeSelectScreen.handleStartEpisode - ошибка предзагрузки:', error);
+      }
+    }
     
     // Переходим к экрану игры с параметрами эпизода и персонажа
     navigateTo('GAME', {

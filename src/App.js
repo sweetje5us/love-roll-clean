@@ -11,7 +11,13 @@ import { RelationshipsProvider } from './contexts/RelationshipsContext';
 import { NotificationProvider } from './contexts/NotificationContext';
 import { PetProvider } from './contexts/PetContext';
 import { validateAndRepairSaves } from './utils/saveUtils';
+import { initializeAllOptimizations } from './utils/cordovaOptimizations';
 import './styles/App.css';
+import './styles/global.css';
+import './styles/mobile-performance.css'; // Добавляем оптимизации для мобильных
+
+// Инициализируем оптимизации для Cordova
+initializeAllOptimizations();
 
 // Компонент для экспорта контекста в глобальную область видимости
 const GameContextExporter = ({ children }) => {

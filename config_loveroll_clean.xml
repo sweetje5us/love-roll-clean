@@ -33,6 +33,19 @@
         <!-- Системная навигация -->
         <preference name="android-windowSoftInputMode" value="adjustResize" />
         <preference name="android-hardwareAccelerated" value="true" />
-        <preference name="android-keepRunning" value="true" />
+        <preference name="android-keepRunning" value="false" />
+        
+        <!-- КРИТИЧНЫЕ WebView ОПТИМИЗАЦИИ ДЛЯ ПРОИЗВОДИТЕЛЬНОСТИ -->
+        <preference name="android-allowFileAccess" value="false" />
+        <preference name="android-allowContentAccess" value="false" />
+        <preference name="android-allowFileAccessFromFileURLs" value="false" />
+        <preference name="android-allowUniversalAccessFromFileURLs" value="false" />
+        <preference name="android-mixedContentMode" value="compatibility" />
+        <preference name="android-usesCleartextTraffic" value="false" />
+        
+        <!-- ОТКЛЮЧЕНИЕ НЕНУЖНЫХ ФУНКЦИЙ ДЛЯ ПРОИЗВОДИТЕЛЬНОСТИ -->
+        <preference name="android-allowBackup" value="false" />
+        <preference name="android-fullBackupContent" value="false" />
+        <preference name="android-requestLegacyExternalStorage" value="false" />
     </platform>
 </widget> 

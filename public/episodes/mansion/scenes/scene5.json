@@ -1,5 +1,6 @@
 {
   "id": "scene5",
+  "chapterId": 1,
   "name": "Неудачный обман - Диметрио",
   "background": "sprites/episodes/locations/mansion/mansion_outside.png",
   "characters": [
@@ -47,12 +48,10 @@
       "important": true,
       "value": "met",
       "description": "Представляться ",
-      "consequences": ["Выбор 2"]
+      "consequences": [
+        "Выбор 2"
+      ],
+      "characterId": "peter"
     }
-  ],
-  "requirements": {},
-  "rewards": {
-    "experience": 0,
-    "coins": 0
-  }
-} 
+  ]
+}

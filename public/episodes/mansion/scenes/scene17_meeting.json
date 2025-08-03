@@ -20,9 +20,10 @@
         "text": "Кто вы?",
         "nextScene": "scene17",
         "important": true,
-  "value": "true",
-  "description": "Знакомство с Олегом",
-  "consequences": ["выбор 1"]
+        "value": "true",
+        "description": "Знакомство с Олегом",
+        "consequences": ["выбор 1"],
+        "characterId": "oleg"
       }
   ],
   "requirements": {},

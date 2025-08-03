@@ -1,8 +1,44 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import './LoadingScreen.css';
 
+// Определяем мобильное устройство
+const isMobileDevice = () => {
+  return window.innerWidth < 768 || 
+         /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+};
+
 const LoadingScreen = () => {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    setIsMobile(isMobileDevice());
+  }, []);
+
+  // Упрощенные анимации для мобильных устройств
+  if (isMobile) {
+    return (
+      <div className="loading-screen">
+        <div className="loading-container">
+          <div className="loading-logo">
+            <h1>Love & Roll</h1>
+          </div>
+          
+          <div className="loading-spinner">
+            <div className="spinner">
+              <i className="fas fa-heart"></i>
+            </div>
+          </div>
+          
+          <p className="loading-text">
+            Загрузка...
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  // Полные анимации для десктопа
   return (
     <motion.div 
       className="loading-screen"

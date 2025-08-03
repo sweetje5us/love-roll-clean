@@ -142,21 +142,22 @@ function processRelationshipEffects(relationshipEffects, relationships) {
  * @returns {boolean} - Доступен ли выбор
  */
 export function isChoiceAvailable(choice, inventory) {
-  console.log('isChoiceAvailable - проверка выбора:', choice.id || 'undefined');
-  console.log('isChoiceAvailable - инвентарь:', inventory);
+  // ОТКЛЮЧЕНО ЛОГИРОВАНИЕ ДЛЯ ПРОИЗВОДИТЕЛЬНОСТИ
+  // console.log('isChoiceAvailable - проверка выбора:', choice.id || 'undefined');
+  // console.log('isChoiceAvailable - инвентарь:', inventory);
   
   // Проверяем требуемый предмет
   if (choice.requiredItem) {
-    console.log('isChoiceAvailable - требуется предмет:', choice.requiredItem);
+    // console.log('isChoiceAvailable - требуется предмет:', choice.requiredItem);
     
     // Поддерживаем оба формата инвентаря
     const itemData = inventory[choice.requiredItem];
-    console.log('isChoiceAvailable - данные предмета:', itemData);
+    // console.log('isChoiceAvailable - данные предмета:', itemData);
     
     if (typeof itemData === 'number') {
       // Простой формат: { itemId: number }
       const hasItem = itemData > 0;
-      console.log('isChoiceAvailable - простой формат, количество:', itemData, 'доступен:', hasItem);
+      // console.log('isChoiceAvailable - простой формат, количество:', itemData, 'доступен:', hasItem);
       return hasItem;
     } else if (itemData && typeof itemData === 'object') {
       // Сложный формат: { itemId: { quantity: number, ... } }
@@ -165,37 +166,37 @@ export function isChoiceAvailable(choice, inventory) {
       if (itemData.quantity !== undefined) {
         // Если есть поле quantity, проверяем его
         hasItem = itemData.quantity > 0;
-        console.log('isChoiceAvailable - сложный формат с quantity, количество:', itemData.quantity, 'доступен:', hasItem);
+        // console.log('isChoiceAvailable - сложный формат с quantity, количество:', itemData.quantity, 'доступен:', hasItem);
       } else if (itemData.id) {
         // Если есть поле id, значит предмет существует (количество по умолчанию 1)
         hasItem = true;
-        console.log('isChoiceAvailable - сложный формат с id, предмет существует:', hasItem);
+        // console.log('isChoiceAvailable - сложный формат с id, предмет существует:', hasItem);
       } else {
         // Если объект существует, но нет ни quantity ни id, считаем что предмет есть
         hasItem = true;
-        console.log('isChoiceAvailable - сложный формат без quantity/id, предмет существует:', hasItem);
+        // console.log('isChoiceAvailable - сложный формат без quantity/id, предмет существует:', hasItem);
       }
       
       return hasItem;
     } else {
       // Предмет не найден
-      console.log('isChoiceAvailable - предмет не найден в инвентаре');
+      // console.log('isChoiceAvailable - предмет не найден в инвентаре');
       return false;
     }
   }
 
   // Проверяем требуемый обычный предмет в requirements
   if (choice.requirements && choice.requirements.item) {
-    console.log('isChoiceAvailable - требуется обычный предмет:', choice.requirements.item);
+    // console.log('isChoiceAvailable - требуется обычный предмет:', choice.requirements.item);
     
     // Поддерживаем оба формата инвентаря
     const itemData = inventory[choice.requirements.item];
-    console.log('isChoiceAvailable - данные обычного предмета:', itemData);
+    // console.log('isChoiceAvailable - данные обычного предмета:', itemData);
     
     if (typeof itemData === 'number') {
       // Простой формат: { itemId: number }
       const hasItem = itemData > 0;
-      console.log('isChoiceAvailable - простой формат обычного предмета, количество:', itemData, 'доступен:', hasItem);
+      // console.log('isChoiceAvailable - простой формат обычного предмета, количество:', itemData, 'доступен:', hasItem);
       return hasItem;
     } else if (itemData && typeof itemData === 'object') {
       // Сложный формат: { itemId: { quantity: number, ... } }
@@ -204,28 +205,28 @@ export function isChoiceAvailable(choice, inventory) {
       if (itemData.quantity !== undefined) {
         // Если есть поле quantity, проверяем его
         hasItem = itemData.quantity > 0;
-        console.log('isChoiceAvailable - сложный формат обычного предмета с quantity, количество:', itemData.quantity, 'доступен:', hasItem);
+        // console.log('isChoiceAvailable - сложный формат обычного предмета с quantity, количество:', itemData.quantity, 'доступен:', hasItem);
       } else if (itemData.id) {
         // Если есть поле id, значит предмет существует (количество по умолчанию 1)
         hasItem = true;
-        console.log('isChoiceAvailable - сложный формат обычного предмета с id, предмет существует:', hasItem);
+        // console.log('isChoiceAvailable - сложный формат обычного предмета с id, предмет существует:', hasItem);
       } else {
         // Если объект существует, но нет ни quantity ни id, считаем что предмет есть
         hasItem = true;
-        console.log('isChoiceAvailable - сложный формат обычного предмета без quantity/id, предмет существует:', hasItem);
+        // console.log('isChoiceAvailable - сложный формат обычного предмета без quantity/id, предмет существует:', hasItem);
       }
       
       return hasItem;
     } else {
       // Предмет не найден
-      console.log('isChoiceAvailable - обычный предмет не найден в инвентаре');
+      // console.log('isChoiceAvailable - обычный предмет не найден в инвентаре');
       return false;
     }
   }
 
   // Проверяем требуемый квестовый предмет в requirements
   if (choice.requirements && choice.requirements.questItem) {
-    console.log('isChoiceAvailable - требуется квестовый предмет:', choice.requirements.questItem);
+    // console.log('isChoiceAvailable - требуется квестовый предмет:', choice.requirements.questItem);
     
     // Определяем ID предмета для проверки
     let itemIdToCheck = choice.requirements.questItem;
@@ -233,17 +234,17 @@ export function isChoiceAvailable(choice, inventory) {
     // Если указан конкретный ID квестового предмета, используем его
     if (choice.requirements.questItemId && choice.requirements.questItemId.trim() !== '') {
       itemIdToCheck = choice.requirements.questItemId;
-      console.log('isChoiceAvailable - проверяем конкретный экземпляр квестового предмета:', itemIdToCheck);
+      // console.log('isChoiceAvailable - проверяем конкретный экземпляр квестового предмета:', itemIdToCheck);
     }
     
     // Поддерживаем оба формата инвентаря
     const itemData = inventory[itemIdToCheck];
-    console.log('isChoiceAvailable - данные квестового предмета:', itemData);
+    // console.log('isChoiceAvailable - данные квестового предмета:', itemData);
     
     if (typeof itemData === 'number') {
       // Простой формат: { itemId: number }
       const hasItem = itemData > 0;
-      console.log('isChoiceAvailable - простой формат квестового предмета, количество:', itemData, 'доступен:', hasItem);
+      // console.log('isChoiceAvailable - простой формат квестового предмета, количество:', itemData, 'доступен:', hasItem);
       return hasItem;
     } else if (itemData && typeof itemData === 'object') {
       // Сложный формат: { itemId: { quantity: number, ... } }
@@ -252,21 +253,21 @@ export function isChoiceAvailable(choice, inventory) {
       if (itemData.quantity !== undefined) {
         // Если есть поле quantity, проверяем его
         hasItem = itemData.quantity > 0;
-        console.log('isChoiceAvailable - сложный формат квестового предмета с quantity, количество:', itemData.quantity, 'доступен:', hasItem);
+        // console.log('isChoiceAvailable - сложный формат квестового предмета с quantity, количество:', itemData.quantity, 'доступен:', hasItem);
       } else if (itemData.id) {
         // Если есть поле id, значит предмет существует (количество по умолчанию 1)
         hasItem = true;
-        console.log('isChoiceAvailable - сложный формат квестового предмета с id, предмет существует:', hasItem);
+        // console.log('isChoiceAvailable - сложный формат квестового предмета с id, предмет существует:', hasItem);
       } else {
         // Если объект существует, но нет ни quantity ни id, считаем что предмет есть
         hasItem = true;
-        console.log('isChoiceAvailable - сложный формат квестового предмета без quantity/id, предмет существует:', hasItem);
+        // console.log('isChoiceAvailable - сложный формат квестового предмета без quantity/id, предмет существует:', hasItem);
       }
       
       return hasItem;
     } else {
       // Предмет не найден
-      console.log('isChoiceAvailable - квестовый предмет не найден в инвентаре');
+      // console.log('isChoiceAvailable - квестовый предмет не найден в инвентаре');
       return false;
     }
   }
@@ -274,11 +275,11 @@ export function isChoiceAvailable(choice, inventory) {
   // Проверяем требуемый уровень отношений
   if (choice.requiredRelationship) {
     // Эта логика будет реализована позже
-    console.log('isChoiceAvailable - требуется уровень отношений:', choice.requiredRelationship);
+    // console.log('isChoiceAvailable - требуется уровень отношений:', choice.requiredRelationship);
     return true;
   }
 
-  console.log('isChoiceAvailable - выбор доступен (нет требований)');
+  // console.log('isChoiceAvailable - выбор доступен (нет требований)');
   return true;
 }
 

@@ -34,6 +34,33 @@
   border-bottom: 1px solid #ffdfea;
 }
 
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.back-button-header {
+  background: none;
+  border: none;
+  font-size: 18px;
+  color: #ff8cc6;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+}
+
+.back-button-header:hover {
+  background: rgba(255, 140, 198, 0.1);
+  transform: scale(1.1);
+}
+
 .relationships-header h2 {
   font-size: 24px;
   font-weight: 700;
@@ -236,11 +263,272 @@
   background: #ff6bb5;
 }
 
+/* Стили для дизайна контактов телефона */
+.contacts-style {
+  width: 450px;
+  max-width: 450px;
+  height: 600px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.contacts-style .relationships-header h2 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.contacts-style .relationships-header h2 i {
+  font-size: 20px;
+}
+
+/* Список контактов */
+.contacts-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  padding: 0;
+  height: 100%;
+}
+
+.contact-item {
+  display: flex;
+  align-items: center;
+  padding: 16px 20px;
+  border-bottom: 1px solid #f0f0f0;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background: white;
+}
+
+.contact-item:hover {
+  background: rgba(255, 140, 198, 0.05);
+  transform: translateX(2px);
+}
+
+.contact-item:last-child {
+  border-bottom: none;
+}
+
+.contact-avatar {
+  margin-right: 16px;
+}
+
+.avatar-placeholder {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 700;
+  font-size: 18px;
+  text-transform: uppercase;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.contact-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.contact-name {
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+}
+
+.contact-status {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.contact-chevron {
+  color: #ccc;
+  font-size: 14px;
+}
+
+/* Детальная страница персонажа */
+.character-details {
+  padding: 0;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.character-details-header {
+  display: flex;
+  align-items: center;
+  padding: 20px;
+  border-bottom: 1px solid #f0f0f0;
+  background: linear-gradient(135deg, #fff0f5, #fce4ec);
+  justify-content: center;
+  gap: 16px;
+}
+
+
+
+.avatar-large {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 700;
+  font-size: 24px;
+  text-transform: uppercase;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.character-details-info {
+  flex: 1;
+}
+
+.character-details-name {
+  font-size: 22px;
+  font-weight: 700;
+  color: #333;
+  margin: 0 0 4px 0;
+}
+
+.character-details-status {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+/* Прогресс отношений */
+.relationship-progress {
+  padding: 20px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.relationship-bar-detailed {
+  height: 8px;
+  background: #f0f0f0;
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+
+.relationship-fill-detailed {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+.relationship-value {
+  font-size: 14px;
+  color: #666;
+  text-align: center;
+}
+
+/* Секция важных выборов */
+.important-choices-section {
+  padding: 20px;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.section-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 16px;
+  font-weight: 700;
+  color: #ff8cc6;
+  margin: 0 0 16px 0;
+}
+
+.section-title i {
+  font-size: 14px;
+}
+
+.important-choices-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex-grow: 1;
+  overflow-y: auto;
+}
+
+.choice-entry {
+  background: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  padding: 12px;
+  transition: all 0.2s ease;
+}
+
+.choice-entry:hover {
+  border-color: rgba(255, 140, 198, 0.3);
+  background: rgba(255, 140, 198, 0.05);
+}
+
+.choice-text {
+  font-size: 14px;
+  color: #333;
+  line-height: 1.4;
+  margin-bottom: 8px;
+}
+
+.choice-meta {
+  font-size: 12px;
+  color: #666;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.choice-meta span {
+  background: rgba(255, 140, 198, 0.1);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.no-choices {
+  text-align: center;
+  padding: 40px 20px;
+  color: #999;
+}
+
+.no-choices p {
+  margin: 0;
+  font-style: italic;
+}
+
+/* Скроллбар для списка выборов */
+.important-choices-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.important-choices-list::-webkit-scrollbar-track {
+  background: #f0f0f0;
+  border-radius: 3px;
+}
+
+.important-choices-list::-webkit-scrollbar-thumb {
+  background: #ff8cc6;
+  border-radius: 3px;
+}
+
 /* Адаптивность */
 @media (max-width: 768px) {
   .relationships-window {
     width: 95%;
     max-height: 95vh;
+  }
+  
+  .contacts-style {
+    width: 95%;
+    max-width: 450px;
+    min-width: 350px;
   }
   
   .character-relationship {
@@ -259,5 +547,20 @@
   .relationship-btn {
     flex: 1;
     min-width: 60px;
+  }
+
+  .character-details-header {
+    flex-wrap: wrap;
+    text-align: center;
+  }
+
+  .avatar-large {
+    width: 60px;
+    height: 60px;
+    font-size: 20px;
+  }
+
+  .character-details-name {
+    font-size: 20px;
   }
 } 

@@ -1,11 +1,9 @@
 {
   "id": "scene16_meeting",
+  "chapterId": 1,
   "name": "Знакомство с Дэном - Тайный приглашающий",
   "background": "sprites/episodes/locations/mansion/mansion_room_with_people_11zon.png",
-  "characters": [
-
-   
-  ],
+  "characters": [],
   "dialogue": [
     {
       "speaker": "dan",
@@ -19,24 +17,22 @@
     }
   ],
   "choices": [
-      {
-        "id": "dan_meet",
-        "text": "Кто вы?",
-        "nextScene": "scene16",
-        "effects": {
-          "relationship": {
-            "dan": 10
-          }
-        },
-        "important": true,
-  "value": "true",
-  "description": "Знакомство с Даном",
-  "consequences": ["выбор 1"]
-      }
-  ],
-  "requirements": {},
-  "rewards": {
-    "experience": 0,
-    "coins": 0
-  }
-} 
+    {
+      "id": "dan_meet",
+      "text": "Кто вы?",
+      "nextScene": "scene16",
+      "effects": {
+        "relationship": {
+          "dan": 10
+        }
+      },
+      "important": true,
+      "value": "true",
+      "description": "Знакомство с Даном",
+      "consequences": [
+        "выбор 1"
+      ],
+      "characterId": "dan"
+    }
+  ]
+}

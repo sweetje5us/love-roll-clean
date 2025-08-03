@@ -55,7 +55,18 @@ export const detectRefreshRate = () => {
 
 // Получение нормализованного множителя времени для анимаций
 export const getTimeMultiplier = () => {
-  return frameTimeAverage / 16.67; // Нормализация к 60 FPS
+  // Возвращаем 1.0 для нативной частоты экрана вместо нормализации к 60 FPS
+  return 1.0;
+};
+
+// Получение реального времени кадра для игр
+export const getRealFrameTime = () => {
+  return frameTimeAverage;
+};
+
+// Получение текущей частоты экрана
+export const getCurrentRefreshRate = () => {
+  return detectedRefreshRate;
 };
 
 // Получение адаптированной длительности анимации
@@ -80,18 +91,18 @@ let lastGameFrameTime = 0;
 export const createAdaptiveGameLoop = (gameLogic) => {
   let animationFrame;
   let isRunning = false;
+  let localLastFrameTime = 0;
   
   const loop = (currentTime) => {
     if (!isRunning) return;
     
-    // Вычисляем delta time (время с прошлого кадра)
-    const deltaTime = lastGameFrameTime ? currentTime - lastGameFrameTime : 0;
-    const normalizedDelta = deltaTime / 16.67; // Нормализация к 60 FPS
+    // Вычисляем delta time (время с прошлого кадра в миллисекундах)
+    const deltaTime = localLastFrameTime ? currentTime - localLastFrameTime : 16.67;
     
-    lastGameFrameTime = currentTime;
+    localLastFrameTime = currentTime;
     
-    // Передаём в игровую логику нормализованное время
-    gameLogic(normalizedDelta, deltaTime);
+    // Передаём deltaTime в миллисекундах (без нормализации!)
+    gameLogic(deltaTime);
     
     animationFrame = requestAnimationFrame(loop);
   };
@@ -100,7 +111,8 @@ export const createAdaptiveGameLoop = (gameLogic) => {
     start: () => {
       if (!isRunning) {
         isRunning = true;
-        lastGameFrameTime = 0;
+        localLastFrameTime = 0;
+        console.log(`🎯 Запуск нативного игрового цикла (без ограничений)`);
         animationFrame = requestAnimationFrame(loop);
       }
     },
@@ -115,30 +127,36 @@ export const createAdaptiveGameLoop = (gameLogic) => {
 
 // Адаптивная скорость движения для игр
 export const getAdaptiveSpeed = (baseSpeed) => {
-  // Возвращаем скорость, адаптированную под фактическую частоту кадров
-  const speedMultiplier = 60 / detectedRefreshRate;
-  const result = baseSpeed * speedMultiplier;
-  console.log(`🎯 Адаптация скорости: ${baseSpeed} * (60/${detectedRefreshRate}) = ${result.toFixed(2)}`);
-  return result;
+  // При использовании delta time, базовая скорость должна оставаться неизменной
+  // так как deltaMultiplier уже учитывает частоту кадров
+  return baseSpeed;
 };
 
-// Отключение логирования в продакшн версии (НО оставляем системные логи)
+// Отключение избыточного логирования для производительности
 export const disableLogging = () => {
   if (process.env.NODE_ENV === 'production' || process.env.REACT_APP_ENVIRONMENT === 'production') {
-    // Отключаем console.log в продакшне, НО сохраняем наши системные логи
+    // АГРЕССИВНОЕ отключение логов в продакшне для производительности
     const originalLog = console.log;
+    const originalInfo = console.info;
+    
     console.log = (...args) => {
-      // Пропускаем логи, содержащие маркеры нашей системы адаптации
-      if (args.some(arg => String(arg).includes('🎯') || String(arg).includes('🎨') || String(arg).includes('✅') || String(arg).includes('⚡'))) {
+      // Оставляем только критические системные логи
+      const argString = args.join(' ');
+      if (argString.includes('ОШИБКА') || argString.includes('ERROR') || argString.includes('🚨')) {
         originalLog(...args);
       }
-      // Остальные логи отключаем в продакшне
+      // ВСЕ остальные логи отключаем для производительности
     };
+    
+    console.info = (...args) => {
+      // Отключаем все INFO логи в продакшне
+    };
+    
     console.debug = () => {};
-    console.info = () => {};
-    // Оставляем только ошибки
-    // console.error = console.error;
-    // console.warn = console.warn;
+    
+    // Оставляем только ошибки и предупреждения
+    // console.error остается как есть
+    // console.warn остается как есть
   }
 };
 
@@ -316,7 +334,7 @@ export const optimizeAnimations = async () => {
         --slide-animation: ${fastSlideIn}s;
       }
       
-      * {
+      *:not(.pet-minigame-modal-overlay):not(.pet-minigame-modal-overlay *) {
         transition-duration: var(--base-transition) !important;
         animation-duration: var(--base-animation) !important;
       }
@@ -431,6 +449,23 @@ export const applyAntiFlickerMode = () => {
 export const initializeCordovaOptimizations = async () => {
   console.log('🚀 Инициализация Cordova оптимизаций...');
   
+  // ПРОВЕРКА: Если это веб-браузер (http/https), НЕ применяем НИКАКИХ оптимизаций!
+  const isWebBrowser = document.URL.indexOf('http') !== -1 || document.URL.indexOf('https') !== -1;
+  
+  if (isWebBrowser) {
+    console.log('🌐 Веб-браузер обнаружен - Cordova оптимизации ОТКЛЮЧЕНЫ для максимальной производительности!');
+    // Только определяем частоту экрана для совместимости, но НЕ применяем оптимизации
+    try {
+      await detectRefreshRate();
+      console.log(`🎯 Частота экрана: ${detectedRefreshRate}Hz (БЕЗ оптимизаций)`);
+    } catch (error) {
+      console.warn('⚠️ Ошибка определения частоты экрана:', error);
+      detectedRefreshRate = 60;
+      frameTimeAverage = 16.67;
+    }
+    return; // ВЫХОДИМ БЕЗ ПРИМЕНЕНИЯ ОПТИМИЗАЦИЙ!
+  }
+  
   // Сначала определяем частоту обновления экрана (независимо от Cordova)
   try {
     await detectRefreshRate();
@@ -451,10 +486,11 @@ export const initializeCordovaOptimizations = async () => {
     // await optimizeAnimations(); // ОТКЛЮЧЕНО - конфликтует с анимациями сцен
     optimizeMemory();
     
-    // Минимальные оптимизации без мерцания
+    // СБАЛАНСИРОВАННЫЕ ОПТИМИЗАЦИИ ДЛЯ ПРОИЗВОДИТЕЛЬНОСТИ
     if (typeof window !== 'undefined') {
-      // Только базовая оптимизация тач-устройств
+      // Базовая оптимизация тач-устройств  
       document.documentElement.style.setProperty('--touch-action', 'manipulation');
+      document.body.style.touchAction = 'manipulation';
       
       // Убираем выделение текста для предотвращения мерцания
       document.documentElement.style.setProperty('-webkit-user-select', 'none');
@@ -467,6 +503,8 @@ export const initializeCordovaOptimizations = async () => {
       
       // Автоматическое включение анти-мерцательного режима на проблематичных устройствах
       applyAntiFlickerMode();
+      
+      console.log('✅ Базовые оптимизации применены без перегрузки GPU');
     }
     
     console.log(`✅ Базовые Cordova оптимизации применены (без мерцающих эффектов)`);

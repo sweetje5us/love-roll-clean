@@ -248,32 +248,15 @@ export const updateEpisodeProgress = (episodeId, progress, userProgress = {}) =>
 // Загрузка конфигурации эпизода из его папки
 export const loadEpisodeConfig = async (episodeId) => {
   try {
-    console.log(`loadEpisodeConfig: загружаем конфигурацию для эпизода ${episodeId}`);
-    
     // Принудительно очищаем кэш для персонажей
     await clearEpisodeCharactersCache(episodeId);
     
-    // Загружаем конфигурацию из отдельного файла эпизода с принудительным обновлением кэша
-    const configResponse = await fetch(`/episodes/${episodeId}/config.json?t=${Date.now()}`, {
-      cache: 'no-cache',
-      headers: {
-        'Cache-Control': 'no-cache, no-store, must-revalidate',
-        'Pragma': 'no-cache',
-        'Expires': '0'
-      }
-    });
+    // Загружаем конфигурацию из отдельного файла эпизода
+    const configResponse = await fetch(`/episodes/${episodeId}/config.json`);
     if (!configResponse.ok) {
       throw new Error(`Не удалось загрузить конфигурацию эпизода ${episodeId}`);
     }
     const episodeData = await configResponse.json();
-    
-    console.log(`loadEpisodeConfig: конфигурация загружена для ${episodeId}:`, {
-      id: episodeData.id,
-      name: episodeData.name,
-      preview: episodeData.preview,
-      type: episodeData.type,
-      charactersCount: episodeData.characters ? episodeData.characters.length : 0
-    });
     
     // Инициализируем пустой прогресс
     episodeData.progress = {};

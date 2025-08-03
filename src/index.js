@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
 import './styles/global.css';
+import './styles/mobile-performance.css';
 import { initializeCordovaOptimizations } from './utils/cordovaUtils';
 
 // Асинхронная инициализация с определением частоты экрана

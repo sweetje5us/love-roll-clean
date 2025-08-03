@@ -1,0 +1,104 @@
+/* Оптимизации производительности для мобильных устройств */
+
+/* Базовые оптимизации GPU ускорения */
+@media (max-width: 768px) {
+  /* Включаем hardware acceleration для игровых элементов */
+  .flappybird-game,
+  .doodlejump-game,
+  .crossyroad-game,
+  .zuma-game {
+    will-change: transform;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    perspective: 1000px;
+  }
+
+  /* Оптимизируем изображения в играх */
+  .flappybird-game img,
+  .doodlejump-game img,
+  .crossyroad-game img,
+  .zuma-game img {
+    image-rendering: optimizeSpeed;
+    image-rendering: -webkit-optimize-contrast;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    will-change: transform;
+  }
+
+  /* Упрощаем анимации переходов для основного интерфейса */
+  .fade-enter,
+  .fade-exit {
+    transition: opacity 0.2s ease-in-out !important;
+  }
+
+  .slide-enter,
+  .slide-exit {
+    transition: transform 0.25s ease-in-out !important;
+  }
+
+  /* Оптимизируем рендеринг основного интерфейса */
+  .game-screen,
+  .main-menu,
+  .shop-screen,
+  .collection-screen {
+    contain: layout style paint;
+  }
+
+  /* Упрощаем тени */
+  .modal,
+  .tooltip,
+  .notification {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
+  }
+
+  /* Оптимизируем модальные окна */
+  .modal-overlay {
+    backdrop-filter: blur(2px);
+    background: rgba(0, 0, 0, 0.6) !important;
+  }
+}
+
+/* Дополнительные оптимизации для очень слабых устройств */
+@media (max-width: 480px) {
+  /* Упрощаем интерфейс без отключения анимаций */
+  .game-screen {
+    padding: 12px !important;
+  }
+
+  .dialogue-container {
+    padding: 16px !important;
+    margin: 12px !important;
+  }
+
+  .choices-container {
+    gap: 10px !important;
+  }
+
+  .choice-button {
+    padding: 14px 18px !important;
+    font-size: 15px !important;
+  }
+
+  /* Уменьшаем размеры изображений в интерфейсе */
+  .character-avatar img,
+  .pet-avatar img {
+    max-width: 90px !important;
+    max-height: 90px !important;
+  }
+}
+
+/* Оптимизации для устройств с низким FPS */
+@media (prefers-reduced-motion: reduce) {
+  /* Отключаем только ненужные анимации, но не игровые */
+  .screen-manager .screen-container {
+    transition: none !important;
+  }
+  
+  .pet-avatar img,
+  .character-avatar img,
+  .item-card,
+  .menu-button {
+    animation: none !important;
+    transition: none !important;
+  }
+}

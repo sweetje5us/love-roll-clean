@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<widget id="com.loveroll.game" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+    <name>LoveRoll</name>
+    <description>Love and Roll Visual Novel - Performance Optimized</description>
+    <author email="dev@example.com" href="http://example.com">
+        Your Team
+    </author>
+    <content src="index.html" />
+    <access origin="*" />
+    <allow-intent href="http://*/*" />
+    <allow-intent href="https://*/*" />
+    <platform name="android">
+        <preference name="android-minSdkVersion" value="22" />
+        <preference name="android-targetSdkVersion" value="34" />
+        <preference name="android-compileSdkVersion" value="34" />
+        <preference name="android-buildToolsVersion" value="34.0.0" />
+        <preference name="android-gradleVersion" value="8.0.0" />
+        
+        <!-- МАКСИМАЛЬНЫЕ ОПТИМИЗАЦИИ ПРОИЗВОДИТЕЛЬНОСТИ -->
+        <preference name="android-allowBackup" value="false" />
+        <preference name="android-fullBackupContent" value="false" />
+        <preference name="android-requestLegacyExternalStorage" value="false" />
+        <preference name="android-usesCleartextTraffic" value="false" />
+        
+        <!-- Fullscreen настройки -->
+        <preference name="Fullscreen" value="true" />
+        <preference name="StatusBarOverlaysWebView" value="false" />
+        <preference name="StatusBarBackgroundColor" value="#000000" />
+        <preference name="StatusBarStyle" value="blacktranslucent" />
+        <preference name="SplashScreenDelay" value="0" />
+        <preference name="AutoHideSplashScreen" value="true" />
+        <preference name="HideKeyboardFormAccessoryBar" value="true" />
+        <preference name="DisallowOverscroll" value="true" />
+        
+        <!-- Системная навигация -->
+        <preference name="android-windowSoftInputMode" value="adjustResize" />
+        <preference name="android-hardwareAccelerated" value="true" />
+        <preference name="android-keepRunning" value="false" />
+        
+        <!-- КРИТИЧНЫЕ WebView ОПТИМИЗАЦИИ ДЛЯ ПРОИЗВОДИТЕЛЬНОСТИ -->
+        <preference name="android-allowFileAccess" value="false" />
+        <preference name="android-allowContentAccess" value="false" />
+        <preference name="android-allowFileAccessFromFileURLs" value="false" />
+        <preference name="android-allowUniversalAccessFromFileURLs" value="false" />
+        <preference name="android-mixedContentMode" value="compatibility" />
+        
+        <!-- ДОПОЛНИТЕЛЬНЫЕ ОПТИМИЗАЦИИ -->
+        <preference name="android-usesCleartextTraffic" value="false" />
+        <preference name="android-allowBackup" value="false" />
+        <preference name="android-fullBackupContent" value="false" />
+        <preference name="android-requestLegacyExternalStorage" value="false" />
+        
+        <!-- ОТКЛЮЧЕНИЕ НЕНУЖНЫХ ФУНКЦИЙ -->
+        <preference name="android-allowFileAccess" value="false" />
+        <preference name="android-allowContentAccess" value="false" />
+        <preference name="android-allowFileAccessFromFileURLs" value="false" />
+        <preference name="android-allowUniversalAccessFromFileURLs" value="false" />
+    </platform>
+</widget> 

@@ -97,15 +97,22 @@ echo Copying Font Awesome files...
 xcopy /E /I /Y "%~dp0public\static\css\*" "www\static\css\"
 xcopy /E /I /Y "%~dp0public\static\webfonts\*" "www\static\webfonts\"
 
-REM Создаем оптимизированный index.html для Cordova
-echo Creating optimized index.html for Cordova...
-echo ^<!doctype html^>^<html lang="ru"^>^<head^>^<meta charset="UTF-8"^>^<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"^>^<title^>Love ^& Roll - Визуальная новелла^</title^>^<link rel="stylesheet" href="./static/css/all.css"^>^<meta name="theme-color" content="#ff6b9a"^>^<meta name="apple-mobile-web-app-capable" content="yes"^>^<meta name="apple-mobile-web-app-status-bar-style" content="default"^>^<meta name="format-detection" content="telephone=no"^>^<meta name="msapplication-tap-highlight" content="no"^>^<script defer="defer" src="./static/js/main.0f011f7a.js"^>^</script^>^<link href="./static/css/main.8a598cb7.css" rel="stylesheet"^>^</head^>^<body^>^<noscript^>Для работы приложения необходимо включить JavaScript.^</noscript^>^<div id="root"^>^</div^>^</body^>^</html^> > www\index.html
+REM Адаптируем готовый index.html из React сборки для Cordova
+echo Adapting ready-made index.html from React build for Cordova...
+echo Replacing CDN Font Awesome with local version...
+powershell -Command "(Get-Content 'www\index.html') -replace 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css', './static/css/all.css' | Set-Content 'www\index.html'"
 
-REM Копируем config.xml
-echo Copying config.xml...
-copy /Y "%~dp0config_loveroll_clean.xml" "config.xml"
+echo Improving viewport for mobile...
+powershell -Command "(Get-Content 'www\index.html') -replace 'width=device-width,initial-scale=1', 'width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no' | Set-Content 'www\index.html'"
+
+echo Adding meta tags for Cordova...
+powershell -Command "(Get-Content 'www\index.html') -replace '<meta name=\"apple-mobile-web-app-status-bar-style\" content=\"default\">', '<meta name=\"apple-mobile-web-app-status-bar-style\" content=\"default\"><meta name=\"format-detection\" content=\"telephone=no\"><meta name=\"msapplication-tap-highlight\" content=\"no\">' | Set-Content 'www\index.html'"
+
+REM Копируем config.xml (максимально оптимизированный)
+echo Copying config.xml (performance optimized)...
+copy /Y "%~dp0config_loveroll_performance.xml" "config.xml"
 if %errorlevel% neq 0 (
-    echo Error: Failed to copy config_loveroll_clean.xml to config.xml
+    echo Error: Failed to copy config_loveroll_performance.xml to config.xml
     cd /d "%~dp0"
     pause
     exit /b 1
@@ -137,12 +144,14 @@ echo android.useAndroidX=true> platforms\android\gradle.properties
 echo android.enableJetifier=true>> platforms\android\gradle.properties
 echo android.defaults.buildfeatures.buildconfig=true>> platforms\android\gradle.properties
 echo android.nonTransitiveRClass=true>> platforms\android\gradle.properties
-echo org.gradle.jvmargs=-Xmx4096m -Dfile.encoding=UTF-8 -XX:+UseG1GC -XX:MaxGCPauseMillis=200>> platforms\android\gradle.properties
+echo org.gradle.jvmargs=-Xmx2048m -Dfile.encoding=UTF-8 -XX:+UseG1GC -XX:MaxGCPauseMillis=100 -XX:+UseStringDeduplication>> platforms\android\gradle.properties
 echo org.gradle.daemon=false>> platforms\android\gradle.properties
 echo org.gradle.parallel=true>> platforms\android\gradle.properties
 echo org.gradle.configureondemand=true>> platforms\android\gradle.properties
 echo org.gradle.java.home=%JAVA_HOME:\=\\%>> platforms\android\gradle.properties
 echo android.enableR8.fullMode=true>> platforms\android\gradle.properties
+echo android.enableR8.minification=true>> platforms\android\gradle.properties
+echo android.enableR8.shrinking=true>> platforms\android\gradle.properties
 echo android.suppressUnsupportedCompileSdk=34>> platforms\android\gradle.properties
 
 REM Создаем local.properties с корректным путем к SDK
@@ -178,7 +187,18 @@ if %errorlevel% neq 0 (
 
 REM Настройка WebView для максимальной производительности
 echo Setting up WebView for maximum performance...
-echo ^<?xml version="1.0" encoding="utf-8"?^>^<webview xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent" android:layout_height="match_parent" android:hardwareAccelerated="true" android:layerType="hardware" /^> > platforms\android\app\src\main\res\layout\activity_main.xml
+echo ^<?xml version="1.0" encoding="utf-8"?^>^<webview xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent" android:layout_height="match_parent" android:hardwareAccelerated="true" android:layerType="hardware" android:overScrollMode="never" android:scrollbars="none" /^> > platforms\android\app\src\main\res\layout\activity_main.xml
+
+REM Создаем proguard-rules.pro для максимальной оптимизации
+echo Creating proguard-rules.pro for maximum optimization...
+echo -dontwarn org.apache.cordova.**> platforms\android\app\proguard-rules.pro
+echo -keep class org.apache.cordova.** { *; }>> platforms\android\app\proguard-rules.pro
+echo -keep class com.loveroll.game.** { *; }>> platforms\android\app\proguard-rules.pro
+echo -keepattributes *Annotation*>> platforms\android\app\proguard-rules.pro
+echo -keepattributes SourceFile,LineNumberTable>> platforms\android\app\proguard-rules.pro
+echo -keep class * implements android.os.Parcelable {>> platforms\android\app\proguard-rules.pro
+echo   public static final android.os.Parcelable$Creator *;>> platforms\android\app\proguard-rules.pro
+echo }>> platforms\android\app\proguard-rules.pro
 
 REM Проверяем существование keystore
 if exist "%~dp0%KEYSTORE_NAME%" (
@@ -306,6 +326,12 @@ echo ========================================
 echo Готово! Love Roll APK установлен и запущен.
 echo ========================================
 echo.
+echo ИСПРАВЛЕНИЯ В РЕЛИЗНОЙ ВЕРСИИ:
+echo - ИСПРАВЛЕНО: Убраны захардкоженные имена JS/CSS файлов
+echo - ИСПРАВЛЕНО: Используется готовый index.html из React сборки  
+echo - ИСПРАВЛЕНО: Автоматически подхватываются актуальные имена файлов
+echo - ИСПРАВЛЕНО: Добавлены мета-теги для Cordova оптимизации
+echo.
 echo APK ОПТИМИЗАЦИИ ВКЛЮЧЕНЫ:
 echo - Сборка в режиме RELEASE
 echo - Полностью отключено логирование
@@ -319,6 +345,13 @@ echo - Оптимизированная память
 echo - Аппаратное ускорение включено
 echo - WebView оптимизации для продакшена
 echo - ProGuard правила для Cordova
+echo - КРИТИЧНЫЕ ИСПРАВЛЕНИЯ:
+echo   * android-keepRunning=false (отключен принудительный keep-alive)
+echo   * Снижена память Gradle с 4GB до 2GB
+echo   * Добавлены WebView оптимизации
+echo   * Отключены ненужные файловые разрешения
+echo   * Добавлены ProGuard правила
+echo   * Оптимизированы настройки сборки
 echo.
 echo APK файл: %~dp0%OUTPUT_APK_NAME%
 echo.

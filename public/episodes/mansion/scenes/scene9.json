@@ -1,5 +1,6 @@
 {
   "id": "scene9",
+  "chapterId": 1,
   "name": "Угроза Питеру - Секретный агент",
   "background": "sprites/episodes/locations/mansion/mansion_outside.png",
   "characters": [
@@ -47,12 +48,10 @@
       "important": true,
       "value": "not_met",
       "description": "Не Представляться ",
-      "consequences": ["Выбор 2"]
+      "consequences": [
+        "Выбор 2"
+      ],
+      "characterId": "peter"
     }
-  ],
-  "requirements": {},
-  "rewards": {
-    "experience": 0,
-    "coins": 0
-  }
-} 
+  ]
+}

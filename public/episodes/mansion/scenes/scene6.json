@@ -1,5 +1,6 @@
 {
   "id": "scene6",
+  "chapterId": 1,
   "name": "Критический провал обмана - Владислав Бэйбидонхертми",
   "background": "sprites/episodes/locations/mansion/mansion_outside.png",
   "characters": [
@@ -39,21 +40,18 @@
       "id": "well_met",
       "text": "Я и сам в своем роде полицейский",
       "nextScene": "scene10",
-      
-        "effects": {
-          "relationship": {
-            "peter": -10
-          }
-        },
+      "effects": {
+        "relationship": {
+          "peter": -10
+        }
+      },
       "important": true,
       "value": "met",
       "description": "Представляться ",
-      "consequences": ["Выбор 2"]
+      "consequences": [
+        "Выбор 2"
+      ],
+      "characterId": "peter"
     }
-  ],
-  "requirements": {},
-  "rewards": {
-    "experience": 0,
-    "coins": 0
-  }
-} 
+  ]
+}

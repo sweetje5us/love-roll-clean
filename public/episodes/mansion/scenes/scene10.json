@@ -1,5 +1,6 @@
 {
   "id": "scene10",
+  "chapterId": 1,
   "name": "Допрос Питера - Детектив раскрыт",
   "background": "sprites/episodes/locations/mansion/mansion_outside.png",
   "characters": [
@@ -42,12 +43,10 @@
       "important": true,
       "value": "met",
       "description": "Представиться ",
-      "consequences": ["Выбор 1"]
+      "consequences": [
+        "Выбор 1"
+      ],
+      "characterId": "peter"
     }
-  ],
-  "requirements": {},
-  "rewards": {
-    "experience": 0,
-    "coins": 0
-  }
-} 
+  ]
+}

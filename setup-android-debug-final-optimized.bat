@@ -59,10 +59,10 @@ powershell -Command "(Get-Content 'www\index.html') -replace 'width=device-width
 echo Добавление мета-тегов для Cordova...
 powershell -Command "(Get-Content 'www\index.html') -replace '<meta name=\"apple-mobile-web-app-status-bar-style\" content=\"default\">', '<meta name=\"apple-mobile-web-app-status-bar-style\" content=\"default\"><meta name=\"format-detection\" content=\"telephone=no\"><meta name=\"msapplication-tap-highlight\" content=\"no\">' | Set-Content 'www\index.html'"
 
-echo Копирование config.xml...
-copy /Y "%~dp0config_loveroll_clean.xml" "config.xml" 
+echo Копирование config.xml (максимально оптимизированный)...
+copy /Y "%~dp0config_loveroll_performance.xml" "config.xml" 
 if %errorlevel% neq 0 (
-    echo Ошибка: Не удалось скопировать config_loveroll_clean.xml в config.xml
+    echo Ошибка: Не удалось скопировать config_loveroll_performance.xml в config.xml
     cd /d "%~dp0"
     pause
     exit /b 1
@@ -91,12 +91,14 @@ echo android.useAndroidX=true> platforms\android\gradle.properties
 echo android.enableJetifier=true>> platforms\android\gradle.properties
 echo android.defaults.buildfeatures.buildconfig=true>> platforms\android\gradle.properties
 echo android.nonTransitiveRClass=true>> platforms\android\gradle.properties
-echo org.gradle.jvmargs=-Xmx4096m -Dfile.encoding=UTF-8 -XX:+UseG1GC -XX:MaxGCPauseMillis=200>> platforms\android\gradle.properties
+echo org.gradle.jvmargs=-Xmx2048m -Dfile.encoding=UTF-8 -XX:+UseG1GC -XX:MaxGCPauseMillis=100 -XX:+UseStringDeduplication>> platforms\android\gradle.properties
 echo org.gradle.daemon=false>> platforms\android\gradle.properties
 echo org.gradle.parallel=true>> platforms\android\gradle.properties
 echo org.gradle.configureondemand=true>> platforms\android\gradle.properties
 echo org.gradle.java.home=%JAVA_HOME:\=\\%>> platforms\android\gradle.properties
 echo android.enableR8.fullMode=true>> platforms\android\gradle.properties
+echo android.enableR8.minification=true>> platforms\android\gradle.properties
+echo android.enableR8.shrinking=true>> platforms\android\gradle.properties
 echo android.suppressUnsupportedCompileSdk=34>> platforms\android\gradle.properties
 
 echo Creating local.properties...
@@ -114,7 +116,17 @@ if %errorlevel% neq 0 (
 )
 
 echo Настройка WebView для максимальной производительности...
-echo ^<?xml version="1.0" encoding="utf-8"?^>^<webview xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent" android:layout_height="match_parent" android:hardwareAccelerated="true" android:layerType="hardware" /^> > platforms\android\app\src\main\res\layout\activity_main.xml
+echo ^<?xml version="1.0" encoding="utf-8"?^>^<webview xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent" android:layout_height="match_parent" android:hardwareAccelerated="true" android:layerType="hardware" android:overScrollMode="never" android:scrollbars="none" /^> > platforms\android\app\src\main\res\layout\activity_main.xml
+
+echo Создание proguard-rules.pro для максимальной оптимизации...
+echo -dontwarn org.apache.cordova.**> platforms\android\app\proguard-rules.pro
+echo -keep class org.apache.cordova.** { *; }>> platforms\android\app\proguard-rules.pro
+echo -keep class com.loveroll.game.** { *; }>> platforms\android\app\proguard-rules.pro
+echo -keepattributes *Annotation*>> platforms\android\app\proguard-rules.pro
+echo -keepattributes SourceFile,LineNumberTable>> platforms\android\app\proguard-rules.pro
+echo -keep class * implements android.os.Parcelable {>> platforms\android\app\proguard-rules.pro
+echo   public static final android.os.Parcelable$Creator *;>> platforms\android\app\proguard-rules.pro
+echo }>> platforms\android\app\proguard-rules.pro
 
 echo Сборка приложения...
 call cordova build android --debug
@@ -159,5 +171,12 @@ echo - WebView оптимизации для производительност�
 echo - React Router оптимизации для быстрого переключения экранов
 echo - Оптимизация памяти и сборка мусора
 echo - Аппаратное ускорение включено
+echo - КРИТИЧНЫЕ ИСПРАВЛЕНИЯ:
+echo   * android-keepRunning=false (отключен принудительный keep-alive)
+echo   * Снижена память Gradle с 4GB до 2GB
+echo   * Добавлены WebView оптимизации
+echo   * Отключены ненужные файловые разрешения
+echo   * Добавлены ProGuard правила
+echo   * Оптимизированы настройки сборки
 echo.
 pause 

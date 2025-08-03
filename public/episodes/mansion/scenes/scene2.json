@@ -32,7 +32,8 @@
       "important": true,
       "value": "met",
       "description": "Представиться ",
-      "consequences": ["Выбор 1"]
+      "consequences": ["Выбор 1"],
+      "characterId": "peter"
     },
     {
       "id": "scene1_choice1",

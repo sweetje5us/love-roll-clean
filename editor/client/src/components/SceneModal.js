@@ -311,6 +311,7 @@ const SceneModal = ({
           important: false,
           value: '',
           description: '',
+          characterId: '',
           consequences: [''],
           effects: [],
           diceCheck: null,
@@ -1140,6 +1141,35 @@ const SceneModal = ({
                             value={choice.description}
                             onChange={(e) => updateChoice(index, 'description', e.target.value)}
                             placeholder="Описание важного выбора"
+                          />
+                        </div>
+                      </div>
+                    )}
+                    
+                    {choice.important && (
+                      <div className="form-row">
+                        <div className="form-group">
+                          <label>ID персонажа:</label>
+                          <select
+                            value={choice.characterId || ''}
+                            onChange={(e) => updateChoice(index, 'characterId', e.target.value)}
+                          >
+                            <option value="">Не указан</option>
+                            {episodeCharacters.map(char => (
+                              <option key={char.id} value={char.id}>
+                                {char.name} ({char.id})
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+                        
+                        <div className="form-group">
+                          <label>Или введите вручную:</label>
+                          <input
+                            type="text"
+                            value={choice.characterId || ''}
+                            onChange={(e) => updateChoice(index, 'characterId', e.target.value)}
+                            placeholder="peter, oleg, anna..."
                           />
                         </div>
                       </div>

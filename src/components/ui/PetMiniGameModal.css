@@ -1,3 +1,23 @@
+/* ПРИНУДИТЕЛЬНО ОТКЛЮЧАЕМ ВСЕ АНИМАЦИИ И ОПТИМИЗАЦИИ ДЛЯ МАКСИМАЛЬНОЙ ПРОИЗВОДИТЕЛЬНОСТИ */
+.pet-minigame-modal-overlay,
+.pet-minigame-modal-overlay * {
+  transition: none !important;
+  animation: none !important;
+  transform: none !important;
+  will-change: auto !important;
+  backface-visibility: hidden !important;
+  perspective: 1000px !important;
+  /* Отключаем hardware acceleration который может замедлять на мобильных */
+  transform3d: none !important;
+  /* Принудительное отключение субпиксельного рендеринга */
+  -webkit-font-smoothing: none !important;
+  /* Отключаем touch действия которые могут замедлять */
+  touch-action: none !important;
+  /* Отключаем выделение текста */
+  -webkit-user-select: none !important;
+  user-select: none !important;
+}
+
 .pet-minigame-modal-overlay {
   position: fixed;
   top: 0;
@@ -39,7 +59,7 @@
   font-size: 1.5rem;
   color: #888;
   cursor: pointer;
-  transition: color 0.2s;
+  /* ОТКЛЮЧЕНО: transition: color 0.2s; для максимальной производительности */
 }
 .pet-minigame-modal-close:hover {
   color: #f87171;

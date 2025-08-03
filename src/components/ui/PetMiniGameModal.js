@@ -4,10 +4,14 @@ import { getStaticPath } from '../../utils/pathUtils';
 import './PetMiniGameModal.css';
 import { usePets } from '../../contexts/PetContext';
 import { Joystick } from 'react-joystick-component';
-import { createAdaptiveGameLoop, getAdaptiveSpeed, detectRefreshRate } from '../../utils/cordovaUtils';
+import { getRealFrameTime, getCurrentRefreshRate } from '../../utils/cordovaUtils';
+import { isMobileDevice, getPerformanceSettings, applyMobileOptimizations, autoApplyOptimizations, isWeakDevice } from '../../utils/mobileOptimization';
 
-// Длительность анимаций Zuma (мс)
-const ANIMATION_DURATION = 300;
+// Длительность анимаций Zuma (мс) - уменьшена для мобильных
+const ANIMATION_DURATION = isMobileDevice ? 200 : 300;
+
+// Мобильные настройки производительности
+const MOBILE_SETTINGS = getPerformanceSettings();
 
 const getGameTypeText = (gameType) => {
   switch (gameType) {
@@ -27,11 +31,13 @@ const getGameTypeText = (gameType) => {
 // --- Flappy Bird MiniGame ---
 const GAME_WIDTH = 320;
 const GAME_HEIGHT = 420;
-const GRAVITY = 0.5;
-const JUMP = -7;
+// Константы в единицах "на секунду" (оптимизированы для мобильных)
+const GRAVITY_PER_SECOND = isMobileDevice ? 600 : 600; // возвращаем нормальную гравитацию
+const JUMP_VELOCITY = isMobileDevice ? -240 : -240; // возвращаем нормальную скорость прыжка
+const PIPE_SPEED_PER_SECOND = isMobileDevice ? 120 : 120; // возвращаем нормальную скорость труб
 const PIPE_WIDTH = 48;
-const PIPE_GAP = 160; // увеличено для упрощения игры
-const PIPE_INTERVAL = 1400;
+const PIPE_GAP = 160;
+const PIPE_INTERVAL = isMobileDevice ? 1400 : 1400; // возвращаем нормальный интервал
 const PET_SIZE = 44;
 
 function getRandomPipeY() {
@@ -41,7 +47,7 @@ function getRandomPipeY() {
 // FlappyBirdGame с forwardRef
 const FlappyBirdGame = React.forwardRef(({ petSprite, onClose, petId }, ref) => {
   const { updatePetStats, getPetState } = usePets();
-  const [renderTick, setRenderTick] = useState(0); // только для рендера
+  const [renderTick, setRenderTick] = useState(0);
   const [score, setScore] = useState(0);
   const [gameOver, setGameOver] = useState(false);
   const [started, setStarted] = useState(false);
@@ -55,9 +61,8 @@ const FlappyBirdGame = React.forwardRef(({ petSprite, onClose, petId }, ref) => 
 
   // Управление прыжком
   const jump = () => {
-    console.log('FlappyBirdGame: jump');
     if (!started) setStarted(true);
-    if (!gameOver) velocity.current = JUMP;
+    if (!gameOver) velocity.current = JUMP_VELOCITY;
   };
 
   // Обработка клавиш
@@ -72,23 +77,40 @@ const FlappyBirdGame = React.forwardRef(({ petSprite, onClose, petId }, ref) => 
     return () => window.removeEventListener('keydown', handleKey);
   });
 
-  // Основной игровой цикл с адаптацией под частоту экрана
+  // ОПТИМИЗИРОВАННЫЙ игровой цикл для мобильных
   useEffect(() => {
     if (gameOver) return;
+    let frame;
+    let frameCount = 0;
+    let lastTime = performance.now();
+    let animationFrameCount = 0; // счетчик для пропуска кадров анимации
     
-    // Адаптивные скорости (базовые значения для 60 FPS)
-    const ADAPTIVE_PIPE_SPEED = getAdaptiveSpeed(2); // базовая скорость 2 пикселя/кадр
-    const ADAPTIVE_GRAVITY = getAdaptiveSpeed(GRAVITY);
+    // Мобильная оптимизация
+    if (isMobileDevice) {
+      const gameCanvas = document.querySelector('.flappybird-game');
+      if (gameCanvas) {
+        gameCanvas.style.willChange = 'transform';
+        gameCanvas.style.transform = 'translateZ(0)';
+        gameCanvas.style.backfaceVisibility = 'hidden';
+      }
+    }
     
-    const gameLoop = createAdaptiveGameLoop((deltaMultiplier) => {
+    const loop = (currentTime) => {
       if (!started) {
-        setRenderTick(t => t + 1);
+        frame = requestAnimationFrame(loop);
         return;
       }
       
-      // Физика питомца с учетом delta time
-      velocity.current += ADAPTIVE_GRAVITY * deltaMultiplier;
-      petY.current += velocity.current * deltaMultiplier;
+      const deltaTime = currentTime - lastTime;
+      lastTime = currentTime;
+      
+      // Мобильная оптимизация: ограничиваем deltaTime
+      const clampedDeltaTime = Math.min(deltaTime, MOBILE_SETTINGS.maxDeltaTime);
+      const deltaTimeSeconds = clampedDeltaTime / 1000;
+      
+      // Физика питомца с deltaTime
+      velocity.current += GRAVITY_PER_SECOND * deltaTimeSeconds;
+      petY.current += velocity.current * deltaTimeSeconds;
       
       if (petY.current < 0) {
         petY.current = 0;
@@ -99,21 +121,29 @@ const FlappyBirdGame = React.forwardRef(({ petSprite, onClose, petId }, ref) => 
         velocity.current = 0;
       }
       
-      // Движение труб с адаптивной скоростью
-      pipes.current = pipes.current.map(pipe => ({ 
-        ...pipe, 
-        x: pipe.x - (ADAPTIVE_PIPE_SPEED * deltaMultiplier)
-      }));
-      pipes.current = pipes.current.filter(pipe => pipe.x + PIPE_WIDTH > 0);
-      
-      // Добавление новых труб
-      if (Date.now() - lastPipeTime.current > PIPE_INTERVAL) {
-        pipes.current.push({
-          x: GAME_WIDTH,
-          y: getRandomPipeY(),
-          passed: false
-        });
-        lastPipeTime.current = Date.now();
+      // ОПТИМИЗИРОВАННОЕ движение труб - только каждый N-й кадр на мобильных
+      animationFrameCount++;
+      if (animationFrameCount % MOBILE_SETTINGS.animationThrottle === 0) {
+        const pipeMovement = PIPE_SPEED_PER_SECOND * deltaTimeSeconds;
+        
+        for (let i = pipes.current.length - 1; i >= 0; i--) {
+          const pipe = pipes.current[i];
+          pipe.x -= pipeMovement;
+          
+          if (pipe.x + PIPE_WIDTH <= 0) {
+            pipes.current.splice(i, 1);
+          }
+        }
+        
+        // Добавление новых труб
+        if (Date.now() - lastPipeTime.current > PIPE_INTERVAL) {
+          pipes.current.push({
+            x: GAME_WIDTH,
+            y: getRandomPipeY(),
+            passed: false
+          });
+          lastPipeTime.current = Date.now();
+        }
       }
       
       // Проверка столкновений
@@ -132,21 +162,24 @@ const FlappyBirdGame = React.forwardRef(({ petSprite, onClose, petId }, ref) => 
         return;
       }
       
-      // Подсчёт очков
-      pipes.current = pipes.current.map(pipe => {
+      // ОПТИМИЗИРОВАННЫЙ подсчёт очков
+      for (let i = 0; i < pipes.current.length; i++) {
+        const pipe = pipes.current[i];
         if (!pipe.passed && pipe.x + PIPE_WIDTH < 60) {
+          pipe.passed = true;
           setScore(s => s + 1);
-          return { ...pipe, passed: true };
         }
-        return pipe;
-      });
+      }
       
-      setRenderTick(t => t + 1); // триггерим рендер
-    });
-    
-    gameLoop.start();
-    return () => gameLoop.stop();
-    // eslint-disable-next-line
+      // МОБИЛЬНАЯ ОПТИМИЗАЦИЯ: уменьшенная частота re-render
+      frameCount++;
+      if (frameCount % MOBILE_SETTINGS.renderInterval === 0) {
+        setRenderTick(t => t + 1);
+      }
+      frame = requestAnimationFrame(loop);
+    };
+    frame = requestAnimationFrame(loop);
+    return () => cancelAnimationFrame(frame);
   }, [started, gameOver]);
 
   // Начисление счастья после завершения игры
@@ -167,7 +200,6 @@ const FlappyBirdGame = React.forwardRef(({ petSprite, onClose, petId }, ref) => 
         { x: GAME_WIDTH, y: getRandomPipeY(), passed: false }
       ];
     }
-    // eslint-disable-next-line
   }, [started]);
 
   // Сброс игры
@@ -203,7 +235,8 @@ const FlappyBirdGame = React.forwardRef(({ petSprite, onClose, petId }, ref) => 
           zIndex: 2,
           userSelect: 'none',
           pointerEvents: 'none',
-          transform: 'scaleX(-1)', // отзеркаливание по горизонтали
+          transform: 'scaleX(-1)',
+          willChange: 'transform', // мобильная оптимизация
         }}
       />
       {/* Трубы */}
@@ -219,6 +252,7 @@ const FlappyBirdGame = React.forwardRef(({ petSprite, onClose, petId }, ref) => 
             background: '#38bdf8',
             borderRadius: 8,
             border: '2px solid #0284c7',
+            willChange: 'transform', // мобильная оптимизация
           }} />
           {/* Нижняя труба */}
           <div style={{
@@ -230,6 +264,7 @@ const FlappyBirdGame = React.forwardRef(({ petSprite, onClose, petId }, ref) => 
             background: '#38bdf8',
             borderRadius: 8,
             border: '2px solid #0284c7',
+            willChange: 'transform', // мобильная оптимизация
           }} />
         </React.Fragment>
       ))}
@@ -285,9 +320,10 @@ const DJ_PET_SIZE = 44;
 const DJ_PLATFORM_WIDTH = 60;
 const DJ_PLATFORM_HEIGHT = 12;
 const DJ_PLATFORM_COUNT = 8;
-const DJ_GRAVITY = 0.25;
-const DJ_JUMP_VELOCITY = -7.5;
-const DJ_MOVE_SPEED = 4;
+// Константы в единицах "на секунду" (оптимизированы для мобильных)
+const DJ_GRAVITY_PER_SECOND = isMobileDevice ? 400 : 400; // возвращаем нормальную гравитацию
+const DJ_JUMP_VELOCITY = isMobileDevice ? -300 : -300; // возвращаем нормальную скорость прыжка
+const DJ_MOVE_SPEED_PER_SECOND = isMobileDevice ? 240 : 240; // возвращаем нормальную скорость движения
 
 function getRandomPlatformX() {
   return Math.random() * (DJ_WIDTH - DJ_PLATFORM_WIDTH);
@@ -329,24 +365,46 @@ const DoodleJumpGame = ({ petSprite, onClose, petId }) => {
     };
   }, []);
 
-  // Основной игровой цикл
+  // ОПТИМИЗИРОВАННЫЙ игровой цикл для мобильных
   useEffect(() => {
     if (gameOver) return;
     let frame;
-    const loop = () => {
+    let frameCount = 0;
+    let lastTime = performance.now();
+    let animationFrameCount = 0; // счетчик для пропуска кадров анимации
+    
+    // Мобильная оптимизация
+    if (isMobileDevice) {
+      const gameCanvas = document.querySelector('.doodlejump-game');
+      if (gameCanvas) {
+        gameCanvas.style.willChange = 'transform';
+        gameCanvas.style.transform = 'translateZ(0)';
+        gameCanvas.style.backfaceVisibility = 'hidden';
+      }
+    }
+    
+    const loop = (currentTime) => {
       if (!started) {
-        setRenderTick(t => t + 1);
         frame = requestAnimationFrame(loop);
         return;
       }
-      // Движение по горизонтали
+      
+      const deltaTime = currentTime - lastTime;
+      lastTime = currentTime;
+      // Мобильная оптимизация: ограничиваем deltaTime
+      const clampedDeltaTime = Math.min(deltaTime, MOBILE_SETTINGS.maxDeltaTime);
+      const deltaTimeSeconds = clampedDeltaTime / 1000;
+      
+      // Движение по горизонтали с deltaTime
       const currentMoveDir = window.doodleJumpMoveDir || moveDir.current;
-      petX.current += currentMoveDir * DJ_MOVE_SPEED;
+      petX.current += currentMoveDir * DJ_MOVE_SPEED_PER_SECOND * deltaTimeSeconds;
       if (petX.current < 0) petX.current = 0;
       if (petX.current > DJ_WIDTH - DJ_PET_SIZE) petX.current = DJ_WIDTH - DJ_PET_SIZE;
-      // Гравитация
-      velocityY.current += DJ_GRAVITY;
-      petY.current += velocityY.current;
+      
+      // Гравитация с deltaTime
+      velocityY.current += DJ_GRAVITY_PER_SECOND * deltaTimeSeconds;
+      petY.current += velocityY.current * deltaTimeSeconds;
+      
       // Прыжок от платформ и начисление очков только за новые платформы
       for (let plat of platforms.current) {
         if (
@@ -364,29 +422,55 @@ const DoodleJumpGame = ({ petSprite, onClose, petId }) => {
           break;
         }
       }
-      // Движение платформ вниз, если питомец поднимается выше середины
-      if (petY.current < DJ_HEIGHT / 2) {
-        const diff = DJ_HEIGHT / 2 - petY.current;
-        petY.current = DJ_HEIGHT / 2;
-        platforms.current = platforms.current.map(plat => ({ ...plat, y: plat.y + diff }));
-        maxY.current -= diff;
-        // Добавляем платформы
-        while (platforms.current.length < DJ_PLATFORM_COUNT) {
-          const lastY = Math.min(...platforms.current.map(p => p.y));
-          platforms.current.push({
-            x: getRandomPlatformX(),
-            y: lastY - 60 - Math.random() * 30
-          });
+      
+      // ОПТИМИЗИРОВАННОЕ движение платформ - только каждый N-й кадр на мобильных
+      animationFrameCount++;
+      if (animationFrameCount % MOBILE_SETTINGS.animationThrottle === 0) {
+        // Движение платформ вниз, если питомец поднимается выше середины
+        if (petY.current < DJ_HEIGHT / 2) {
+          const diff = DJ_HEIGHT / 2 - petY.current;
+          petY.current = DJ_HEIGHT / 2;
+          maxY.current -= diff;
+          
+          // ОПТИМИЗИРОВАННОЕ движение платформ - изменяем in-place
+          for (let i = 0; i < platforms.current.length; i++) {
+            platforms.current[i].y += diff;
+          }
+          
+          // Добавляем платформы (оптимизированный поиск минимального Y)
+          while (platforms.current.length < DJ_PLATFORM_COUNT) {
+            let minY = platforms.current[0]?.y || 0;
+            for (let i = 1; i < platforms.current.length; i++) {
+              if (platforms.current[i].y < minY) {
+                minY = platforms.current[i].y;
+              }
+            }
+            platforms.current.push({
+              x: getRandomPlatformX(),
+              y: minY - 60 - Math.random() * 30
+            });
+          }
+          
+          // ОПТИМИЗИРОВАННОЕ удаление платформ - splice вместо filter
+          for (let i = platforms.current.length - 1; i >= 0; i--) {
+            if (platforms.current[i].y >= DJ_HEIGHT) {
+              platforms.current.splice(i, 1);
+            }
+          }
         }
-        // Удаляем ушедшие платформы
-        platforms.current = platforms.current.filter(plat => plat.y < DJ_HEIGHT);
       }
+      
       // Game over если упал вниз
       if (petY.current > DJ_HEIGHT) {
         setGameOver(true);
         return;
       }
-      setRenderTick(t => t + 1);
+      
+      // МОБИЛЬНАЯ ОПТИМИЗАЦИЯ: уменьшенная частота re-render
+      frameCount++;
+      if (frameCount % MOBILE_SETTINGS.renderInterval === 0) {
+        setRenderTick(t => t + 1);
+      }
       frame = requestAnimationFrame(loop);
     };
     frame = requestAnimationFrame(loop);
@@ -481,6 +565,7 @@ const DoodleJumpGame = ({ petSprite, onClose, petId }) => {
           zIndex: 2,
           userSelect: 'none',
           pointerEvents: 'none',
+          willChange: 'transform', // мобильная оптимизация
         }}
       />
       {/* Платформы */}
@@ -494,6 +579,7 @@ const DoodleJumpGame = ({ petSprite, onClose, petId }) => {
           background: '#fde047',
           borderRadius: 6,
           border: '2px solid #facc15',
+          willChange: 'transform', // мобильная оптимизация
         }} />
       ))}
       {/* Счёт */}
@@ -550,7 +636,8 @@ const CR_LANE_HEIGHT = 48;
 const CR_LANE_COUNT = 7;
 const CR_OBSTACLE_WIDTH = 60;
 const CR_OBSTACLE_HEIGHT = 36;
-const CR_OBSTACLE_SPEED = 2.5;
+// Константы теперь в единицах "на секунду" (оптимизированы для мобильных)
+const CR_OBSTACLE_SPEED_PER_SECOND = isMobileDevice ? 150 : 150; // возвращаем нормальную скорость препятствий
 
 function getRandomObstacleX() {
   return Math.random() * (CR_WIDTH - CR_OBSTACLE_WIDTH);
@@ -592,24 +679,40 @@ const CrossyRoadGame = ({ petSprite, onClose, petId }) => {
     };
   }, []);
 
-  // Основной игровой цикл с адаптацией под частоту экрана
+  // ОПТИМИЗИРОВАННЫЙ игровой цикл для мобильных
   useEffect(() => {
     if (gameOver || win) return;
+    let frame;
+    let frameCount = 0;
+    let lastTime = performance.now();
+    let animationFrameCount = 0; // счетчик для пропуска кадров анимации
+    const baseObstacleSpeed = CR_OBSTACLE_SPEED_PER_SECOND + (level - 1) * 42; // 42 = 0.7 * 60 FPS
     
-    // Адаптивные скорости (базовые значения для 60 FPS)
-    const ADAPTIVE_PET_SPEED = getAdaptiveSpeed(5); // базовая скорость 5 пикселей/кадр
-    const baseObstacleSpeed = CR_OBSTACLE_SPEED + (level - 1) * 0.7;
-    const ADAPTIVE_OBSTACLE_SPEED = getAdaptiveSpeed(baseObstacleSpeed);
+    // Мобильная оптимизация
+    if (isMobileDevice) {
+      const gameCanvas = document.querySelector('.crossyroad-game');
+      if (gameCanvas) {
+        gameCanvas.style.willChange = 'transform';
+        gameCanvas.style.transform = 'translateZ(0)';
+        gameCanvas.style.backfaceVisibility = 'hidden';
+      }
+    }
     
-    const gameLoop = createAdaptiveGameLoop((deltaMultiplier) => {
+    const loop = (currentTime) => {
       if (!started) {
-        setRenderTick(t => t + 1);
+        frame = requestAnimationFrame(loop);
         return;
       }
       
-      // Движение питомца по горизонтали с адаптивной скоростью
+      const deltaTime = currentTime - lastTime;
+      lastTime = currentTime;
+      // Мобильная оптимизация: ограничиваем deltaTime
+      const clampedDeltaTime = Math.min(deltaTime, MOBILE_SETTINGS.maxDeltaTime);
+      const deltaTimeSeconds = clampedDeltaTime / 1000;
+      
+      // Движение питомца по горизонтали с deltaTime
       const currentMoveDir = window.crossyMoveDir || moveDir.current;
-      petX.current += currentMoveDir * ADAPTIVE_PET_SPEED * deltaMultiplier;
+      petX.current += currentMoveDir * 300 * deltaTimeSeconds; // 300 пикселей в секунду
       if (petX.current < 0) petX.current = 0;
       if (petX.current > CR_WIDTH - CR_PET_SIZE) petX.current = CR_WIDTH - CR_PET_SIZE;
       
@@ -626,21 +729,34 @@ const CrossyRoadGame = ({ petSprite, onClose, petId }) => {
         moveForward.current = false;
       }
       
-      // Движение препятствий с адаптивной скоростью
-      obstacles.current = obstacles.current.map(obs => {
-        let newX = obs.x + obs.dir * ADAPTIVE_OBSTACLE_SPEED * deltaMultiplier;
-        if (newX < -CR_OBSTACLE_WIDTH) newX = CR_WIDTH;
-        if (newX > CR_WIDTH) newX = -CR_OBSTACLE_WIDTH;
-        return { ...obs, x: newX };
-      });
+      // ОПТИМИЗИРОВАННОЕ движение препятствий - только каждый N-й кадр на мобильных
+      animationFrameCount++;
+      if (animationFrameCount % MOBILE_SETTINGS.animationThrottle === 0) {
+        for (let i = 0; i < obstacles.current.length; i++) {
+          const obs = obstacles.current[i];
+          obs.x += obs.dir * baseObstacleSpeed * deltaTimeSeconds;
+          if (obs.x < -CR_OBSTACLE_WIDTH) obs.x = CR_WIDTH;
+          if (obs.x > CR_WIDTH) obs.x = -CR_OBSTACLE_WIDTH;
+        }
+      }
       
-      // Проверка столкновений
-      for (let obs of obstacles.current) {
+      // ОПТИМИЗИРОВАННАЯ проверка столкновений - только для близких препятствий
+      const petLeft = petX.current;
+      const petRight = petX.current + CR_PET_SIZE;
+      const petTop = petY.current;
+      const petBottom = petY.current + CR_PET_SIZE;
+      
+      for (let i = 0; i < obstacles.current.length; i++) {
+        const obs = obstacles.current[i];
+        // Быстрая проверка - только если препятствие на той же высоте (±1 полоса)
+        if (Math.abs(obs.y - petY.current) > CR_LANE_HEIGHT) continue;
+        
+        // Точная проверка столкновения
         if (
-          petY.current < obs.y + CR_OBSTACLE_HEIGHT &&
-          petY.current + CR_PET_SIZE > obs.y &&
-          petX.current < obs.x + CR_OBSTACLE_WIDTH &&
-          petX.current + CR_PET_SIZE > obs.x
+          petTop < obs.y + CR_OBSTACLE_HEIGHT &&
+          petBottom > obs.y &&
+          petLeft < obs.x + CR_OBSTACLE_WIDTH &&
+          petRight > obs.x
         ) {
           setGameOver(true);
           return;
@@ -654,11 +770,15 @@ const CrossyRoadGame = ({ petSprite, onClose, petId }) => {
         return;
       }
       
-      setRenderTick(t => t + 1);
-    });
-    
-    gameLoop.start();
-    return () => gameLoop.stop();
+      // МОБИЛЬНАЯ ОПТИМИЗАЦИЯ: уменьшенная частота re-render
+      frameCount++;
+      if (frameCount % MOBILE_SETTINGS.renderInterval === 0) {
+        setRenderTick(t => t + 1);
+      }
+      frame = requestAnimationFrame(loop);
+    };
+    frame = requestAnimationFrame(loop);
+    return () => cancelAnimationFrame(frame);
   }, [started, gameOver, win, level]);
 
   // Начисление счастья за победу и переход на следующий уровень
@@ -766,7 +886,8 @@ const CrossyRoadGame = ({ petSprite, onClose, petId }) => {
           background: '#64748b',
           borderRadius: 8,
           border: '2px solid #334155',
-          zIndex: 2
+          zIndex: 2,
+          willChange: 'transform', // мобильная оптимизация
         }} />
       ))}
       {/* Питомец */}
@@ -782,6 +903,7 @@ const CrossyRoadGame = ({ petSprite, onClose, petId }) => {
           zIndex: 3,
           userSelect: 'none',
           pointerEvents: 'none',
+          willChange: 'transform', // мобильная оптимизация
         }}
       />
       {/* Победа */}
@@ -832,7 +954,7 @@ const CrossyRoadGame = ({ petSprite, onClose, petId }) => {
         </div>
       )}
       {/* Уровень и кнопка следующий уровень */}
-      <div style={{ position: 'absolute', top: 10, left: 10, color: '#fff', fontWeight: 'bold', fontSize: 18 }}>
+      <div style={{ position: 'absolute', top: 10, left: 10, color: '#fff', fontWeight: 'bold', fontSize: 18, zIndex: 15 }}>
         Уровень: {level}
       </div>
       {/* Не показываем стандартный оверлей победы и кнопку "заново" для Zuma, переход к следующему уровню автоматический */}
@@ -846,12 +968,13 @@ const ZUMA_WIDTH = 320;
 const ZUMA_HEIGHT = 420;
 const ZUMA_PET_SIZE = 44;
 const ZUMA_BALL_RADIUS = 16;
-const ZUMA_BALL_COLORS = ['#60a5fa', '#fbbf24', '#f87171', '#34d399'];
+const ZUMA_BALL_COLORS = ['blue', 'orange', 'red', 'green'];
 function getRandomBallColor() {
   return ZUMA_BALL_COLORS[Math.floor(Math.random() * ZUMA_BALL_COLORS.length)];
 }
 const ZUMA_CHAIN_LENGTH = 16;
-const ZUMA_CHAIN_SPEED = 0.4;
+// Константы теперь в единицах "на секунду" (оптимизированы для мобильных)
+const ZUMA_CHAIN_SPEED_PER_SECOND = isMobileDevice ? 24 : 24; // возвращаем нормальную скорость цепочки
 const ZUMA_BALL_SPACING = ZUMA_BALL_RADIUS * 2 - 2; // уменьшенное расстояние между центрами шаров
 // Адаптивный зигзагообразный путь внутри контейнера
 const PADDING_X = 30;
@@ -902,6 +1025,195 @@ function getPointOnPath(path, t) {
   return { ...path[path.length - 1] };
 }
 
+// --- Zuma Sprite System ---
+const ZUMA_SPRITES = {
+  blue: {
+    sawShark: {
+      src: 'sprites/minigames/zuma/blue/SawShark.png',
+      frames: 8,
+      width: 384,
+      height: 64,
+      frameWidth: 48,
+      frameHeight: 32,
+      rows: 2
+    },
+    seaAngler: {
+      src: 'sprites/minigames/zuma/blue/SeaAngler.png',
+      frames: 8,
+      width: 256,
+      height: 64,
+      frameWidth: 32,
+      frameHeight: 32,
+      rows: 2
+    },
+    shark: {
+      src: 'sprites/minigames/zuma/blue/Shark.png',
+      frames: 8,
+      width: 256,
+      height: 64,
+      frameWidth: 32,
+      frameHeight: 32,
+      rows: 2
+    }
+  },
+  green: {
+    green: {
+      src: 'sprites/minigames/zuma/green/Green.png',
+      frames: 8,
+      width: 256,
+      height: 64,
+      frameWidth: 32,
+      frameHeight: 16,
+      rows: 4
+    }
+  },
+  orange: {
+    orange1: {
+      src: 'sprites/minigames/zuma/orange/1.png',
+      frames: 8,
+      width: 128,
+      height: 64,
+      frameWidth: 16,
+      frameHeight: 16,
+      rows: 4
+    },
+    orange2: {
+      src: 'sprites/minigames/zuma/orange/2.png',
+      frames: 8,
+      width: 256,
+      height: 64,
+      frameWidth: 32,
+      frameHeight: 16,
+      rows: 4
+    },
+    orange3: {
+      src: 'sprites/minigames/zuma/orange/3.png',
+      frames: 8,
+      width: 256,
+      height: 64,
+      frameWidth: 32,
+      frameHeight: 16,
+      rows: 4
+    }
+  },
+  pink: {
+    pink1: {
+      src: 'sprites/minigames/zuma/pink/1.png',
+      frames: 8,
+      width: 128,
+      height: 64,
+      frameWidth: 16,
+      frameHeight: 16,
+      rows: 4
+    }
+  },
+  purple: {
+    purple1: {
+      src: 'sprites/minigames/zuma/purple/1.png',
+      frames: 8,
+      width: 128,
+      height: 64,
+      frameWidth: 16,
+      frameHeight: 16,
+      rows: 4
+    },
+    purple2: {
+      src: 'sprites/minigames/zuma/purple/2.png',
+      frames: 8,
+      width: 256,
+      height: 64,
+      frameWidth: 32,
+      frameHeight: 16,
+      rows: 4
+    }
+  },
+  red: {
+    red1: {
+      src: 'sprites/minigames/zuma/red/1.png',
+      frames: 8,
+      width: 128,
+      height: 64,
+      frameWidth: 16,
+      frameHeight: 16,
+      rows: 4
+    },
+    red2: {
+      src: 'sprites/minigames/zuma/red/2.png',
+      frames: 8,
+      width: 256,
+      height: 64,
+      frameWidth: 32,
+      frameHeight: 16,
+      rows: 4
+    }
+  }
+};
+
+// Функция для получения случайного спрайта по цвету
+function getRandomSpriteForColor(color) {
+  const colorSprites = ZUMA_SPRITES[color];
+  if (!colorSprites) return null;
+  
+  const spriteNames = Object.keys(colorSprites);
+  const randomSpriteName = spriteNames[Math.floor(Math.random() * spriteNames.length)];
+  const sprite = colorSprites[randomSpriteName];
+  
+  // Добавляем случайный ряд для спрайтов с несколькими рядами
+  if (sprite.rows && sprite.rows > 1) {
+    const randomRow = Math.floor(Math.random() * sprite.rows);
+    return { ...sprite, currentRow: randomRow };
+  }
+  
+  return sprite;
+}
+
+// Функция для создания шара с фиксированным спрайтом
+function createBallWithSprite(color) {
+  const sprite = getRandomSpriteForColor(color);
+  return {
+    color: color,
+    sprite: sprite,
+    animationOffset: Math.floor(Math.random() * 8) // Случайное смещение анимации
+  };
+}
+
+// Функция для определения направления движения шара на основе его позиции на пути
+function getBallDirection(t) {
+  // Определяем, на каком сегменте пути находится шар
+  const { segLens, total } = getPathSegments(ZUMA_PATH);
+  let dist = t * total;
+  let segmentIndex = 0;
+  
+  for (let i = 0; i < segLens.length; i++) {
+    if (dist <= segLens[i]) {
+      segmentIndex = i;
+      break;
+    }
+    dist -= segLens[i];
+  }
+  
+  // Определяем направление сегмента
+  const segment = ZUMA_PATH[segmentIndex + 1];
+  const prevSegment = ZUMA_PATH[segmentIndex];
+  return segment.x > prevSegment.x ? 1 : -1; // 1 = вправо, -1 = влево
+}
+
+// Функция для получения CSS для анимированного спрайта
+function getSpriteStyle(sprite, currentFrame = 0, row = 0) {
+  if (!sprite) return {};
+  
+  const frameX = currentFrame * sprite.frameWidth;
+  const frameY = row * sprite.frameHeight;
+  return {
+    backgroundImage: `url(${getStaticPath(sprite.src)})`,
+    backgroundPosition: `-${frameX}px -${frameY}px`,
+    backgroundSize: `${sprite.width}px ${sprite.height}px`,
+    width: `${sprite.frameWidth}px`,
+    height: `${sprite.frameHeight}px`,
+    backgroundRepeat: 'no-repeat'
+  };
+}
+
 // ZumaGame с forwardRef
 const ZumaGame = React.forwardRef(({ petSprite, onClose, petId }, ref) => {
   const { updatePetStats, getPetState } = usePets();
@@ -911,7 +1223,7 @@ const ZumaGame = React.forwardRef(({ petSprite, onClose, petId }, ref) => {
   const [rewarded, setRewarded] = useState(false);
   const [started, setStarted] = useState(false);
   const [score, setScore] = useState(0);
-  const [animations, setAnimations] = useState([]); // [{type, index, start, end, startTime}]
+  const [animations, setAnimations] = useState([]);
   const [level, setLevel] = useState(1);
   // параметры, зависящие от уровня
   const BASE_CHAIN_LENGTH = 12;
@@ -925,7 +1237,7 @@ const ZumaGame = React.forwardRef(({ petSprite, onClose, petId }, ref) => {
   const speed = Math.min(BASE_SPEED * (1 + 0.05 * (level - 1)), MAX_SPEED);
 
   const ZUMA_CHAIN_LENGTH = chainLength;
-  const ZUMA_CHAIN_SPEED = speed;
+  const ZUMA_CHAIN_SPEED = speed * 60; // конвертируем скорость "на кадр" в "на секунду"
   const ROWS = rows;
 
   // refs для физики
@@ -935,7 +1247,10 @@ const ZumaGame = React.forwardRef(({ petSprite, onClose, petId }, ref) => {
   const chain = useRef([]); // [{t, color}]
   const shot = useRef(null); // {x, y, dx, dy, color}
   const chainHeadT = useRef(0); // прогресс головы цепочки (0..1)
-  const [nextBallColor, setNextBallColor] = useState(getRandomBallColor());
+  const [nextBall, setNextBall] = useState(() => {
+    const color = getRandomBallColor();
+    return createBallWithSprite(color);
+  });
   // ref для позиции головы цепочки (в пикселях по длине пути)
   const headDistRef = useRef(0);
   const [joystickActive, setJoystickActive] = useState(false);
@@ -948,10 +1263,78 @@ const ZumaGame = React.forwardRef(({ petSprite, onClose, petId }, ref) => {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
+  // Переменные для анимации 2-го слоя фона
+  const [layer2Position, setLayer2Position] = useState(0);
+  const [layer2DirectionState, setLayer2DirectionState] = useState(-1); // Состояние для React
+  const layer2Speed = 20; // пикселей в секунду
+  const layer2Ref = useRef(null); // Ref для прямого управления DOM
+  
+  // Состояние для анимации спрайтов
+  const [spriteFrame, setSpriteFrame] = useState(0);
+  const [spriteAnimationTime, setSpriteAnimationTime] = useState(0);
+  const [ballAnimationOffsets, setBallAnimationOffsets] = useState({});
+  const [ballRefs, setBallRefs] = useState({});
+
+  // Простая анимация для 2-го слоя фона
+  useEffect(() => {
+    let frame;
+    let lastTime = performance.now();
+    let currentDirection = -1; // -1 = влево, +1 = вправо
+    let currentPosition = 0;
+    
+    const animateLayer2 = (currentTime) => {
+      const deltaTime = currentTime - lastTime;
+      lastTime = currentTime;
+      const deltaTimeSeconds = deltaTime / 1000;
+      
+      // Движение слоя
+      const movement = layer2Speed * deltaTimeSeconds * currentDirection;
+      currentPosition += movement;
+      
+      // Проверяем границы
+      if (currentPosition <= -50) {
+        // Достигли левой границы - отражаемся вправо
+        currentDirection = 1;
+        currentPosition = -50;
+      } else if (currentPosition >= 50) {
+        // Достигли правой границы - отражаемся влево
+        currentDirection = -1;
+        currentPosition = 50;
+      }
+      
+      // Обновляем состояние React
+      setLayer2Position(currentPosition);
+      setLayer2DirectionState(currentDirection);
+      
+      // Прямое управление transform через DOM
+      if (layer2Ref.current) {
+        layer2Ref.current.style.setProperty('transform', currentDirection === 1 ? 'scaleX(-1)' : 'scaleX(1)', 'important');
+      }
+      
+      frame = requestAnimationFrame(animateLayer2);
+    };
+    
+    frame = requestAnimationFrame(animateLayer2);
+    
+    return () => {
+      if (frame) {
+        cancelAnimationFrame(frame);
+      }
+    };
+  }, []); // Пустой массив зависимостей - запускается только один раз
+
+  // useEffect для отзеркаливания шаров
+  useEffect(() => {
+    chain.current.forEach((ball, idx) => {
+      if (ballRefs[idx] && ballRefs[idx].current) {
+        const direction = getBallDirection(ball.t);
+        ballRefs[idx].current.style.setProperty('transform', direction === -1 ? 'scaleX(-1)' : 'scaleX(1)', 'important');
+      }
+    });
+  }, [spriteFrame, ballRefs]); // Зависит от кадра анимации и refs
+
   // Обработчики для react-joystick-component джойстика
   const handleJoystickMove = (evt, data) => {
-    console.log('Joystick move event:', evt);
-    console.log('Joystick move data:', data);
     
     // react-joystick-component может передавать данные в разных форматах
     let x, y;
@@ -969,7 +1352,6 @@ const ZumaGame = React.forwardRef(({ petSprite, onClose, petId }, ref) => {
       x = evt.x;
       y = evt.y;
     } else {
-      console.log('Unknown joystick data format:', { evt, data });
       return;
     }
     
@@ -980,7 +1362,6 @@ const ZumaGame = React.forwardRef(({ petSprite, onClose, petId }, ref) => {
     const correctedAngle = -angle + Math.PI / 2;
     aimAngle.current = correctedAngle;
     setJoystickActive(true);
-    console.log('Corrected angle:', correctedAngle * 180 / Math.PI);
   };
 
   const handleJoystickEnd = (evt) => {
@@ -993,9 +1374,7 @@ const ZumaGame = React.forwardRef(({ petSprite, onClose, petId }, ref) => {
 
   // Кнопка стрельбы для мобильных
   const handleMobileShoot = (e) => {
-    if (e && e.preventDefault) {
-      e.preventDefault();
-    }
+    // Не используем preventDefault для touch событий (они passive по умолчанию)
     shoot();
   };
 
@@ -1020,30 +1399,55 @@ const ZumaGame = React.forwardRef(({ petSprite, onClose, petId }, ref) => {
       y: petY.current,
       dx: Math.sin(angle) * speed,
       dy: -Math.cos(angle) * speed,
-      color: nextBallColor
+      color: nextBall.color,
+      sprite: nextBall.sprite
     };
-    setNextBallColor(getRandomBallColor());
+    const newColor = getRandomBallColor();
+    const newBall = createBallWithSprite(newColor);
+    setNextBall(newBall);
   };
 
-  // Основной игровой цикл с адаптацией под частоту экрана
+  // ОПТИМИЗИРОВАННЫЙ игровой цикл для мобильных
   useEffect(() => {
     if (gameOver || win) return;
+    let frame;
+    let frameCount = 0;
+    let lastTime = performance.now();
+    let animationFrameCount = 0; // счетчик для пропуска кадров анимации
     
-    // Адаптивные скорости (базовые значения для 60 FPS)
-    const ADAPTIVE_CHAIN_SPEED = getAdaptiveSpeed(ZUMA_CHAIN_SPEED);
+    // Мобильная оптимизация
+    if (isMobileDevice) {
+      const gameCanvas = document.querySelector('.zuma-game');
+      if (gameCanvas) {
+        gameCanvas.style.willChange = 'transform';
+        gameCanvas.style.transform = 'translateZ(0)';
+        gameCanvas.style.backfaceVisibility = 'hidden';
+      }
+    }
     
-    const gameLoop = createAdaptiveGameLoop((deltaMultiplier) => {
+
+    
+    const loop = (currentTime) => {
       if (!started) {
-        setRenderTick(t => t + 1);
+        frame = requestAnimationFrame(loop);
         return;
       }
       
-      // Движение цепочки по пути с адаптивной скоростью
-      const { total: totalLength } = getPathSegments(ZUMA_PATH);
-      headDistRef.current += ADAPTIVE_CHAIN_SPEED * deltaMultiplier;
-      for (let i = 0; i < chain.current.length; i++) {
-        const t = (headDistRef.current - i * ZUMA_BALL_SPACING) / totalLength;
-        chain.current[i].t = Math.max(0, t);
+      const deltaTime = currentTime - lastTime;
+      lastTime = currentTime;
+      // Мобильная оптимизация: ограничиваем deltaTime
+      const clampedDeltaTime = Math.min(deltaTime, MOBILE_SETTINGS.maxDeltaTime);
+      const deltaTimeSeconds = clampedDeltaTime / 1000;
+      
+      // ОПТИМИЗИРОВАННОЕ движение цепочки - только каждый N-й кадр на мобильных
+      animationFrameCount++;
+      if (animationFrameCount % MOBILE_SETTINGS.animationThrottle === 0) {
+        const { total: totalLength } = getPathSegments(ZUMA_PATH);
+        headDistRef.current += ZUMA_CHAIN_SPEED * deltaTimeSeconds;
+        for (let i = 0; i < chain.current.length; i++) {
+          const t = (headDistRef.current - i * ZUMA_BALL_SPACING) / totalLength;
+          chain.current[i].t = Math.max(0, t);
+        }
       }
       // Проверка проигрыша: если головной шар дошёл до конца пути
       if (chain.current.length > 0 && chain.current[0].t >= 1) {
@@ -1089,12 +1493,13 @@ const ZumaGame = React.forwardRef(({ petSprite, onClose, petId }, ref) => {
           }
           return false;
         }));
-        if (changed) setRenderTick(t => t + 1);
+        // УПРОЩЕНИЕ: Убираем дополнительные ререндеры для анимаций
+        // if (changed) setRenderTick(t => t + 1);
       }
-      // Движение выстрела с адаптивной скоростью
+      // Движение выстрела
       if (shot.current) {
-        shot.current.x += shot.current.dx * deltaMultiplier;
-        shot.current.y += shot.current.dy * deltaMultiplier;
+        shot.current.x += shot.current.dx;
+        shot.current.y += shot.current.dy;
         // Проверка выхода за пределы
         if (
           shot.current.x < 0 || shot.current.x > ZUMA_WIDTH ||
@@ -1115,7 +1520,8 @@ const ZumaGame = React.forwardRef(({ petSprite, onClose, petId }, ref) => {
             const shotPos = { x: shot.current.x, y: shot.current.y, color: shot.current.color };
             // Вставляем шарик в цепочку
             const t = chain.current[i].t;
-            chain.current.splice(i, 0, { t, color: shot.current.color });
+            const ball = createBallWithSprite(shot.current.color);
+            chain.current.splice(i, 0, { t, ...ball });
             // Анимация вставки
             setAnimations(prev => [...prev, {
               type: 'insert',
@@ -1126,6 +1532,7 @@ const ZumaGame = React.forwardRef(({ petSprite, onClose, petId }, ref) => {
             }]);
             // Пересчитать t для всей цепочки, чтобы не было наложения
             let headDist2 = headDistRef.current;
+            const { total: totalLength } = getPathSegments(ZUMA_PATH);
             for (let j = 0; j < chain.current.length; j++) {
               chain.current[j].t = Math.max(0, (headDist2 - j * ZUMA_BALL_SPACING) / totalLength);
             }
@@ -1195,16 +1602,35 @@ const ZumaGame = React.forwardRef(({ petSprite, onClose, petId }, ref) => {
           }
         }
       }
+      
+      // Получаем общую длину пути для расчетов
+      const { total: totalLength } = getPathSegments(ZUMA_PATH);
+      
       // Победа
       if (chain.current.length === 0) {
         setWin(true);
         return;
       }
-      setRenderTick(t => t + 1);
-    });
-    
-    gameLoop.start();
-    return () => gameLoop.stop();
+      // МОБИЛЬНАЯ ОПТИМИЗАЦИЯ: уменьшенная частота re-render
+      frameCount++;
+      if (frameCount % MOBILE_SETTINGS.renderInterval === 0) {
+        setRenderTick(t => t + 1);
+      }
+      
+      // Анимация спрайтов
+      setSpriteAnimationTime(prev => {
+        const newTime = prev + deltaTimeSeconds;
+        if (newTime >= 0.2) { // Смена кадра каждые 0.2 секунды (замедлили)
+          setSpriteFrame(prevFrame => (prevFrame + 1) % 8); // 8 кадров для большинства спрайтов
+          return 0;
+        }
+        return newTime;
+      });
+      
+      frame = requestAnimationFrame(loop);
+    };
+    frame = requestAnimationFrame(loop);
+    return () => cancelAnimationFrame(frame);
   }, [started, gameOver, win, animations]);
 
   // Начисление счастья за победу
@@ -1255,9 +1681,11 @@ const ZumaGame = React.forwardRef(({ petSprite, onClose, petId }, ref) => {
     const { total: totalLength } = getPathSegments(ZUMA_PATH);
     let arr = [];
     for (let i = 0; i < ZUMA_CHAIN_LENGTH; i++) {
+      const color = getRandomBallColor();
+      const ball = createBallWithSprite(color);
       arr.push({
         t: Math.max(0, (-(i * ZUMA_BALL_SPACING)) / totalLength),
-        color: getRandomBallColor()
+        ...ball
       });
     }
     chain.current = arr;
@@ -1274,9 +1702,11 @@ const ZumaGame = React.forwardRef(({ petSprite, onClose, petId }, ref) => {
     const { total: totalLength } = getPathSegments(ZUMA_PATH);
     let arr = [];
     for (let i = 0; i < ZUMA_CHAIN_LENGTH; i++) {
+      const color = getRandomBallColor();
+      const ball = createBallWithSprite(color);
       arr.push({
         t: Math.max(0, (-(i * ZUMA_BALL_SPACING)) / totalLength),
-        color: getRandomBallColor()
+        ...ball
       });
     }
     chain.current = arr;
@@ -1289,6 +1719,9 @@ const ZumaGame = React.forwardRef(({ petSprite, onClose, petId }, ref) => {
     setStarted(false);
     setWin(false);
     setRewarded(false);
+    const newColor = getRandomBallColor();
+    const newBall = createBallWithSprite(newColor);
+    setNextBall(newBall);
     setRenderTick(t => t + 1);
   };
 
@@ -1319,9 +1752,11 @@ const ZumaGame = React.forwardRef(({ petSprite, onClose, petId }, ref) => {
     const { total: totalLength } = getPathSegments(ZUMA_PATH);
     let arr = [];
     for (let i = 0; i < ZUMA_CHAIN_LENGTH; i++) {
+      const color = getRandomBallColor();
+      const ball = createBallWithSprite(color);
       arr.push({
         t: Math.max(0, (-(i * ZUMA_BALL_SPACING)) / totalLength),
-        color: getRandomBallColor()
+        ...ball
       });
     }
     chain.current = arr;
@@ -1329,6 +1764,9 @@ const ZumaGame = React.forwardRef(({ petSprite, onClose, petId }, ref) => {
     shot.current = null;
     chainHeadT.current = 0;
     headDistRef.current = 0;
+    const newColor = getRandomBallColor();
+    const newBall = createBallWithSprite(newColor);
+    setNextBall(newBall);
   };
 
 
@@ -1342,12 +1780,84 @@ const ZumaGame = React.forwardRef(({ petSprite, onClose, petId }, ref) => {
   return (
     <div
       className="zuma-game"
-      style={{ width: ZUMA_WIDTH, height: ZUMA_HEIGHT, position: 'relative', background: '#e0f2fe', borderRadius: 12, overflow: 'hidden', margin: '0 auto' }}
+      style={{ width: ZUMA_WIDTH, height: ZUMA_HEIGHT, position: 'relative', borderRadius: 12, overflow: 'hidden', margin: '0 auto' }}
       tabIndex={0}
       onClick={!isMobile ? () => setStarted(true) : undefined}
       onMouseMove={!isMobile ? handleMouseMove : undefined}
       onMouseDown={!isMobile ? handleMouseDown : undefined}
     >
+      {/* Многослойный анимированный фон */}
+      {/* Слой 1 - статичный фон */}
+      <div style={{
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        width: '100%',
+        height: '100%',
+        backgroundImage: `url(${getStaticPath('sprites/minigames/zuma/background/1.png')})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        zIndex: 0,
+        willChange: 'transform',
+      }} />
+      
+      {/* Слой 2 - анимированный слой */}
+      <div style={{
+        position: 'absolute',
+        top: 0,
+        left: layer2Position,
+        width: '100%',
+        height: '100%',
+        backgroundImage: `url(${getStaticPath('sprites/minigames/zuma/background/2.png')})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        zIndex: 1,
+        willChange: 'transform',
+        // Отзеркаливание управляется через DOM
+        transform: 'scaleX(1)', // Начальное состояние
+        filter: 'none',
+        // Принудительное обновление стилей
+        willChange: 'transform, filter',
+        backfaceVisibility: 'hidden',
+        perspective: '1000px',
+        transformStyle: 'preserve-3d',
+        transformOrigin: 'center center',
+        transition: 'transform 0.3s ease-in-out', // Плавный переход для отзеркаливания
+      }} 
+      onError={(e) => {
+        console.error('Ошибка загрузки изображения 2-го слоя:', e);
+      }}
+      ref={layer2Ref}
+      />
+      
+      {/* Слой 3 - статичный слой */}
+      <div style={{
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        width: '100%',
+        height: '100%',
+        backgroundImage: `url(${getStaticPath('sprites/minigames/zuma/background/3.png')})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        zIndex: 2,
+        willChange: 'transform',
+      }} />
+      
+      {/* Слой 4 - статичный слой */}
+      <div style={{
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        width: '100%',
+        height: '100%',
+        backgroundImage: `url(${getStaticPath('sprites/minigames/zuma/background/4.png')})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        zIndex: 3,
+        willChange: 'transform',
+      }} />
+
       {/* Цепочка */}
       {chain.current.map((ball, idx) => {
         const pos = getPointOnPath(ZUMA_PATH, ball.t);
@@ -1355,21 +1865,34 @@ const ZumaGame = React.forwardRef(({ petSprite, onClose, petId }, ref) => {
         const disappearAnim = animations.find(a => a.type === 'disappear' && a.index === idx);
         const scale = disappearAnim ? 1 - Math.min(1, (performance.now() - disappearAnim.startTime) / ANIMATION_DURATION) : 1;
         const opacity = disappearAnim ? scale : 1;
+        
+        // Используем сохраненный спрайт шара с индивидуальным смещением анимации
+        const sprite = ball.sprite;
+        const frameWithOffset = (spriteFrame + (ball.animationOffset || 0)) % 8;
+        const direction = getBallDirection(ball.t);
+        const spriteStyle = getSpriteStyle(sprite, frameWithOffset, sprite.currentRow || 0);
+        
+        // Создаем ref для шара, если его еще нет
+        if (!ballRefs[idx]) {
+          ballRefs[idx] = React.createRef();
+        }
+        
         return (
-          <div key={idx} style={{
-            position: 'absolute',
-            left: pos.x - ZUMA_BALL_RADIUS,
-            top: pos.y - ZUMA_BALL_RADIUS,
-            width: ZUMA_BALL_RADIUS * 2,
-            height: ZUMA_BALL_RADIUS * 2,
-            background: ball.color,
-            borderRadius: '50%',
-            border: '2px solid #fff',
-            zIndex: 2,
-            transform: `scale(${scale})`,
-            opacity,
-            transition: disappearAnim ? 'none' : 'transform 0.1s',
-          }} />
+          <div 
+            key={idx} 
+            ref={ballRefs[idx]}
+            style={{
+              position: 'absolute',
+              left: pos.x - (sprite ? sprite.frameWidth / 2 : ZUMA_BALL_RADIUS),
+              top: pos.y - (sprite ? sprite.frameHeight / 2 : ZUMA_BALL_RADIUS),
+              zIndex: 10,
+              transform: `scale(${scale})`,
+              opacity,
+              transition: disappearAnim ? 'none' : 'transform 0.1s',
+              willChange: 'transform', // мобильная оптимизация
+              ...spriteStyle
+            }} 
+          />
         );
       })}
       {/* Выстрел */}
@@ -1380,14 +1903,13 @@ const ZumaGame = React.forwardRef(({ petSprite, onClose, petId }, ref) => {
           top: shot.current.y - ZUMA_BALL_RADIUS,
           width: ZUMA_BALL_RADIUS * 2,
           height: ZUMA_BALL_RADIUS * 2,
-          background: shot.current.color,
-          borderRadius: '50%',
-          border: '2px solid #fff',
-          zIndex: 3
+          zIndex: 10,
+          willChange: 'transform', // мобильная оптимизация
+          ...getSpriteStyle(shot.current.sprite, spriteFrame, shot.current.sprite.currentRow || 0)
         }} />
       )}
       {/* Прицел */}
-      <svg width={ZUMA_WIDTH} height={ZUMA_HEIGHT} style={{ position: 'absolute', left: 0, top: 0, zIndex: 1, pointerEvents: 'none' }}>
+      <svg width={ZUMA_WIDTH} height={ZUMA_HEIGHT} style={{ position: 'absolute', left: 0, top: 0, zIndex: 10, pointerEvents: 'none' }}>
         <line
           x1={petX.current}
           y1={petY.current}
@@ -1405,11 +1927,9 @@ const ZumaGame = React.forwardRef(({ petSprite, onClose, petId }, ref) => {
         top: petY.current - ZUMA_PET_SIZE / 2 - ZUMA_BALL_RADIUS - 18,
         width: ZUMA_BALL_RADIUS * 2,
         height: ZUMA_BALL_RADIUS * 2,
-        background: nextBallColor,
-        borderRadius: '50%',
-        border: '2px solid #fff',
-        zIndex: 5,
-        boxShadow: '0 2px 8px rgba(0,0,0,0.12)'
+        zIndex: 10,
+        boxShadow: '0 2px 8px rgba(0,0,0,0.12)',
+        ...getSpriteStyle(nextBall.sprite, spriteFrame, nextBall.sprite.currentRow || 0)
       }} />
       {/* Питомец-стрелок */}
       <img
@@ -1421,10 +1941,11 @@ const ZumaGame = React.forwardRef(({ petSprite, onClose, petId }, ref) => {
           top: petY.current - ZUMA_PET_SIZE / 2,
           width: ZUMA_PET_SIZE,
           height: ZUMA_PET_SIZE,
-          zIndex: 4,
+          zIndex: 10,
           userSelect: 'none',
           pointerEvents: 'none',
-          transform: `rotate(${aimAngle.current * 180 / Math.PI}deg)`
+          transform: `rotate(${aimAngle.current * 180 / Math.PI}deg)`,
+          willChange: 'transform', // мобильная оптимизация
         }}
       />
       {/* Победа и кнопка Заново не отображаются для Zuma, переход к следующему уровню автоматический */}
@@ -1457,7 +1978,7 @@ const ZumaGame = React.forwardRef(({ petSprite, onClose, petId }, ref) => {
         </div>
       )}
       {/* Уровень и кнопка следующий уровень */}
-      <div style={{ position: 'absolute', top: 10, left: 10, color: '#fff', fontWeight: 'bold', fontSize: 18 }}>
+      <div style={{ position: 'absolute', top: 10, left: 10, color: '#fff', fontWeight: 'bold', fontSize: 18, zIndex: 15 }}>
         Уровень: {level}
       </div>
       {/* Не показываем стандартный оверлей победы и кнопку "заново" для Zuma, переход к следующему уровню автоматический */}
@@ -1491,6 +2012,14 @@ const ZumaGame = React.forwardRef(({ petSprite, onClose, petId }, ref) => {
 
 const PetMiniGameModal = ({ isOpen, onClose, pet }) => {
   if (!isOpen || !pet) return null;
+  
+  // Применяем мобильные оптимизации при загрузке
+  useEffect(() => {
+    if (isOpen) {
+      autoApplyOptimizations();
+    }
+  }, [isOpen]);
+  
   const petSprite = getStaticPath(pet.sprite);
   // Определяем мобильное устройство по ширине экрана
   const isMobile = typeof window !== 'undefined' && window.innerWidth < 700;

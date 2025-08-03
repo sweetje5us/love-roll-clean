@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback, useMemo } from 'react';
+import React, { useEffect, useState, useCallback, useMemo, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { useScreen, SCREEN_TYPES } from '../../contexts/ScreenContext';
 import { useCharacters } from '../../contexts/CharacterContext';
@@ -23,11 +23,17 @@ import EpisodeCompleteScreen from '../ui/EpisodeCompleteScreen';
 import { buildCharacterSprite } from '../../utils/characterUtils';
 import { clearEpisodeSaves, forceClearAllSaves } from '../../utils/saveUtils';
 import { processChoiceEffects, isChoiceAvailable } from '../../utils/dialogueItemSystem';
-import { hasDiceCheck } from '../../utils/diceSystem';
+import { hasDiceCheck, getDiceCheckInfo, getStatDisplayName, getStatIcon, getStatModifier, getPetCubeBonus } from '../../utils/diceSystem';
 import { getPetSpecialText } from '../../utils/itemUtils';
 import { canPetImproveRelations } from '../../utils/diceSystem';
 import itemsData from '../../data/items.json';
 import './GameScreen.css';
+
+// Определяем мобильное устройство
+const isMobileDevice = () => {
+  return window.innerWidth < 768 || 
+         /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+};
 
 /**
  * Принудительно обновляет кэш персонажей эпизода
@@ -35,40 +41,26 @@ import './GameScreen.css';
  */
 const forceRefreshEpisodeCharacters = async (episodeId) => {
   try {
-    console.log(`GameScreen: принудительное обновление персонажей эпизода ${episodeId}`);
+    // Убираем избыточные console.log для производительности
     
-    // Очищаем кэш браузера
+    // Очищаем только кэш эпизодов, не все кэши
     if ('caches' in window) {
       const cacheNames = await caches.keys();
       for (const cacheName of cacheNames) {
-        if (cacheName.includes('episodes') || cacheName.includes('static')) {
+        if (cacheName.includes('episodes')) {
           await caches.delete(cacheName);
-          console.log(`GameScreen: удален кэш ${cacheName}`);
         }
       }
     }
     
-    // Принудительно загружаем config.json с новым timestamp
-    const timestamp = Date.now();
-    const response = await fetch(`/episodes/${episodeId}/config.json?t=${timestamp}`, {
-      cache: 'no-cache',
-      headers: {
-        'Cache-Control': 'no-cache, no-store, must-revalidate',
-        'Pragma': 'no-cache',
-        'Expires': '0'
-      }
+    // Загружаем config.json с минимальными заголовками
+    const response = await fetch(`/episodes/${episodeId}/config.json`, {
+      cache: 'no-cache'
     });
     
     if (response.ok) {
       const config = await response.json();
-      console.log(`GameScreen: обновлены данные персонажей эпизода ${episodeId}, персонажей: ${config.characters ? config.characters.length : 0}`);
-      
-      // Логируем информацию о персонажах для отладки
-      if (config.characters) {
-        config.characters.forEach(char => {
-          console.log(`Персонаж ${char.id} (${char.name}): одежда = ${char.appearance?.dress || 'не указана'}`);
-        });
-      }
+      // Убираем избыточное логирование персонажей
     } else {
       console.warn(`GameScreen: не удалось обновить данные персонажей эпизода ${episodeId}`);
     }
@@ -414,64 +406,48 @@ const GameScreen = () => {
       return;
     }
     
-    const currentInventory = Object.keys(inventory);
-    const lastInventory = Object.keys(lastInventoryState);
-    
-    // Проверяем, есть ли изменения в инвентаре
-    const hasInventoryChanged = JSON.stringify(inventory) !== JSON.stringify(lastInventoryState);
-    
-    // Проверяем, есть ли новые предметы
-    const hasNewItemsInInventory = currentInventory.some(itemId => !lastInventory.includes(itemId));
-    
-    // Проверяем, есть ли удаленные предметы
-    const hasRemovedItems = lastInventory.some(itemId => !currentInventory.includes(itemId));
-    
-    if (hasNewItemsInInventory && !hasNewItems) {
-      setHasNewItems(true);
-    }
-    
-    // Обновляем состояние последнего инвентаря
-    setLastInventoryState(inventory);
-    
-    // Обновляем доступные выборы при изменении инвентаря
-    if (hasInventoryChanged && gameState.choices.length > 0) {
-      console.log('GameScreen: обновляем доступные выборы из-за изменения инвентаря');
-      console.log('GameScreen: изменения в инвентаре:', { hasNewItemsInInventory, hasRemovedItems, inventory });
+    // Debounce для снижения нагрузки на main thread
+    const updateChoicesDebounced = setTimeout(() => {
+      const currentInventory = Object.keys(inventory);
+      const lastInventory = Object.keys(lastInventoryState);
       
-      // Проверяем, что episodeManager инициализирован
-      if (episodeManager && typeof episodeManager.getAvailableChoices === 'function') {
-        // Используем setTimeout для обеспечения того, что inventory обновился
-        setTimeout(() => {
-          console.log('GameScreen: обновляем выборы после изменения инвентаря');
-          console.log('GameScreen: текущий inventory из React:', inventory);
-          console.log('GameScreen: текущий inventory из getAllItems:', getAllItems());
-          
+      // Проверяем, есть ли изменения в инвентаре
+      const hasInventoryChanged = JSON.stringify(inventory) !== JSON.stringify(lastInventoryState);
+      
+      // Проверяем, есть ли новые предметы
+      const hasNewItemsInInventory = currentInventory.some(itemId => !lastInventory.includes(itemId));
+      
+      if (hasNewItemsInInventory && !hasNewItems) {
+        setHasNewItems(true);
+      }
+      
+      // Обновляем состояние последнего инвентаря
+      setLastInventoryState(inventory);
+      
+      // Обновляем доступные выборы при изменении инвентаря
+      if (hasInventoryChanged && gameState.choices.length > 0) {
+        // Проверяем, что episodeManager инициализирован
+        if (episodeManager && typeof episodeManager.getAvailableChoices === 'function') {
           // Принудительно обновляем inventoryManager в episodeManager
           if (episodeManager && episodeManager.inventoryManager) {
-            episodeManager.inventoryManager.getAllItems = () => {
-              const currentInventory = getAllItems();
-              console.log('GameScreen: принудительно обновленный инвентарь:', currentInventory);
-              return currentInventory;
-            };
+            episodeManager.inventoryManager.getAllItems = () => getAllItems();
           }
           
           const availableChoices = episodeManager.getAvailableChoices();
-          console.log('GameScreen: полученные доступные выборы:', availableChoices);
           setGameState(prev => ({
             ...prev,
             choices: availableChoices
           }));
-        }, 0);
-      } else {
-        console.warn('GameScreen: episodeManager не инициализирован, пропускаем обновление выборов');
+        }
       }
-    }
+    }, 100); // debounce 100ms для снижения нагрузки
+    
+    return () => clearTimeout(updateChoicesDebounced);
   }, [inventory, lastInventoryState, hasNewItems]);
 
   // Отслеживаем изменения в selectedCharacter для принудительного обновления
   useEffect(() => {
     if (selectedCharacter) {
-      console.log('GameScreen: selectedCharacter изменился:', selectedCharacter);
       
       // Обновляем персонажа игрока в gameState.characters
       setGameState(prev => {
@@ -505,12 +481,8 @@ const GameScreen = () => {
       const params = getNavigationParams();
       const { episodeId, chapterId } = params;
       
-      console.log('GameScreen.initGame - параметры:', { episodeId, chapterId, selectedCharacter });
-      
       // Если нет параметров эпизода, значит мы вернулись в главное меню
       if (!episodeId) {
-        console.log('GameScreen.initGame - нет параметров эпизода, возвращаемся в главное меню');
-        // Не сбрасываем loading, просто выходим
         return;
       }
 
@@ -536,14 +508,10 @@ const GameScreen = () => {
           changeRelationship(characterId, targetId, type, change);
           
           // Показываем уведомление
-          console.log('GameScreen - проверка window.addNotification:', !!window.addNotification);
-          console.log('GameScreen - тип window.addNotification:', typeof window.addNotification);
           if (window.addNotification) {
             const episodeConfig = episodeManager.getEpisodeConfig();
             const targetCharacter = episodeConfig.characters.find(char => char.id === targetId);
             const characterName = targetCharacter ? targetCharacter.name : targetId;
-            
-
             
             if (change > 0) {
               window.addNotification('relationship_positive', {
@@ -556,8 +524,6 @@ const GameScreen = () => {
                 characterName: characterName
               });
             }
-          } else {
-            console.warn('GameScreen - window.addNotification не доступна');
           }
           
           // Устанавливаем флаг новых изменений
@@ -571,27 +537,20 @@ const GameScreen = () => {
       // Устанавливаем менеджер инвентаря для episodeManager
       episodeManager.setInventoryManager({
         addItem: (itemIdOrObject, count = 1) => {
-          console.log(`EpisodeManager.addItem - добавляем ${count} ${itemIdOrObject}`);
           // Используем addItem из InventoryContext
           addItem(itemIdOrObject, count);
         },
         removeItem: (itemId, count = 1) => {
-          console.log(`EpisodeManager.removeItem - убираем ${count} ${itemId}`);
           // Используем removeItem из InventoryContext
           removeItem(itemId, count);
         },
         getAllItems: () => {
           // Возвращаем актуальный инвентарь из InventoryContext
-          const currentInventory = getAllItems();
-          console.log(`EpisodeManager.getAllItems - текущий инвентарь:`, currentInventory);
-          return currentInventory;
+          return getAllItems();
         }
       });
 
       // Инициализируем эпизод
-      console.log('GameScreen.initGame - инициализация эпизода:', episodeId);
-      console.log('GameScreen.initGame - characterId из параметров:', params.characterId);
-      
       // Устанавливаем characterId в episodeManager перед инициализацией
       if (params.characterId) {
         episodeManager.setPlayerCharacterId(params.characterId);
@@ -605,13 +564,10 @@ const GameScreen = () => {
 
       // Получаем текущие данные
       const currentData = episodeManager.getCurrentData();
-      console.log('GameScreen.initGame - данные эпизода:', currentData);
       
       if (currentData.scene) {
         // Инициализируем менеджер сцен
         const episodeConfig = episodeManager.getEpisodeConfig();
-        console.log('GameScreen.initGame - конфигурация эпизода:', episodeConfig);
-        console.log('GameScreen.initGame - персонажи эпизода:', episodeConfig.characters);
         sceneManager.initialize(episodeConfig.characters || []);
         
         // Инициализируем систему отношений для эпизода
@@ -623,15 +579,12 @@ const GameScreen = () => {
           }
           
           // Сначала инициализируем отношения
-          console.log('GameScreen.initGame - инициализация отношений для персонажей:', allCharacters);
           const playerCharacterId = currentData.progress?.playerCharacterId;
           initializeRelationships(episodeId, allCharacters, playerCharacterId, currentData.chapter);
         }
         
         // Обрабатываем сцену через менеджер сцен (асинхронно)
-        console.log('GameScreen.initGame - обработка сцены:', currentData.scene);
         const processedScene = await sceneManager.processScene(currentData.scene, selectedCharacter);
-        console.log('GameScreen.initGame - сцена обработана:', processedScene);
         
         setGameState(prev => ({
           ...prev,
@@ -654,10 +607,7 @@ const GameScreen = () => {
           
           // Запускаем анимацию текста, если есть диалог
           if (processedScene.dialogue && processedScene.dialogue.text) {
-            console.log('Запуск анимации текста:', processedScene.dialogue.text);
-            sceneManager.animateText(processedScene.dialogue.text, 60, setTextAnimation);
-          } else {
-            console.log('Диалог не найден или пуст:', processedScene.dialogue);
+            sceneManager.animateText(processedScene.dialogue.text, 80, setTextAnimation);
           }
         }, 100);
       } else {
@@ -829,7 +779,7 @@ const GameScreen = () => {
             // Запускаем только анимацию текста
             if (processedScene.dialogue && processedScene.dialogue.text) {
               setTimeout(() => {
-                sceneManager.animateText(processedScene.dialogue.text, 60, setTextAnimation);
+                sceneManager.animateText(processedScene.dialogue.text, 80, setTextAnimation);
               }, 100);
             }
           }
@@ -1106,7 +1056,7 @@ const GameScreen = () => {
             // Запускаем только анимацию текста
             if (processedScene.dialogue && processedScene.dialogue.text) {
               setTimeout(() => {
-                sceneManager.animateText(processedScene.dialogue.text, 60, setTextAnimation);
+                sceneManager.animateText(processedScene.dialogue.text, 80, setTextAnimation);
               }, 100);
             }
           }
@@ -1220,15 +1170,13 @@ const GameScreen = () => {
   };
 
   // Функция для анимации текста (использует sceneManager)
-  const animateText = (text, speed = 60) => {
+  const animateText = (text, speed = 80) => {
     sceneManager.animateText(text, speed, setTextAnimation);
   };
 
   // Функция для анимации переключения сцен (использует sceneManager)
   const animateSceneTransition = () => {
-    // Проверяем, если это мобильное устройство - используем более быстрые анимации
-    const isMobile = window.innerWidth <= 768;
-    if (isMobile) {
+    if (isMobileDevice()) {
       // Для мобильных устройств - мгновенный переход без анимации для предотвращения мерцания
       setSceneAnimation(prev => ({ 
         ...prev, 
@@ -1241,9 +1189,7 @@ const GameScreen = () => {
 
   // Функция для анимации смены фона (использует sceneManager)
   const animateBackgroundTransition = () => {
-    // Проверяем, если это мобильное устройство - используем более быстрые анимации
-    const isMobile = window.innerWidth <= 768;
-    if (isMobile) {
+    if (isMobileDevice()) {
       // Для мобильных устройств - мгновенный переход без анимации для предотвращения мерцания
       setSceneAnimation(prev => ({ 
         ...prev, 
@@ -1313,13 +1259,26 @@ const GameScreen = () => {
 
   // Функция для анимации появления диалогового окна (использует sceneManager)
   const animateDialogueEnter = () => {
-    sceneManager.animateDialogueEnter(setSceneAnimation);
+    if (isMobileDevice()) {
+      // На мобильных устройствах отключаем анимации
+      setSceneAnimation(prev => ({ 
+        ...prev, 
+        isDialogueEntering: false 
+      }));
+    } else {
+      sceneManager.animateDialogueEnter(setSceneAnimation);
+    }
   };
 
   // Функция для плавного перехода к новой локации
   const animateLocationTransition = (onMidTransition) => {
     console.log('🎬 Запуск плавного перехода к новой локации');
-    sceneManager.animateLocationTransition(setSceneAnimation, onMidTransition);
+    if (isMobileDevice()) {
+      // На мобильных устройствах используем упрощенный переход
+      if (onMidTransition) onMidTransition();
+    } else {
+      sceneManager.animateLocationTransition(setSceneAnimation, onMidTransition);
+    }
   };
 
   // Функция для нормализации путей фонов (убирает ведущий слеш)
@@ -1331,7 +1290,12 @@ const GameScreen = () => {
   // Функция для анимации смены персонажей
   const animateCharacterTransition = (onMidTransition) => {
     console.log('🎭 Запуск анимации смены персонажей');
-    sceneManager.animateCharacterTransition(setSceneAnimation, onMidTransition);
+    if (isMobileDevice()) {
+      // На мобильных устройствах используем упрощенный переход
+      if (onMidTransition) onMidTransition();
+    } else {
+      sceneManager.animateCharacterTransition(setSceneAnimation, onMidTransition);
+    }
   };
 
   // Функция для сравнения персонажей в сценах
@@ -1590,11 +1554,11 @@ const GameScreen = () => {
     }
   };
 
-  // Отслеживаем изменения в choices
+  // ОПТИМИЗИРОВАННОЕ отслеживание изменений в choices с debounce
   useEffect(() => {
     if (gameState.choices.length > 0 && textAnimation.isComplete) {
-      // Небольшая задержка для рендеринга
-      setTimeout(updateChoicesContainerHeight, 100);
+      // Увеличенная задержка для предотвращения частых re-render'ов
+      setTimeout(updateChoicesContainerHeight, 200);
     } else {
       updateChoicesContainerHeight();
     }
@@ -1929,8 +1893,8 @@ const GameScreen = () => {
                     key={`${choice.id}-pet-play`}
                     className={`choice-button ${hasPetWithRelationAbility ? 'choice-button-special' : 'choice-button-disabled'}`}
                     onClick={hasPetWithRelationAbility ? () => handleChoice(choice.id) : undefined}
-                    whileHover={hasPetWithRelationAbility ? { scale: 1.02 } : {}}
-                    whileTap={hasPetWithRelationAbility ? { scale: 0.98 } : {}}
+                    whileHover={hasPetWithRelationAbility ? { opacity: 0.9 } : {}}
+                    whileTap={hasPetWithRelationAbility ? { opacity: 0.8 } : {}}
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: hasPetWithRelationAbility ? 1 : 0.5, y: 0 }}
                     transition={{ delay: index * 0.1 }}
@@ -1950,18 +1914,59 @@ const GameScreen = () => {
                 );
               }
               
+              // Проверяем, есть ли проверка характеристики
+              const isDiceCheck = hasDiceCheck(choice);
+              const diceCheckInfo = isDiceCheck ? getDiceCheckInfo(choice) : null;
+              
+              // Рассчитываем бонус к броску для характеристики с учетом бонуса к броску от питомца
+              let statBonus = 0;
+              if (isDiceCheck && diceCheckInfo && selectedCharacter) {
+                // Получаем состояние активного питомца
+                const activePetState = getActivePet();
+                
+                // Получаем модификатор от базовой характеристики
+                const baseValue = selectedCharacter?.stats?.[diceCheckInfo.stat] || 10;
+                const statModifier = getStatModifier(baseValue);
+                
+                // Получаем бонус к броску от питомца
+                const petCubeBonus = getPetCubeBonus(selectedCharacter, itemsData, activePetState);
+                
+                // Суммируем бонусы
+                statBonus = statModifier + petCubeBonus;
+              }
+              
+              // Формируем CSS классы
+              let buttonClasses = 'choice-button';
+              if (!isAvailable) {
+                buttonClasses += ' choice-button-disabled';
+              } else if (isDiceCheck) {
+                buttonClasses += ' choice-button-dice-check';
+              }
+              
               return (
                 <motion.button
                   key={choice.id || `choice-${index}`}
-                  className={`choice-button ${!isAvailable ? 'choice-button-disabled' : ''}`}
+                  className={buttonClasses}
                   onClick={isAvailable ? () => handleChoice(choice.id) : undefined}
-                  whileHover={isAvailable ? { scale: 1.02 } : {}}
-                  whileTap={isAvailable ? { scale: 0.98 } : {}}
+                  whileHover={isAvailable ? { opacity: 0.9 } : {}}
+                  whileTap={isAvailable ? { opacity: 0.8 } : {}}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: isAvailable ? 1 : 0.5, y: 0 }}
                   transition={{ delay: index * 0.1 }}
                   disabled={!isAvailable}
                 >
+                  {/* Метка характеристики для проверок */}
+                  {isDiceCheck && diceCheckInfo && (
+                    <span className="stat-label">
+                      <div className="stat-name">
+                        <i className={getStatIcon(diceCheckInfo.stat)}></i>
+                        <span>{getStatDisplayName(diceCheckInfo.stat)}</span>
+                      </div>
+                      <div className="stat-bonus">
+                        {statBonus >= 0 ? '+' : ''}{statBonus}
+                      </div>
+                    </span>
+                  )}
                   {choiceText}
                   {!isAvailable && choice.requiredItem && (
                     <span className="choice-requirement">

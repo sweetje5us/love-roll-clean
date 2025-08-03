@@ -397,15 +397,15 @@ class SceneManager {
   }
 
   /**
-   * Анимация текста
+   * Анимация текста - ОПТИМИЗИРОВАННАЯ для производительности
    * @param {string} text - Текст для анимации
    * @param {number} speed - Скорость анимации (символов в секунду)
    * @param {Function} onUpdate - Callback для обновления состояния
    */
-  animateText(text, speed = 50, onUpdate) {
+  animateText(text, speed = 80, onUpdate) {
     // Останавливаем предыдущую анимацию, если она запущена
-    if (this.textAnimationTimer) {
-      clearTimeout(this.textAnimationTimer);
+    if (this.textAnimationFrame) {
+      cancelAnimationFrame(this.textAnimationFrame);
     }
     
     // Сбрасываем предыдущую анимацию
@@ -422,14 +422,35 @@ class SceneManager {
     }
 
     let currentIndex = 0;
-    const interval = 1000 / speed; // Интервал между символами в миллисекундах
+    let lastTime = performance.now();
+    const charInterval = 1000 / speed; // Миллисекунды между символами
+    let accumulatedTime = 0;
 
-    const animate = () => {
+    const animate = (currentTime) => {
+      const deltaTime = currentTime - lastTime;
+      lastTime = currentTime;
+      accumulatedTime += deltaTime;
+
+      // ОПТИМИЗАЦИЯ: добавляем символы пакетами, но не слишком большими
+      let charsToAdd = Math.floor(accumulatedTime / charInterval);
+      
+      // Добавляем символы как только накопилось достаточно времени
+      if (charsToAdd >= 1) {
+        accumulatedTime -= charsToAdd * charInterval;
+        currentIndex = Math.min(currentIndex + charsToAdd, text.length);
+        
+        this.textAnimation.currentText = text.slice(0, currentIndex);
+        
+        if (onUpdate) {
+          onUpdate({ ...this.textAnimation });
+        }
+      }
+
       if (currentIndex >= text.length) {
         // Анимация завершена
         this.textAnimation.isAnimating = false;
         this.textAnimation.isComplete = true;
-        this.textAnimationTimer = null;
+        this.textAnimationFrame = null;
         
         if (onUpdate) {
           onUpdate({ ...this.textAnimation });
@@ -437,20 +458,12 @@ class SceneManager {
         return;
       }
 
-      // Добавляем следующий символ
-      this.textAnimation.currentText = text.slice(0, currentIndex + 1);
-      currentIndex++;
-      
-      if (onUpdate) {
-        onUpdate({ ...this.textAnimation });
-      }
-
-      // Планируем следующий шаг анимации
-      this.textAnimationTimer = setTimeout(animate, interval);
+      // Используем requestAnimationFrame вместо setTimeout для лучшей производительности
+      this.textAnimationFrame = requestAnimationFrame(animate);
     };
 
     // Запускаем анимацию
-    animate();
+    this.textAnimationFrame = requestAnimationFrame(animate);
   }
 
   /**
@@ -458,17 +471,19 @@ class SceneManager {
    * @param {Function} onUpdate - Callback для обновления состояния
    */
   completeTextAnimation(onUpdate) {
-    if (this.textAnimationTimer) {
-      clearTimeout(this.textAnimationTimer);
-      this.textAnimationTimer = null;
+    if (this.textAnimationFrame) {
+      cancelAnimationFrame(this.textAnimationFrame);
+      this.textAnimationFrame = null;
     }
 
-    this.textAnimation = {
-      isAnimating: false,
-      currentText: this.textAnimation.fullText,
-      fullText: this.textAnimation.fullText,
-      isComplete: true
-    };
+    if (this.textAnimation && this.textAnimation.fullText) {
+      this.textAnimation = {
+        isAnimating: false,
+        currentText: this.textAnimation.fullText,
+        fullText: this.textAnimation.fullText,
+        isComplete: true
+      };
+    }
 
     if (onUpdate) {
       onUpdate({ ...this.textAnimation });

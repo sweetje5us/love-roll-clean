@@ -3,6 +3,16 @@ import { getEpisodeSave, saveEpisodeProgress, saveGameState, getLastSave, saveIm
 import itemsData from '../data/items.json';
 import { isCustomQuestItem } from './questItemUtils';
 
+// Определяем мобильное устройство
+const isMobileDevice = () => {
+  return window.innerWidth < 768 || 
+         /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+};
+
+// Кэш для загруженных эпизодов
+const episodeCache = new Map();
+const sceneCache = new Map();
+
 class EpisodeManager {
   constructor() {
     this.currentEpisode = null;
@@ -93,22 +103,27 @@ class EpisodeManager {
         console.log('EpisodeManager.initializeEpisode - поврежденные сохранения исправлены');
       }
       
-      // Загружаем конфигурацию эпизода из его папки с принудительным обновлением кэша
-      const configResponse = await fetch(`/episodes/${episodeId}/config.json?t=${Date.now()}`, {
-        cache: 'no-cache',
-        headers: {
-          'Cache-Control': 'no-cache, no-store, must-revalidate',
-          'Pragma': 'no-cache',
-          'Expires': '0'
+      // Проверяем кэш для мобильных устройств
+      if (isMobileDevice() && episodeCache.has(episodeId)) {
+        console.log(`EpisodeManager.initializeEpisode - используем кэшированные данные для эпизода ${episodeId}`);
+        this.episodeData = episodeCache.get(episodeId);
+        this.currentEpisode = episodeId;
+      } else {
+        // Загружаем конфигурацию эпизода с нормальным кэшированием
+        const configResponse = await fetch(`/episodes/${episodeId}/config.json`);
+        if (!configResponse.ok) {
+          throw new Error(`Не удалось загрузить конфигурацию эпизода ${episodeId}`);
         }
-      });
-      if (!configResponse.ok) {
-        throw new Error(`Не удалось загрузить конфигурацию эпизода ${episodeId}`);
+        
+        const episodeData = await configResponse.json();
+        this.episodeData = episodeData;
+        this.currentEpisode = episodeId;
+        
+        // Кэшируем для мобильных устройств
+        if (isMobileDevice()) {
+          episodeCache.set(episodeId, episodeData);
+        }
       }
-      
-      const episodeData = await configResponse.json();
-      this.episodeData = episodeData;
-      this.currentEpisode = episodeId;
       
       console.log('EpisodeManager.initializeEpisode - загруженные данные эпизода:', {
         id: this.episodeData.id,
@@ -285,6 +300,15 @@ class EpisodeManager {
     try {
       console.log(`EpisodeManager.loadScene - загрузка сцены: ${sceneId}`);
       
+      // Проверяем кэш для мобильных устройств
+      const cacheKey = `${this.currentEpisode}_${sceneId}`;
+      if (isMobileDevice() && sceneCache.has(cacheKey)) {
+        console.log(`EpisodeManager.loadScene - используем кэшированную сцену: ${sceneId}`);
+        this.sceneData = sceneCache.get(cacheKey);
+        this.currentScene = sceneId;
+        return true;
+      }
+      
       // Пытаемся загрузить сцену из папки scenes эпизода
       let response = await fetch(`/episodes/${this.currentEpisode}/scenes/${sceneId}.json`);
       
@@ -301,6 +325,11 @@ class EpisodeManager {
       
       this.sceneData = await response.json();
       this.currentScene = sceneId;
+      
+      // Кэшируем для мобильных устройств
+      if (isMobileDevice()) {
+        sceneCache.set(cacheKey, this.sceneData);
+      }
       
       console.log(`EpisodeManager.loadScene - сцена загружена:`, this.sceneData);
       
@@ -521,21 +550,64 @@ class EpisodeManager {
         console.log(`choice.value: ${choice.value} (тип: ${typeof choice.value})`);
         console.log(`choiceData.value: ${choiceData.value} (тип: ${typeof choiceData.value})`);
         console.log(`Используемое значение: ${choiceValue} (тип: ${typeof choiceValue})`);
+        console.log(`Персонажи в сцене:`, this.sceneData?.characters);
         
+        // Определяем связанных персонажей для важного выбора
+        let relatedCharacters = [];
+        
+        // ПРИОРИТЕТ 1: Явно указанный characterId в выборе
+        if (choice.characterId) {
+          relatedCharacters = [choice.characterId];
+          console.log(`Используем явно указанный characterId: ${choice.characterId}`);
+        } 
+        // ПРИОРИТЕТ 2: Персонажи из массива characters сцены
+        else if (this.sceneData?.characters && this.sceneData.characters.length > 0) {
+          relatedCharacters = this.sceneData.characters
+            .filter(char => char.id !== 'player') // Исключаем игрока
+            .map(char => char.id);
+          console.log(`Используем персонажей из массива characters:`, relatedCharacters);
+        }
+        // ПРИОРИТЕТ 3: Персонажи из диалогов сцены
+        else if (this.sceneData?.dialogue) {
+          const speakersFromDialogue = this.sceneData.dialogue
+            .map(line => line.speaker)
+            .filter(speaker => speaker && speaker !== 'player') // Исключаем игрока и пустые значения
+            .filter((speaker, index, array) => array.indexOf(speaker) === index); // Убираем дубликаты
+          
+          relatedCharacters = speakersFromDialogue;
+          console.log(`Используем персонажей из диалогов:`, relatedCharacters);
+        }
+        // ПРИОРИТЕТ 4: Анализ ID выбора
+        else {
+          const knownCharacters = ['peter', 'oleg', 'anna', 'artess', 'evgeny', 'nick', 'dimitrio'];
+          const characterFromChoiceId = knownCharacters.find(charId => choiceId.toLowerCase().includes(charId));
+          
+          if (characterFromChoiceId) {
+            relatedCharacters = [characterFromChoiceId];
+            console.log(`Используем персонажа из ID выбора:`, characterFromChoiceId);
+          }
+        }
+        
+        console.log(`Связанные персонажи для выбора ${choiceId}:`, relatedCharacters);
+
         this.importantChoices.set(choiceId, {
           value: choiceValue,
           timestamp: new Date().toISOString(),
           chapter: this.currentChapter,
           scene: this.currentScene,
+          text: choice.text || '',
           description: choice.description || '',
-          consequences: choice.consequences || []
+          consequences: choice.consequences || [],
+          relatedCharacters: relatedCharacters
         });
         
         // Сохраняем важный выбор
         saveImportantChoice(this.currentEpisode, choiceId, {
           value: choiceValue,
+          text: choice.text || '',
           description: choice.description || '',
-          consequences: choice.consequences || []
+          consequences: choice.consequences || [],
+          relatedCharacters: relatedCharacters
         }, this.episodeProgress.playerCharacterId);
         
         console.log(`Важный выбор сохранен: ${choiceId} = ${choiceValue}`);
@@ -545,10 +617,30 @@ class EpisodeManager {
           console.log('EpisodeManager - проверка window.addNotification:', !!window.addNotification);
           if (window.addNotification) {
             const episodeConfig = this.getEpisodeConfig();
-            const currentDialogue = this.sceneData?.dialogue?.[0];
-            const speakerId = currentDialogue?.speaker;
-            const speakerCharacter = episodeConfig.characters?.find(char => char.id === speakerId);
-            const characterName = speakerCharacter ? speakerCharacter.name : speakerId;
+            
+            // Определяем персонажа для уведомления
+            let characterName = 'Кто-то';
+            let notificationCharacterId = null;
+            
+            // ПРИОРИТЕТ 1: Используем characterId из выбора
+            if (choice.characterId) {
+              notificationCharacterId = choice.characterId;
+            }
+            // ПРИОРИТЕТ 2: Используем первого связанного персонажа
+            else if (relatedCharacters.length > 0) {
+              notificationCharacterId = relatedCharacters[0];
+            }
+            // ПРИОРИТЕТ 3: Используем спикера из первого диалога (как было раньше)
+            else {
+              const currentDialogue = this.sceneData?.dialogue?.[0];
+              notificationCharacterId = currentDialogue?.speaker;
+            }
+            
+            // Получаем имя персонажа для отображения
+            if (notificationCharacterId) {
+              const speakerCharacter = episodeConfig.characters?.find(char => char.id === notificationCharacterId);
+              characterName = speakerCharacter ? speakerCharacter.name : notificationCharacterId;
+            }
             
             console.log('EpisodeManager - показываем уведомление о важном выборе для:', characterName);
             
@@ -1163,16 +1255,11 @@ class EpisodeManager {
     
     // Принудительно обновляем инвентарь перед проверкой
     const currentInventory = this.refreshInventory();
-    console.log(`EpisodeManager.getAvailableChoices - обновленный инвентарь:`, currentInventory);
-    
     // Проверяем все выборы
     const availableChoices = this.sceneData.choices.filter(choice => {
-      console.log(`EpisodeManager.getAvailableChoices - проверяем выбор ${choice.id}:`, choice);
-      
       // Проверяем требуемые предметы (старый формат)
       if (choice.requiredItem) {
         const itemQuantity = currentInventory[choice.requiredItem];
-        console.log(`EpisodeManager.getAvailableChoices - проверяем предмет ${choice.requiredItem}:`, itemQuantity);
         let hasItem = false;
         
         if (typeof itemQuantity === 'number') {
@@ -1207,14 +1294,9 @@ class EpisodeManager {
         // Если указан конкретный ID квестового предмета, используем его
         if (choice.requirements.questItemId && choice.requirements.questItemId.trim() !== '') {
           itemIdToCheck = choice.requirements.questItemId;
-          console.log(`EpisodeManager.getAvailableChoices - проверяем конкретный экземпляр квестового предмета: ${itemIdToCheck}`);
         }
         
-        console.log(`EpisodeManager.getAvailableChoices - полный инвентарь для проверки:`, currentInventory);
-        console.log(`EpisodeManager.getAvailableChoices - ищем предмет с ID: ${itemIdToCheck}`);
-        
         const itemQuantity = currentInventory[itemIdToCheck];
-        console.log(`EpisodeManager.getAvailableChoices - проверяем квестовый предмет ${itemIdToCheck}:`, itemQuantity);
         let hasQuestItem = false;
         
         if (typeof itemQuantity === 'number') {
@@ -1237,37 +1319,29 @@ class EpisodeManager {
           hasQuestItem = false;
         }
         
-        console.log(`Выбор ${choice.id} требует квестовый предмет ${itemIdToCheck}: ${hasQuestItem ? 'есть' : 'нет'}`);
         if (!hasQuestItem) return false;
       }
       
       // Проверяем требуемые отношения
       if (choice.requiredRelationship) {
         const hasRelationship = this.checkRelationshipRequirement(choice.requiredRelationship);
-        console.log(`Выбор ${choice.id} требует отношения: ${hasRelationship ? 'выполнено' : 'не выполнено'}`);
         if (!hasRelationship) return false;
       }
       
       // Проверяем условия (старая система)
       if (choice.conditions) {
         const isAvailable = this.checkVariantConditions(choice.conditions);
-        console.log(`Выбор ${choice.id} с условиями: ${isAvailable ? 'доступен' : 'недоступен'}`);
         if (!isAvailable) return false;
       }
       
       // Проверяем требования (старая система)
       if (choice.requirements) {
-        console.log(`Проверяем требования для выбора ${choice.id}:`, choice.requirements);
         const isAvailable = this.checkChoiceRequirements(choice.requirements);
-        console.log(`Выбор ${choice.id} с требованиями: ${isAvailable ? 'доступен' : 'недоступен'}`);
         if (!isAvailable) return false;
       }
       
-      console.log(`EpisodeManager.getAvailableChoices - выбор ${choice.id} прошел все проверки`);
       return true;
     });
-    
-    console.log(`EpisodeManager.getAvailableChoices - доступные выборы:`, availableChoices.map(c => c.id));
     return availableChoices;
   }
 
@@ -1277,11 +1351,7 @@ class EpisodeManager {
    * @returns {boolean} - Доступен ли выбор
    */
   checkChoiceRequirements(requirements) {
-    console.log(`EpisodeManager.checkChoiceRequirements - начало проверки требований:`, requirements);
-    console.log(`EpisodeManager.checkChoiceRequirements - текущие важные выборы:`, Object.fromEntries(this.importantChoices));
-    
     for (const [requirementType, value] of Object.entries(requirements)) {
-      console.log(`EpisodeManager.checkChoiceRequirements - проверяем тип требования: ${requirementType} со значением:`, value);
       switch (requirementType) {
         case 'stats':
           for (const [statName, minValue] of Object.entries(value)) {
@@ -1292,11 +1362,9 @@ class EpisodeManager {
           }
           break;
         case 'relationship':
-          console.log(`EpisodeManager.checkChoiceRequirements - проверка требований отношений:`, value);
           if (this.relationshipsManager) {
             // Используем глобальную систему отношений
             const playerCharacterId = this.getCurrentPlayerCharacterId();
-            console.log(`EpisodeManager.checkChoiceRequirements - playerCharacterId: ${playerCharacterId}`);
             if (playerCharacterId) {
               for (const [characterId, minValue] of Object.entries(value)) {
                 const currentRelation = this.relationshipsManager.getRelationship(playerCharacterId, characterId, 'friendship');
@@ -1654,6 +1722,46 @@ class EpisodeManager {
     this._nextChapterInProgress = false;
     EpisodeManager._globalNextChapterInProgress = false;
     return true;
+  }
+
+  /**
+   * Предварительная загрузка сцен для мобильных устройств
+   * @param {string} episodeId - ID эпизода
+   * @param {Array} sceneIds - Массив ID сцен для предзагрузки
+   */
+  async preloadScenes(episodeId, sceneIds) {
+    if (!isMobileDevice()) return;
+    
+    console.log(`EpisodeManager.preloadScenes - предзагрузка ${sceneIds.length} сцен для эпизода ${episodeId}`);
+    
+    const preloadPromises = sceneIds.map(async (sceneId) => {
+      try {
+        const cacheKey = `${episodeId}_${sceneId}`;
+        if (sceneCache.has(cacheKey)) return; // Уже загружено
+        
+        const response = await fetch(`/episodes/${episodeId}/scenes/${sceneId}.json`);
+        if (response.ok) {
+          const sceneData = await response.json();
+          sceneCache.set(cacheKey, sceneData);
+          console.log(`EpisodeManager.preloadScenes - предзагружена сцена: ${sceneId}`);
+        }
+      } catch (error) {
+        console.warn(`EpisodeManager.preloadScenes - не удалось предзагрузить сцену ${sceneId}:`, error);
+      }
+    });
+    
+    await Promise.allSettled(preloadPromises);
+  }
+
+  /**
+   * Очистка кэша для освобождения памяти
+   */
+  clearCache() {
+    if (isMobileDevice()) {
+      episodeCache.clear();
+      sceneCache.clear();
+      console.log('EpisodeManager.clearCache - кэш очищен');
+    }
   }
 }
 

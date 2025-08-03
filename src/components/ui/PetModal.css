@@ -138,44 +138,50 @@
   transition: all 0.3s ease;
 }
 
-/* Анимации для питомцев в зависимости от состояния */
+/* Анимации для питомцев в зависимости от состояния - GPU ACCELERATED */
 .pet-avatar.idle img {
+  will-change: transform;
   animation: idleFloat 4s ease-in-out infinite;
 }
 
 .pet-avatar.sleeping img {
+  will-change: transform;
   animation: sleepingFloat 6s ease-in-out infinite;
 }
 
 .pet-avatar.playing img {
+  will-change: transform;
   animation: playingJump 1.5s ease-in-out infinite;
 }
 
 .pet-avatar.hungry img {
+  will-change: transform;
   animation: hungryShake 2s ease-in-out infinite;
 }
 
 .pet-avatar.sad img {
+  will-change: transform;
   animation: sadBounce 3s ease-in-out infinite;
 }
 
 .pet-avatar.sick img {
+  will-change: transform;
   animation: sickTremble 1.5s ease-in-out infinite;
 }
 
-/* Анимация бездействия - плавное перемещение */
+/* Анимация бездействия - плавное перемещение - GPU ACCELERATED */
 @keyframes idleFloat {
   0%, 100% {
-    transform: translate(0, 0) scale(1);
+    transform: translate3d(0, 0, 0) scale(1);
   }
   25% {
-    transform: translate(-5px, -8px) scale(1.02);
+    transform: translate3d(-5px, -8px, 0) scale(1.02);
   }
   50% {
-    transform: translate(0, -12px) scale(1.05);
+    transform: translate3d(0, -12px, 0) scale(1.05);
   }
   75% {
-    transform: translate(5px, -8px) scale(1.02);
+    transform: translate3d(5px, -8px, 0) scale(1.02);
   }
 }
 
@@ -211,37 +217,37 @@
   }
 }
 
-/* Анимация голода - тряска */
+/* Анимация голода - тряска - GPU ACCELERATED */
 @keyframes hungryShake {
   0%, 100% {
-    transform: translateX(0) rotate(0deg);
+    transform: translate3d(0, 0, 0) rotate(0deg);
   }
   10% {
-    transform: translateX(-2px) rotate(-1deg);
+    transform: translate3d(-2px, 0, 0) rotate(-1deg);
   }
   20% {
-    transform: translateX(2px) rotate(1deg);
+    transform: translate3d(2px, 0, 0) rotate(1deg);
   }
   30% {
-    transform: translateX(-2px) rotate(-1deg);
+    transform: translate3d(-2px, 0, 0) rotate(-1deg);
   }
   40% {
-    transform: translateX(2px) rotate(1deg);
+    transform: translate3d(2px, 0, 0) rotate(1deg);
   }
   50% {
-    transform: translateX(-1px) rotate(-0.5deg);
+    transform: translate3d(-1px, 0, 0) rotate(-0.5deg);
   }
   60% {
-    transform: translateX(1px) rotate(0.5deg);
+    transform: translate3d(1px, 0, 0) rotate(0.5deg);
   }
   70% {
-    transform: translateX(-1px) rotate(-0.5deg);
+    transform: translate3d(-1px, 0, 0) rotate(-0.5deg);
   }
   80% {
-    transform: translateX(1px) rotate(0.5deg);
+    transform: translate3d(1px, 0, 0) rotate(0.5deg);
   }
   90% {
-    transform: translateX(0) rotate(0deg);
+    transform: translate3d(0, 0, 0) rotate(0deg);
   }
 }
 
