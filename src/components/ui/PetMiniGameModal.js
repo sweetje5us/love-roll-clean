@@ -299,10 +299,6 @@ const FlappyBirdGame = React.forwardRef(({ petSprite, onClose, petId }, ref) => 
           <button onClick={restart} style={{ marginTop: 16, padding: '8px 20px', fontSize: 18, borderRadius: 8, border: 'none', background: '#38bdf8', color: '#fff', cursor: 'pointer' }}>Заново</button>
         </div>
       )}
-      {/* Кнопка выхода */}
-      <button onClick={onClose} style={{ position: 'absolute', top: 8, right: 8, zIndex: 30, background: 'rgba(255,255,255,0.7)', border: 'none', borderRadius: '50%', width: 32, height: 32, fontSize: 18, cursor: 'pointer' }} title="Выйти">
-        ×
-      </button>
       {/* Инструкция */}
       {!started && !gameOver && (
         <div style={{ position: 'absolute', top: '45%', left: 0, width: '100%', textAlign: 'center', color: '#334155', fontSize: 18, zIndex: 15 }}>
@@ -613,10 +609,6 @@ const DoodleJumpGame = ({ petSprite, onClose, petId }) => {
           <button onClick={restart} style={{ marginTop: 16, padding: '8px 20px', fontSize: 18, borderRadius: 8, border: 'none', background: '#fde047', color: '#fff', cursor: 'pointer' }}>Заново</button>
         </div>
       )}
-      {/* Кнопка выхода */}
-      <button onClick={onClose} style={{ position: 'absolute', top: 8, right: 8, zIndex: 30, background: 'rgba(255,255,255,0.7)', border: 'none', borderRadius: '50%', width: 32, height: 32, fontSize: 18, cursor: 'pointer' }} title="Выйти">
-        ×
-      </button>
       {/* Инструкция */}
       {!started && !gameOver && (
         <div style={{ position: 'absolute', top: '45%', left: 0, width: '100%', textAlign: 'center', color: '#a16207', fontSize: 18, zIndex: 15 }}>
@@ -639,8 +631,159 @@ const CR_OBSTACLE_HEIGHT = 36;
 // Константы теперь в единицах "на секунду" (оптимизированы для мобильных)
 const CR_OBSTACLE_SPEED_PER_SECOND = isMobileDevice ? 150 : 150; // возвращаем нормальную скорость препятствий
 
+// --- Crossy Road Road Tiles System ---
+const CR_ROAD_TILES = {
+  road: {
+    src: 'sprites/minigames/crossy-road/Road_01_Tile_03.png',
+    width: 512,
+    height: 688,
+    displayWidth: CR_WIDTH,
+    displayHeight: CR_LANE_HEIGHT
+  },
+  roadAlt: {
+    src: 'sprites/minigames/crossy-road/Road_01_Tile_04.png',
+    width: 512,
+    height: 688,
+    displayWidth: CR_WIDTH,
+    displayHeight: CR_LANE_HEIGHT
+  }
+};
+
+// --- Crossy Road Background Tiles System ---
+const CR_BACKGROUND_TILES = {
+  grass: {
+    src: 'sprites/minigames/crossy-road/Grass_Tile.png',
+    width: 512,
+    height: 512,
+    displayWidth: CR_WIDTH,
+    displayHeight: CR_LANE_HEIGHT
+  },
+  soil: {
+    src: 'sprites/minigames/crossy-road/Soil_Tile.png',
+    width: 512,
+    height: 512,
+    displayWidth: CR_WIDTH,
+    displayHeight: CR_LANE_HEIGHT
+  }
+};
+
+// --- Crossy Road Car Sprites System ---
+const CR_CAR_SPRITES = {
+  bubblecar: {
+    src: 'sprites/minigames/crossy-road/spr_bubblecar_0.png',
+    width: 288,
+    height: 147,
+    displayWidth: 60,
+    displayHeight: 36
+  },
+  camper: {
+    src: 'sprites/minigames/crossy-road/spr_camper_0.png',
+    width: 288,
+    height: 144,
+    displayWidth: 60,
+    displayHeight: 36
+  },
+  car4: {
+    src: 'sprites/minigames/crossy-road/spr_car4_0.png',
+    width: 288,
+    height: 123,
+    displayWidth: 60,
+    displayHeight: 36
+  },
+  classiccar: {
+    src: 'sprites/minigames/crossy-road/spr_classiccar_0.png',
+    width: 288,
+    height: 105,
+    displayWidth: 60,
+    displayHeight: 36
+  },
+  estatecar: {
+    src: 'sprites/minigames/crossy-road/spr_estatecar_0.png',
+    width: 294,
+    height: 144,
+    displayWidth: 60,
+    displayHeight: 36
+  },
+  rally: {
+    src: 'sprites/minigames/crossy-road/spr_rally_0.png',
+    width: 288,
+    height: 135,
+    displayWidth: 60,
+    displayHeight: 36
+  },
+  turbo: {
+    src: 'sprites/minigames/crossy-road/spr_turbo_0.png',
+    width: 288,
+    height: 117,
+    displayWidth: 60,
+    displayHeight: 36
+  },
+  van: {
+    src: 'sprites/minigames/crossy-road/spr_van_0.png',
+    width: 288,
+    height: 153,
+    displayWidth: 60,
+    displayHeight: 36
+  }
+};
+
+// Функция для получения тайлов дороги (теперь только один набор)
+function getRoadTiles() {
+  return CR_ROAD_TILES;
+}
+
+// Функция для получения случайного фонового тайла
+function getRandomBackgroundTile() {
+  const backgroundTypes = Object.keys(CR_BACKGROUND_TILES);
+  const randomType = backgroundTypes[Math.floor(Math.random() * backgroundTypes.length)];
+  return CR_BACKGROUND_TILES[randomType];
+}
+
+// Функция для получения случайного спрайта машины
+function getRandomCarSprite() {
+  const carTypes = Object.keys(CR_CAR_SPRITES);
+  const randomType = carTypes[Math.floor(Math.random() * carTypes.length)];
+  return CR_CAR_SPRITES[randomType];
+}
+
+// Функция для создания препятствия с спрайтом машины
+function createCarObstacle(x, y, dir) {
+  const carSprite = getRandomCarSprite();
+  return {
+    x,
+    y,
+    dir,
+    sprite: carSprite
+  };
+}
+
+// Функция для генерации позиций машин без наложений
+function generateCarPositions(laneY, carCount, carWidth = 60) {
+  const positions = [];
+  const minSpacing = carWidth + 20; // Минимальное расстояние между машинами
+  const laneWidth = CR_WIDTH;
+  
+  // Разделяем дорогу на секции для равномерного распределения
+  const sectionWidth = laneWidth / carCount;
+  
+  for (let i = 0; i < carCount; i++) {
+    // Генерируем позицию в пределах секции с небольшим случайным смещением
+    const sectionStart = i * sectionWidth;
+    const sectionEnd = (i + 1) * sectionWidth;
+    const randomOffset = (Math.random() - 0.5) * (sectionWidth * 0.3); // ±15% от ширины секции
+    let x = sectionStart + (sectionWidth / 2) + randomOffset;
+    
+    // Убеждаемся, что машина не выходит за границы дороги
+    x = Math.max(0, Math.min(x, laneWidth - carWidth));
+    
+    positions.push(x);
+  }
+  
+  return positions;
+}
+
 function getRandomObstacleX() {
-  return Math.random() * (CR_WIDTH - CR_OBSTACLE_WIDTH);
+  return Math.random() * (CR_WIDTH - 60); // Используем стандартную ширину спрайта машины
 }
 
 const CrossyRoadGame = ({ petSprite, onClose, petId }) => {
@@ -652,13 +795,27 @@ const CrossyRoadGame = ({ petSprite, onClose, petId }) => {
   const [started, setStarted] = useState(false);
   const [win, setWin] = useState(false);
   const [level, setLevel] = useState(1);
+  const [roadTiles] = useState(getRoadTiles()); // Тайлы дороги
+  const [backgroundTile, setBackgroundTile] = useState(getRandomBackgroundTile()); // Фоновый тайл
 
   // refs для физики
   const petX = useRef(CR_WIDTH / 2 - CR_PET_SIZE / 2);
   const petY = useRef(CR_HEIGHT - CR_PET_SIZE - 8);
-  const obstacles = useRef([]); // [{x, y, dir}]
+  const obstacles = useRef([]); // [{x, y, dir, sprite}]
   const moveDir = useRef(0); // -1 влево, 1 вправо
   const moveForward = useRef(false);
+  
+  // refs для прямого управления DOM элементами машин
+  const carRefs = useRef({});
+
+  // useEffect для отзеркаливания машин
+  useEffect(() => {
+    obstacles.current.forEach((obs, idx) => {
+      if (carRefs.current[idx]) {
+        carRefs.current[idx].style.setProperty('transform', obs.dir === 1 ? 'scaleX(-1)' : 'scaleX(1)', 'important');
+      }
+    });
+  }, [renderTick]); // Зависит от renderTick для обновления при изменении направления
 
   // Управление
   useEffect(() => {
@@ -686,7 +843,8 @@ const CrossyRoadGame = ({ petSprite, onClose, petId }) => {
     let frameCount = 0;
     let lastTime = performance.now();
     let animationFrameCount = 0; // счетчик для пропуска кадров анимации
-    const baseObstacleSpeed = CR_OBSTACLE_SPEED_PER_SECOND + (level - 1) * 42; // 42 = 0.7 * 60 FPS
+    // Скорость зависит от уровня
+    const baseObstacleSpeed = CR_OBSTACLE_SPEED_PER_SECOND + (level - 1) * 30; // Увеличиваем скорость с уровнем
     
     // Мобильная оптимизация
     if (isMobileDevice) {
@@ -735,8 +893,8 @@ const CrossyRoadGame = ({ petSprite, onClose, petId }) => {
         for (let i = 0; i < obstacles.current.length; i++) {
           const obs = obstacles.current[i];
           obs.x += obs.dir * baseObstacleSpeed * deltaTimeSeconds;
-          if (obs.x < -CR_OBSTACLE_WIDTH) obs.x = CR_WIDTH;
-          if (obs.x > CR_WIDTH) obs.x = -CR_OBSTACLE_WIDTH;
+          if (obs.x < -obs.sprite.displayWidth) obs.x = CR_WIDTH;
+          if (obs.x > CR_WIDTH) obs.x = -obs.sprite.displayWidth;
         }
       }
       
@@ -751,11 +909,11 @@ const CrossyRoadGame = ({ petSprite, onClose, petId }) => {
         // Быстрая проверка - только если препятствие на той же высоте (±1 полоса)
         if (Math.abs(obs.y - petY.current) > CR_LANE_HEIGHT) continue;
         
-        // Точная проверка столкновения
+        // Точная проверка столкновения с размерами спрайта машины
         if (
-          petTop < obs.y + CR_OBSTACLE_HEIGHT &&
+          petTop < obs.y + obs.sprite.displayHeight &&
           petBottom > obs.y &&
-          petLeft < obs.x + CR_OBSTACLE_WIDTH &&
+          petLeft < obs.x + obs.sprite.displayWidth &&
           petRight > obs.x
         ) {
           setGameOver(true);
@@ -786,7 +944,9 @@ const CrossyRoadGame = ({ petSprite, onClose, petId }) => {
     if (win && !rewarded) {
       const petState = getPetState(petId);
       const currentHappiness = petState?.happiness || 0;
-      const newHappiness = Math.min(100, currentHappiness + 10);
+      // Начисляем 5% счастья за уровень
+      const happinessGain = Math.floor(5 * level);
+      const newHappiness = Math.min(100, currentHappiness + happinessGain);
       updatePetStats(petId, { happiness: newHappiness });
       setRewarded(true);
       // Через короткую паузу — следующий уровень
@@ -795,41 +955,64 @@ const CrossyRoadGame = ({ petSprite, onClose, petId }) => {
         nextLevel();
       }, 1200);
     }
-  }, [win, rewarded, updatePetStats, petId, getPetState]);
+  }, [win, rewarded, updatePetStats, petId, getPetState, level]);
+
+  // Начисление счастья при game over
+  useEffect(() => {
+    if (gameOver && !rewarded && score > 0) {
+      const petState = getPetState(petId);
+      const currentHappiness = petState?.happiness || 0;
+      // Начисляем 5% счастья за уровень
+      const happinessGain = Math.floor(5 * level);
+      const newHappiness = Math.min(100, currentHappiness + happinessGain);
+      updatePetStats(petId, { happiness: newHappiness });
+      setRewarded(true);
+    }
+  }, [gameOver, rewarded, score, level, updatePetStats, petId, getPetState]);
 
   // Функция перехода на следующий уровень
   const nextLevel = () => {
+    // Выбираем новый фоновый тайл
+    setBackgroundTile(getRandomBackgroundTile());
+    
     // Увеличиваем сложность: больше полос с препятствиями, выше скорость
     let obsArr = [];
-    const lanes = Math.min(CR_LANE_COUNT, 3 + level); // от 3 до 7 полос
-    // Выбираем случайную безопасную дорогу (индекс полосы), не совпадающую со стартовой
-    let safeLane = Math.floor(Math.random() * (lanes - 1)); // исключаем стартовую
-    const startLane = lanes - 1;
-    // Стартовая полоса всегда самая нижняя
-    const startLaneY = CR_HEIGHT - CR_LANE_HEIGHT;
-    const safeLaneY = CR_HEIGHT - (safeLane + 1) * CR_LANE_HEIGHT;
+    const lanes = Math.min(CR_LANE_COUNT, 3 + Math.floor(level / 2)); // от 3 до 7 полос, увеличиваем медленнее
+    
+    // В упрощенной системе тайлов:
+    // - Нечетные полосы (i=1,3,5...) - дороги с машинами
+    // - Четные полосы (i=2,4,6...) - пустые полосы (газон, тротуар и т.д.)
+    
+    const startLane = lanes - 1; // Стартовая полоса всегда самая нижняя
+    
     for (let i = 0; i < lanes; i++) {
       const laneY = CR_HEIGHT - (i + 1) * CR_LANE_HEIGHT;
-      // Исключаем случайную безопасную и стартовую (нижнюю) полосу по y
-      if (laneY !== safeLaneY && laneY !== startLaneY) {
+      const isRoadLane = i % 2 === 1; // Нечетные полосы - дороги с машинами
+      
+      // Размещаем машины только на дорожных полосах
+      if (isRoadLane) {
         // На более высоких уровнях — больше препятствий на полосу
-        const obsPerLane = 1 + Math.floor(level / 2);
+        const obsPerLane = Math.min(1 + Math.floor(level / 3), 4); // Максимум 4 машины на полосу
+        const carPositions = generateCarPositions(laneY, obsPerLane, 60);
+        
         for (let j = 0; j < obsPerLane; j++) {
-          obsArr.push({
-            x: getRandomObstacleX(),
-            y: laneY,
-            dir: i % 2 === 0 ? 1 : -1
-          });
+          obsArr.push(createCarObstacle(
+            carPositions[j],
+            laneY,
+            i % 4 === 1 ? 1 : -1 // Чередуем направление движения
+          ));
         }
       }
     }
     obstacles.current = obsArr;
+    // Очищаем refs для машин
+    carRefs.current = {};
     petX.current = CR_WIDTH / 2 - CR_PET_SIZE / 2;
     petY.current = CR_HEIGHT - CR_PET_SIZE - 8;
     setGameOver(false);
     setStarted(false);
     setWin(false);
-    setRewarded(false);
+    setRewarded(false); // Сбрасываем флаг награды для нового уровня
     setRenderTick(t => t + 1);
   };
 
@@ -845,6 +1028,9 @@ const CrossyRoadGame = ({ petSprite, onClose, petId }) => {
   const restart = () => {
     setLevel(1);
     setScore(0);
+    setRewarded(false); // Сбрасываем флаг награды
+    // Очищаем refs для машин
+    carRefs.current = {};
     nextLevel();
   };
 
@@ -863,32 +1049,76 @@ const CrossyRoadGame = ({ petSprite, onClose, petId }) => {
       tabIndex={0}
       onClick={() => setStarted(true)}
     >
-      {/* Дороги (фон) */}
-      {[...Array(CR_LANE_COUNT)].map((_, i) => (
-        <div key={i} style={{
-          position: 'absolute',
-          left: 0,
-          top: CR_HEIGHT - (i + 1) * CR_LANE_HEIGHT,
-          width: CR_WIDTH,
-          height: CR_LANE_HEIGHT,
-          background: i % 2 === 1 ? '#cbd5e1' : 'transparent',
-          zIndex: 0
-        }} />
-      ))}
-      {/* Препятствия */}
+      {/* Дороги и фон (тайлы) */}
+      {[...Array(CR_LANE_COUNT)].map((_, i) => {
+        const laneY = CR_HEIGHT - (i + 1) * CR_LANE_HEIGHT;
+        const isRoadLane = i % 2 === 1; // Нечетные полосы - дороги с машинами
+        
+        if (isRoadLane) {
+          // Чередуем два типа дорожных тайлов для разнообразия
+          const tileSprite = i % 4 === 1 ? roadTiles.road : roadTiles.roadAlt;
+          
+          return (
+            <img
+              key={`road-${i}`}
+              src={tileSprite.src}
+              alt="road tile"
+              style={{
+                position: 'absolute',
+                left: 0,
+                top: laneY,
+                width: tileSprite.displayWidth,
+                height: tileSprite.displayHeight,
+                zIndex: 0,
+                userSelect: 'none',
+                pointerEvents: 'none',
+              }}
+            />
+          );
+        } else {
+          // Для четных полос используем фоновый тайл (трава или почва)
+          return (
+            <img
+              key={`background-${i}`}
+              src={backgroundTile.src}
+              alt="background tile"
+              style={{
+                position: 'absolute',
+                left: 0,
+                top: laneY,
+                width: backgroundTile.displayWidth,
+                height: backgroundTile.displayHeight,
+                zIndex: 0,
+                userSelect: 'none',
+                pointerEvents: 'none',
+              }}
+            />
+          );
+        }
+      })}
+      {/* Препятствия - машины */}
       {obstacles.current.map((obs, idx) => (
-        <div key={idx} style={{
-          position: 'absolute',
-          left: obs.x,
-          top: obs.y,
-          width: CR_OBSTACLE_WIDTH,
-          height: CR_OBSTACLE_HEIGHT,
-          background: '#64748b',
-          borderRadius: 8,
-          border: '2px solid #334155',
-          zIndex: 2,
-          willChange: 'transform', // мобильная оптимизация
-        }} />
+        <img
+          key={idx}
+          ref={(el) => {
+            if (el) {
+              carRefs.current[idx] = el;
+            }
+          }}
+          src={obs.sprite.src}
+          alt="car"
+          style={{
+            position: 'absolute',
+            left: obs.x,
+            top: obs.y,
+            width: obs.sprite.displayWidth,
+            height: obs.sprite.displayHeight,
+            zIndex: 2,
+            userSelect: 'none',
+            pointerEvents: 'none',
+            willChange: 'transform', // мобильная оптимизация
+          }}
+        />
       ))}
       {/* Питомец */}
       <img
@@ -940,22 +1170,25 @@ const CrossyRoadGame = ({ petSprite, onClose, petId }) => {
           zIndex: 20
         }}>
           Проигрыш!<br />
+          <div style={{ fontSize: 18, color: '#f59e0b', marginTop: 8 }}>
+            Достигнут уровень: {level}<br />
+            {score > 0 && `+${Math.floor(5 * level)} счастья`}
+          </div>
           <button onClick={restart} style={{ marginTop: 16, padding: '8px 20px', fontSize: 18, borderRadius: 8, border: 'none', background: '#64748b', color: '#fff', cursor: 'pointer' }}>Заново</button>
         </div>
       )}
-      {/* Кнопка выхода */}
-      <button onClick={onClose} style={{ position: 'absolute', top: 8, right: 8, zIndex: 30, background: 'rgba(255,255,255,0.7)', border: 'none', borderRadius: '50%', width: 32, height: 32, fontSize: 18, cursor: 'pointer' }} title="Выйти">
-        ×
-      </button>
       {/* Инструкция */}
       {!started && !gameOver && !win && (
         <div style={{ position: 'absolute', top: '45%', left: 0, width: '100%', textAlign: 'center', color: '#334155', fontSize: 18, zIndex: 15 }}>
           Кликните или используйте стрелки/A/D для управления, стрелка вверх/пробел — вперёд
         </div>
       )}
-      {/* Уровень и кнопка следующий уровень */}
-      <div style={{ position: 'absolute', top: 10, left: 10, color: '#fff', fontWeight: 'bold', fontSize: 18, zIndex: 15 }}>
+      {/* Уровень и скорость */}
+      <div style={{ position: 'absolute', top: 10, left: 10, color: '#334155', fontWeight: 'bold', fontSize: 16, zIndex: 15 }}>
         Уровень: {level}
+      </div>
+      <div style={{ position: 'absolute', top: 30, left: 10, color: '#64748b', fontWeight: 'bold', fontSize: 14, zIndex: 15 }}>
+        Скорость: {CR_OBSTACLE_SPEED_PER_SECOND + (level - 1) * 30}
       </div>
       {/* Не показываем стандартный оверлей победы и кнопку "заново" для Zuma, переход к следующему уровню автоматический */}
 
@@ -1215,7 +1448,7 @@ function getSpriteStyle(sprite, currentFrame = 0, row = 0) {
 }
 
 // ZumaGame с forwardRef
-const ZumaGame = React.forwardRef(({ petSprite, onClose, petId }, ref) => {
+const ZumaGame = React.forwardRef(({ petSprite, onClose, petId, onLevelChange, onNextBallChange, onSpriteFrameChange }, ref) => {
   const { updatePetStats, getPetState } = usePets();
   const [renderTick, setRenderTick] = useState(0);
   const [gameOver, setGameOver] = useState(false);
@@ -1777,6 +2010,10 @@ const ZumaGame = React.forwardRef(({ petSprite, onClose, petId }, ref) => {
     handleMobileShoot,
   }));
 
+  useEffect(() => { if (onLevelChange) onLevelChange(level); }, [level]);
+  useEffect(() => { if (onNextBallChange) onNextBallChange(nextBall); }, [nextBall]);
+  useEffect(() => { if (onSpriteFrameChange) onSpriteFrameChange(spriteFrame); }, [spriteFrame]);
+
   return (
     <div
       className="zuma-game"
@@ -1915,22 +2152,12 @@ const ZumaGame = React.forwardRef(({ petSprite, onClose, petId }, ref) => {
           y1={petY.current}
           x2={petX.current + Math.sin(aimAngle.current) * 80}
           y2={petY.current - Math.cos(aimAngle.current) * 80}
-          stroke="#64748b"
+          stroke="#ffffff"
           strokeWidth={3}
           strokeDasharray="8 8"
         />
       </svg>
-      {/* Следующий шар для выстрела */}
-      <div style={{
-        position: 'absolute',
-        left: petX.current - ZUMA_BALL_RADIUS,
-        top: petY.current - ZUMA_PET_SIZE / 2 - ZUMA_BALL_RADIUS - 18,
-        width: ZUMA_BALL_RADIUS * 2,
-        height: ZUMA_BALL_RADIUS * 2,
-        zIndex: 10,
-        boxShadow: '0 2px 8px rgba(0,0,0,0.12)',
-        ...getSpriteStyle(nextBall.sprite, spriteFrame, nextBall.sprite.currentRow || 0)
-      }} />
+
       {/* Питомец-стрелок */}
       <img
         src={petSprite}
@@ -1967,20 +2194,12 @@ const ZumaGame = React.forwardRef(({ petSprite, onClose, petId }, ref) => {
           <button onClick={restart} style={{ marginTop: 16, padding: '8px 20px', fontSize: 18, borderRadius: 8, border: 'none', background: '#64748b', color: '#fff', cursor: 'pointer' }}>Заново</button>
         </div>
       )}
-      {/* Кнопка выхода */}
-      <button onClick={onClose} style={{ position: 'absolute', top: 8, right: 8, zIndex: 30, background: 'rgba(255,255,255,0.7)', border: 'none', borderRadius: '50%', width: 32, height: 32, fontSize: 18, cursor: 'pointer' }} title="Выйти">
-        ×
-      </button>
       {/* Инструкция */}
       {!started && !gameOver && !win && (
         <div style={{ position: 'absolute', top: '45%', left: 0, width: '100%', textAlign: 'center', color: '#334155', fontSize: 18, zIndex: 15 }}>
           Кликните или используйте стрелки/A/D для прицеливания, пробел/клик — выстрел
         </div>
       )}
-      {/* Уровень и кнопка следующий уровень */}
-      <div style={{ position: 'absolute', top: 10, left: 10, color: '#fff', fontWeight: 'bold', fontSize: 18, zIndex: 15 }}>
-        Уровень: {level}
-      </div>
       {/* Не показываем стандартный оверлей победы и кнопку "заново" для Zuma, переход к следующему уровню автоматический */}
 
       {/* Кнопка Старт для мобильных */}
@@ -2030,6 +2249,11 @@ const PetMiniGameModal = ({ isOpen, onClose, pet }) => {
 
   const flappyRef = React.useRef();
   const zumaRef = React.useRef();
+  
+  // Состояния для Zuma
+  const [zumaLevel, setZumaLevel] = useState(1);
+  const [zumaNextBall, setZumaNextBall] = useState(null);
+  const [zumaSpriteFrame, setZumaSpriteFrame] = useState(0);
 
   return (
     <motion.div
@@ -2054,6 +2278,12 @@ const PetMiniGameModal = ({ isOpen, onClose, pet }) => {
           </button>
         </div>
         <div className="pet-minigame-modal-body" style={modalBodyStyle}>
+          {/* Отображение уровня для Zuma */}
+          {pet.gameType === 'can_swim' && (
+            <div style={{ textAlign: 'center', color: '#fff', fontWeight: 'bold', fontSize: 20, marginBottom: 8 }}>
+              Уровень: {zumaLevel}
+            </div>
+          )}
           <div style={{ flex: 1, position: 'relative', width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'flex-start' }}>
             {pet.gameType === 'can_fly' ? (
               <FlappyBirdGame ref={flappyRef} petSprite={petSprite} onClose={onClose} petId={pet.id} />
@@ -2062,7 +2292,7 @@ const PetMiniGameModal = ({ isOpen, onClose, pet }) => {
             ) : pet.gameType === 'can_walk' ? (
               <CrossyRoadGame petSprite={petSprite} onClose={onClose} petId={pet.id} />
             ) : pet.gameType === 'can_swim' ? (
-              <ZumaGame ref={zumaRef} petSprite={petSprite} onClose={onClose} petId={pet.id} />
+              <ZumaGame ref={zumaRef} petSprite={petSprite} onClose={onClose} petId={pet.id} onLevelChange={setZumaLevel} onNextBallChange={setZumaNextBall} onSpriteFrameChange={setZumaSpriteFrame} />
             ) : (
               <div style={{ padding: 32, textAlign: 'center' }}>Мини-игра для этого питомца не реализована</div>
             )}
@@ -2080,6 +2310,15 @@ const PetMiniGameModal = ({ isOpen, onClose, pet }) => {
               onShoot={e => zumaRef.current?.handleMobileShoot(e)}
               style={{ pointerEvents: 'auto', zIndex: 200 }}
             />
+          )}
+          {/* Отображение следующего шара для Zuma */}
+          {pet.gameType === 'can_swim' && zumaNextBall && (
+            <div style={{ display: 'flex', justifyContent: 'center', marginTop: 12 }}>
+              <div style={{
+                width: 32, height: 32,
+                ...getSpriteStyle(zumaNextBall.sprite, zumaSpriteFrame, zumaNextBall.sprite.currentRow || 0)
+              }} />
+            </div>
           )}
         </div>
       </motion.div>
