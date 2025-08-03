@@ -16,7 +16,7 @@ const MOBILE_SETTINGS = getPerformanceSettings();
 const getGameTypeText = (gameType) => {
   switch (gameType) {
     case 'can_fly':
-      return 'Мини-игра: Flappy Bird (летающий питомец)';
+      return 'Мини-игра: Полет над городом (летающий питомец)';
     case 'can_jump':
       return 'Мини-игра: Doodle Jump (прыгающий питомец)';
     case 'can_walk':
@@ -28,36 +28,151 @@ const getGameTypeText = (gameType) => {
   }
 };
 
-// --- Flappy Bird MiniGame ---
+// --- Полет над городом MiniGame ---
 const GAME_WIDTH = 320;
 const GAME_HEIGHT = 420;
 // Константы в единицах "на секунду" (оптимизированы для мобильных)
 const GRAVITY_PER_SECOND = isMobileDevice ? 600 : 600; // возвращаем нормальную гравитацию
 const JUMP_VELOCITY = isMobileDevice ? -240 : -240; // возвращаем нормальную скорость прыжка
-const PIPE_SPEED_PER_SECOND = isMobileDevice ? 120 : 120; // возвращаем нормальную скорость труб
-const PIPE_WIDTH = 48;
-const PIPE_GAP = 160;
-const PIPE_INTERVAL = isMobileDevice ? 1400 : 1400; // возвращаем нормальный интервал
+const OBSTACLE_SPEED_PER_SECOND = isMobileDevice ? 120 : 120; // возвращаем нормальную скорость препятствий
+const OBSTACLE_INTERVAL = isMobileDevice ? 1400 : 1400; // возвращаем нормальный интервал
 const PET_SIZE = 44;
 
-function getRandomPipeY() {
-  return 60 + Math.random() * (GAME_HEIGHT - PIPE_GAP - 120);
+// Параллакс фон константы
+const BACKGROUND_WIDTH = 576;
+const BACKGROUND_HEIGHT = 324;
+const PARALLAX_LAYERS = 5;
+const PARALLAX_SPEEDS = [0.1, 0.2, 0.3, 0.5, 0.8]; // Скорости для каждого слоя (относительно скорости препятствий)
+
+// Система фонов
+const BACKGROUND_SETS = {
+  1: {
+    name: 'Городской пейзаж',
+    layers: [
+      'sprites/minigames/flappy-bird/backgrounds/1/1.png',
+      'sprites/minigames/flappy-bird/backgrounds/1/2.png',
+      'sprites/minigames/flappy-bird/backgrounds/1/3.png',
+      'sprites/minigames/flappy-bird/backgrounds/1/4.png',
+      'sprites/minigames/flappy-bird/backgrounds/1/5.png'
+    ]
+  },
+  2: {
+    name: 'Природный пейзаж',
+    layers: [
+      'sprites/minigames/flappy-bird/backgrounds/2/1.png',
+      'sprites/minigames/flappy-bird/backgrounds/2/2.png',
+      'sprites/minigames/flappy-bird/backgrounds/2/3.png',
+      'sprites/minigames/flappy-bird/backgrounds/2/4.png',
+      'sprites/minigames/flappy-bird/backgrounds/2/5.png'
+    ]
+  },
+  3: {
+    name: 'Фантастический пейзаж',
+    layers: [
+      'sprites/minigames/flappy-bird/backgrounds/3/1.png',
+      'sprites/minigames/flappy-bird/backgrounds/3/2.png',
+      'sprites/minigames/flappy-bird/backgrounds/3/3.png',
+      'sprites/minigames/flappy-bird/backgrounds/3/4.png',
+      'sprites/minigames/flappy-bird/backgrounds/3/5.png'
+    ]
+  }
+};
+
+function getRandomBackgroundSet() {
+  const setKeys = Object.keys(BACKGROUND_SETS);
+  const randomKey = setKeys[Math.floor(Math.random() * setKeys.length)];
+  return BACKGROUND_SETS[randomKey];
 }
 
-// FlappyBirdGame с forwardRef
-const FlappyBirdGame = React.forwardRef(({ petSprite, onClose, petId }, ref) => {
+// Система спрайтов зданий
+const BUILDING_SPRITES = {
+  building_01: {
+    width: 48,
+    height: 125,
+    variants: [
+      'sprites/minigames/flappy-bird/objects/SCS_Building_01_Blue_Daytime_01.png',
+      'sprites/minigames/flappy-bird/objects/SCS_Building_01_Blue_Nighttime_01.png',
+      'sprites/minigames/flappy-bird/objects/SCS_Building_01_Daytime_01.png',
+      'sprites/minigames/flappy-bird/objects/SCS_Building_01_Green_Daytime_01.png',
+      'sprites/minigames/flappy-bird/objects/SCS_Building_01_Green_Nighttime_01.png',
+      'sprites/minigames/flappy-bird/objects/SCS_Building_01_Nighttime_01.png',
+      'sprites/minigames/flappy-bird/objects/SCS_Building_01_Red_Daytime_01.png',
+      'sprites/minigames/flappy-bird/objects/SCS_Building_01_Red_Nighttime_01.png'
+    ]
+  },
+  building_02: {
+    width: 72,
+    height: 237,
+    variants: [
+      'sprites/minigames/flappy-bird/objects/SCS_Building_02_Blue_Daytime_01.png',
+      'sprites/minigames/flappy-bird/objects/SCS_Building_02_Blue_Nighttime_01.png',
+      'sprites/minigames/flappy-bird/objects/SCS_Building_02_Daytime_01.png',
+      'sprites/minigames/flappy-bird/objects/SCS_Building_02_Green_Daytime_01.png',
+      'sprites/minigames/flappy-bird/objects/SCS_Building_02_Green_Nighttime_01.png',
+      'sprites/minigames/flappy-bird/objects/SCS_Building_02_Nighttime_01.png',
+      'sprites/minigames/flappy-bird/objects/SCS_Building_02_Red_Daytime_01.png',
+      'sprites/minigames/flappy-bird/objects/SCS_Building_02_Red_Nighttime_01.png'
+    ]
+  },
+  building_04: {
+    width: 48,
+    height: 89,
+    variants: [
+      'sprites/minigames/flappy-bird/objects/SCS_Building_04_Blue_Daytime_01.png',
+      'sprites/minigames/flappy-bird/objects/SCS_Building_04_Blue_Nighttime_01.png',
+      'sprites/minigames/flappy-bird/objects/SCS_Building_04_Daytime_01.png',
+      'sprites/minigames/flappy-bird/objects/SCS_Building_04_Green_Daytime_01.png',
+      'sprites/minigames/flappy-bird/objects/SCS_Building_04_Green_Nighttime_01.png',
+      'sprites/minigames/flappy-bird/objects/SCS_Building_04_Nighttime_01.png',
+      'sprites/minigames/flappy-bird/objects/SCS_Building_04_Red_Daytime_01.png',
+      'sprites/minigames/flappy-bird/objects/SCS_Building_04_Red_Nighttime_01.png'
+    ]
+  }
+};
+
+const FLYING_OBJECT_SIZE = 32;
+const FLYING_OBJECT_GAP = 100; // Расстояние между летящими объектами
+
+function getRandomBuildingSprite() {
+  const buildingTypes = Object.keys(BUILDING_SPRITES);
+  const randomType = buildingTypes[Math.floor(Math.random() * buildingTypes.length)];
+  const building = BUILDING_SPRITES[randomType];
+  const randomVariant = building.variants[Math.floor(Math.random() * building.variants.length)];
+  
+  // Масштабируем здания для лучшего соответствия размеру игры
+  const scale = 0.6; // Уменьшаем все здания на 40%
+  
+  return {
+    type: randomType,
+    src: randomVariant,
+    width: building.width * scale,
+    height: building.height * scale
+  };
+}
+
+function getRandomFlyingObjectY() {
+  return 40 + Math.random() * (GAME_HEIGHT / 2 - FLYING_OBJECT_SIZE - 40);
+}
+
+// FlyingOverCityGame с forwardRef
+const FlyingOverCityGame = React.forwardRef(({ petSprite, onClose, petId }, ref) => {
   const { updatePetStats, getPetState } = usePets();
   const [renderTick, setRenderTick] = useState(0);
   const [score, setScore] = useState(0);
   const [gameOver, setGameOver] = useState(false);
   const [started, setStarted] = useState(false);
   const [rewarded, setRewarded] = useState(false);
+  
+  // Состояние для параллакс фона
+  const [backgroundSet, setBackgroundSet] = useState(() => getRandomBackgroundSet());
+  const [parallaxPositions, setParallaxPositions] = useState([0, 0, 0, 0, 0]);
 
   // refs для физики и объектов
   const petY = useRef(GAME_HEIGHT / 2 - PET_SIZE / 2);
   const velocity = useRef(0);
-  const pipes = useRef([]);
-  const lastPipeTime = useRef(Date.now());
+  const obstacles = useRef([]); // [{x, type: 'building'|'flying', width, height, y}]
+  const lastObstacleTime = useRef(Date.now());
+  const petRef = useRef(null); // Ref для питомца
 
   // Управление прыжком
   const jump = () => {
@@ -87,7 +202,7 @@ const FlappyBirdGame = React.forwardRef(({ petSprite, onClose, petId }, ref) => 
     
     // Мобильная оптимизация
     if (isMobileDevice) {
-      const gameCanvas = document.querySelector('.flappybird-game');
+      const gameCanvas = document.querySelector('.flying-over-city-game');
       if (gameCanvas) {
         gameCanvas.style.willChange = 'transform';
         gameCanvas.style.transform = 'translateZ(0)';
@@ -121,37 +236,72 @@ const FlappyBirdGame = React.forwardRef(({ petSprite, onClose, petId }, ref) => 
         velocity.current = 0;
       }
       
-      // ОПТИМИЗИРОВАННОЕ движение труб - только каждый N-й кадр на мобильных
+      // ОПТИМИЗИРОВАННОЕ движение препятствий - только каждый N-й кадр на мобильных
       animationFrameCount++;
       if (animationFrameCount % MOBILE_SETTINGS.animationThrottle === 0) {
-        const pipeMovement = PIPE_SPEED_PER_SECOND * deltaTimeSeconds;
+        const obstacleMovement = OBSTACLE_SPEED_PER_SECOND * deltaTimeSeconds;
         
-        for (let i = pipes.current.length - 1; i >= 0; i--) {
-          const pipe = pipes.current[i];
-          pipe.x -= pipeMovement;
+        // Обновление параллакс позиций фона (реже для производительности)
+        if (frameCount % 2 === 0) {
+          setParallaxPositions(prevPositions => {
+            const newPositions = [...prevPositions];
+            for (let i = 0; i < PARALLAX_LAYERS; i++) {
+              newPositions[i] -= obstacleMovement * PARALLAX_SPEEDS[i];
+              // Зацикливание фона
+              if (newPositions[i] <= -GAME_WIDTH) {
+                newPositions[i] = 0;
+              }
+            }
+            return newPositions;
+          });
+        }
+        
+        for (let i = obstacles.current.length - 1; i >= 0; i--) {
+          const obstacle = obstacles.current[i];
+          obstacle.x -= obstacleMovement;
           
-          if (pipe.x + PIPE_WIDTH <= 0) {
-            pipes.current.splice(i, 1);
+          if (obstacle.x + obstacle.width <= 0) {
+            obstacles.current.splice(i, 1);
           }
         }
         
-        // Добавление новых труб
-        if (Date.now() - lastPipeTime.current > PIPE_INTERVAL) {
-          pipes.current.push({
-            x: GAME_WIDTH,
-            y: getRandomPipeY(),
-            passed: false
-          });
-          lastPipeTime.current = Date.now();
+        // Добавление новых препятствий
+        if (Date.now() - lastObstacleTime.current > OBSTACLE_INTERVAL) {
+          // Случайно выбираем тип препятствия
+          const obstacleType = Math.random() < 0.7 ? 'building' : 'flying'; // 70% здания, 30% летящие объекты
+          
+          if (obstacleType === 'building') {
+            const buildingSprite = getRandomBuildingSprite();
+            obstacles.current.push({
+              x: GAME_WIDTH,
+              type: 'building',
+              width: buildingSprite.width,
+              height: buildingSprite.height,
+              y: GAME_HEIGHT - buildingSprite.height, // Здания всегда внизу
+              sprite: buildingSprite.src,
+              passed: false
+            });
+          } else {
+            obstacles.current.push({
+              x: GAME_WIDTH,
+              type: 'flying',
+              width: FLYING_OBJECT_SIZE,
+              height: FLYING_OBJECT_SIZE,
+              y: getRandomFlyingObjectY(),
+              passed: false
+            });
+          }
+          lastObstacleTime.current = Date.now();
         }
       }
       
       // Проверка столкновений
-      for (let pipe of pipes.current) {
+      for (let obstacle of obstacles.current) {
         if (
-          pipe.x < 60 + PET_SIZE &&
-          pipe.x + PIPE_WIDTH > 60 &&
-          (petY.current < pipe.y || petY.current + PET_SIZE > pipe.y + PIPE_GAP)
+          obstacle.x < 60 + PET_SIZE &&
+          obstacle.x + obstacle.width > 60 &&
+          petY.current < obstacle.y + obstacle.height &&
+          petY.current + PET_SIZE > obstacle.y
         ) {
           setGameOver(true);
           return;
@@ -163,10 +313,10 @@ const FlappyBirdGame = React.forwardRef(({ petSprite, onClose, petId }, ref) => 
       }
       
       // ОПТИМИЗИРОВАННЫЙ подсчёт очков
-      for (let i = 0; i < pipes.current.length; i++) {
-        const pipe = pipes.current[i];
-        if (!pipe.passed && pipe.x + PIPE_WIDTH < 60) {
-          pipe.passed = true;
+      for (let i = 0; i < obstacles.current.length; i++) {
+        const obstacle = obstacles.current[i];
+        if (!obstacle.passed && obstacle.x + obstacle.width < 60) {
+          obstacle.passed = true;
           setScore(s => s + 1);
         }
       }
@@ -193,11 +343,28 @@ const FlappyBirdGame = React.forwardRef(({ petSprite, onClose, petId }, ref) => 
     }
   }, [gameOver, rewarded, score, updatePetStats, petId, getPetState]);
 
-  // Начальные трубы при старте
+  // useEffect для отзеркаливания питомца
   useEffect(() => {
-    if (started && pipes.current.length === 0) {
-      pipes.current = [
-        { x: GAME_WIDTH, y: getRandomPipeY(), passed: false }
+    if (petRef.current) {
+      // Питомец всегда смотрит вправо (в направлении движения)
+      petRef.current.style.setProperty('transform', 'scaleX(-1)', 'important');
+    }
+  }, [renderTick]); // Зависит от renderTick для обновления при изменении позиции
+
+  // Начальные препятствия при старте
+  useEffect(() => {
+    if (started && obstacles.current.length === 0) {
+      const buildingSprite = getRandomBuildingSprite();
+      obstacles.current = [
+        { 
+          x: GAME_WIDTH, 
+          type: 'building',
+          width: buildingSprite.width,
+          height: buildingSprite.height,
+          y: GAME_HEIGHT - buildingSprite.height,
+          sprite: buildingSprite.src,
+          passed: false 
+        }
       ];
     }
   }, [started]);
@@ -206,68 +373,119 @@ const FlappyBirdGame = React.forwardRef(({ petSprite, onClose, petId }, ref) => 
   const restart = () => {
     petY.current = GAME_HEIGHT / 2 - PET_SIZE / 2;
     velocity.current = 0;
-    pipes.current = [];
+    obstacles.current = [];
     setScore(0);
     setGameOver(false);
     setStarted(false);
-    lastPipeTime.current = Date.now();
+    lastObstacleTime.current = Date.now();
     setRenderTick(t => t + 1);
     setRewarded(false);
+    
+    // Сброс параллакс фона
+    setBackgroundSet(getRandomBackgroundSet());
+    setParallaxPositions([0, 0, 0, 0, 0]);
   };
 
   React.useImperativeHandle(ref, () => ({ jump }));
 
   return (
-    <div className="flappybird-game" style={{ width: GAME_WIDTH, height: GAME_HEIGHT, position: 'relative', background: '#e0f2fe', borderRadius: 12, overflow: 'hidden', margin: '0 auto' }}
+    <div className="flying-over-city-game" style={{ width: GAME_WIDTH, height: GAME_HEIGHT, position: 'relative', borderRadius: 12, overflow: 'hidden', margin: '0 auto' }}
       tabIndex={0}
       onClick={jump}
     >
-      {/* Питомец */}
-      <img
-        src={petSprite}
-        alt="pet"
-        style={{
-          position: 'absolute',
-          left: 60,
-          top: petY.current,
-          width: PET_SIZE,
-          height: PET_SIZE,
-          zIndex: 2,
-          userSelect: 'none',
-          pointerEvents: 'none',
-          transform: 'scaleX(-1)',
-          willChange: 'transform', // мобильная оптимизация
-        }}
-      />
-      {/* Трубы */}
-      {pipes.current.map((pipe, idx) => (
-        <React.Fragment key={idx}>
-          {/* Верхняя труба */}
-          <div style={{
+      {/* Параллакс фон */}
+      {backgroundSet.layers.map((layerSrc, index) => (
+        <div
+          key={index}
+          style={{
             position: 'absolute',
-            left: pipe.x,
+            left: parallaxPositions[index],
             top: 0,
-            width: PIPE_WIDTH,
-            height: pipe.y,
-            background: '#38bdf8',
-            borderRadius: 8,
-            border: '2px solid #0284c7',
-            willChange: 'transform', // мобильная оптимизация
-          }} />
-          {/* Нижняя труба */}
-          <div style={{
-            position: 'absolute',
-            left: pipe.x,
-            top: pipe.y + PIPE_GAP,
-            width: PIPE_WIDTH,
-            height: GAME_HEIGHT - (pipe.y + PIPE_GAP),
-            background: '#38bdf8',
-            borderRadius: 8,
-            border: '2px solid #0284c7',
-            willChange: 'transform', // мобильная оптимизация
-          }} />
-        </React.Fragment>
+            width: GAME_WIDTH,
+            height: GAME_HEIGHT,
+            backgroundImage: `url(${getStaticPath(layerSrc)})`,
+            backgroundSize: `${GAME_WIDTH}px ${GAME_HEIGHT}px`,
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat',
+            zIndex: index,
+            willChange: 'transform',
+          }}
+        />
       ))}
+      {/* Второй экземпляр каждого слоя для бесшовного зацикливания */}
+      {backgroundSet.layers.map((layerSrc, index) => (
+        <div
+          key={`${index}-duplicate`}
+          style={{
+            position: 'absolute',
+            left: parallaxPositions[index] + GAME_WIDTH,
+            top: 0,
+            width: GAME_WIDTH,
+            height: GAME_HEIGHT,
+            backgroundImage: `url(${getStaticPath(layerSrc)})`,
+            backgroundSize: `${GAME_WIDTH}px ${GAME_HEIGHT}px`,
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat',
+            zIndex: index,
+            willChange: 'transform',
+          }}
+        />
+      ))}
+      
+              {/* Питомец */}
+        <img
+          ref={petRef}
+          src={petSprite}
+          alt="pet"
+          style={{
+            position: 'absolute',
+            left: 60,
+            top: petY.current,
+            width: PET_SIZE,
+            height: PET_SIZE,
+            zIndex: 10,
+            userSelect: 'none',
+            pointerEvents: 'none',
+            willChange: 'transform', // мобильная оптимизация
+          }}
+        />
+              {/* Препятствия */}
+        {obstacles.current.map((obstacle, idx) => (
+          obstacle.type === 'building' ? (
+            <img
+              key={idx}
+              src={getStaticPath(obstacle.sprite)}
+              alt="building"
+              style={{
+                position: 'absolute',
+                left: obstacle.x,
+                top: obstacle.y,
+                width: obstacle.width,
+                height: obstacle.height,
+                willChange: 'transform', // мобильная оптимизация
+                zIndex: 8,
+                userSelect: 'none',
+                pointerEvents: 'none',
+              }}
+            />
+          ) : (
+            <div
+              key={idx}
+              style={{
+                position: 'absolute',
+                left: obstacle.x,
+                top: obstacle.y,
+                width: obstacle.width,
+                height: obstacle.height,
+                background: '#ff6b6b', // Красный для летящих объектов
+                borderRadius: 8,
+                border: '2px solid #e74c3c',
+                willChange: 'transform', // мобильная оптимизация
+                zIndex: 8,
+              }}
+            />
+          )
+        ))}
       {/* Счёт */}
       <div style={{
         position: 'absolute',
@@ -279,8 +497,19 @@ const FlappyBirdGame = React.forwardRef(({ petSprite, onClose, petId }, ref) => 
         fontWeight: 'bold',
         color: '#0284c7',
         textShadow: '1px 1px 2px #fff',
-        zIndex: 10
+        zIndex: 15
       }}>{score}</div>
+      
+      {/* Название фона (для отладки) */}
+      <div style={{
+        position: 'absolute',
+        top: 40,
+        left: 10,
+        fontSize: 12,
+        color: '#fff',
+        textShadow: '1px 1px 2px #000',
+        zIndex: 15
+      }}>{backgroundSet.name}</div>
       {/* Game Over */}
       {gameOver && (
         <div style={{
@@ -302,7 +531,7 @@ const FlappyBirdGame = React.forwardRef(({ petSprite, onClose, petId }, ref) => 
       {/* Инструкция */}
       {!started && !gameOver && (
         <div style={{ position: 'absolute', top: '45%', left: 0, width: '100%', textAlign: 'center', color: '#334155', fontSize: 18, zIndex: 15 }}>
-          Кликните или нажмите пробел для прыжка
+          Кликните или нажмите пробел для полета
         </div>
       )}
     </div>
@@ -2286,7 +2515,7 @@ const PetMiniGameModal = ({ isOpen, onClose, pet }) => {
           )}
           <div style={{ flex: 1, position: 'relative', width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'flex-start' }}>
             {pet.gameType === 'can_fly' ? (
-              <FlappyBirdGame ref={flappyRef} petSprite={petSprite} onClose={onClose} petId={pet.id} />
+              <FlyingOverCityGame ref={flappyRef} petSprite={petSprite} onClose={onClose} petId={pet.id} />
             ) : pet.gameType === 'can_jump' ? (
               <DoodleJumpGame petSprite={petSprite} onClose={onClose} petId={pet.id} />
             ) : pet.gameType === 'can_walk' ? (
@@ -2299,7 +2528,7 @@ const PetMiniGameModal = ({ isOpen, onClose, pet }) => {
           </div>
           {/* Панель управления для мобильных — рендерится под сценой */}
           {pet.gameType === 'can_fly' && isMobile && (
-            <FlappyBirdMobileControls onJump={() => flappyRef.current?.jump()} />
+            <FlyingOverCityMobileControls onJump={() => flappyRef.current?.jump()} />
           )}
           {pet.gameType === 'can_jump' && isMobile && <DoodleJumpMobileControls />}
           {pet.gameType === 'can_walk' && isMobile && <CrossyRoadMobileControls />}
@@ -2458,8 +2687,8 @@ const ZumaMobileControls = ({ onJoystickMove, onJoystickEnd, onShoot }) => (
   </div>
 );
 
-// Flappy Bird Mobile Controls
-const FlappyBirdMobileControls = ({ onJump }) => (
+// Flying Over City Mobile Controls
+const FlyingOverCityMobileControls = ({ onJump }) => (
   <div style={{ width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '0 0 12px 0', pointerEvents: 'none', zIndex: 200 }}>
     <OneShotButton
       onAction={onJump}
