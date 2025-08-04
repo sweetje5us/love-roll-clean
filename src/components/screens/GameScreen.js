@@ -16,6 +16,7 @@ import ShopModal from '../ui/ShopModal';
 import InventoryModal from '../ui/InventoryModal';
 import PauseMenuModal from '../ui/PauseMenuModal';
 import PetModal from '../ui/PetModal';
+import PhoneModal from '../ui/PhoneModal';
 import NotificationSystem from '../ui/NotificationSystem';
 import GameNotificationSystem from '../ui/GameNotificationSystem';
 import InlineDiceRoll from '../ui/InlineDiceRoll';
@@ -351,6 +352,9 @@ const GameScreen = () => {
   
   // Состояние для модального окна питомца
   const [isPetModalOpen, setIsPetModalOpen] = useState(false);
+  
+  // Состояние для модального окна телефона
+  const [isPhoneModalOpen, setIsPhoneModalOpen] = useState(false);
   
   // Состояние для отслеживания изменений отношений
   const [hasNewRelationshipChanges, setHasNewRelationshipChanges] = useState(false);
@@ -928,6 +932,14 @@ const GameScreen = () => {
   // Обработчик закрытия модального окна питомца
   const handleClosePetModal = () => {
     setIsPetModalOpen(false);
+  };
+
+  const handleOpenPhoneModal = () => {
+    setIsPhoneModalOpen(true);
+  };
+
+  const handleClosePhoneModal = () => {
+    setIsPhoneModalOpen(false);
   };
 
   // Обработчик закрытия встроенного интерфейса броска кубика
@@ -1735,6 +1747,9 @@ const GameScreen = () => {
               </div>
             )}
           </button>
+          <button className="game-nav-button pulse" onClick={handleOpenPhoneModal} title="Телефон">
+            <i className="fas fa-mobile-alt"></i>
+          </button>
           <button className="game-nav-button pulse" onClick={handleOpenPauseMenu} title="Пауза">
             <i className="fas fa-pause"></i>
           </button>
@@ -2048,6 +2063,12 @@ const GameScreen = () => {
         isOpen={isPetModalOpen}
         onClose={handleClosePetModal}
         character={selectedCharacter}
+      />
+
+      {/* Модальное окно телефона */}
+      <PhoneModal
+        isOpen={isPhoneModalOpen}
+        onClose={handleClosePhoneModal}
       />
 
       {/* Встроенный интерфейс броска кубика */}

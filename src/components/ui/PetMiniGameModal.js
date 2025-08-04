@@ -545,6 +545,18 @@ const DJ_PET_SIZE = 44;
 const DJ_PLATFORM_WIDTH = 60;
 const DJ_PLATFORM_HEIGHT = 12;
 const DJ_PLATFORM_COUNT = 8;
+
+// Константы для танков-платформ
+const DJ_TANK_SPRITES = [
+  'sprites/minigames/doodle-jump/Props/tank-1.png',
+  'sprites/minigames/doodle-jump/Props/tank-2.png',
+  'sprites/minigames/doodle-jump/Props/tank-3.png'
+];
+const DJ_TANK_ORIGINAL_WIDTH = 122;
+const DJ_TANK_ORIGINAL_HEIGHT = 48;
+const DJ_TANK_SCALE = DJ_PLATFORM_WIDTH / DJ_TANK_ORIGINAL_WIDTH;
+const DJ_TANK_DISPLAY_WIDTH = DJ_TANK_ORIGINAL_WIDTH * DJ_TANK_SCALE;
+const DJ_TANK_DISPLAY_HEIGHT = DJ_TANK_ORIGINAL_HEIGHT * DJ_TANK_SCALE;
 // Константы в единицах "на секунду" (оптимизированы для мобильных)
 const DJ_GRAVITY_PER_SECOND = isMobileDevice ? 400 : 400; // возвращаем нормальную гравитацию
 const DJ_JUMP_VELOCITY = isMobileDevice ? -300 : -300; // возвращаем нормальную скорость прыжка
@@ -552,6 +564,10 @@ const DJ_MOVE_SPEED_PER_SECOND = isMobileDevice ? 240 : 240; // возвраща
 
 function getRandomPlatformX() {
   return Math.random() * (DJ_WIDTH - DJ_PLATFORM_WIDTH);
+}
+
+function getRandomTankSprite() {
+  return DJ_TANK_SPRITES[Math.floor(Math.random() * DJ_TANK_SPRITES.length)];
 }
 
 const DoodleJumpGame = ({ petSprite, onClose, petId }) => {
@@ -569,6 +585,15 @@ const DoodleJumpGame = ({ petSprite, onClose, petId }) => {
   const platforms = useRef([]);
   const maxY = useRef(petY.current);
   const moveDir = useRef(0); // -1 влево, 1 вправо
+  
+  // refs для параллакс фона
+  const backgroundY = useRef(0);
+  
+  // Массивы для хранения позиций фоновых слоев (для бесшовного зацикливания)
+  const backgroundLayers = useRef([0, DJ_HEIGHT - 50, (DJ_HEIGHT - 50) * 2]);
+  
+  // refs для платформ-танков
+  const platformRefs = useRef([]);
 
   // Управление
   useEffect(() => {
@@ -651,16 +676,31 @@ const DoodleJumpGame = ({ petSprite, onClose, petId }) => {
       // ОПТИМИЗИРОВАННОЕ движение платформ - только каждый N-й кадр на мобильных
       animationFrameCount++;
       if (animationFrameCount % MOBILE_SETTINGS.animationThrottle === 0) {
-        // Движение платформ вниз, если питомец поднимается выше середины
-        if (petY.current < DJ_HEIGHT / 2) {
-          const diff = DJ_HEIGHT / 2 - petY.current;
-          petY.current = DJ_HEIGHT / 2;
-          maxY.current -= diff;
-          
-          // ОПТИМИЗИРОВАННОЕ движение платформ - изменяем in-place
-          for (let i = 0; i < platforms.current.length; i++) {
-            platforms.current[i].y += diff;
-          }
+                  // Движение платформ вниз, если питомец поднимается выше середины
+          if (petY.current < DJ_HEIGHT / 2) {
+            const diff = DJ_HEIGHT / 2 - petY.current;
+            petY.current = DJ_HEIGHT / 2;
+            maxY.current -= diff;
+            
+            // Параллакс эффект для фоновых слоев с бесшовным зацикливанием
+            // Задний слой движется медленнее
+            for (let i = 0; i < backgroundLayers.current.length; i++) {
+              backgroundLayers.current[i] += diff * 0.3;
+            }
+            
+            // Перемещаем задние слои, которые вышли за границу
+            for (let i = 0; i < backgroundLayers.current.length; i++) {
+              if (backgroundLayers.current[i] >= DJ_HEIGHT - 50) {
+                // Находим самый верхний слой
+                let minY = Math.min(...backgroundLayers.current);
+                backgroundLayers.current[i] = minY - DJ_HEIGHT + 50;
+              }
+            }
+            
+            // ОПТИМИЗИРОВАННОЕ движение платформ - изменяем in-place
+            for (let i = 0; i < platforms.current.length; i++) {
+              platforms.current[i].y += diff;
+            }
           
           // Добавляем платформы (оптимизированный поиск минимального Y)
           while (platforms.current.length < DJ_PLATFORM_COUNT) {
@@ -672,7 +712,9 @@ const DoodleJumpGame = ({ petSprite, onClose, petId }) => {
             }
             platforms.current.push({
               x: getRandomPlatformX(),
-              y: minY - 60 - Math.random() * 30
+              y: minY - 60 - Math.random() * 30,
+              sprite: getRandomTankSprite(),
+              direction: Math.random() > 0.5 ? 1 : -1 // 1 = вправо, -1 = влево
             });
           }
           
@@ -713,6 +755,15 @@ const DoodleJumpGame = ({ petSprite, onClose, petId }) => {
     }
   }, [gameOver, rewarded, score, updatePetStats, petId, getPetState]);
 
+  // Применение отзеркаливания к платформам
+  useEffect(() => {
+    platforms.current.forEach((plat, idx) => {
+      if (platformRefs.current[idx]) {
+        platformRefs.current[idx].style.setProperty('transform', plat.direction === 1 ? 'scaleX(-1)' : 'scaleX(1)', 'important');
+      }
+    });
+  }, [renderTick]);
+
   // Инициализация платформ
   useEffect(() => {
     if (!started || platforms.current.length > 0) return;
@@ -721,7 +772,9 @@ const DoodleJumpGame = ({ petSprite, onClose, petId }) => {
       plats.push({
         x: getRandomPlatformX(),
         y: DJ_HEIGHT - i * 60 - 40,
-        visited: i === 0 // первая платформа сразу отмечена как посещённая
+        visited: i === 0, // первая платформа сразу отмечена как посещённая
+        sprite: getRandomTankSprite(),
+        direction: Math.random() > 0.5 ? 1 : -1 // 1 = вправо, -1 = влево
       });
     }
     // Первая платформа строго под питомцем
@@ -745,7 +798,9 @@ const DoodleJumpGame = ({ petSprite, onClose, petId }) => {
       plats.push({
         x: getRandomPlatformX(),
         y: DJ_HEIGHT - i * 60 - 40,
-        visited: i === 0
+        visited: i === 0,
+        sprite: getRandomTankSprite(),
+        direction: Math.random() > 0.5 ? 1 : -1 // 1 = вправо, -1 = влево
       });
     }
     plats[0].x = DJ_WIDTH / 2 - DJ_PLATFORM_WIDTH / 2;
@@ -755,6 +810,11 @@ const DoodleJumpGame = ({ petSprite, onClose, petId }) => {
     petY.current = plats[0].y - DJ_PET_SIZE;
     velocityY.current = 0;
     maxY.current = petY.current;
+    
+    // Сброс параллакс фона
+    backgroundY.current = 0;
+    backgroundLayers.current = [0, DJ_HEIGHT - 50, (DJ_HEIGHT - 50) * 2];
+    
     setScore(0);
     setGameOver(false);
     setStarted(false);
@@ -777,6 +837,25 @@ const DoodleJumpGame = ({ petSprite, onClose, petId }) => {
       tabIndex={0}
       onClick={() => setStarted(true)}
     >
+      {/* Задние слои параллакс фона */}
+      {backgroundLayers.current.map((y, index) => (
+        <div
+          key={`background-${index}`}
+          style={{
+            position: 'absolute',
+            left: 0,
+            top: y,
+            width: DJ_WIDTH,
+            height: DJ_HEIGHT,
+            backgroundImage: `url(sprites/minigames/doodle-jump/back.png)`,
+            backgroundSize: `${DJ_WIDTH}px ${DJ_HEIGHT}px`,
+            backgroundRepeat: 'no-repeat',
+            zIndex: 0,
+            willChange: 'transform',
+          }}
+        />
+      ))}
+      
       {/* Питомец */}
       <img
         src={petSprite}
@@ -793,20 +872,31 @@ const DoodleJumpGame = ({ petSprite, onClose, petId }) => {
           willChange: 'transform', // мобильная оптимизация
         }}
       />
-      {/* Платформы */}
+      
+      {/* Платформы-танки */}
       {platforms.current.map((plat, idx) => (
-        <div key={idx} style={{
-          position: 'absolute',
-          left: plat.x,
-          top: plat.y,
-          width: DJ_PLATFORM_WIDTH,
-          height: DJ_PLATFORM_HEIGHT,
-          background: '#fde047',
-          borderRadius: 6,
-          border: '2px solid #facc15',
-          willChange: 'transform', // мобильная оптимизация
-        }} />
+        <img
+          key={idx}
+          ref={el => platformRefs.current[idx] = el}
+          src={plat.sprite}
+          alt="tank platform"
+          style={{
+            position: 'absolute',
+            left: plat.x - (DJ_TANK_DISPLAY_WIDTH - DJ_PLATFORM_WIDTH) / 2, // центрируем танк относительно физического тела
+            top: plat.y - (DJ_TANK_DISPLAY_HEIGHT - DJ_PLATFORM_HEIGHT), // выравниваем по нижней границе
+            width: DJ_TANK_DISPLAY_WIDTH,
+            height: DJ_TANK_DISPLAY_HEIGHT,
+            zIndex: 3,
+            willChange: 'transform', // мобильная оптимизация
+            userSelect: 'none',
+            pointerEvents: 'none',
+          }}
+        />
       ))}
+      
+
+      
+
       {/* Счёт */}
       <div style={{
         position: 'absolute',
@@ -818,7 +908,7 @@ const DoodleJumpGame = ({ petSprite, onClose, petId }) => {
         fontWeight: 'bold',
         color: '#f59e42',
         textShadow: '1px 1px 2px #fff',
-        zIndex: 10
+        zIndex: 20
       }}>{score}</div>
       {/* Game Over */}
       {gameOver && (
@@ -832,7 +922,7 @@ const DoodleJumpGame = ({ petSprite, onClose, petId }) => {
           fontSize: 32,
           fontWeight: 'bold',
           textShadow: '1px 1px 2px #fff',
-          zIndex: 20
+          zIndex: 25
         }}>
           Игра окончена!<br />
           <button onClick={restart} style={{ marginTop: 16, padding: '8px 20px', fontSize: 18, borderRadius: 8, border: 'none', background: '#fde047', color: '#fff', cursor: 'pointer' }}>Заново</button>
@@ -840,7 +930,7 @@ const DoodleJumpGame = ({ petSprite, onClose, petId }) => {
       )}
       {/* Инструкция */}
       {!started && !gameOver && (
-        <div style={{ position: 'absolute', top: '45%', left: 0, width: '100%', textAlign: 'center', color: '#a16207', fontSize: 18, zIndex: 15 }}>
+        <div style={{ position: 'absolute', top: '45%', left: 0, width: '100%', textAlign: 'center', color: '#a16207', fontSize: 18, zIndex: 20 }}>
           Кликните или нажмите стрелки/A/D для управления
         </div>
       )}
@@ -866,14 +956,14 @@ const CR_ROAD_TILES = {
     src: 'sprites/minigames/crossy-road/Road_01_Tile_03.png',
     width: 512,
     height: 688,
-    displayWidth: CR_WIDTH,
+    displayWidth: 160, // Размер одного блока дороги
     displayHeight: CR_LANE_HEIGHT
   },
   roadAlt: {
     src: 'sprites/minigames/crossy-road/Road_01_Tile_04.png',
     width: 512,
     height: 688,
-    displayWidth: CR_WIDTH,
+    displayWidth: 160, // Размер одного блока дороги
     displayHeight: CR_LANE_HEIGHT
   }
 };
@@ -1274,11 +1364,27 @@ const CrossyRoadGame = ({ petSprite, onClose, petId }) => {
 
 
   return (
-    <div className="crossyroad-game" style={{ width: CR_WIDTH, height: CR_HEIGHT, position: 'relative', background: '#e0e7ef', borderRadius: 12, overflow: 'hidden', margin: '0 auto' }}
+    <div className="crossyroad-game" style={{ width: CR_WIDTH, height: CR_HEIGHT, position: 'relative', borderRadius: 12, overflow: 'hidden', margin: '0 auto' }}
       tabIndex={0}
       onClick={() => setStarted(true)}
     >
-      {/* Дороги и фон (тайлы) */}
+      {/* Фоновый спрайт для всей игры */}
+      <img
+        src={backgroundTile.src}
+        alt="background"
+        style={{
+          position: 'absolute',
+          left: 0,
+          top: 0,
+          width: CR_WIDTH,
+          height: CR_HEIGHT,
+          zIndex: 0,
+          userSelect: 'none',
+          pointerEvents: 'none',
+        }}
+      />
+      
+      {/* Дороги (состоящие из нескольких блоков) */}
       {[...Array(CR_LANE_COUNT)].map((_, i) => {
         const laneY = CR_HEIGHT - (i + 1) * CR_LANE_HEIGHT;
         const isRoadLane = i % 2 === 1; // Нечетные полосы - дороги с машинами
@@ -1287,42 +1393,28 @@ const CrossyRoadGame = ({ petSprite, onClose, petId }) => {
           // Чередуем два типа дорожных тайлов для разнообразия
           const tileSprite = i % 4 === 1 ? roadTiles.road : roadTiles.roadAlt;
           
-          return (
+          // Создаем несколько блоков дороги для покрытия всей ширины
+          const blocksNeeded = Math.ceil(CR_WIDTH / tileSprite.displayWidth) + 1; // +1 для перекрытия
+          
+          return [...Array(blocksNeeded)].map((_, blockIndex) => (
             <img
-              key={`road-${i}`}
+              key={`road-${i}-${blockIndex}`}
               src={tileSprite.src}
               alt="road tile"
               style={{
                 position: 'absolute',
-                left: 0,
+                left: blockIndex * tileSprite.displayWidth,
                 top: laneY,
                 width: tileSprite.displayWidth,
                 height: tileSprite.displayHeight,
-                zIndex: 0,
+                zIndex: 1,
                 userSelect: 'none',
                 pointerEvents: 'none',
               }}
             />
-          );
+          ));
         } else {
-          // Для четных полос используем фоновый тайл (трава или почва)
-          return (
-            <img
-              key={`background-${i}`}
-              src={backgroundTile.src}
-              alt="background tile"
-              style={{
-                position: 'absolute',
-                left: 0,
-                top: laneY,
-                width: backgroundTile.displayWidth,
-                height: backgroundTile.displayHeight,
-                zIndex: 0,
-                userSelect: 'none',
-                pointerEvents: 'none',
-              }}
-            />
-          );
+          return null; // Четные полосы теперь используют общий фоновый спрайт
         }
       })}
       {/* Препятствия - машины */}

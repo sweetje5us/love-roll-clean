@@ -1,0 +1,2610 @@
+/* Phone Modal Overlay */
+.phone-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10000;
+  backdrop-filter: blur(5px);
+}
+
+.phone-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+/* Device Styles (from iphone.html) */
+ .device {
+   position: relative;
+   background-color: #3c3c3c;
+   width: 320px;
+   height: 568px;
+   border: 22px solid #222;
+   border-top-width: 60px;
+   border-bottom-width: 70px;
+   border-radius: 36px;
+   box-shadow: 0 20px 40px 0 #8c8c8c;
+   text-align: left;
+   overflow: visible;
+ }
+
+.device:before {
+  content: "";
+  position: absolute;
+  top: -1px;
+  left: -1px;
+  right: -1px;
+  bottom: -1px;
+  z-index: 9;
+  pointer-events: none;
+  border: 1px solid #757575;
+  border-radius: 2px;
+  box-shadow: inset 0 0 100px 0px rgba(123, 123, 123, 0.1);
+}
+
+.device.iphone5 {
+  width: 320px;
+  height: 568px;
+}
+
+ .device-volume-buttons {
+   position: absolute;
+   top: 64px;
+   left: -26px;
+   width: 4px;
+   height: 60px;
+   z-index: 10;
+ }
+
+ .device-volume-button-plus {
+   position: absolute;
+   top: 0;
+   left: 0;
+   width: 4px;
+   height: 24px;
+   border-radius: 3px 0 0 3px;
+   background: linear-gradient(to bottom, #5e5e5e 0%, #7c7c7c 28%, #5e5e5e 100%);
+ }
+
+  .device-volume-button-min {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 4px;
+    height: 24px;
+    border-radius: 3px 0 0 3px;
+    background: linear-gradient(to bottom, #5e5e5e 0%, #7c7c7c 28%, #5e5e5e 100%);
+  }
+
+  .device-power-button {
+    position: absolute;
+    top: 120px;
+    right: -26px;
+    width: 4px;
+    height: 40px;
+    border-radius: 0 3px 3px 0;
+    background: linear-gradient(to bottom, #5e5e5e 0%, #7c7c7c 28%, #5e5e5e 100%);
+    z-index: 10;
+  }
+
+  .device-headphone-jack {
+    position: absolute;
+    bottom: -45px;
+    left: 50%;
+    width: 8px;
+    height: 8px;
+    background-color: #2b2b2b;
+    border-radius: 50%;
+    margin-left: -4px;
+    border: 1px solid #3c3c3c;
+    box-shadow: inset 0 0 10px -1px #353535;
+    z-index: 10;
+  }
+
+  .device-lightning-port {
+    position: absolute;
+    bottom: -35px;
+    left: 50%;
+    width: 12px;
+    height: 6px;
+    background-color: #2b2b2b;
+    border-radius: 3px;
+    margin-left: -6px;
+    border: 1px solid #3c3c3c;
+    box-shadow: inset 0 0 10px -1px #353535;
+    z-index: 10;
+  }
+
+  .device-menu-button {
+   position: absolute;
+   bottom: -59px;
+   left: 50%;
+   width: 46px;
+   height: 46px;
+   background-color: #2b2b2b;
+   border-radius: 100%;
+   margin-left: -24px;
+   border: 1px solid #3c3c3c;
+   cursor: pointer;
+   box-shadow: inset 0 0 10px -1px #353535;
+   transition: all 0.3s ease;
+   z-index: 10;
+ }
+
+ .device-menu-button:hover {
+   background-color: #3a3a3a;
+   transform: scale(1.05);
+ }
+
+ .device-power-button {
+   cursor: pointer;
+   transition: all 0.3s ease;
+ }
+
+ .device-power-button:hover {
+   background: linear-gradient(to bottom, #6e6e6e 0%, #8c8c8c 28%, #6e6e6e 100%);
+   transform: scale(1.05);
+ }
+
+ .device-grid.hidden {
+   display: none;
+ }
+
+ .device-grid-top-10 {
+   position: absolute;
+   top: -16px;
+   left: 1px;
+   width: 100%;
+   height: 16px;
+   background: repeating-linear-gradient(
+     to right,
+     #777,
+     #777 1px,
+     transparent 1px,
+     transparent 20px
+   );
+ }
+
+ .device-grid-top-5 {
+   position: absolute;
+   top: -8px;
+   left: 11px;
+   width: 100%;
+   height: 8px;
+   background: repeating-linear-gradient(
+     to right,
+     #999,
+     #999 1px,
+     transparent 1px,
+     transparent 20px
+   );
+ }
+
+ .device-grid-left-10 {
+   position: absolute;
+   top: 0;
+   left: -16px;
+   width: 16px;
+   height: 100%;
+   background: repeating-linear-gradient(
+     to bottom,
+     #777,
+     #777 1px,
+     transparent 1px,
+     transparent 20px
+   );
+ }
+
+ .device-grid-left-5 {
+   position: absolute;
+   top: 11px;
+   left: -8px;
+   width: 8px;
+   height: 100%;
+   background: repeating-linear-gradient(
+     to bottom,
+     #999,
+     #999 1px,
+     transparent 1px,
+     transparent 20px
+   );
+ }
+
+ /* Динамик */
+ .device-speaker {
+   position: absolute;
+   top: -45px;
+   left: 50%;
+   width: 60px;
+   height: 6px;
+   background-color: #2b2b2b;
+   border-radius: 3px;
+   margin-left: -30px;
+   border: 1px solid #3c3c3c;
+   box-shadow: inset 0 0 10px -1px #353535;
+   z-index: 10;
+ }
+
+ /* Камера */
+ .device-camera {
+   position: absolute;
+   top: -45px;
+   right: 80px;
+   width: 12px;
+   height: 12px;
+   background-color: #2b2b2b;
+   border-radius: 50%;
+   border: 1px solid #3c3c3c;
+   box-shadow: inset 0 0 10px -1px #353535;
+   z-index: 10;
+ }
+
+ /* Phone Screen */
+.phone-screen {
+  width: 100%;
+  height: 100%;
+  background: #000;
+  position: relative;
+  overflow: hidden;
+}
+
+.phone-off .phone-screen {
+  background: #000;
+}
+
+ /* Phone App */
+ .phone-app {
+   width: 100%;
+   height: 100%;
+   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+   color: #fff;
+   overflow: hidden;
+   animation: fadeIn 0.3s ease-in;
+ }
+
+ @keyframes fadeIn {
+   from {
+     opacity: 0;
+   }
+   to {
+     opacity: 1;
+   }
+ }
+
+/* Status Bar */
+.phone-status-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 20px;
+  background: rgba(0, 0, 0, 0.3);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.status-icons {
+  display: flex;
+  gap: 8px;
+}
+
+.status-icons i {
+  font-size: 10px;
+}
+
+/* Home Screen */
+.phone-home-screen {
+  height: calc(100% - 60px);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+/* Контейнер для перелистывания страниц */
+.home-screen-container {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+  padding: 20px 0;
+}
+
+/* Контейнер для страниц приложений */
+.home-screen-pages {
+  display: flex;
+  width: 200%;
+  height: 100%;
+  transition: transform 0.3s ease;
+}
+
+/* Отдельная страница приложений */
+.home-screen-page {
+  width: 50%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  padding: 20px;
+  overflow: hidden;
+}
+
+.phone-app-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  padding: 10px;
+  max-height: 100%;
+  overflow-y: auto;
+}
+
+/* Индикаторы страниц */
+.page-indicators {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  padding: 15px 0;
+}
+
+.page-indicator {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  transition: all 0.3s ease;
+}
+
+.page-indicator.active {
+  background: rgba(255, 255, 255, 0.8);
+  transform: scale(1.2);
+}
+
+/* Док-панель */
+.phone-dock {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 15px 20px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(20px);
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  margin: 0 10px 10px 10px;
+  border-radius: 20px;
+}
+
+.dock-app {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  padding: 10px;
+  border-radius: 12px;
+  min-width: 50px;
+}
+
+.dock-app:hover {
+  background: rgba(255, 255, 255, 0.1);
+  transform: scale(1.1);
+}
+
+.dock-app i {
+  font-size: 24px;
+  color: #fff;
+}
+
+.dock-app span {
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.8);
+  text-align: center;
+  font-weight: 500;
+}
+
+.phone-app-icon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  padding: 12px 8px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  min-height: 70px;
+  justify-content: center;
+}
+
+.phone-app-icon:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: scale(1.05);
+}
+
+.phone-app-icon i {
+  font-size: 28px;
+  color: #fff;
+}
+
+.phone-app-icon span {
+  font-size: 10px;
+  font-weight: 500;
+  text-align: center;
+  line-height: 1.2;
+}
+
+/* App Content */
+.phone-app-content {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.phone-app-header {
+  display: flex;
+  align-items: center;
+  padding: 15px 20px;
+  background: rgba(0, 0, 0, 0.3);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.phone-back-button {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 18px;
+  cursor: pointer;
+  padding: 5px;
+  margin-right: 15px;
+  border-radius: 50%;
+  transition: background 0.3s ease;
+}
+
+.phone-back-button:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.phone-app-header h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+/* Contacts */
+.phone-contacts-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 10px;
+}
+
+.phone-contact {
+  display: flex;
+  align-items: center;
+  padding: 15px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.phone-contact:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.contact-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  margin-right: 15px;
+}
+
+.contact-info {
+  flex: 1;
+}
+
+.contact-name {
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+ .contact-status {
+   font-size: 12px;
+   opacity: 0.8;
+ }
+
+ .contact-chevron {
+   color: #ccc;
+   font-size: 14px;
+   margin-left: auto;
+ }
+
+ /* Детальная страница контакта */
+ .phone-contact-details {
+   height: 100%;
+   display: flex;
+   flex-direction: column;
+   overflow-y: auto;
+ }
+
+ .contact-details-header {
+   display: flex;
+   align-items: center;
+   padding: 20px;
+   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+   background: rgba(0, 0, 0, 0.2);
+   gap: 16px;
+ }
+
+ .contact-details-avatar {
+   width: 60px;
+   height: 60px;
+   border-radius: 50%;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   color: white;
+   font-weight: 700;
+   font-size: 24px;
+   text-transform: uppercase;
+   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+ }
+
+ .contact-details-info {
+   flex: 1;
+ }
+
+ .contact-details-name {
+   font-size: 20px;
+   font-weight: 700;
+   margin-bottom: 4px;
+   color: #fff;
+ }
+
+ .contact-details-status {
+   font-size: 14px;
+   font-weight: 600;
+ }
+
+ /* Прогресс отношений */
+ .relationship-progress {
+   padding: 20px;
+   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+ }
+
+ .relationship-bar {
+   height: 8px;
+   background: rgba(255, 255, 255, 0.2);
+   border-radius: 4px;
+   overflow: hidden;
+   margin-bottom: 8px;
+ }
+
+ .relationship-fill {
+   height: 100%;
+   border-radius: 4px;
+   transition: width 0.3s ease;
+ }
+
+ .relationship-value {
+   font-size: 12px;
+   color: rgba(255, 255, 255, 0.8);
+   text-align: center;
+ }
+
+ /* Секция важных выборов */
+ .important-choices-section {
+   padding: 20px;
+   flex-grow: 1;
+   display: flex;
+   flex-direction: column;
+ }
+
+ .section-title {
+   display: flex;
+   align-items: center;
+   gap: 8px;
+   font-size: 14px;
+   font-weight: 700;
+   color: rgba(255, 255, 255, 0.9);
+   margin: 0 0 16px 0;
+ }
+
+ .section-title i {
+   font-size: 12px;
+ }
+
+ .important-choices-list {
+   display: flex;
+   flex-direction: column;
+   gap: 12px;
+   flex-grow: 1;
+   overflow-y: auto;
+ }
+
+ .choice-entry {
+   background: rgba(255, 255, 255, 0.1);
+   border: 1px solid rgba(255, 255, 255, 0.2);
+   border-radius: 8px;
+   padding: 12px;
+   transition: all 0.2s ease;
+ }
+
+ .choice-entry:hover {
+   background: rgba(255, 255, 255, 0.15);
+   border-color: rgba(255, 255, 255, 0.3);
+ }
+
+ .choice-text {
+   font-size: 12px;
+   color: rgba(255, 255, 255, 0.9);
+   line-height: 1.4;
+   margin-bottom: 8px;
+ }
+
+ .choice-meta {
+   font-size: 10px;
+   color: rgba(255, 255, 255, 0.6);
+   display: flex;
+   gap: 8px;
+   flex-wrap: wrap;
+ }
+
+ .choice-meta span {
+   background: rgba(255, 255, 255, 0.1);
+   padding: 2px 6px;
+   border-radius: 4px;
+ }
+
+ .no-choices {
+   text-align: center;
+   padding: 40px 20px;
+   color: rgba(255, 255, 255, 0.5);
+ }
+
+  .no-choices p {
+   margin: 0;
+   font-style: italic;
+   font-size: 12px;
+ }
+
+ .no-contacts {
+   text-align: center;
+   padding: 40px 20px;
+   color: rgba(255, 255, 255, 0.5);
+ }
+
+ .no-contacts p {
+   margin: 0;
+   font-style: italic;
+   font-size: 14px;
+ }
+
+ /* Shop */
+ .phone-shop-currency {
+   display: flex;
+   justify-content: space-around;
+   padding: 10px 20px;
+   background: rgba(0, 0, 0, 0.2);
+   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+ }
+
+ .currency-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  color: #000;
+  font-size: 14px;
+  background: rgba(255, 255, 255, 0.9);
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+ .currency-icon {
+   font-size: 16px;
+ }
+
+ .phone-shop-rotation {
+   padding: 8px 20px;
+   background: rgba(255, 255, 255, 0.1);
+   text-align: center;
+   font-size: 12px;
+   opacity: 0.8;
+ }
+
+ .phone-shop-tabs {
+   display: flex;
+   background: rgba(0, 0, 0, 0.2);
+ }
+
+ .shop-tab {
+   flex: 1;
+   padding: 12px;
+   background: none;
+   border: none;
+   color: #fff;
+   font-size: 14px;
+   cursor: pointer;
+   transition: background 0.3s ease;
+ }
+
+ .shop-tab.active {
+   background: rgba(255, 255, 255, 0.2);
+   font-weight: 600;
+ }
+
+ .shop-tab:hover {
+   background: rgba(255, 255, 255, 0.1);
+ }
+
+ .phone-shop-content {
+   flex: 1;
+   overflow-y: auto;
+   padding: 15px;
+ }
+
+ .phone-shop-categories {
+   display: flex;
+   gap: 8px;
+   margin-bottom: 15px;
+   overflow-x: auto;
+   padding-bottom: 5px;
+ }
+
+ .category-btn {
+   padding: 8px 12px;
+   background: rgba(255, 255, 255, 0.1);
+   border: none;
+   border-radius: 20px;
+   color: #fff;
+   font-size: 12px;
+   cursor: pointer;
+   transition: all 0.3s ease;
+   white-space: nowrap;
+ }
+
+ .category-btn.active {
+   background: rgba(255, 255, 255, 0.3);
+   font-weight: 600;
+ }
+
+ .category-btn:hover {
+   background: rgba(255, 255, 255, 0.2);
+ }
+
+ .phone-shop-items {
+   display: flex;
+   flex-direction: column;
+   gap: 10px;
+ }
+
+ .phone-shop-item {
+   display: flex;
+   align-items: center;
+   padding: 12px;
+   background: rgba(255, 255, 255, 0.1);
+   border-radius: 8px;
+   border: 1px solid rgba(255, 255, 255, 0.2);
+   gap: 12px;
+ }
+
+ .phone-shop-item .item-image {
+   width: 40px;
+   height: 40px;
+   flex-shrink: 0;
+ }
+
+ .phone-shop-item .item-image img {
+   width: 100%;
+   height: 100%;
+   object-fit: contain;
+   border-radius: 4px;
+ }
+
+ .phone-shop-item .item-info {
+   flex: 1;
+   min-width: 0;
+ }
+
+ .phone-shop-item .item-name {
+   font-weight: 600;
+   margin-bottom: 4px;
+   color: #fff;
+   font-size: 14px;
+   overflow: hidden;
+   text-overflow: ellipsis;
+   white-space: nowrap;
+ }
+
+ .phone-shop-item .item-price {
+   font-size: 12px;
+   opacity: 0.8;
+   color: #fff;
+ }
+
+ .buy-button {
+   padding: 8px 16px;
+   background: #00b894;
+   border: none;
+   border-radius: 6px;
+   color: #fff;
+   font-weight: 600;
+   cursor: pointer;
+   transition: background 0.3s ease;
+   flex-shrink: 0;
+   white-space: nowrap;
+ }
+
+ .buy-button:hover {
+   background: #00a085;
+ }
+
+ /* Inventory */
+ .phone-inventory-stats {
+   background: rgba(0, 0, 0, 0.2);
+   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+ }
+
+ .stats-toggle {
+   display: flex;
+   align-items: center;
+   gap: 8px;
+   padding: 12px 20px;
+   cursor: pointer;
+   transition: background 0.3s ease;
+ }
+
+ .stats-toggle:hover {
+   background: rgba(255, 255, 255, 0.1);
+ }
+
+ .stats-content {
+   padding: 0 20px 15px;
+ }
+
+ .stat-item {
+   display: flex;
+   justify-content: space-between;
+   padding: 8px 0;
+   font-size: 12px;
+   opacity: 0.8;
+ }
+
+ .phone-inventory-controls {
+   display: flex;
+   gap: 10px;
+   padding: 15px 20px;
+   background: rgba(0, 0, 0, 0.2);
+   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+ }
+
+ .inventory-search {
+   flex: 1;
+   padding: 8px 12px;
+   background: rgba(255, 255, 255, 0.1);
+   border: 1px solid rgba(255, 255, 255, 0.2);
+   border-radius: 6px;
+   color: #fff;
+   font-size: 12px;
+ }
+
+ .inventory-search::placeholder {
+   color: rgba(255, 255, 255, 0.6);
+ }
+
+ .inventory-filter {
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 6px;
+  color: #fff;
+  font-size: 12px;
+  min-width: 100px;
+}
+
+.inventory-filter option {
+  background: #333;
+  color: #fff;
+}
+
+ .phone-inventory-list {
+   flex: 1;
+   overflow-y: auto;
+   padding: 15px;
+ }
+
+ .phone-inventory-item {
+   display: flex;
+   align-items: center;
+   padding: 12px;
+   background: rgba(255, 255, 255, 0.1);
+   border-radius: 8px;
+   border: 1px solid rgba(255, 255, 255, 0.2);
+   margin-bottom: 10px;
+   gap: 12px;
+ }
+
+ .phone-inventory-item .item-image {
+   width: 40px;
+   height: 40px;
+   flex-shrink: 0;
+ }
+
+ .phone-inventory-item .item-image img {
+   width: 100%;
+   height: 100%;
+   object-fit: contain;
+   border-radius: 4px;
+ }
+
+ .phone-inventory-item .item-info {
+   flex: 1;
+   min-width: 0;
+ }
+
+ .phone-inventory-item .item-name {
+   font-weight: 600;
+   margin-bottom: 4px;
+   color: #fff;
+   font-size: 14px;
+   overflow: hidden;
+   text-overflow: ellipsis;
+   white-space: nowrap;
+ }
+
+ .phone-inventory-item .item-quantity {
+   font-size: 12px;
+   opacity: 0.8;
+   margin-bottom: 4px;
+   color: #fff;
+ }
+
+ .phone-inventory-item .item-sell-price {
+   font-size: 11px;
+   opacity: 0.6;
+ }
+
+ .sell-button {
+   padding: 6px 12px;
+   background: #e74c3c;
+   border: none;
+   border-radius: 6px;
+   color: #fff;
+   font-weight: 600;
+   font-size: 12px;
+   cursor: pointer;
+   transition: background 0.3s ease;
+   flex-shrink: 0;
+   white-space: nowrap;
+ }
+
+ .sell-button:hover {
+   background: #c0392b;
+ }
+
+ .phone-inventory-filters {
+   padding: 15px 20px;
+   background: rgba(0, 0, 0, 0.2);
+   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+ }
+
+ .phone-inventory-filters select {
+   width: 100%;
+   padding: 8px 12px;
+   background: rgba(255, 255, 255, 0.1);
+   border: 1px solid rgba(255, 255, 255, 0.2);
+   border-radius: 6px;
+   color: #fff;
+   font-size: 12px;
+ }
+
+ .phone-inventory-items {
+   flex: 1;
+   overflow-y: auto;
+   padding: 15px;
+ }
+
+ .no-items {
+   text-align: center;
+   padding: 40px 20px;
+   color: rgba(255, 255, 255, 0.5);
+ }
+
+ .no-items p {
+   margin: 0;
+   font-style: italic;
+   font-size: 14px;
+ }
+
+ /* Quantity Modal */
+ .quantity-modal-overlay {
+   position: fixed;
+   top: 0;
+   left: 0;
+   right: 0;
+   bottom: 0;
+   background: rgba(0, 0, 0, 0.8);
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   z-index: 20000;
+ }
+
+ .quantity-modal {
+   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+   padding: 30px;
+   border-radius: 15px;
+   text-align: center;
+   min-width: 300px;
+   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+ }
+
+ .quantity-modal h3 {
+   margin: 0 0 20px 0;
+   color: #fff;
+   font-size: 18px;
+ }
+
+ .quantity-controls {
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   gap: 20px;
+   margin-bottom: 25px;
+ }
+
+ .quantity-controls button {
+   width: 40px;
+   height: 40px;
+   border-radius: 50%;
+   border: none;
+   background: rgba(255, 255, 255, 0.2);
+   color: #fff;
+   font-size: 18px;
+   font-weight: bold;
+   cursor: pointer;
+   transition: background 0.3s ease;
+ }
+
+ .quantity-controls button:hover {
+   background: rgba(255, 255, 255, 0.3);
+ }
+
+ .quantity-controls span {
+   font-size: 24px;
+   font-weight: bold;
+   color: #fff;
+   min-width: 40px;
+ }
+
+ .quantity-buttons {
+   display: flex;
+   gap: 15px;
+ }
+
+ .quantity-buttons button {
+   flex: 1;
+   padding: 12px;
+   border: none;
+   border-radius: 8px;
+   font-weight: 600;
+   cursor: pointer;
+   transition: all 0.3s ease;
+ }
+
+ .quantity-buttons button:first-child {
+   background: rgba(255, 255, 255, 0.2);
+   color: #fff;
+ }
+
+ .quantity-buttons button:last-child {
+   background: #00b894;
+   color: #fff;
+ }
+
+ .quantity-buttons button:hover {
+   transform: translateY(-2px);
+   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+ }
+
+ /* Messages */
+.phone-messages-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 10px;
+}
+
+.phone-message {
+  display: flex;
+  align-items: flex-start;
+  padding: 15px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.phone-message:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.message-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #74b9ff, #0984e3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  margin-right: 15px;
+  flex-shrink: 0;
+}
+
+.message-content {
+  flex: 1;
+}
+
+.message-sender {
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.message-text {
+  font-size: 14px;
+  opacity: 0.9;
+  margin-bottom: 4px;
+}
+
+.message-time {
+  font-size: 11px;
+  opacity: 0.6;
+}
+
+/* Camera */
+.phone-camera-view {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.camera-preview {
+  width: 200px;
+  height: 200px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 15px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.3);
+  margin-bottom: 30px;
+}
+
+.camera-preview i {
+  font-size: 48px;
+  margin-bottom: 10px;
+  opacity: 0.7;
+}
+
+.camera-preview span {
+  font-size: 12px;
+  opacity: 0.7;
+}
+
+.camera-controls {
+  display: flex;
+  gap: 20px;
+}
+
+.camera-button {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  border: 3px solid rgba(255, 255, 255, 0.5);
+  color: #fff;
+  font-size: 24px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.camera-button:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: scale(1.1);
+}
+
+/* Gallery */
+.phone-gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  padding: 20px;
+  flex: 1;
+}
+
+.gallery-item {
+  aspect-ratio: 1;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.gallery-item:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: scale(1.05);
+}
+
+.gallery-item i {
+  font-size: 32px;
+  opacity: 0.7;
+}
+
+/* Settings */
+.phone-settings-list {
+  flex: 1;
+  padding: 20px;
+}
+
+.setting-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.setting-item:last-child {
+  border-bottom: none;
+}
+
+.setting-item span {
+  font-weight: 500;
+}
+
+.setting-item i {
+  font-size: 18px;
+  color: #00b894;
+}
+
+.brightness-slider {
+  width: 60px;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 2px;
+  position: relative;
+}
+
+.brightness-slider::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: -4px;
+  width: 12px;
+  height: 12px;
+  background: #fff;
+  border-radius: 50%;
+}
+
+/* Browser */
+.phone-browser {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+}
+
+.browser-address-bar {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 10px 15px;
+  border-radius: 20px;
+  margin-bottom: 20px;
+  font-size: 12px;
+  opacity: 0.8;
+}
+
+.browser-content {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.browser-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  opacity: 0.7;
+}
+
+.browser-placeholder i {
+  font-size: 48px;
+}
+
+/* Новые приложения */
+.phone-dialer {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+}
+
+.dialer-pad {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.dialer-button {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  color: #fff;
+  font-size: 20px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dialer-button:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: scale(1.1);
+}
+
+.dialer-button.call {
+  background: #00b894;
+  grid-column: span 3;
+  width: 100%;
+  border-radius: 30px;
+}
+
+.dialer-button.call:hover {
+  background: #00a085;
+}
+
+.phone-number-display {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 15px;
+  border-radius: 10px;
+  text-align: center;
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 20px;
+  min-height: 20px;
+}
+
+/* Mail App */
+.mail-inbox {
+  flex: 1;
+  overflow-y: auto;
+  padding: 10px;
+}
+
+.mail-item {
+  display: flex;
+  align-items: center;
+  padding: 15px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.mail-item:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.mail-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #74b9ff, #0984e3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  margin-right: 15px;
+  flex-shrink: 0;
+}
+
+.mail-content {
+  flex: 1;
+}
+
+.mail-sender {
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.mail-subject {
+  font-size: 14px;
+  opacity: 0.9;
+  margin-bottom: 4px;
+}
+
+.mail-time {
+  font-size: 11px;
+  opacity: 0.6;
+}
+
+/* App Store */
+.app-store {
+  flex: 1;
+  overflow-y: auto;
+  padding: 15px;
+}
+
+.app-category {
+  margin-bottom: 20px;
+}
+
+.category-title {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 10px;
+  color: #fff;
+}
+
+.app-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.app-card {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  padding: 15px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.app-card:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: scale(1.05);
+}
+
+.app-card i {
+  font-size: 32px;
+  margin-bottom: 8px;
+  color: #fff;
+}
+
+.app-card span {
+  font-size: 12px;
+  color: #fff;
+  font-weight: 500;
+}
+
+/* Calendar */
+.calendar-view {
+  flex: 1;
+  padding: 20px;
+}
+
+.calendar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.calendar-nav {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 18px;
+  cursor: pointer;
+  padding: 5px;
+  border-radius: 50%;
+  transition: background 0.3s ease;
+}
+
+.calendar-nav:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.calendar-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 5px;
+}
+
+.calendar-day {
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.calendar-day:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.calendar-day.today {
+  background: #00b894;
+  font-weight: 600;
+}
+
+.calendar-day.other-month {
+  opacity: 0.3;
+}
+
+/* Notes */
+.notes-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 10px;
+}
+
+.note-item {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 15px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.note-item:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.note-title {
+  font-weight: 600;
+  margin-bottom: 5px;
+  color: #fff;
+}
+
+.note-preview {
+  font-size: 12px;
+  opacity: 0.8;
+  color: #fff;
+}
+
+.note-date {
+  font-size: 10px;
+  opacity: 0.6;
+  margin-top: 5px;
+  color: #fff;
+}
+
+/* Calculator */
+.calculator {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+}
+
+.calculator-display {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 20px;
+  border-radius: 10px;
+  text-align: right;
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 20px;
+  min-height: 30px;
+  color: #fff;
+}
+
+.calculator-buttons {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+
+.calc-button {
+  aspect-ratio: 1;
+  border-radius: 50%;
+  border: none;
+  font-size: 18px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: #fff;
+}
+
+.calc-button.number {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.calc-button.operator {
+  background: #ffa726;
+}
+
+.calc-button.equals {
+  background: #00b894;
+}
+
+.calc-button.clear {
+  background: #e74c3c;
+}
+
+.calc-button:hover {
+  transform: scale(1.1);
+}
+
+/* Weather */
+.weather-view {
+  flex: 1;
+  padding: 20px;
+  text-align: center;
+}
+
+.weather-icon {
+  font-size: 64px;
+  margin-bottom: 20px;
+  color: #fff;
+}
+
+.weather-temp {
+  font-size: 48px;
+  font-weight: 300;
+  margin-bottom: 10px;
+  color: #fff;
+}
+
+.weather-desc {
+  font-size: 18px;
+  opacity: 0.8;
+  margin-bottom: 20px;
+  color: #fff;
+}
+
+.weather-details {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+}
+
+.weather-detail {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 15px;
+  border-radius: 10px;
+  text-align: center;
+}
+
+.weather-detail i {
+  font-size: 24px;
+  margin-bottom: 5px;
+  color: #fff;
+}
+
+.weather-detail span {
+  font-size: 12px;
+  color: #fff;
+}
+
+/* Maps */
+.maps-view {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+}
+
+.map-container {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.map-placeholder {
+  text-align: center;
+  opacity: 0.7;
+}
+
+.map-placeholder i {
+  font-size: 48px;
+  margin-bottom: 10px;
+  color: #fff;
+}
+
+.map-controls {
+  display: flex;
+  gap: 10px;
+}
+
+.map-button {
+  flex: 1;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  border-radius: 8px;
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.map-button:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* Music */
+.music-player {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  text-align: center;
+}
+
+.music-cover {
+  width: 200px;
+  height: 200px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  margin: 0 auto 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.music-cover i {
+  font-size: 64px;
+  color: #fff;
+  opacity: 0.7;
+}
+
+.music-info {
+  margin-bottom: 30px;
+}
+
+.music-title {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 5px;
+  color: #fff;
+}
+
+.music-artist {
+  font-size: 14px;
+  opacity: 0.8;
+  color: #fff;
+}
+
+.music-controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+}
+
+.music-button {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+  font-size: 20px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.music-button.play {
+  width: 60px;
+  height: 60px;
+  font-size: 24px;
+}
+
+.music-button:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: scale(1.1);
+}
+
+/* Games */
+.games-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+  padding: 20px;
+  flex: 1;
+}
+
+.game-card {
+  aspect-ratio: 1;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  padding: 20px;
+}
+
+.game-card:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: scale(1.05);
+}
+
+.game-card i {
+  font-size: 32px;
+  margin-bottom: 10px;
+  color: #fff;
+}
+
+.game-card span {
+  font-size: 12px;
+  font-weight: 600;
+  text-align: center;
+  color: #fff;
+}
+
+/* Health */
+.health-dashboard {
+  flex: 1;
+  padding: 20px;
+}
+
+.health-stats {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.health-stat {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  padding: 15px;
+  text-align: center;
+}
+
+.health-stat i {
+  font-size: 24px;
+  margin-bottom: 8px;
+  color: #fff;
+}
+
+.health-stat-value {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 4px;
+  color: #fff;
+}
+
+.health-stat-label {
+  font-size: 12px;
+  opacity: 0.8;
+  color: #fff;
+}
+
+.health-activity {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  padding: 15px;
+}
+
+.activity-title {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 10px;
+  color: #fff;
+}
+
+.activity-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.activity-item:last-child {
+  border-bottom: none;
+}
+
+.activity-name {
+  font-size: 14px;
+  color: #fff;
+}
+
+.activity-value {
+  font-size: 14px;
+  font-weight: 600;
+  color: #00b894;
+}
+
+/* Lock Screen */
+.phone-lock-screen {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #fff;
+  text-align: center;
+}
+
+.lock-time {
+  font-size: 48px;
+  font-weight: 300;
+  margin-bottom: 10px;
+}
+
+.lock-date {
+  font-size: 16px;
+  opacity: 0.8;
+  margin-bottom: 60px;
+}
+
+.lock-slider {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  opacity: 0.7;
+}
+
+ .lock-slider i {
+   font-size: 24px;
+   animation: bounce 2s infinite;
+ }
+
+ /* Анимация разблокировки */
+ .phone-lock-screen.unlocking {
+   animation: unlockSlide 0.3s ease-out;
+ }
+
+ .phone-lock-screen.unlocking .lock-slider {
+   animation: unlockSlider 0.3s ease-out;
+ }
+
+ @keyframes unlockSlide {
+   0% {
+     transform: translateY(0);
+   }
+   100% {
+     transform: translateY(-100%);
+   }
+ }
+
+ @keyframes unlockSlider {
+   0% {
+     transform: translateY(0);
+     opacity: 1;
+   }
+   100% {
+     transform: translateY(-50px);
+     opacity: 0;
+   }
+ }
+
+ @keyframes bounce {
+   0%, 20%, 50%, 80%, 100% {
+     transform: translateY(0);
+   }
+   40% {
+     transform: translateY(-10px);
+   }
+   60% {
+     transform: translateY(-5px);
+   }
+ }
+
+   /* Responsive Design */
+  @media (max-width: 768px) {
+    .device {
+      width: 280px;
+      height: 500px;
+      border: 18px solid #222;
+      border-top-width: 50px;
+      border-bottom-width: 60px;
+    }
+    
+    /* Адаптивное позиционирование кнопок громкости */
+    .device-volume-buttons {
+      top: 50px;
+      left: -22px;
+    }
+    
+    /* Адаптивное позиционирование кнопки блокировки */
+    .device-power-button {
+      top: 100px;
+      right: -22px;
+    }
+    
+    /* Адаптивное позиционирование разъемов */
+    .device-headphone-jack {
+      bottom: -35px;
+    }
+    
+    .device-lightning-port {
+      bottom: -25px;
+    }
+    
+    /* Адаптивное позиционирование кнопки Home */
+    .device-menu-button {
+      bottom: -54px;
+    }
+    
+    /* Адаптивное позиционирование динамика и камеры */
+    .device-speaker {
+      top: -35px;
+    }
+    
+    .device-camera {
+      top: -35px;
+      right: 60px;
+    }
+    
+    .phone-app-grid {
+      gap: 15px;
+      padding: 8px;
+    }
+    
+    .phone-app-icon {
+      padding: 10px 6px;
+      min-height: 60px;
+    }
+    
+    .phone-app-icon i {
+      font-size: 24px;
+    }
+    
+    .phone-app-icon span {
+      font-size: 9px;
+    }
+    
+    .phone-dock {
+      padding: 12px 15px;
+      margin: 0 8px 8px 8px;
+    }
+    
+    .dock-app {
+      padding: 8px;
+      min-width: 40px;
+    }
+    
+    .dock-app i {
+      font-size: 20px;
+    }
+    
+    .dock-app span {
+      font-size: 9px;
+    }
+  }
+
+   /* Дополнительные адаптации для очень маленьких экранов */
+  @media (max-width: 480px) {
+    .device {
+      width: 260px;
+      height: 460px;
+      border: 16px solid #222;
+      border-top-width: 45px;
+      border-bottom-width: 55px;
+    }
+    
+    .device-volume-buttons {
+      top: 45px;
+      left: -20px;
+    }
+    
+    .device-power-button {
+      top: 90px;
+      right: -20px;
+    }
+    
+    .device-headphone-jack {
+      bottom: -30px;
+    }
+    
+    .device-lightning-port {
+      bottom: -20px;
+    }
+    
+    .device-menu-button {
+      bottom: -49px;
+    }
+    
+    .device-speaker {
+      top: -30px;
+    }
+    
+    .device-camera {
+      top: -30px;
+      right: 55px;
+    }
+    
+    .phone-app-grid {
+      gap: 12px;
+      padding: 6px;
+    }
+    
+    .phone-app-icon {
+      padding: 8px 4px;
+      min-height: 55px;
+    }
+    
+    .phone-app-icon i {
+      font-size: 22px;
+    }
+    
+    .phone-app-icon span {
+      font-size: 8px;
+    }
+    
+    .phone-dock {
+      padding: 10px 12px;
+      margin: 0 6px 6px 6px;
+    }
+    
+    .dock-app {
+      padding: 6px;
+      min-width: 35px;
+    }
+    
+    .dock-app i {
+      font-size: 18px;
+    }
+    
+    .dock-app span {
+      font-size: 8px;
+    }
+  } 
+
+/* Стили для раздела пополнения */
+.topup-section {
+  margin-bottom: 15px;
+  background: rgba(0, 0, 0, 0.3) !important;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 15px;
+  background: rgba(0, 0, 0, 0.2);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  font-size: 14px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.section-header i {
+  font-size: 16px;
+  color: #ffd700;
+}
+
+/* Ежедневные награды */
+.daily-rewards-card {
+  padding: 15px;
+}
+
+.streak-display {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+  padding: 10px;
+  background: linear-gradient(135deg, rgba(255, 215, 0, 0.1), rgba(255, 215, 0, 0.05));
+  border-radius: 8px;
+  border: 1px solid rgba(255, 215, 0, 0.2);
+}
+
+.streak-circle {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 45px;
+  height: 45px;
+  background: linear-gradient(135deg, #ffd700, #ffed4e);
+  border-radius: 50%;
+  color: #333;
+  font-weight: bold;
+  box-shadow: 0 2px 8px rgba(255, 215, 0, 0.3);
+  flex-shrink: 0;
+}
+
+.streak-number {
+  font-size: 16px;
+  line-height: 1;
+}
+
+.streak-text {
+  font-size: 8px;
+  opacity: 0.8;
+}
+
+.streak-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.streak-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #fff;
+  margin-bottom: 2px;
+}
+
+.streak-subtitle {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.today-reward-card {
+  margin-bottom: 10px;
+  padding: 10px;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.reward-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #fff;
+  margin-bottom: 6px;
+}
+
+.reward-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 6px;
+  background: rgba(255, 215, 0, 0.15);
+  border-radius: 6px;
+  border: 1px solid rgba(255, 215, 0, 0.3);
+}
+
+.reward-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #ffd700;
+  font-weight: 600;
+  font-size: 12px;
+}
+
+.reward-item i {
+  font-size: 14px;
+}
+
+.claim-button {
+  width: 100%;
+  padding: 10px;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.claim-button.available {
+  background: linear-gradient(135deg, #ffd700, #ffed4e);
+  color: #333;
+  box-shadow: 0 2px 8px rgba(255, 215, 0, 0.3);
+}
+
+.claim-button.claimed {
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.5);
+  cursor: not-allowed;
+}
+
+.claim-button.available:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(255, 215, 0, 0.4);
+}
+
+.weekly-progress {
+  padding: 12px;
+  background: rgba(0, 0, 0, 0.2);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.progress-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: #fff;
+  margin-bottom: 6px;
+  text-align: center;
+}
+
+.week-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+
+.day-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 6px 2px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+}
+
+.day-item.claimed {
+  background: rgba(76, 175, 80, 0.2);
+  border-color: rgba(76, 175, 80, 0.3);
+  color: #4CAF50;
+}
+
+.day-item.today {
+  background: rgba(255, 215, 0, 0.2);
+  border-color: rgba(255, 215, 0, 0.4);
+  color: #ffd700;
+  transform: scale(1.05);
+}
+
+.day-number {
+  font-size: 10px;
+  font-weight: bold;
+  margin-bottom: 2px;
+}
+
+.day-reward {
+  font-size: 12px;
+}
+
+/* Реклама */
+.ad-reward-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  margin: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  gap: 12px;
+}
+
+.ad-content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+  min-width: 0;
+}
+
+.ad-icon {
+  width: 35px;
+  height: 35px;
+  background: linear-gradient(135deg, #4CAF50, #45a049);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 16px;
+  box-shadow: 0 2px 8px rgba(76, 175, 80, 0.3);
+  flex-shrink: 0;
+}
+
+.ad-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.ad-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #fff;
+  margin-bottom: 2px;
+}
+
+.ad-description {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.ad-rewards {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.reward-badge {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 6px;
+  background: rgba(255, 215, 0, 0.2);
+  border-radius: 4px;
+  border: 1px solid rgba(255, 215, 0, 0.4);
+}
+
+.reward-amount {
+  font-size: 12px;
+  font-weight: bold;
+  color: #fff;
+}
+
+.reward-icon {
+  font-size: 14px;
+}
+
+.watch-ad-button {
+  width: calc(100% - 24px);
+  margin: 0 12px 12px;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #4CAF50, #45a049);
+  color: white;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  box-shadow: 0 2px 8px rgba(76, 175, 80, 0.3);
+}
+
+.watch-ad-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(76, 175, 80, 0.4);
+}
+
+/* Покупки */
+.purchase-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  padding: 12px;
+}
+
+.package-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding: 12px;
+  background: rgba(0, 0, 0, 0.3) !important;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+  text-align: center;
+}
+
+.package-card:hover {
+  background: rgba(0, 0, 0, 0.3);
+  border-color: rgba(255, 255, 255, 0.2);
+  transform: translateY(-1px);
+}
+
+.package-card.popular {
+  background: linear-gradient(135deg, rgba(255, 215, 0, 0.1), rgba(255, 215, 0, 0.05));
+  border-color: rgba(255, 215, 0, 0.3);
+}
+
+.popular-badge {
+  position: absolute;
+  top: -6px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: linear-gradient(135deg, #ffd700, #ffed4e);
+  color: #333;
+  padding: 2px 8px;
+  border-radius: 8px;
+  font-size: 8px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  box-shadow: 0 1px 4px rgba(255, 215, 0, 0.3);
+}
+
+.package-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.package-icon {
+  width: 30px;
+  height: 30px;
+  background: linear-gradient(135deg, #ffd700, #ffed4e);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #333;
+  font-size: 14px;
+  box-shadow: 0 1px 4px rgba(255, 215, 0, 0.3);
+}
+
+.package-amount {
+  font-size: 12px;
+  font-weight: 600;
+  color: #fff;
+  line-height: 1.2;
+}
+
+.package-bonus {
+  font-size: 10px;
+  color: #4CAF50;
+  font-weight: 600;
+  margin-bottom: 8px;
+  padding: 2px 6px;
+  background: rgba(76, 175, 80, 0.1);
+  border-radius: 4px;
+  border: 1px solid rgba(76, 175, 80, 0.2);
+}
+
+.package-button {
+  width: 100%;
+  padding: 8px;
+  border: none;
+  border-radius: 6px;
+  background: linear-gradient(135deg, #2196F3, #1976D2);
+  color: white;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 1px 4px rgba(33, 150, 243, 0.3);
+}
+
+.package-button:hover {
+  transform: trans
