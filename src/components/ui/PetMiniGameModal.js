@@ -195,6 +195,11 @@ function getRandomFlyingObjectY() {
   return 40 + Math.random() * (GAME_HEIGHT / 2 - FLYING_OBJECT_SIZE - 40);
 }
 
+function getRandomBuildingY() {
+  // Функция больше не используется, так как здания позиционируются через bottom: 0
+  return 0;
+}
+
 // --- Doodle Jump MiniGame ---
 const DJ_WIDTH = 320;
 const DJ_HEIGHT = 420;
@@ -2302,9 +2307,18 @@ export const FlyingOverCityGame = React.forwardRef(({ petSprite, onClose, petId 
   const [gameOver, setGameOver] = useState(false);
   const [rewarded, setRewarded] = useState(false);
   const [started, setStarted] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   
   // Используем масштабирование
   const { scale, containerSize, containerRef } = useGameScale(GAME_WIDTH, GAME_HEIGHT);
+
+  // Определяем мобильное устройство
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 700);
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   // refs для физики
   const petX = useRef(GAME_WIDTH / 2 - PET_SIZE / 2);
@@ -2391,13 +2405,17 @@ export const FlyingOverCityGame = React.forwardRef(({ petSprite, onClose, petId 
       if (obstacles.current.length === 0 || 
           obstacles.current[obstacles.current.length - 1].x < GAME_WIDTH - OBSTACLE_INTERVAL) {
         const buildingSprite = getRandomBuildingSprite();
-        const obstacleY = getRandomFlyingObjectY();
+        // Физические координаты Y для столкновений
+        // Спрайты отображаются с bottom: -70, что означает их нижняя граница на 70px ниже контейнера
+        // Значит их верхняя граница на: GAME_HEIGHT + 70 - высота_здания
+        // Но это неправильно! Нужно использовать те же координаты, что и для отображения
+        const physicalY = GAME_HEIGHT - buildingSprite.height; // Убираем +70, используем простые координаты
         obstacles.current.push({
           x: GAME_WIDTH,
-          y: obstacleY,
+          y: physicalY, // Используем правильные физические координаты
           width: buildingSprite.width,
           height: buildingSprite.height,
-          sprite: buildingSprite.sprite
+          src: buildingSprite.src
         });
       }
       
@@ -2503,7 +2521,8 @@ export const FlyingOverCityGame = React.forwardRef(({ petSprite, onClose, petId 
           transformOrigin: 'center center',
           position: 'relative',
           background: '#87CEEB',
-          bottom: '35px'
+          bottom: '35px',
+  
         }}
       >
       {/* Параллакс фон */}
@@ -2512,12 +2531,12 @@ export const FlyingOverCityGame = React.forwardRef(({ petSprite, onClose, petId 
           key={`bg-${index}`}
           style={{
             position: 'absolute',
-            left: -(backgroundY.current * PARALLAX_SPEEDS[index]) % (ZUMA_WIDTH * 2),
+            left: -(backgroundY.current * PARALLAX_SPEEDS[index]) % (GAME_WIDTH * 2),
             top: 0,
-            width: ZUMA_WIDTH * 2,
-            height: ZUMA_HEIGHT,
+            width: GAME_WIDTH * 2,
+            height: GAME_HEIGHT,
             backgroundImage: `url(${layer})`,
-            backgroundSize: `${ZUMA_WIDTH}px ${ZUMA_HEIGHT}px`,
+            backgroundSize: `${GAME_WIDTH}px ${GAME_HEIGHT}px`,
             backgroundRepeat: 'repeat-x',
             zIndex: 0,
             willChange: 'transform',
@@ -2539,6 +2558,7 @@ export const FlyingOverCityGame = React.forwardRef(({ petSprite, onClose, petId 
           userSelect: 'none',
           pointerEvents: 'none',
           willChange: 'transform',
+          transform: 'scaleX(-1)', // Отзеркаливаем питомца
         }}
       />
       
@@ -2546,12 +2566,12 @@ export const FlyingOverCityGame = React.forwardRef(({ petSprite, onClose, petId 
       {obstacles.current.map((obstacle, idx) => (
         <img
           key={idx}
-          src={obstacle.sprite}
+          src={obstacle.src}
           alt="obstacle"
           style={{
             position: 'absolute',
             left: obstacle.x,
-            top: obstacle.y,
+            bottom: -70, // Размещаем здания у фактической нижней границы
             width: obstacle.width,
             height: obstacle.height,
             zIndex: 1,
@@ -2627,6 +2647,17 @@ export const FlyingOverCityGame = React.forwardRef(({ petSprite, onClose, petId 
           <div>Нажмите для начала игры</div>
           <div style={{ fontSize: 16, marginTop: 8 }}>Пробел или клик для прыжка</div>
         </div>
+      )}
+      
+      {/* Мобильные элементы управления */}
+      {isMobile && started && !gameOver && (
+        <FlyingOverCityMobileControls 
+          onJump={() => {
+            if (!gameOver && started) {
+              velocityY.current = JUMP_VELOCITY;
+            }
+          }} 
+        />
       )}
       </div>
     </div>

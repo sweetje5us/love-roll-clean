@@ -1953,7 +1953,7 @@ if (!isOpen) return null;
                     <div className="phone-app-content">
                       {petView === 'main' ? (
                         <>
-                          <div className="phone-app-header">
+                          <div className="phone-app-header pet-header-with-button">
                             <button className="phone-back-button" onClick={handleBackToHome}>
                               <i className="fas fa-arrow-left"></i>
                             </button>
