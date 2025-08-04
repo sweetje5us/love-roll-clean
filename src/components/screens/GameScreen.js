@@ -1960,7 +1960,7 @@ const GameScreen = () => {
               
               return (
                 <motion.button
-                  key={choice.id || `choice-${index}`}
+                  key={choice.id ? `choice-${choice.id}` : `choice-${index}`}
                   className={buttonClasses}
                   onClick={isAvailable ? () => handleChoice(choice.id) : undefined}
                   whileHover={isAvailable ? { opacity: 0.9 } : {}}

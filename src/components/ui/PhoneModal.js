@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useRelationships, RELATIONSHIP_LEVELS, getRelationshipLevel } from '../../contexts/RelationshipsContext';
 import { useCharacters } from '../../contexts/CharacterContext';
@@ -6,6 +6,7 @@ import { useScreen } from '../../contexts/ScreenContext';
 import { useCurrency } from '../../contexts/CurrencyContext';
 import { useInventory } from '../../contexts/InventoryContext';
 import { useDailyRewards } from '../../contexts/DailyRewardsContext';
+import { usePets } from '../../contexts/PetContext';
 import { getEpisodeSave } from '../../utils/saveUtils';
 import episodeManager from '../../utils/episodeManager';
 import sceneManager from '../../utils/sceneManager';
@@ -25,6 +26,7 @@ import {
 } from '../../utils/itemUtils';
 import ItemCard from './ItemCard';
 import ChestModal from './ChestModal';
+import PetMiniGameModal from './PetMiniGameModal';
 import './PhoneModal.css';
 
 const PhoneModal = ({ isOpen, onClose }) => {
@@ -51,12 +53,21 @@ const PhoneModal = ({ isOpen, onClose }) => {
     maxQuantity: 1,
     selectedQuantity: 1
   });
+  const [selectedShopItem, setSelectedShopItem] = useState(null);
+  const [shopView, setShopView] = useState('list'); // 'list' или 'details'
   
   // Состояния для инвентаря
   const [inventoryFilter, setInventoryFilter] = useState('all');
   const [inventorySort, setInventorySort] = useState('name');
   const [inventorySearch, setInventorySearch] = useState('');
   const [selectedInventoryItem, setSelectedInventoryItem] = useState(null);
+  const [inventoryView, setInventoryView] = useState('list'); // 'list' или 'details'
+  
+  // Состояния для питомца
+  const [petView, setPetView] = useState('main'); // 'main', 'minigame'
+  const [selectedMinigame, setSelectedMinigame] = useState(null);
+  const [isMiniGameOpen, setMiniGameOpen] = useState(false);
+  const [, forceUpdate] = useState({});
   
   // Состояние для модального окна сундука
   const [chestModal, setChestModal] = useState({
@@ -76,6 +87,22 @@ const PhoneModal = ({ isOpen, onClose }) => {
   // Контексты для работы с валютой и инвентарем
   const { gold, gems, removeGold, addGold, addGems, removeGems, hasEnoughGold, hasEnoughGems } = useCurrency();
   const { addItem, removeItem, getAllItems: getInventoryData } = useInventory();
+  const { 
+    activePetId, 
+    petCollection, 
+    setActivePet, 
+    addPetToCollection, 
+    getActivePet,
+    feedPet,
+    playWithPet,
+    restPet,
+    healPet,
+    wakeUpPet,
+    getActivePetStatus,
+    getStatusIconByName,
+    getStatusColorByName,
+    getStatusTextByName
+  } = usePets();
   const { 
     dailyRewards, 
     canClaimToday, 
@@ -100,7 +127,63 @@ const PhoneModal = ({ isOpen, onClose }) => {
   const inventoryItems = getInventoryItemsWithInfo(inventoryData);
   const inventoryStats = getInventoryStats(inventoryItems);
   const allShopItems = getShopItemsWithInventoryFilter(inventoryData);
-    const itemTypes = getAllTypes()
+  
+  // Данные для питомца
+  const activePet = getActivePet();
+  const activePetData = activePetId ? getItemById(activePetId) : null;
+  const activePetStatus = getActivePetStatus();
+  
+  // Определяем класс анимации для питомца
+  const getPetAnimationClass = () => {
+    if (!activePet) return 'idle';
+    
+    const statuses = activePetStatus || [];
+    
+    // Приоритет анимаций
+    if (activePet.isSleeping) return 'sleeping';
+    if (statuses.includes('sick')) return 'sick';
+    if (statuses.includes('hungry')) return 'hungry';
+    if (statuses.includes('sad')) return 'sad';
+    
+    return 'idle';
+  };
+
+  const petAnimationClass = getPetAnimationClass();
+
+  // Инициализация и обновление питомца в приложении телефона
+  useEffect(() => {
+    if (activeApp === 'pet' && activePetId) {
+      console.log('PhoneModal: Обновляем данные питомца для', activePetId);
+      // Принудительно обновляем данные питомца
+      const petData = getItemById(activePetId);
+      if (petData) {
+        console.log('PhoneModal: Найден питомец', petData.name);
+        // Принудительно обновляем компонент
+        forceUpdate({});
+      }
+    }
+  }, [activeApp, activePetId, forceUpdate]);
+
+  // Отслеживаем изменения активного питомца
+  useEffect(() => {
+    if (activeApp === 'pet') {
+      console.log('PhoneModal: activePetId изменился на', activePetId);
+      forceUpdate({});
+    }
+  }, [activePetId, activeApp, forceUpdate]);
+
+  // Периодическое обновление для синхронизации с изменениями питомца
+  useEffect(() => {
+    if (activeApp === 'pet') {
+      const interval = setInterval(() => {
+        forceUpdate({});
+      }, 5000); // Каждые 5 секунд
+
+      return () => clearInterval(interval);
+    }
+  }, [activeApp, forceUpdate]);
+
+  const itemTypes = getAllTypes()
     .filter(type => type !== 'quest') // Скрываем категорию "Квестовое"
     .map(type => ({
       id: type,
@@ -142,6 +225,15 @@ const PhoneModal = ({ isOpen, onClose }) => {
       setInventoryFilter('all');
       setInventorySort('name');
       setInventorySearch('');
+      setInventoryView('list');
+      setSelectedInventoryItem(null);
+      // Сбрасываем состояние магазина
+      setShopView('list');
+      setSelectedShopItem(null);
+      // Сбрасываем состояние питомца
+      setPetView('main');
+      setSelectedMinigame(null);
+      setMiniGameOpen(false);
     } else {
       // Если телефон заблокирован, включаем его
       setIsPhoneOn(true);
@@ -162,6 +254,14 @@ const PhoneModal = ({ isOpen, onClose }) => {
     setInventoryFilter('all');
     setInventorySort('name');
     setInventorySearch('');
+    setInventoryView('list');
+    setSelectedInventoryItem(null);
+    // Сбрасываем состояние магазина
+    setShopView('list');
+    setSelectedShopItem(null);
+    // Сбрасываем состояние питомца
+    setPetView('main');
+    setSelectedMinigame(null);
   };
 
   const handleAppClick = (appName) => {
@@ -170,6 +270,16 @@ const PhoneModal = ({ isOpen, onClose }) => {
 
   const handleBackToHome = () => {
     setActiveApp('home');
+    // Сбрасываем состояние инвентаря при возврате на главный экран
+    setInventoryView('list');
+    setSelectedInventoryItem(null);
+    // Сбрасываем состояние магазина при возврате на главный экран
+    setShopView('list');
+    setSelectedShopItem(null);
+          // Сбрасываем состояние питомца при возврате на главный экран
+      setPetView('main');
+      setSelectedMinigame(null);
+      setMiniGameOpen(false);
     setCurrentPage(0); // Сбрасываем на первую страницу
   };
 
@@ -408,10 +518,70 @@ const PhoneModal = ({ isOpen, onClose }) => {
 
   const openInventoryItemDetails = (item) => {
     setSelectedInventoryItem(item);
+    setInventoryView('details');
   };
 
   const closeInventoryItemDetails = () => {
     setSelectedInventoryItem(null);
+    setInventoryView('list');
+  };
+
+  const openShopItemDetails = (item) => {
+    setSelectedShopItem(item);
+    setShopView('details');
+  };
+
+  const closeShopItemDetails = () => {
+    setSelectedShopItem(null);
+    setShopView('list');
+  };
+  
+  // Функции для работы с питомцем
+  const handleFeedPet = () => {
+    if (activePetId) {
+      feedPet(activePetId);
+    }
+  };
+
+  const handlePlayWithPet = () => {
+    if (activePetId && activePetData) {
+      // Проверяем, есть ли у питомца тип игры
+      if (activePetData.gameType) {
+        setSelectedMinigame(activePetData.gameType);
+        setPetView('minigame');
+      } else {
+        // Если нет типа игры, просто играем с питомцем
+        playWithPet(activePetId);
+      }
+    }
+  };
+
+  const handleRestPet = () => {
+    if (activePetId) {
+      restPet(activePetId);
+    }
+  };
+
+  const handleHealPet = () => {
+    if (activePetId) {
+      healPet(activePetId);
+    }
+  };
+
+  const handleWakeUpPet = () => {
+    if (activePetId) {
+      wakeUpPet(activePetId);
+    }
+  };
+
+  const openMinigame = (gameType) => {
+    setSelectedMinigame(gameType);
+    setPetView('minigame');
+  };
+
+  const closeMinigame = () => {
+    setSelectedMinigame(null);
+    setPetView('main');
   };
   
   // Функции для работы с сундуками
@@ -502,7 +672,7 @@ const PhoneModal = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
 
   return (
-    <AnimatePresence>
+    <AnimatePresence key="phone-modal-main">
       <motion.div
         key="phone-modal"
         className="phone-modal-overlay"
@@ -607,6 +777,10 @@ const PhoneModal = ({ isOpen, onClose }) => {
                               <div className="phone-app-icon" onClick={() => handleAppClick('inventory')}>
                                 <i className="fas fa-briefcase"></i>
                                 <span>Инвентарь</span>
+                              </div>
+                              <div className="phone-app-icon" onClick={() => handleAppClick('pet')}>
+                                <i className="fas fa-paw"></i>
+                                <span>Питомец</span>
                               </div>
                               <div className="phone-app-icon" onClick={() => handleAppClick('messages')}>
                                 <i className="fas fa-comments"></i>
@@ -722,7 +896,7 @@ const PhoneModal = ({ isOpen, onClose }) => {
                               
                               return (
                                 <div 
-                                  key={character.id || `character-${index}`} 
+                                  key={character.id ? `character-${character.id}` : `character-${index}`} 
                                   className="phone-contact"
                                                                      onClick={() => openContactDetails(character.id || character.name)}
                                 >
@@ -795,7 +969,7 @@ const PhoneModal = ({ isOpen, onClose }) => {
                                   <div className="important-choices-list">
                                     {importantChoices.length > 0 ? (
                                       importantChoices.map((choice, index) => (
-                                        <div key={choice.id || `choice-${index}`} className="choice-entry">
+                                        <div key={choice.id ? `choice-${choice.id}` : `choice-${index}`} className="choice-entry">
                                           <div className="choice-text">{choice.text}</div>
                                           <div className="choice-meta">
                                             {choice.chapter && <span>Глава {choice.chapter}</span>}
@@ -824,12 +998,14 @@ const PhoneModal = ({ isOpen, onClose }) => {
                    {/* Магазин */}
                    {activeApp === 'shop' && (
                      <div className="phone-app-content">
-                       <div className="phone-app-header">
-                         <button className="phone-back-button" onClick={handleBackToHome}>
-                           <i className="fas fa-arrow-left"></i>
-                         </button>
-                         <h3>Магазин</h3>
-                       </div>
+                       {shopView === 'list' ? (
+                         <>
+                           <div className="phone-app-header">
+                             <button className="phone-back-button" onClick={handleBackToHome}>
+                               <i className="fas fa-arrow-left"></i>
+                             </button>
+                             <h3>Магазин</h3>
+                           </div>
                        
                                                {/* Валюта */}
                         <div className="phone-shop-currency">
@@ -857,12 +1033,6 @@ const PhoneModal = ({ isOpen, onClose }) => {
                            Магазин
                          </button>
                          <button 
-                           className={`shop-tab ${shopActiveTab === 'inventory' ? 'active' : ''}`}
-                           onClick={() => switchShopTab('inventory')}
-                         >
-                           Инвентарь
-                         </button>
-                         <button 
                            className={`shop-tab ${shopActiveTab === 'topup' ? 'active' : ''}`}
                            onClick={() => switchShopTab('topup')}
                          >
@@ -883,9 +1053,9 @@ const PhoneModal = ({ isOpen, onClose }) => {
                              </button>
                              {itemTypes.map((type, index) => (
                                <button 
-                                 key={type.id || `type-${index}`}
-                                                                                                     className={`category-btn ${shopActiveCategory === type.name ? 'active' : ''}`}
-                                  onClick={() => switchShopCategory(type.name)}
+                                 key={type.id}
+                                 className={`category-btn ${shopActiveCategory === type.name ? 'active' : ''}`}
+                                 onClick={() => switchShopCategory(type.name)}
                                >
                                  {type.name}
                                </button>
@@ -896,14 +1066,18 @@ const PhoneModal = ({ isOpen, onClose }) => {
                            <div className="phone-shop-items">
                              {filteredShopItems.length > 0 ? (
                                filteredShopItems.map((item, index) => (
-                                 <div key={item.id || `shop-item-${index}`} className="phone-shop-item">
+                                 <div 
+                                   key={item.id ? `shop-item-${item.id}` : `shop-item-${index}`} 
+                                   className="phone-shop-item"
+                                   onClick={() => openShopItemDetails(item)}
+                                 >
                                    <div className="item-image">
                                      <img src={item.sprite ? `/${item.sprite}` : `/sprites/items/consumable/apple.png`} alt={item.name} />
                                    </div>
                                    <div className="item-info">
                                      <div className="item-name">{item.name}</div>
                                      {item.rarity && (
-                                       <div className="item-quality" style={{ color: getRarityColor(item.rarity) }}>
+                                       <div className="item-rarity" style={{ color: getRarityColor(item.rarity) }}>
                                          <span>{item.rarity}</span>
                                        </div>
                                      )}
@@ -926,11 +1100,14 @@ const PhoneModal = ({ isOpen, onClose }) => {
                                    </div>
                                    <button 
                                      className="buy-button"
-                                     onClick={() => buyItem(
-                                       item.id || item.name, 
-                                       item.hasDiscount ? item.discountPrice : (item.price?.amount || item.price), 
-                                       item.price?.currency
-                                     )}
+                                     onClick={(e) => {
+                                       e.stopPropagation();
+                                       buyItem(
+                                         item.id || item.name, 
+                                         item.hasDiscount ? item.discountPrice : (item.price?.amount || item.price), 
+                                         item.price?.currency
+                                       );
+                                     }}
                                    >
                                      Купить
                                    </button>
@@ -956,7 +1133,7 @@ const PhoneModal = ({ isOpen, onClose }) => {
                              >
                                <option value="all">Все типы</option>
                                {itemTypes.map((type, index) => (
-                                 <option key={type.id || `type-${index}`} value={type.name}>{type.name}</option>
+                                 <option key={type.id} value={type.name}>{type.name}</option>
                                ))}
                              </select>
                            </div>
@@ -965,14 +1142,18 @@ const PhoneModal = ({ isOpen, onClose }) => {
                            <div className="phone-inventory-items">
                              {sortedInventory.length > 0 ? (
                                sortedInventory.map((item, index) => (
-                                 <div key={item.id || `inventory-item-${index}`} className="phone-inventory-item">
+                                 <div 
+                                   key={item.id ? `inventory-item-${item.id}` : `inventory-item-${index}`} 
+                                   className="phone-inventory-item"
+                                   onClick={() => openInventoryItemDetails(item)}
+                                 >
                                    <div className="item-image">
                                      <img src={item.sprite ? `/${item.sprite}` : `/sprites/items/consumable/apple.png`} alt={item.name} />
                                    </div>
                                    <div className="item-info">
                                      <div className="item-name">{item.name}</div>
                                      {item.rarity && (
-                                       <div className="item-quality" style={{ color: getRarityColor(item.rarity) }}>
+                                       <div className="item-rarity" style={{ color: getRarityColor(item.rarity) }}>
                                          <span>{item.rarity}</span>
                                        </div>
                                      )}
@@ -986,7 +1167,10 @@ const PhoneModal = ({ isOpen, onClose }) => {
                                    {item.canSell && (
                                      <button 
                                        className="sell-button"
-                                       onClick={() => sellItem(item.id || item.name, item.sellPrice?.amount || item.sellPrice)}
+                                       onClick={(e) => {
+                                         e.stopPropagation(); // Предотвращаем открытие деталей при продаже
+                                         sellItem(item.id || item.name, item.sellPrice?.amount || item.sellPrice);
+                                       }}
                                      >
                                        Продать
                                      </button>
@@ -1188,82 +1372,243 @@ const PhoneModal = ({ isOpen, onClose }) => {
                            </div>
                          </div>
                        )}
+                         </>
+                       ) : (
+                         /* Детали товара магазина */
+                         <div className="phone-app-content">
+                           <div className="phone-app-header">
+                             <button className="phone-back-button" onClick={closeShopItemDetails}>
+                               <i className="fas fa-arrow-left"></i>
+                             </button>
+                             <h3>Детали товара</h3>
+                           </div>
+                           
+                           <div className="phone-item-details">
+                             {selectedShopItem && (
+                               <>
+                                 <div className="item-details-image">
+                                   <img 
+                                     src={selectedShopItem.sprite ? `/${selectedShopItem.sprite}` : `/sprites/items/consumable/apple.png`} 
+                                     alt={selectedShopItem.name} 
+                                   />
+                                 </div>
+                                 
+                                 <div className="item-details-info">
+                                   <div className="item-details-name">{selectedShopItem.name}</div>
+                                   {selectedShopItem.rarity && (
+                                     <div className="item-details-rarity" style={{ color: getRarityColor(selectedShopItem.rarity) }}>
+                                       <span>{selectedShopItem.rarity}</span>
+                                     </div>
+                                   )}
+                                   
+                                   <div className="item-details-price">
+                                     {selectedShopItem.hasDiscount ? (
+                                       <>
+                                         <div className="original-price">
+                                           {selectedShopItem.originalPrice} {selectedShopItem.price?.currency === 'gems' ? '💎' : '🪙'}
+                                         </div>
+                                         <div className="discount-price">
+                                           {selectedShopItem.discountPrice} {selectedShopItem.price?.currency === 'gems' ? '💎' : '🪙'}
+                                         </div>
+                                       </>
+                                     ) : (
+                                       <div className="current-price">
+                                         {selectedShopItem.price?.amount || selectedShopItem.price} {selectedShopItem.price?.currency === 'gems' ? '💎' : '🪙'}
+                                       </div>
+                                     )}
+                                   </div>
+                                   
+                                   {selectedShopItem.description && (
+                                     <div className="item-details-description">
+                                       <h4>Описание</h4>
+                                       <p>{selectedShopItem.description}</p>
+                                     </div>
+                                   )}
+                                   
+                                   {selectedShopItem.effects && selectedShopItem.effects.length > 0 && (
+                                     <div className="item-details-effects">
+                                       <h4>Эффекты</h4>
+                                       <ul>
+                                         {selectedShopItem.effects.map((effect, index) => (
+                                           <li key={`effect-${index}-${effect}`}>{effect}</li>
+                                         ))}
+                                       </ul>
+                                     </div>
+                                   )}
+                                 </div>
+                                 
+                                 {selectedShopItem && (
+                                   <div className="item-details-buy-info">
+                                     <button 
+                                       className="item-details-buy-button"
+                                       onClick={() => buyItem(
+                                         selectedShopItem.id || selectedShopItem.name, 
+                                         selectedShopItem.hasDiscount ? selectedShopItem.discountPrice : (selectedShopItem.price?.amount || selectedShopItem.price), 
+                                         selectedShopItem.price?.currency
+                                       )}
+                                     >
+                                       Купить за {selectedShopItem.hasDiscount ? selectedShopItem.discountPrice : (selectedShopItem.price?.amount || selectedShopItem.price)} {selectedShopItem.price?.currency === 'gems' ? '💎' : '🪙'}
+                                     </button>
+                                   </div>
+                                 )}
+                               </>
+                             )}
+                           </div>
+                         </div>
+                       )}
                      </div>
                    )}
 
                    {/* Инвентарь */}
                    {activeApp === 'inventory' && (
                      <div className="phone-app-content">
-                       <div className="phone-app-header">
-                         <button className="phone-back-button" onClick={handleBackToHome}>
-                           <i className="fas fa-arrow-left"></i>
-                         </button>
-                         <h3>Инвентарь</h3>
-                       </div>
-                       
-                       {/* Фильтры и поиск */}
-                       <div className="phone-inventory-controls">
-                         <div className="inventory-controls-row">
-                           <input
-                             type="text"
-                             placeholder="Поиск..."
-                             value={inventorySearch}
-                             onChange={(e) => setInventorySearch(e.target.value)}
-                             className="inventory-search"
-                           />
-                           <select 
-                             value={inventoryFilter} 
-                             onChange={(e) => setInventoryFilter(e.target.value)}
-                             className="inventory-filter"
-                           >
-                             <option value="all">Все типы</option>
-                             {itemTypes.map((type, index) => (
-                               <option key={type.id || `type-${index}`} value={type.name}>{type.name}</option>
-                             ))}
-                           </select>
-                         </div>
-                       </div>
-                       
-                       {/* Список предметов */}
-                       <div className="phone-inventory-list">
-                         {sortedInventory.length > 0 ? (
-                           sortedInventory.map((item, index) => (
-                             <div 
-                               key={item.id || `inventory-item-${index}`} 
-                               className="phone-inventory-item"
-                               onClick={() => openInventoryItemDetails(item)}
-                             >
-                               <div className="item-image">
-                                 <img src={item.sprite ? `/${item.sprite}` : `/sprites/items/consumable/apple.png`} alt={item.name} />
-                               </div>
-                               <div className="item-info">
-                                 <div className="item-name">{item.name}</div>
-                                 <div className="item-quantity">x{item.quantity}</div>
-                                 {item.canSell && (
-                                   <div className="item-sell-price">
-                                     Продать за {item.sellPrice?.amount || item.sellPrice} {item.sellPrice?.currency === 'gems' ? '💎' : '🪙'}
-                                   </div>
-                                 )}
-                               </div>
-                               {item.canSell && (
-                                 <button 
-                                   className="sell-button"
-                                   onClick={(e) => {
-                                     e.stopPropagation();
-                                     sellItem(item.id || item.name, item.sellPrice?.amount || item.sellPrice);
-                                   }}
+                       {inventoryView === 'list' ? (
+                         <>
+                           <div className="phone-app-header">
+                             <button className="phone-back-button" onClick={handleBackToHome}>
+                               <i className="fas fa-arrow-left"></i>
+                             </button>
+                             <h3>Инвентарь</h3>
+                           </div>
+                           
+                           {/* Фильтры и поиск */}
+                           <div className="phone-inventory-controls">
+                             <div className="inventory-controls-row">
+                               <input
+                                 type="text"
+                                 placeholder="Поиск..."
+                                 value={inventorySearch}
+                                 onChange={(e) => setInventorySearch(e.target.value)}
+                                 className="inventory-search"
+                               />
+                               <select 
+                                 value={inventoryFilter} 
+                                 onChange={(e) => setInventoryFilter(e.target.value)}
+                                 className="inventory-filter"
+                               >
+                                 <option value="all">Все типы</option>
+                                 {itemTypes.map((type, index) => (
+                                   <option key={type.id} value={type.name}>{type.name}</option>
+                                 ))}
+                               </select>
+                             </div>
+                           </div>
+                           
+                           {/* Список предметов */}
+                           <div className="phone-inventory-list">
+                             {sortedInventory.length > 0 ? (
+                               sortedInventory.map((item, index) => (
+                                 <div 
+                                   key={item.id ? `inventory-item-${item.id}` : `inventory-item-${index}`} 
+                                   className="phone-inventory-item"
+                                   onClick={() => openInventoryItemDetails(item)}
                                  >
-                                   Продать
-                                 </button>
+                                   <div className="item-image">
+                                     <img src={item.sprite ? `/${item.sprite}` : `/sprites/items/consumable/apple.png`} alt={item.name} />
+                                   </div>
+                                   <div className="item-info">
+                                     <div className="item-name">{item.name}</div>
+                                     {item.rarity && (
+                                       <div className="item-rarity" style={{ color: getRarityColor(item.rarity) }}>
+                                         <span>{item.rarity}</span>
+                                       </div>
+                                     )}
+                                     <div className="item-quantity">x{item.quantity}</div>
+                                     {item.canSell && (
+                                       <div className="item-sell-price">
+                                         Продать за {item.sellPrice?.amount || item.sellPrice} {item.sellPrice?.currency === 'gems' ? '💎' : '🪙'}
+                                       </div>
+                                     )}
+                                   </div>
+                                   {item.canSell && (
+                                     <button 
+                                       className="sell-button"
+                                       onClick={(e) => {
+                                         e.stopPropagation();
+                                         sellItem(item.id || item.name, item.sellPrice?.amount || item.sellPrice);
+                                       }}
+                                     >
+                                       Продать
+                                     </button>
+                                   )}
+                                 </div>
+                               ))
+                             ) : (
+                               <div className="no-items">
+                                 <p>Инвентарь пуст</p>
+                               </div>
+                             )}
+                           </div>
+                         </>
+                       ) : (
+                         /* Детали предмета */
+                         <>
+                           <div className="phone-app-header">
+                             <button className="phone-back-button" onClick={closeInventoryItemDetails}>
+                               <i className="fas fa-arrow-left"></i>
+                             </button>
+                             <h3>Детали предмета</h3>
+                           </div>
+                           
+                           <div className="phone-item-details">
+                             <div className="item-details-image">
+                               <img 
+                                 src={selectedInventoryItem.sprite ? `/${selectedInventoryItem.sprite}` : `/sprites/items/consumable/apple.png`} 
+                                 alt={selectedInventoryItem.name} 
+                               />
+                             </div>
+                             
+                             <div className="item-details-info">
+                               <h3 className="item-details-name">{selectedInventoryItem.name}</h3>
+                               
+                               {selectedInventoryItem.rarity && (
+                                 <div className="item-details-rarity" style={{ color: getRarityColor(selectedInventoryItem.rarity) }}>
+                                   <span>{selectedInventoryItem.rarity}</span>
+                                 </div>
+                               )}
+                               
+                               <div className="item-details-quantity">
+                                 Количество: {selectedInventoryItem.quantity}
+                               </div>
+                               
+                               {selectedInventoryItem.description && (
+                                 <div className="item-details-description">
+                                   <h4>Описание:</h4>
+                                   <p>{selectedInventoryItem.description}</p>
+                                 </div>
+                               )}
+                               
+                               {selectedInventoryItem.effects && selectedInventoryItem.effects.length > 0 && (
+                                 <div className="item-details-effects">
+                                   <h4>Эффекты:</h4>
+                                   <ul>
+                                     {selectedInventoryItem.effects.map((effect, index) => (
+                                       <li key={`effect-${index}-${effect}`}>{effect}</li>
+                                     ))}
+                                   </ul>
+                                 </div>
+                               )}
+                               
+                               {selectedInventoryItem.canSell && (
+                                 <div className="item-details-sell-info">
+                                   <div className="sell-price">
+                                     Цена продажи: {selectedInventoryItem.sellPrice?.amount || selectedInventoryItem.sellPrice} {selectedInventoryItem.sellPrice?.currency === 'gems' ? '💎' : '🪙'}
+                                   </div>
+                                   <button 
+                                     className="item-details-sell-button"
+                                     onClick={() => {
+                                       sellItem(selectedInventoryItem.id || selectedInventoryItem.name, selectedInventoryItem.sellPrice?.amount || selectedInventoryItem.sellPrice);
+                                       closeInventoryItemDetails();
+                                     }}
+                                   >
+                                     Продать
+                                   </button>
+                                 </div>
                                )}
                              </div>
-                           ))
-                         ) : (
-                           <div className="no-items">
-                             <p>Инвентарь пуст</p>
                            </div>
-                         )}
-                       </div>
+                         </>
+                       )}
                      </div>
                    )}
 
@@ -1688,6 +2033,190 @@ const PhoneModal = ({ isOpen, onClose }) => {
                       </div>
                     </div>
                   )}
+
+                  {/* Питомец */}
+                  {activeApp === 'pet' && (
+                    <div className="phone-app-content">
+                      {petView === 'main' ? (
+                        <>
+                          <div className="phone-app-header">
+                            <button className="phone-back-button" onClick={handleBackToHome}>
+                              <i className="fas fa-arrow-left"></i>
+                            </button>
+                            <h3>Питомец</h3>
+                          </div>
+                          
+                          <div className="pet-view">
+                            {activePet && activePetData ? (
+                              <div className="pet-container">
+                                {/* Верхняя часть - питомец и имя */}
+                                <div className="pet-header">
+                                  <div className="pet-avatar-container">
+                                    <div className={`pet-avatar ${petAnimationClass}`}>
+                                      <img 
+                                        src={activePetData.sprite ? `/${activePetData.sprite}` : '/sprites/items/pets/rat.png'} 
+                                        alt={activePetData.name}
+                                        onError={(e) => {
+                                          e.target.style.display = 'none';
+                                          e.target.nextSibling.style.display = 'flex';
+                                        }}
+                                      />
+                                      <div className="pet-placeholder" style={{ display: 'none' }}>
+                                        <i className="fas fa-paw"></i>
+                                      </div>
+                                      
+                                      {/* Эффект сна */}
+                                      {activePet?.isSleeping && (
+                                        <div className="sleep-effect"></div>
+                                      )}
+                                      
+                                      {/* Статусы питомца */}
+                                      {activePetStatus && activePetStatus.length > 0 && (
+                                        <div className="pet-status-indicators">
+                                          {activePetStatus.map((status, index) => (
+                                            <div 
+                                              key={status} 
+                                              className="pet-status-indicator"
+                                              style={{ 
+                                                backgroundColor: getStatusColorByName(status),
+                                                animationDelay: `${index * 0.1}s`
+                                              }}
+                                              title={getStatusTextByName(status)}
+                                            >
+                                              <i className={getStatusIconByName(status)}></i>
+                                            </div>
+                                          ))}
+                                        </div>
+                                      )}
+                                    </div>
+                                    <div className="pet-name">{activePetData.name}</div>
+                                  </div>
+                                </div>
+
+                                {/* Средняя часть - статистика */}
+                                {activePet && (
+                                  <div className="pet-stats-section">
+                                    <div className="pet-stat-row">
+                                      <div className="pet-stat-item">
+                                        <div className="stat-icon">🍽️</div>
+                                        <div className="stat-bar">
+                                          <div 
+                                            className="stat-fill hunger-fill" 
+                                            style={{ width: `${activePet.hunger}%` }}
+                                          ></div>
+                                        </div>
+                                        <div className="stat-value">{Math.round(activePet.hunger)}%</div>
+                                      </div>
+                                      <div className="pet-stat-item">
+                                        <div className="stat-icon">😊</div>
+                                        <div className="stat-bar">
+                                          <div 
+                                            className="stat-fill happiness-fill" 
+                                            style={{ width: `${activePet.happiness}%` }}
+                                          ></div>
+                                        </div>
+                                        <div className="stat-value">{Math.round(activePet.happiness)}%</div>
+                                      </div>
+                                    </div>
+                                    <div className="pet-stat-row">
+                                      <div className="pet-stat-item">
+                                        <div className="stat-icon">⚡</div>
+                                        <div className="stat-bar">
+                                          <div 
+                                            className="stat-fill energy-fill" 
+                                            style={{ width: `${activePet.energy}%` }}
+                                          ></div>
+                                        </div>
+                                        <div className="stat-value">{Math.round(activePet.energy)}%</div>
+                                      </div>
+                                      <div className="pet-stat-item">
+                                        <div className="stat-icon">❤️</div>
+                                        <div className="stat-bar">
+                                          <div 
+                                            className="stat-fill health-fill" 
+                                            style={{ width: `${activePet.health}%` }}
+                                          ></div>
+                                        </div>
+                                        <div className="stat-value">{Math.round(activePet.health)}%</div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                )}
+
+                                {/* Нижняя часть - кнопки действий */}
+                                <div className="pet-action-buttons">
+                                  <button 
+                                    className="pet-action-btn" 
+                                    onClick={handleFeedPet}
+                                    disabled={!activePet || activePet.hunger >= 100 || activePet.isSleeping}
+                                    title={!activePet || activePet.hunger >= 100 || activePet.isSleeping ? (activePet?.isSleeping ? "Питомец спит!" : "Питомец уже сыт!") : "Покормить питомца"}
+                                  >
+                                    <i className="fas fa-utensils"></i>
+                                    <span>Кормить</span>
+                                  </button>
+                                  <button 
+                                    className="pet-action-btn" 
+                                    onClick={handlePlayWithPet}
+                                    disabled={!activePet || activePet.energy < 15 || activePet.happiness >= 100 || activePet.isSleeping}
+                                    title={!activePet || activePet.energy < 15 || activePet.happiness >= 100 || activePet.isSleeping ? (activePet?.isSleeping ? "Питомец спит!" : "Питомец слишком устал или уже счастлив!") : "Поиграть с питомцем"}
+                                  >
+                                    <i className="fas fa-gamepad"></i>
+                                    <span>Играть</span>
+                                  </button>
+                                  <button 
+                                    className="pet-action-btn" 
+                                    onClick={activePet?.isSleeping ? handleWakeUpPet : handleRestPet}
+                                    disabled={!activePet}
+                                    title={activePet?.isSleeping 
+                                      ? "Разбудить питомца"
+                                      : "Уложить питомца спать"
+                                    }
+                                  >
+                                    <i className={activePet?.isSleeping ? "fas fa-sun" : "fas fa-bed"}></i>
+                                    <span>{activePet?.isSleeping ? "Будить" : "Спать"}</span>
+                                  </button>
+                                  <button 
+                                    className="pet-action-btn" 
+                                    onClick={handleHealPet}
+                                    disabled={!activePet || activePet.health >= 100 || activePet.isSleeping}
+                                    title={!activePet || activePet.health >= 100 || activePet.isSleeping ? (activePet?.isSleeping ? "Питомец спит!" : "Питомец полностью здоров!") : "Лечить питомца"}
+                                  >
+                                    <i className="fas fa-heartbeat"></i>
+                                    <span>Лечить</span>
+                                  </button>
+                                </div>
+                              </div>
+                            ) : (
+                              <div className="no-pet">
+                                <i className="fas fa-paw"></i>
+                                <p>У вас пока нет питомца</p>
+                                <p>Питомцев можно получить в магазине</p>
+                              </div>
+                            )}
+                          </div>
+                        </>
+                      ) : (
+                        /* Мини-игра */
+                        <div className="minigame-view">
+                          <div className="phone-app-header">
+                            <button className="phone-back-button" onClick={closeMinigame}>
+                              <i className="fas fa-arrow-left"></i>
+                            </button>
+                            <h3>Мини-игра</h3>
+                          </div>
+                          <div className="minigame-container">
+                            {activePetData && (
+                              <PetMiniGameModal
+                                isOpen={true}
+                                onClose={closeMinigame}
+                                pet={activePetData}
+                              />
+                            )}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  )}
                 </div>
               ) : (
                 <div 
@@ -1709,7 +2238,7 @@ const PhoneModal = ({ isOpen, onClose }) => {
        </motion.div>
        
        {/* Модальное окно выбора количества */}
-       <AnimatePresence>
+       <AnimatePresence key="quantity-modal-presence">
          {shopQuantityModal.isOpen && (
            <motion.div
              key="quantity-modal"
@@ -1768,91 +2297,7 @@ const PhoneModal = ({ isOpen, onClose }) => {
          />
        )}
 
-       {/* Модальное окно предпросмотра предмета инвентаря */}
-       <AnimatePresence>
-         {selectedInventoryItem && (
-           <motion.div
-             key="inventory-item-modal"
-             className="inventory-item-modal-overlay"
-             initial={{ opacity: 0 }}
-             animate={{ opacity: 1 }}
-             exit={{ opacity: 0 }}
-             onClick={closeInventoryItemDetails}
-           >
-             <motion.div
-               className="inventory-item-modal"
-               initial={{ scale: 0.8, opacity: 0 }}
-               animate={{ scale: 1, opacity: 1 }}
-               exit={{ scale: 0.8, opacity: 0 }}
-               onClick={(e) => e.stopPropagation()}
-             >
-               <div className="item-modal-header">
-                 <button className="modal-close-button" onClick={closeInventoryItemDetails}>
-                   <i className="fas fa-times"></i>
-                 </button>
-               </div>
-               
-               <div className="item-modal-content">
-                 <div className="item-modal-image">
-                   <img 
-                     src={selectedInventoryItem.sprite ? `/${selectedInventoryItem.sprite}` : `/sprites/items/consumable/apple.png`} 
-                     alt={selectedInventoryItem.name} 
-                   />
-                 </div>
-                 
-                 <div className="item-modal-info">
-                   <h3 className="item-modal-name">{selectedInventoryItem.name}</h3>
-                   
-                   {selectedInventoryItem.rarity && (
-                     <div className="item-modal-rarity" style={{ color: getRarityColor(selectedInventoryItem.rarity) }}>
-                       <span>{selectedInventoryItem.rarity}</span>
-                     </div>
-                   )}
-                   
-                   <div className="item-modal-quantity">
-                     Количество: {selectedInventoryItem.quantity}
-                   </div>
-                   
-                   {selectedInventoryItem.description && (
-                     <div className="item-modal-description">
-                       <h4>Описание:</h4>
-                       <p>{selectedInventoryItem.description}</p>
-                     </div>
-                   )}
-                   
-                   {selectedInventoryItem.effects && selectedInventoryItem.effects.length > 0 && (
-                     <div className="item-modal-effects">
-                       <h4>Эффекты:</h4>
-                       <ul>
-                         {selectedInventoryItem.effects.map((effect, index) => (
-                           <li key={index}>{effect}</li>
-                         ))}
-                       </ul>
-                     </div>
-                   )}
-                   
-                   {selectedInventoryItem.canSell && (
-                     <div className="item-modal-sell-info">
-                       <div className="sell-price">
-                         Цена продажи: {selectedInventoryItem.sellPrice?.amount || selectedInventoryItem.sellPrice} {selectedInventoryItem.sellPrice?.currency === 'gems' ? '💎' : '🪙'}
-                       </div>
-                       <button 
-                         className="modal-sell-button"
-                         onClick={() => {
-                           sellItem(selectedInventoryItem.id || selectedInventoryItem.name, selectedInventoryItem.sellPrice?.amount || selectedInventoryItem.sellPrice);
-                           closeInventoryItemDetails();
-                         }}
-                       >
-                         Продать
-                       </button>
-                     </div>
-                   )}
-                 </div>
-               </div>
-             </motion.div>
-           </motion.div>
-         )}
-       </AnimatePresence>
+
      </AnimatePresence>
    );
  };

@@ -450,6 +450,8 @@
   height: 100%;
   display: flex;
   flex-direction: column;
+  position: relative;
+  overflow: hidden;
 }
 
 .phone-app-header {
@@ -458,6 +460,10 @@
   padding: 15px 20px;
   background: rgba(0, 0, 0, 0.3);
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  position: relative;
+  z-index: 100;
+  box-sizing: border-box;
+  width: 100%;
 }
 
 .phone-back-button {
@@ -839,7 +845,7 @@
   white-space: normal;
 }
 
-.phone-shop-item .item-quality {
+.phone-shop-item .item-rarity {
   font-size: 9px;
   font-weight: 600;
   text-transform: uppercase;
@@ -1039,7 +1045,7 @@
    font-weight: 600;
  }
 
- .phone-inventory-item .item-quality {
+ .phone-inventory-item .item-rarity {
    font-size: 9px;
    font-weight: 600;
    text-transform: uppercase;
@@ -2887,4 +2893,807 @@
   background: #c0392b;
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
+}
+
+.modal-sell-button:hover {
+  background-color: #d32f2f;
+}
+
+/* Стили для деталей предмета внутри телефона */
+.phone-item-details {
+  padding: 20px;
+  height: calc(100% - 60px);
+  overflow-y: auto;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  position: relative;
+  box-sizing: border-box;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.item-details-image {
+  text-align: center;
+  margin-bottom: 20px;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 15px;
+  backdrop-filter: blur(10px);
+  flex-shrink: 0;
+}
+
+.item-details-image img {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.item-details-info {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 15px;
+  padding: 20px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  box-sizing: border-box;
+  width: 100%;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+.item-details-name {
+  font-size: 24px;
+  font-weight: bold;
+  color: #333;
+  margin: 0 0 10px 0;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.item-details-rarity {
+  text-align: center;
+  margin-bottom: 15px;
+  font-weight: bold;
+  font-size: 16px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  flex-shrink: 0;
+}
+
+.item-details-quantity {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 18px;
+  color: #666;
+  font-weight: 500;
+}
+
+.item-details-description {
+  margin-bottom: 20px;
+  flex-shrink: 0;
+}
+
+.item-details-description h4 {
+  font-size: 18px;
+  color: #333;
+  margin: 0 0 10px 0;
+  font-weight: 600;
+}
+
+.item-details-description p {
+  font-size: 16px;
+  color: #555;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.item-details-effects {
+  margin-bottom: 20px;
+  flex-shrink: 0;
+}
+
+.item-details-effects h4 {
+  font-size: 18px;
+  color: #333;
+  margin: 0 0 10px 0;
+  font-weight: 600;
+}
+
+.item-details-effects ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.item-details-effects li {
+  font-size: 16px;
+  color: #555;
+  padding: 8px 0;
+  border-bottom: 1px solid #eee;
+  position: relative;
+  padding-left: 20px;
+}
+
+.item-details-effects li:before {
+  content: "•";
+  color: #667eea;
+  font-weight: bold;
+  position: absolute;
+  left: 0;
+}
+
+.item-details-effects li:last-child {
+  border-bottom: none;
+}
+
+.item-details-sell-info {
+  text-align: center;
+  padding-top: 20px;
+  border-top: 2px solid #eee;
+}
+
+.item-details-sell-info .sell-price {
+  font-size: 18px;
+  color: #333;
+  margin-bottom: 15px;
+  font-weight: 500;
+}
+
+.item-details-sell-button {
+  background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+  color: white;
+  border: none;
+  padding: 12px 30px;
+  border-radius: 25px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+}
+
+.item-details-sell-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255, 107, 107, 0.4);
+  background: linear-gradient(135deg, #ff5252, #d32f2f);
+}
+
+/* Адаптивность для мобильных устройств */
+@media (max-width: 768px) {
+  .phone-item-details {
+    padding: 15px;
+  }
+  
+  .item-details-image img {
+    width: 80px;
+    height: 80px;
+  }
+  
+  .item-details-name {
+    font-size: 18px;
+  }
+  
+  .item-details-quantity {
+    font-size: 14px;
+  }
+  
+  .item-details-description h4,
+  .item-details-effects h4 {
+    font-size: 16px;
+  }
+  
+  .item-details-description p,
+  .item-details-effects li {
+    font-size: 14px;
+  }
+  
+  .item-details-header h3 {
+    font-size: 16px;
+  }
+  
+  .item-details-buy-button {
+    padding: 10px 16px;
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .phone-item-details {
+    padding: 10px;
+  }
+  
+  .item-details-image {
+    padding: 15px;
+  }
+  
+  .item-details-image img {
+    width: 50px;
+    height: 50px;
+  }
+  
+  .item-details-info {
+    padding: 15px;
+  }
+  
+  .item-details-name {
+    font-size: 18px;
+  }
+  
+  .item-details-sell-button {
+    padding: 10px 25px;
+    font-size: 14px;
+  }
+}
+
+.item-details-sell-button:hover {
+  background-color: #d32f2f;
+  transform: translateY(-1px);
+}
+
+.item-details-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #e0e0e0;
+  position: relative;
+  z-index: 10;
+}
+
+.item-details-header .back-button {
+  background: none;
+  border: none;
+  color: #007aff;
+  font-size: 16px;
+  cursor: pointer;
+  padding: 5px 10px;
+  border-radius: 5px;
+  transition: background-color 0.2s;
+  position: relative;
+  z-index: 11;
+}
+
+.item-details-header .back-button:hover {
+  background-color: rgba(0, 122, 255, 0.1);
+}
+
+.item-details-header h3 {
+  margin: 0 0 0 10px;
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+  position: relative;
+  z-index: 10;
+}
+
+.item-details-price {
+  margin: 10px 0;
+  padding: 10px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+  flex-shrink: 0;
+}
+
+.item-details-price .original-price {
+  text-decoration: line-through;
+  color: #6c757d;
+  font-size: 14px;
+  margin-bottom: 5px;
+}
+
+.item-details-price .discount-price {
+  color: #dc3545;
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.item-details-price .current-price {
+  color: #28a745;
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.item-details-buy-info {
+  margin-top: 20px;
+  padding-top: 15px;
+  border-top: 1px solid #e0e0e0;
+  width: 100%;
+  box-sizing: border-box;
+  margin-top: auto;
+  padding-bottom: 20px;
+}
+
+.item-details-buy-button {
+  width: 100%;
+  background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(40, 167, 69, 0.2);
+  box-sizing: border-box;
+}
+
+.item-details-buy-button:hover {
+  background: linear-gradient(135deg, #218838 0%, #1ea085 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(40, 167, 69, 0.3);
+}
+
+.item-details-buy-button:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(40, 167, 69, 0.2);
+}
+
+@media (max-width: 480px) {
+  .phone-item-details {
+    padding: 10px;
+  }
+
+  .item-details-image {
+    text-align: center;
+  }
+
+  .item-details-image img {
+    width: 60px;
+    height: 60px;
+  }
+
+  .item-details-info {
+    padding: 10px;
+  }
+
+  .item-details-name {
+    font-size: 16px;
+  }
+
+  .item-details-buy-button {
+    padding: 8px 12px;
+    font-size: 13px;
+  }
+
+  .item-details-header h3 {
+    font-size: 14px;
+  }
+}
+
+/* Стили для приложения питомца */
+.pet-view {
+  height: 100%;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.pet-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 10px;
+  gap: 15px;
+}
+
+/* Верхняя часть - питомец и имя */
+.pet-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px 0;
+}
+
+.pet-avatar-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.pet-avatar {
+  position: relative;
+  width: 100px;
+  height: 100px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #e8f5e8, #f1f8e9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  overflow: visible;
+}
+
+.pet-avatar img {
+  width: 75px;
+  height: 75px;
+  object-fit: contain;
+  transition: all 0.3s ease;
+}
+
+.pet-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  color: #9b59b6;
+  font-size: 32px;
+}
+
+.pet-name {
+  font-size: 16px;
+  font-weight: bold;
+  color: #2c3e50;
+  text-align: center;
+}
+
+.pet-status-indicators {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.pet-status-indicator {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 8px;
+  animation: pulse 2s infinite;
+}
+
+.sleep-effect {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 20px;
+  animation: sleep 3s infinite;
+}
+
+/* Средняя часть - статистика */
+.pet-stats-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.pet-stat-row {
+  display: flex;
+  gap: 10px;
+}
+
+.pet-stat-item {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: #f8f9fa;
+  padding: 6px 8px;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+}
+
+.stat-icon {
+  font-size: 14px;
+  min-width: 16px;
+}
+
+.stat-bar {
+  flex: 1;
+  height: 6px;
+  background: #e9ecef;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.stat-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.3s ease;
+}
+
+.hunger-fill {
+  background: linear-gradient(90deg, #e74c3c, #f39c12);
+}
+
+.happiness-fill {
+  background: linear-gradient(90deg, #f1c40f, #f39c12);
+}
+
+.energy-fill {
+  background: linear-gradient(90deg, #3498db, #2980b9);
+}
+
+.health-fill {
+  background: linear-gradient(90deg, #e74c3c, #c0392b);
+}
+
+.stat-value {
+  font-size: 11px;
+  font-weight: 600;
+  color: #2c3e50;
+  min-width: 25px;
+  text-align: right;
+}
+
+/* Нижняя часть - кнопки действий */
+.pet-action-buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  gap: 6px;
+}
+
+.pet-action-btn {
+  background: linear-gradient(135deg, #9b59b6, #8e44ad);
+  color: white;
+  border: none;
+  padding: 8px 4px;
+  border-radius: 8px;
+  font-size: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  box-shadow: 0 2px 6px rgba(155, 89, 182, 0.3);
+  min-height: 40px;
+}
+
+.pet-action-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(155, 89, 182, 0.4);
+}
+
+.pet-action-btn:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.pet-action-btn:disabled {
+  background: #bdc3c7;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.pet-action-btn i {
+  font-size: 12px;
+}
+
+.pet-action-btn span {
+  font-size: 9px;
+}
+
+.no-pet {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: #7f8c8d;
+  text-align: center;
+  padding: 20px;
+}
+
+.no-pet i {
+  font-size: 48px;
+  margin-bottom: 15px;
+  color: #9b59b6;
+}
+
+.no-pet p {
+  margin: 5px 0;
+  font-size: 14px;
+}
+
+.no-pet p:last-child {
+  font-size: 12px;
+  color: #95a5a6;
+}
+
+/* Анимации для питомца */
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+}
+
+@keyframes sleep {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 0.7; }
+}
+
+.pet-avatar.idle img {
+  animation: idle 3s infinite;
+}
+
+.pet-avatar.hungry img {
+  animation: hungry 2s infinite;
+}
+
+.pet-avatar.sad img {
+  animation: sad 2s infinite;
+}
+
+.pet-avatar.sick img {
+  animation: sick 1.5s infinite;
+}
+
+.pet-avatar.sleeping img {
+  animation: sleeping 4s infinite;
+}
+
+@keyframes idle {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-2px); }
+}
+
+@keyframes hungry {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(0.95); }
+}
+
+@keyframes sad {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(-2deg); }
+  75% { transform: rotate(2deg); }
+}
+
+@keyframes sick {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-1px); }
+  75% { transform: translateX(1px); }
+}
+
+@keyframes sleeping {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(0.98); }
+}
+
+.minigame-view {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.minigame-container {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Стили для мини-игры в телефоне */
+.minigame-container .pet-minigame-modal-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: transparent;
+  z-index: 1;
+}
+
+.minigame-container .pet-minigame-modal-content {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #000;
+  border-radius: 0;
+  box-shadow: none;
+  transform: none !important;
+  max-width: none;
+  max-height: none;
+  width: 100%;
+  height: 100%;
+}
+
+.minigame-container .pet-minigame-modal-header {
+  display: none;
+}
+
+.minigame-container .pet-minigame-modal-body {
+  height: 100%;
+  padding: 0;
+  min-height: 100%;
+}
+
+.minigame-placeholder {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.minigame-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #7f8c8d;
+  text-align: center;
+  padding: 20px;
+}
+
+.minigame-content i {
+  font-size: 48px;
+  margin-bottom: 15px;
+  color: #9b59b6;
+}
+
+/* Мобильные стили для приложения питомца */
+@media (max-width: 768px) {
+  .pet-container {
+    padding: 8px;
+    gap: 12px;
+  }
+  
+  .pet-avatar {
+    width: 150px;
+    height: 150px;
+    border-radius: 10px;
+  }
+  
+  .pet-avatar img {
+    width: 150px;
+    height: 150px;
+  }
+  
+  .pet-name {
+    font-size: 14px;
+  }
+  
+  .pet-stat-item {
+    padding: 4px 6px;
+  }
+  
+  .stat-icon {
+    font-size: 12px;
+  }
+  
+  .stat-bar {
+    height: 5px;
+  }
+  
+  .stat-value {
+    font-size: 10px;
+  }
+  
+  .pet-action-buttons {
+    gap: 4px;
+  }
+  
+  .pet-action-btn {
+    padding: 6px 3px;
+    font-size: 9px;
+    min-height: 35px;
+  }
+  
+  .pet-action-btn i {
+    font-size: 11px;
+  }
+  
+  .pet-action-btn span {
+    font-size: 8px;
+  }
 }
