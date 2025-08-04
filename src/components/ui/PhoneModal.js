@@ -56,7 +56,7 @@ const PhoneModal = ({ isOpen, onClose }) => {
   const [inventoryFilter, setInventoryFilter] = useState('all');
   const [inventorySort, setInventorySort] = useState('name');
   const [inventorySearch, setInventorySearch] = useState('');
-  const [showInventoryStats, setShowInventoryStats] = useState(true);
+  const [selectedInventoryItem, setSelectedInventoryItem] = useState(null);
   
   // Состояние для модального окна сундука
   const [chestModal, setChestModal] = useState({
@@ -404,6 +404,14 @@ const PhoneModal = ({ isOpen, onClose }) => {
     
     removeItem(itemId, 1);
     alert(`Предмет "${item.name}" продан за ${sellPrice} ${item.price?.currency === 'gems' ? 'камней' : 'монет'}!`);
+  };
+
+  const openInventoryItemDetails = (item) => {
+    setSelectedInventoryItem(item);
+  };
+
+  const closeInventoryItemDetails = () => {
+    setSelectedInventoryItem(null);
   };
   
   // Функции для работы с сундуками
@@ -1193,53 +1201,38 @@ const PhoneModal = ({ isOpen, onClose }) => {
                          <h3>Инвентарь</h3>
                        </div>
                        
-                       {/* Статистика */}
-                       <div className="phone-inventory-stats">
-                         <div className="stats-toggle" onClick={() => setShowInventoryStats(!showInventoryStats)}>
-                           <i className={`fas fa-${showInventoryStats ? 'chevron-up' : 'chevron-down'}`}></i>
-                           Статистика ({inventoryStats.totalItems} предметов)
-                         </div>
-                         
-                         {showInventoryStats && (
-                           <div className="stats-content">
-                             <div className="stat-item">
-                               <span>Всего предметов:</span>
-                               <span>{inventoryStats.totalItems}</span>
-                             </div>
-                             <div className="stat-item">
-                               <span>Уникальных:</span>
-                               <span>{inventoryStats.uniqueItems}</span>
-                             </div>
-                           </div>
-                         )}
-                       </div>
-                       
                        {/* Фильтры и поиск */}
                        <div className="phone-inventory-controls">
-                         <input
-                           type="text"
-                           placeholder="Поиск..."
-                           value={inventorySearch}
-                           onChange={(e) => setInventorySearch(e.target.value)}
-                           className="inventory-search"
-                         />
-                         <select 
-                           value={inventoryFilter} 
-                           onChange={(e) => setInventoryFilter(e.target.value)}
-                           className="inventory-filter"
-                         >
-                           <option value="all">Все типы</option>
-                           {itemTypes.map((type, index) => (
-                             <option key={type.id || `type-${index}`} value={type.name}>{type.name}</option>
-                           ))}
-                         </select>
+                         <div className="inventory-controls-row">
+                           <input
+                             type="text"
+                             placeholder="Поиск..."
+                             value={inventorySearch}
+                             onChange={(e) => setInventorySearch(e.target.value)}
+                             className="inventory-search"
+                           />
+                           <select 
+                             value={inventoryFilter} 
+                             onChange={(e) => setInventoryFilter(e.target.value)}
+                             className="inventory-filter"
+                           >
+                             <option value="all">Все типы</option>
+                             {itemTypes.map((type, index) => (
+                               <option key={type.id || `type-${index}`} value={type.name}>{type.name}</option>
+                             ))}
+                           </select>
+                         </div>
                        </div>
                        
                        {/* Список предметов */}
                        <div className="phone-inventory-list">
                          {sortedInventory.length > 0 ? (
                            sortedInventory.map((item, index) => (
-                             <div key={item.id || `inventory-item-${index}`} className="phone-inventory-item">
+                             <div 
+                               key={item.id || `inventory-item-${index}`} 
+                               className="phone-inventory-item"
+                               onClick={() => openInventoryItemDetails(item)}
+                             >
                                <div className="item-image">
                                  <img src={item.sprite ? `/${item.sprite}` : `/sprites/items/consumable/apple.png`} alt={item.name} />
                                </div>
@@ -1255,7 +1248,10 @@ const PhoneModal = ({ isOpen, onClose }) => {
                                {item.canSell && (
                                  <button 
                                    className="sell-button"
-                                   onClick={() => sellItem(item.id || item.name, item.sellPrice?.amount || item.sellPrice)}
+                                   onClick={(e) => {
+                                     e.stopPropagation();
+                                     sellItem(item.id || item.name, item.sellPrice?.amount || item.sellPrice);
+                                   }}
                                  >
                                    Продать
                                  </button>
@@ -1771,6 +1767,92 @@ const PhoneModal = ({ isOpen, onClose }) => {
            onRemoveItem={handleChestRemoveItem}
          />
        )}
+
+       {/* Модальное окно предпросмотра предмета инвентаря */}
+       <AnimatePresence>
+         {selectedInventoryItem && (
+           <motion.div
+             key="inventory-item-modal"
+             className="inventory-item-modal-overlay"
+             initial={{ opacity: 0 }}
+             animate={{ opacity: 1 }}
+             exit={{ opacity: 0 }}
+             onClick={closeInventoryItemDetails}
+           >
+             <motion.div
+               className="inventory-item-modal"
+               initial={{ scale: 0.8, opacity: 0 }}
+               animate={{ scale: 1, opacity: 1 }}
+               exit={{ scale: 0.8, opacity: 0 }}
+               onClick={(e) => e.stopPropagation()}
+             >
+               <div className="item-modal-header">
+                 <button className="modal-close-button" onClick={closeInventoryItemDetails}>
+                   <i className="fas fa-times"></i>
+                 </button>
+               </div>
+               
+               <div className="item-modal-content">
+                 <div className="item-modal-image">
+                   <img 
+                     src={selectedInventoryItem.sprite ? `/${selectedInventoryItem.sprite}` : `/sprites/items/consumable/apple.png`} 
+                     alt={selectedInventoryItem.name} 
+                   />
+                 </div>
+                 
+                 <div className="item-modal-info">
+                   <h3 className="item-modal-name">{selectedInventoryItem.name}</h3>
+                   
+                   {selectedInventoryItem.rarity && (
+                     <div className="item-modal-rarity" style={{ color: getRarityColor(selectedInventoryItem.rarity) }}>
+                       <span>{selectedInventoryItem.rarity}</span>
+                     </div>
+                   )}
+                   
+                   <div className="item-modal-quantity">
+                     Количество: {selectedInventoryItem.quantity}
+                   </div>
+                   
+                   {selectedInventoryItem.description && (
+                     <div className="item-modal-description">
+                       <h4>Описание:</h4>
+                       <p>{selectedInventoryItem.description}</p>
+                     </div>
+                   )}
+                   
+                   {selectedInventoryItem.effects && selectedInventoryItem.effects.length > 0 && (
+                     <div className="item-modal-effects">
+                       <h4>Эффекты:</h4>
+                       <ul>
+                         {selectedInventoryItem.effects.map((effect, index) => (
+                           <li key={index}>{effect}</li>
+                         ))}
+                       </ul>
+                     </div>
+                   )}
+                   
+                   {selectedInventoryItem.canSell && (
+                     <div className="item-modal-sell-info">
+                       <div className="sell-price">
+                         Цена продажи: {selectedInventoryItem.sellPrice?.amount || selectedInventoryItem.sellPrice} {selectedInventoryItem.sellPrice?.currency === 'gems' ? '💎' : '🪙'}
+                       </div>
+                       <button 
+                         className="modal-sell-button"
+                         onClick={() => {
+                           sellItem(selectedInventoryItem.id || selectedInventoryItem.name, selectedInventoryItem.sellPrice?.amount || selectedInventoryItem.sellPrice);
+                           closeInventoryItemDetails();
+                         }}
+                       >
+                         Продать
+                       </button>
+                     </div>
+                   )}
+                 </div>
+               </div>
+             </motion.div>
+           </motion.div>
+         )}
+       </AnimatePresence>
      </AnimatePresence>
    );
  };
