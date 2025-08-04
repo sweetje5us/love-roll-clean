@@ -471,6 +471,26 @@ const PhoneModal = ({ isOpen, onClose }) => {
     }
   };
 
+  // Utility function to get rarity color
+  const getRarityColor = (rarity) => {
+    switch (rarity?.toLowerCase()) {
+      case 'common':
+        return '#9e9e9e';
+      case 'uncommon':
+        return '#4caf50';
+      case 'rare':
+        return '#2196f3';
+      case 'epic':
+        return '#9c27b0';
+      case 'legendary':
+        return '#ff9800';
+      case 'mythic':
+        return '#f44336';
+      default:
+        return '#9e9e9e';
+    }
+  };
+
   if (!isOpen) return null;
 
   return (
@@ -868,19 +888,41 @@ const PhoneModal = ({ isOpen, onClose }) => {
                            <div className="phone-shop-items">
                              {filteredShopItems.length > 0 ? (
                                filteredShopItems.map((item, index) => (
-                                                                                                    <div key={item.id || `shop-item-${index}`} className="phone-shop-item">
+                                 <div key={item.id || `shop-item-${index}`} className="phone-shop-item">
                                    <div className="item-image">
                                      <img src={item.sprite ? `/${item.sprite}` : `/sprites/items/consumable/apple.png`} alt={item.name} />
                                    </div>
                                    <div className="item-info">
                                      <div className="item-name">{item.name}</div>
+                                     {item.rarity && (
+                                       <div className="item-quality" style={{ color: getRarityColor(item.rarity) }}>
+                                         <span>{item.rarity}</span>
+                                       </div>
+                                     )}
                                      <div className="item-price">
-                                       {item.price?.amount || item.price} {item.price?.currency === 'gems' ? '💎' : '🪙'}
+                                       {item.hasDiscount ? (
+                                         <>
+                                           <div className="original-price">
+                                             {item.originalPrice} {item.price?.currency === 'gems' ? '💎' : '🪙'}
+                                           </div>
+                                           <div className="discount-price">
+                                             {item.discountPrice} {item.price?.currency === 'gems' ? '💎' : '🪙'}
+                                           </div>
+                                         </>
+                                       ) : (
+                                         <div className="current-price">
+                                           {item.price?.amount || item.price} {item.price?.currency === 'gems' ? '💎' : '🪙'}
+                                         </div>
+                                       )}
                                      </div>
                                    </div>
                                    <button 
                                      className="buy-button"
-                                     onClick={() => buyItem(item.id || item.name, item.price?.amount || item.price, item.price?.currency)}
+                                     onClick={() => buyItem(
+                                       item.id || item.name, 
+                                       item.hasDiscount ? item.discountPrice : (item.price?.amount || item.price), 
+                                       item.price?.currency
+                                     )}
                                    >
                                      Купить
                                    </button>
@@ -921,7 +963,17 @@ const PhoneModal = ({ isOpen, onClose }) => {
                                    </div>
                                    <div className="item-info">
                                      <div className="item-name">{item.name}</div>
+                                     {item.rarity && (
+                                       <div className="item-quality" style={{ color: getRarityColor(item.rarity) }}>
+                                         <span>{item.rarity}</span>
+                                       </div>
+                                     )}
                                      <div className="item-quantity">x{item.quantity}</div>
+                                     {item.canSell && (
+                                       <div className="item-sell-price">
+                                         Продать за {item.sellPrice?.amount || item.sellPrice} {item.sellPrice?.currency === 'gems' ? '💎' : '🪙'}
+                                       </div>
+                                     )}
                                    </div>
                                    {item.canSell && (
                                      <button 

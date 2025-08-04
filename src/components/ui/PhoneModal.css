@@ -695,220 +695,259 @@
    font-size: 14px;
  }
 
- /* Shop */
- .phone-shop-currency {
-   display: flex;
-   justify-content: space-around;
-   padding: 10px 20px;
-   background: rgba(0, 0, 0, 0.2);
-   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
- }
+/* Shop */
+.phone-shop-currency {
+  display: flex;
+  justify-content: space-around;
+  padding: 6px 15px;
+  background: rgba(0, 0, 0, 0.2);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
 
- .currency-item {
+.currency-item {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   font-weight: 600;
   color: #000;
-  font-size: 14px;
+  font-size: 12px;
   background: rgba(255, 255, 255, 0.9);
-  padding: 4px 8px;
+  padding: 3px 6px;
   border-radius: 4px;
 }
 
- .currency-icon {
-   font-size: 16px;
- }
+.currency-icon {
+  font-size: 14px;
+}
 
- .phone-shop-rotation {
-   padding: 8px 20px;
-   background: rgba(255, 255, 255, 0.1);
-   text-align: center;
-   font-size: 12px;
-   opacity: 0.8;
- }
+.phone-shop-rotation {
+  padding: 4px 15px;
+  background: rgba(255, 255, 255, 0.1);
+  text-align: center;
+  font-size: 10px;
+  opacity: 0.8;
+}
 
- .phone-shop-tabs {
-   display: flex;
-   background: rgba(0, 0, 0, 0.2);
- }
+.phone-shop-tabs {
+  display: flex;
+  background: rgba(0, 0, 0, 0.2);
+}
 
- .shop-tab {
-   flex: 1;
-   padding: 12px;
-   background: none;
-   border: none;
-   color: #fff;
-   font-size: 14px;
-   cursor: pointer;
-   transition: background 0.3s ease;
- }
+.shop-tab {
+  flex: 1;
+  padding: 8px;
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 12px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
 
- .shop-tab.active {
-   background: rgba(255, 255, 255, 0.2);
-   font-weight: 600;
- }
+.shop-tab.active {
+  background: rgba(255, 255, 255, 0.2);
+  font-weight: 600;
+}
 
- .shop-tab:hover {
-   background: rgba(255, 255, 255, 0.1);
- }
+.shop-tab:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
 
- .phone-shop-content {
-   flex: 1;
-   overflow-y: auto;
-   padding: 15px;
- }
+.phone-shop-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 10px;
+}
 
- .phone-shop-categories {
-   display: flex;
-   gap: 8px;
-   margin-bottom: 15px;
-   overflow-x: auto;
-   padding-bottom: 5px;
- }
+.phone-shop-categories {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 10px;
+  overflow-x: auto;
+  padding-bottom: 3px;
+}
 
- .category-btn {
-   padding: 8px 12px;
-   background: rgba(255, 255, 255, 0.1);
-   border: none;
-   border-radius: 20px;
-   color: #fff;
-   font-size: 12px;
-   cursor: pointer;
-   transition: all 0.3s ease;
-   white-space: nowrap;
- }
+.category-btn {
+  padding: 6px 10px;
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  border-radius: 16px;
+  color: #fff;
+  font-size: 11px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
 
- .category-btn.active {
-   background: rgba(255, 255, 255, 0.3);
-   font-weight: 600;
- }
+.category-btn.active {
+  background: rgba(255, 255, 255, 0.3);
+  font-weight: 600;
+}
 
- .category-btn:hover {
-   background: rgba(255, 255, 255, 0.2);
- }
+.category-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
 
- .phone-shop-items {
-   display: flex;
-   flex-direction: column;
-   gap: 10px;
- }
+.phone-shop-items {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
 
- .phone-shop-item {
-   display: flex;
-   align-items: center;
-   padding: 12px;
-   background: rgba(255, 255, 255, 0.1);
-   border-radius: 8px;
-   border: 1px solid rgba(255, 255, 255, 0.2);
-   gap: 12px;
- }
+.phone-shop-item {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  gap: 10px;
+  min-height: 60px;
+}
 
- .phone-shop-item .item-image {
-   width: 40px;
-   height: 40px;
-   flex-shrink: 0;
- }
+.phone-shop-item .item-image {
+  width: 45px;
+  height: 45px;
+  flex-shrink: 0;
+}
 
- .phone-shop-item .item-image img {
-   width: 100%;
-   height: 100%;
-   object-fit: contain;
-   border-radius: 4px;
- }
+.phone-shop-item .item-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 4px;
+}
 
- .phone-shop-item .item-info {
-   flex: 1;
-   min-width: 0;
- }
+.phone-shop-item .item-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
 
- .phone-shop-item .item-name {
-   font-weight: 600;
-   margin-bottom: 4px;
-   color: #fff;
-   font-size: 14px;
-   overflow: hidden;
-   text-overflow: ellipsis;
-   white-space: nowrap;
- }
+.phone-shop-item .item-name {
+  font-weight: 600;
+  color: #fff;
+  font-size: 13px;
+  line-height: 1.2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  white-space: normal;
+}
 
- .phone-shop-item .item-price {
-   font-size: 12px;
-   opacity: 0.8;
-   color: #fff;
- }
+.phone-shop-item .item-quality {
+  font-size: 9px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 2px 6px;
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid currentColor;
+  display: inline-block;
+  align-self: flex-start;
+  margin-top: 2px;
+}
 
- .buy-button {
-   padding: 8px 16px;
-   background: #00b894;
-   border: none;
-   border-radius: 6px;
-   color: #fff;
-   font-weight: 600;
-   cursor: pointer;
-   transition: background 0.3s ease;
-   flex-shrink: 0;
-   white-space: nowrap;
- }
+.phone-shop-item .item-price {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 11px;
+  color: #fff;
+}
 
- .buy-button:hover {
-   background: #00a085;
- }
+.phone-shop-item .original-price {
+  text-decoration: line-through;
+  opacity: 0.6;
+  font-size: 10px;
+}
 
- /* Inventory */
- .phone-inventory-stats {
-   background: rgba(0, 0, 0, 0.2);
-   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
- }
+.phone-shop-item .discount-price {
+  color: #ff6b6b;
+  font-weight: 600;
+}
 
- .stats-toggle {
-   display: flex;
-   align-items: center;
-   gap: 8px;
-   padding: 12px 20px;
-   cursor: pointer;
-   transition: background 0.3s ease;
- }
+.phone-shop-item .current-price {
+  font-weight: 600;
+}
 
- .stats-toggle:hover {
-   background: rgba(255, 255, 255, 0.1);
- }
+.buy-button {
+  padding: 6px 12px;
+  background: #00b894;
+  border: none;
+  border-radius: 6px;
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.3s ease;
+  flex-shrink: 0;
+  white-space: nowrap;
+  font-size: 11px;
+}
 
- .stats-content {
-   padding: 0 20px 15px;
- }
+.buy-button:hover {
+  background: #00a085;
+}
 
- .stat-item {
-   display: flex;
-   justify-content: space-between;
-   padding: 8px 0;
-   font-size: 12px;
-   opacity: 0.8;
- }
+/* Inventory */
+.phone-inventory-stats {
+  background: rgba(0, 0, 0, 0.2);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
 
- .phone-inventory-controls {
-   display: flex;
-   gap: 10px;
-   padding: 15px 20px;
-   background: rgba(0, 0, 0, 0.2);
-   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
- }
+.stats-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
 
- .inventory-search {
-   flex: 1;
-   padding: 8px 12px;
-   background: rgba(255, 255, 255, 0.1);
-   border: 1px solid rgba(255, 255, 255, 0.2);
-   border-radius: 6px;
-   color: #fff;
-   font-size: 12px;
- }
+.stats-toggle:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
 
- .inventory-search::placeholder {
-   color: rgba(255, 255, 255, 0.6);
- }
+.stats-content {
+  padding: 0 20px 15px;
+}
 
- .inventory-filter {
+.stat-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  font-size: 12px;
+  opacity: 0.8;
+}
+
+.phone-inventory-controls {
+  display: flex;
+  gap: 10px;
+  padding: 15px 20px;
+  background: rgba(0, 0, 0, 0.2);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.inventory-search {
+  flex: 1;
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 6px;
+  color: #fff;
+  font-size: 12px;
+}
+
+.inventory-search::placeholder {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.inventory-filter {
   padding: 8px 12px;
   background: rgba(255, 255, 255, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.2);
@@ -932,17 +971,18 @@
  .phone-inventory-item {
    display: flex;
    align-items: center;
-   padding: 12px;
+   padding: 10px;
    background: rgba(255, 255, 255, 0.1);
    border-radius: 8px;
    border: 1px solid rgba(255, 255, 255, 0.2);
-   margin-bottom: 10px;
-   gap: 12px;
+   margin-bottom: 8px;
+   gap: 10px;
+   min-height: 60px;
  }
 
  .phone-inventory-item .item-image {
-   width: 40px;
-   height: 40px;
+   width: 45px;
+   height: 45px;
    flex-shrink: 0;
  }
 
@@ -956,28 +996,48 @@
  .phone-inventory-item .item-info {
    flex: 1;
    min-width: 0;
+   display: flex;
+   flex-direction: column;
+   gap: 3px;
  }
 
  .phone-inventory-item .item-name {
    font-weight: 600;
-   margin-bottom: 4px;
    color: #fff;
-   font-size: 14px;
+   font-size: 13px;
+   line-height: 1.2;
    overflow: hidden;
    text-overflow: ellipsis;
-   white-space: nowrap;
+   display: -webkit-box;
+   -webkit-line-clamp: 2;
+   -webkit-box-orient: vertical;
+   white-space: normal;
  }
 
  .phone-inventory-item .item-quantity {
-   font-size: 12px;
+   font-size: 11px;
    opacity: 0.8;
-   margin-bottom: 4px;
    color: #fff;
  }
 
  .phone-inventory-item .item-sell-price {
    font-size: 11px;
-   opacity: 0.6;
+   color: #ffd700;
+   font-weight: 600;
+ }
+
+ .phone-inventory-item .item-quality {
+   font-size: 9px;
+   font-weight: 600;
+   text-transform: uppercase;
+   letter-spacing: 0.5px;
+   padding: 2px 6px;
+   border-radius: 8px;
+   background: rgba(0, 0, 0, 0.3);
+   border: 1px solid currentColor;
+   display: inline-block;
+   align-self: flex-start;
+   margin-top: 2px;
  }
 
  .sell-button {
@@ -2198,9 +2258,9 @@
 
 /* Стили для раздела пополнения */
 .topup-section {
-  margin-bottom: 15px;
-  background: rgba(0, 0, 0, 0.3) !important;
-  border-radius: 8px;
+  margin-bottom: 8px;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 6px;
   overflow: hidden;
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
@@ -2208,33 +2268,33 @@
 .section-header {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 12px 15px;
+  gap: 4px;
+  padding: 8px 10px;
   background: rgba(0, 0, 0, 0.2);
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  font-size: 14px;
+  font-size: 11px;
   font-weight: 600;
   color: #fff;
 }
 
 .section-header i {
-  font-size: 16px;
+  font-size: 12px;
   color: #ffd700;
 }
 
 /* Ежедневные награды */
 .daily-rewards-card {
-  padding: 15px;
+  padding: 8px;
 }
 
 .streak-display {
   display: flex;
   align-items: center;
-  gap: 12px;
-  margin-bottom: 10px;
-  padding: 10px;
+  gap: 8px;
+  margin-bottom: 6px;
+  padding: 6px;
   background: linear-gradient(135deg, rgba(255, 215, 0, 0.1), rgba(255, 215, 0, 0.05));
-  border-radius: 8px;
+  border-radius: 6px;
   border: 1px solid rgba(255, 215, 0, 0.2);
 }
 
@@ -2243,23 +2303,23 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  width: 45px;
-  height: 45px;
+  width: 35px;
+  height: 35px;
   background: linear-gradient(135deg, #ffd700, #ffed4e);
   border-radius: 50%;
   color: #333;
   font-weight: bold;
-  box-shadow: 0 2px 8px rgba(255, 215, 0, 0.3);
+  box-shadow: 0 2px 6px rgba(255, 215, 0, 0.3);
   flex-shrink: 0;
 }
 
 .streak-number {
-  font-size: 16px;
+  font-size: 14px;
   line-height: 1;
 }
 
 .streak-text {
-  font-size: 8px;
+  font-size: 7px;
   opacity: 0.8;
 }
 
@@ -2269,68 +2329,68 @@
 }
 
 .streak-title {
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 600;
   color: #fff;
   margin-bottom: 2px;
 }
 
 .streak-subtitle {
-  font-size: 11px;
+  font-size: 10px;
   color: rgba(255, 255, 255, 0.7);
 }
 
 .today-reward-card {
-  margin-bottom: 10px;
-  padding: 10px;
+  margin-bottom: 8px;
+  padding: 8px;
   background: rgba(0, 0, 0, 0.2);
-  border-radius: 8px;
+  border-radius: 6px;
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .reward-label {
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 600;
   color: #fff;
-  margin-bottom: 6px;
+  margin-bottom: 4px;
 }
 
 .reward-content {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  padding: 6px;
+  gap: 6px;
+  padding: 4px;
   background: rgba(255, 215, 0, 0.15);
-  border-radius: 6px;
+  border-radius: 4px;
   border: 1px solid rgba(255, 215, 0, 0.3);
 }
 
 .reward-item {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 4px;
   color: #ffd700;
   font-weight: 600;
-  font-size: 12px;
+  font-size: 11px;
 }
 
 .reward-item i {
-  font-size: 14px;
+  font-size: 12px;
 }
 
 .claim-button {
   width: 100%;
-  padding: 10px;
+  padding: 8px;
   border: none;
-  border-radius: 8px;
-  font-size: 14px;
+  border-radius: 6px;
+  font-size: 12px;
   font-weight: 600;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 6px;
   transition: all 0.3s ease;
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -2354,32 +2414,32 @@
 }
 
 .weekly-progress {
-  padding: 12px;
+  padding: 8px;
   background: rgba(0, 0, 0, 0.2);
   border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .progress-title {
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 600;
   color: #fff;
-  margin-bottom: 6px;
+  margin-bottom: 4px;
   text-align: center;
 }
 
 .week-grid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: 4px;
+  gap: 3px;
 }
 
 .day-item {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 6px 2px;
+  padding: 4px 2px;
   background: rgba(255, 255, 255, 0.05);
-  border-radius: 6px;
+  border-radius: 4px;
   border: 1px solid rgba(255, 255, 255, 0.1);
   transition: all 0.3s ease;
 }
@@ -2398,13 +2458,13 @@
 }
 
 .day-number {
-  font-size: 10px;
+  font-size: 9px;
   font-weight: bold;
-  margin-bottom: 2px;
+  margin-bottom: 1px;
 }
 
 .day-reward {
-  font-size: 12px;
+  font-size: 10px;
 }
 
 /* Реклама */
@@ -2412,33 +2472,33 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 12px;
+  padding: 8px;
   background: rgba(0, 0, 0, 0.2);
-  border-radius: 8px;
-  margin: 12px;
+  border-radius: 6px;
+  margin: 8px;
   border: 1px solid rgba(255, 255, 255, 0.1);
-  gap: 12px;
+  gap: 8px;
 }
 
 .ad-content {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 8px;
   flex: 1;
   min-width: 0;
 }
 
 .ad-icon {
-  width: 35px;
-  height: 35px;
+  width: 30px;
+  height: 30px;
   background: linear-gradient(135deg, #4CAF50, #45a049);
-  border-radius: 8px;
+  border-radius: 6px;
   display: flex;
   align-items: center;
   justify-content: center;
   color: white;
-  font-size: 16px;
-  box-shadow: 0 2px 8px rgba(76, 175, 80, 0.3);
+  font-size: 14px;
+  box-shadow: 0 2px 6px rgba(76, 175, 80, 0.3);
   flex-shrink: 0;
 }
 
@@ -2448,53 +2508,53 @@
 }
 
 .ad-title {
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 600;
   color: #fff;
   margin-bottom: 2px;
 }
 
 .ad-description {
-  font-size: 11px;
+  font-size: 10px;
   color: rgba(255, 255, 255, 0.7);
 }
 
 .ad-rewards {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 3px;
   flex-shrink: 0;
 }
 
 .reward-badge {
   display: flex;
   align-items: center;
-  gap: 4px;
-  padding: 4px 6px;
+  gap: 3px;
+  padding: 3px 5px;
   background: rgba(255, 215, 0, 0.2);
-  border-radius: 4px;
+  border-radius: 3px;
   border: 1px solid rgba(255, 215, 0, 0.4);
 }
 
 .reward-amount {
-  font-size: 12px;
+  font-size: 11px;
   font-weight: bold;
   color: #fff;
 }
 
 .reward-icon {
-  font-size: 14px;
+  font-size: 12px;
 }
 
 .watch-ad-button {
-  width: calc(100% - 24px);
-  margin: 0 12px 12px;
-  padding: 12px;
+  width: calc(100% - 16px);
+  margin: 0 8px 8px;
+  padding: 10px;
   border: none;
-  border-radius: 8px;
+  border-radius: 6px;
   background: linear-gradient(135deg, #4CAF50, #45a049);
   color: white;
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 600;
   cursor: pointer;
   display: flex;
@@ -2516,17 +2576,17 @@
 .purchase-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 8px;
-  padding: 12px;
+  gap: 4px;
+  padding: 8px;
 }
 
 .package-card {
   position: relative;
   display: flex;
   flex-direction: column;
-  padding: 12px;
-  background: rgba(0, 0, 0, 0.3) !important;
-  border-radius: 8px;
+  padding: 8px;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 6px;
   border: 1px solid rgba(255, 255, 255, 0.1);
   transition: all 0.3s ease;
   text-align: center;
@@ -2545,72 +2605,72 @@
 
 .popular-badge {
   position: absolute;
-  top: -6px;
+  top: -5px;
   left: 50%;
   transform: translateX(-50%);
   background: linear-gradient(135deg, #ffd700, #ffed4e);
   color: #333;
-  padding: 2px 8px;
-  border-radius: 8px;
-  font-size: 8px;
+  padding: 1px 6px;
+  border-radius: 6px;
+  font-size: 7px;
   font-weight: bold;
   display: flex;
   align-items: center;
   gap: 2px;
-  box-shadow: 0 1px 4px rgba(255, 215, 0, 0.3);
+  box-shadow: 0 1px 3px rgba(255, 215, 0, 0.3);
 }
 
 .package-header {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 6px;
-  margin-bottom: 8px;
+  gap: 4px;
+  margin-bottom: 6px;
 }
 
 .package-icon {
-  width: 30px;
-  height: 30px;
+  width: 25px;
+  height: 25px;
   background: linear-gradient(135deg, #ffd700, #ffed4e);
-  border-radius: 6px;
+  border-radius: 4px;
   display: flex;
   align-items: center;
   justify-content: center;
   color: #333;
-  font-size: 14px;
-  box-shadow: 0 1px 4px rgba(255, 215, 0, 0.3);
+  font-size: 12px;
+  box-shadow: 0 1px 3px rgba(255, 215, 0, 0.3);
 }
 
 .package-amount {
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 600;
   color: #fff;
   line-height: 1.2;
 }
 
 .package-bonus {
-  font-size: 10px;
+  font-size: 9px;
   color: #4CAF50;
   font-weight: 600;
-  margin-bottom: 8px;
-  padding: 2px 6px;
+  margin-bottom: 6px;
+  padding: 1px 4px;
   background: rgba(76, 175, 80, 0.1);
-  border-radius: 4px;
+  border-radius: 3px;
   border: 1px solid rgba(76, 175, 80, 0.2);
 }
 
 .package-button {
   width: 100%;
-  padding: 8px;
+  padding: 6px;
   border: none;
-  border-radius: 6px;
+  border-radius: 4px;
   background: linear-gradient(135deg, #2196F3, #1976D2);
   color: white;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 1px 4px rgba(33, 150, 243, 0.3);
+  box-shadow: 0 1px 3px rgba(33, 150, 243, 0.3);
 }
 
 .package-button:hover {
