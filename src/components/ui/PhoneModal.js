@@ -27,6 +27,24 @@ import {
 import ItemCard from './ItemCard';
 import ChestModal from './ChestModal';
 import PetMiniGameModal from './PetMiniGameModal';
+import { FlyingOverCityGame, DoodleJumpGame, CrossyRoadGame, ZumaGame } from './PetMiniGameModal';
+
+// Функция для получения CSS для анимированного спрайта
+function getSpriteStyle(sprite, currentFrame = 0, row = 0) {
+  if (!sprite) return {};
+  
+  const frameX = currentFrame * sprite.frameWidth;
+  const frameY = row * sprite.frameHeight;
+  return {
+    backgroundImage: `url(${sprite.src})`,
+    backgroundPosition: `-${frameX}px -${frameY}px`,
+    backgroundSize: `${sprite.width}px ${sprite.height}px`,
+    width: `${sprite.frameWidth}px`,
+    height: `${sprite.frameHeight}px`,
+    backgroundRepeat: 'no-repeat'
+  };
+}
+
 import './PhoneModal.css';
 
 const PhoneModal = ({ isOpen, onClose }) => {
@@ -150,38 +168,70 @@ const PhoneModal = ({ isOpen, onClose }) => {
 
   const petAnimationClass = getPetAnimationClass();
 
-  // Инициализация и обновление питомца в приложении телефона
+  // Инициализация питомца при открытии приложения
   useEffect(() => {
-    if (activeApp === 'pet' && activePetId) {
-      console.log('PhoneModal: Обновляем данные питомца для', activePetId);
-      // Принудительно обновляем данные питомца
-      const petData = getItemById(activePetId);
-      if (petData) {
-        console.log('PhoneModal: Найден питомец', petData.name);
-        // Принудительно обновляем компонент
-        forceUpdate({});
+    if (activeApp === 'pet') {
+      console.log('PhoneModal: Открыто приложение питомца');
+      
+      // Инициализируем питомцев в коллекции при первом открытии
+      if (playerCharacter) {
+        const characterPetId = playerCharacter.petId || playerCharacter.pet?.id;
+        if (characterPetId && !petCollection[characterPetId]) {
+          addPetToCollection(characterPetId, playerCharacter.petName || playerCharacter.pet?.name || '');
+        }
+        
+        // Если нет активного питомца, устанавливаем питомца персонажа
+        if (!activePetId && characterPetId) {
+          setActivePet(characterPetId);
+        }
+      }
+
+      // Проверяем данные питомца один раз при открытии
+      if (activePetId) {
+        const petData = getItemById(activePetId);
+        if (petData) {
+          console.log('PhoneModal: Активный питомец:', petData.name);
+        }
       }
     }
-  }, [activeApp, activePetId, forceUpdate]);
+  }, [activeApp]); // Только при изменении activeApp
 
   // Отслеживаем изменения активного питомца
   useEffect(() => {
-    if (activeApp === 'pet') {
+    if (activeApp === 'pet' && activePetId) {
       console.log('PhoneModal: activePetId изменился на', activePetId);
       forceUpdate({});
     }
   }, [activePetId, activeApp, forceUpdate]);
 
-  // Периодическое обновление для синхронизации с изменениями питомца
-  useEffect(() => {
-    if (activeApp === 'pet') {
-      const interval = setInterval(() => {
-        forceUpdate({});
-      }, 5000); // Каждые 5 секунд
+  // Периодическое обновление для синхронизации с изменениями питомца (убрано - слишком часто)
+  // useEffect(() => {
+  //   if (activeApp === 'pet') {
+  //     const interval = setInterval(() => {
+  //       forceUpdate({});
+  //     }, 5000); // Каждые 5 секунд
 
-      return () => clearInterval(interval);
+  //     return () => clearInterval(interval);
+  //   }
+  // }, [activeApp, forceUpdate]);
+
+  // Обновляем активного питомца при изменении персонажа (как в PetModal)
+  useEffect(() => {
+    if (activeApp === 'pet' && playerCharacter) {
+      const characterPetId = playerCharacter.petId || playerCharacter.pet?.id;
+      if (characterPetId && characterPetId !== activePetId) {
+        console.log('PhoneModal: Обновляем активного питомца с', activePetId, 'на', characterPetId);
+        // Добавляем питомца в коллекцию, если его там нет
+        if (!petCollection[characterPetId]) {
+          addPetToCollection(characterPetId, playerCharacter.petName || playerCharacter.pet?.name || '');
+        }
+        // Устанавливаем нового активного питомца
+        setActivePet(characterPetId);
+        // Принудительно обновляем компонент
+        forceUpdate({});
+      }
     }
-  }, [activeApp, forceUpdate]);
+  }, [activeApp, playerCharacter, activePetId, petCollection, addPetToCollection, setActivePet, forceUpdate]);
 
   const itemTypes = getAllTypes()
     .filter(type => type !== 'quest') // Скрываем категорию "Квестовое"
@@ -545,14 +595,21 @@ const PhoneModal = ({ isOpen, onClose }) => {
 
   const handlePlayWithPet = () => {
     if (activePetId && activePetData) {
+      console.log('PhoneModal: Нажата кнопка "Играть" для питомца:', activePetData.name);
+      console.log('PhoneModal: Тип игры питомца:', activePetData.gameType);
+      
       // Проверяем, есть ли у питомца тип игры
       if (activePetData.gameType) {
+        console.log('PhoneModal: Открываем мини-игру:', activePetData.gameType);
         setSelectedMinigame(activePetData.gameType);
         setPetView('minigame');
       } else {
+        console.log('PhoneModal: У питомца нет типа игры, используем обычную игру');
         // Если нет типа игры, просто играем с питомцем
         playWithPet(activePetId);
       }
+    } else {
+      console.log('PhoneModal: Нет активного питомца или данных питомца');
     }
   };
 
@@ -580,6 +637,14 @@ const PhoneModal = ({ isOpen, onClose }) => {
   };
 
   const closeMinigame = () => {
+    console.log('PhoneModal: Закрываем мини-игру');
+    
+    // Если была активна мини-игра, награждаем питомца
+    if (activePetId && selectedMinigame) {
+      console.log('PhoneModal: Награждаем питомца за игру');
+      playWithPet(activePetId);
+    }
+    
     setSelectedMinigame(null);
     setPetView('main');
   };
@@ -669,7 +734,23 @@ const PhoneModal = ({ isOpen, onClose }) => {
     }
   };
 
-  if (!isOpen) return null;
+  // Внутри PhoneModal, перед return:
+  const [zumaLevel, setZumaLevel] = useState(1);
+const [zumaNextBall, setZumaNextBall] = useState(null);
+const [zumaSpriteFrame, setZumaSpriteFrame] = useState(0);
+
+// Анимация спрайта шара в заголовке
+useEffect(() => {
+  if (!zumaNextBall) return;
+  
+  const interval = setInterval(() => {
+    setZumaSpriteFrame(prev => (prev + 1) % 8);
+  }, 150); // 150ms на кадр = ~6.7 FPS
+  
+  return () => clearInterval(interval);
+}, [zumaNextBall]);
+
+if (!isOpen) return null;
 
   return (
     <AnimatePresence key="phone-modal-main">
@@ -2202,15 +2283,66 @@ const PhoneModal = ({ isOpen, onClose }) => {
                             <button className="phone-back-button" onClick={closeMinigame}>
                               <i className="fas fa-arrow-left"></i>
                             </button>
-                            <h3>Мини-игра</h3>
+                            <h3>
+                              {activePetData?.gameType === 'can_fly' && 'Полет над городом'}
+                              {activePetData?.gameType === 'can_jump' && 'Doodle Jump'}
+                              {activePetData?.gameType === 'can_walk' && 'Crossy Road'}
+                              {activePetData?.gameType === 'can_swim' && (
+                                <>
+                                  Zuma
+                                  {zumaNextBall && (
+                                    <span style={{marginLeft: 12, fontSize: 14, verticalAlign: 'middle'}}>
+                                      <div 
+                                        style={{
+                                          display: 'inline-block',
+                                          verticalAlign: 'middle',
+                                          transform: 'scale(0.75)', // Уменьшаем размер для заголовка
+                                          ...getSpriteStyle(zumaNextBall.sprite, zumaSpriteFrame, zumaNextBall.sprite?.currentRow || 0)
+                                        }}
+                                      />
+                                    </span>
+                                  )}
+                                  <span style={{marginLeft: 8, fontSize: 14, verticalAlign: 'middle'}}>Уровень: {zumaLevel}</span>
+                                </>
+                              )}
+                              {!activePetData?.gameType && 'Мини-игра'}
+                            </h3>
                           </div>
                           <div className="minigame-container">
                             {activePetData && (
-                              <PetMiniGameModal
-                                isOpen={true}
-                                onClose={closeMinigame}
-                                pet={activePetData}
-                              />
+                              <>
+                                {activePetData.gameType === 'can_fly' && (
+                                  <FlyingOverCityGame 
+                                    petSprite={activePetData.sprite ? `/${activePetData.sprite}` : '/sprites/items/pets/rat.png'} 
+                                    onClose={closeMinigame} 
+                                    petId={activePetData.id} 
+                                  />
+                                )}
+                                {activePetData.gameType === 'can_jump' && (
+                                  <DoodleJumpGame 
+                                    petSprite={activePetData.sprite ? `/${activePetData.sprite}` : '/sprites/items/pets/rat.png'} 
+                                    onClose={closeMinigame} 
+                                    petId={activePetData.id} 
+                                  />
+                                )}
+                                {activePetData.gameType === 'can_walk' && (
+                                  <CrossyRoadGame 
+                                    petSprite={activePetData.sprite ? `/${activePetData.sprite}` : '/sprites/items/pets/rat.png'} 
+                                    onClose={closeMinigame} 
+                                    petId={activePetData.id} 
+                                  />
+                                )}
+                                {activePetData.gameType === 'can_swim' && (
+                                  <ZumaGame 
+                                    petSprite={activePetData.sprite ? `/${activePetData.sprite}` : '/sprites/items/pets/rat.png'} 
+                                    onClose={closeMinigame} 
+                                    petId={activePetData.id} 
+                                    onLevelChange={setZumaLevel}
+                                    onNextBallChange={setZumaNextBall}
+                                    onSpriteFrameChange={setZumaSpriteFrame}
+                                  />
+                                )}
+                              </>
                             )}
                           </div>
                         </div>

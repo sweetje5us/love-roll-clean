@@ -261,8 +261,10 @@
 
  /* Phone App */
  .phone-app {
-   width: 100%;
-   height: 100%;
+    display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
    color: #fff;
@@ -281,6 +283,8 @@
 
 /* Status Bar */
 .phone-status-bar {
+  height: 30px;
+  min-height: 30px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -447,7 +451,9 @@
 
 /* App Content */
 .phone-app-content {
-  height: 100%;
+  width: 100%;
+  height: calc(100% - 30px); /* Вычитаем высоту status-bar */
+  overflow: hidden;
   display: flex;
   flex-direction: column;
   position: relative;
@@ -3570,15 +3576,32 @@
 }
 
 .minigame-view {
+  width: 100%;
   height: 100%;
+  overflow: hidden;
   display: flex;
+  flex-direction: column;
+  height: 100%;
   flex-direction: column;
 }
 
 .minigame-container {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  position: relative;
   flex: 1;
   position: relative;
   overflow: hidden;
+  width: 100%;
+  height: 100%;
+}
+
+.minigame-content {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 /* Стили для мини-игры в телефоне */
@@ -3606,6 +3629,8 @@
   max-height: none;
   width: 100%;
   height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 .minigame-container .pet-minigame-modal-header {
@@ -3613,9 +3638,51 @@
 }
 
 .minigame-container .pet-minigame-modal-body {
+  flex: 1;
   height: 100%;
   padding: 0;
-  min-height: 100%;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Адаптация игрового контента для телефона */
+.minigame-container canvas {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+/* Мобильные элементы управления */
+.minigame-container .mobile-controls {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  right: 10px;
+  z-index: 10;
+  pointer-events: auto;
+}
+
+/* Специальные стили для мобильных элементов управления в телефоне */
+.minigame-container .mobile-controls button,
+.minigame-container .mobile-controls .joystick-container,
+.minigame-container .mobile-controls .control-button {
+  pointer-events: auto !important;
+  z-index: 100 !important;
+}
+
+/* Дополнительные стили для мобильных элементов управления */
+.minigame-container .mobile-controls {
+  position: absolute !important;
+  bottom: 10px !important;
+  left: 10px !important;
+  right: 10px !important;
+  z-index: 1000 !important;
+  pointer-events: auto !important;
+}
+
+.minigame-container .mobile-controls > div {
+  pointer-events: auto !important;
 }
 
 .minigame-placeholder {
@@ -3651,12 +3718,11 @@
   .pet-avatar {
     width: 150px;
     height: 150px;
-    border-radius: 10px;
   }
   
   .pet-avatar img {
-    width: 150px;
-    height: 150px;
+    width: 112px;
+    height: 112px;
   }
   
   .pet-name {
@@ -3664,7 +3730,7 @@
   }
   
   .pet-stat-item {
-    padding: 4px 6px;
+    gap: 6px;
   }
   
   .stat-icon {
@@ -3672,7 +3738,7 @@
   }
   
   .stat-bar {
-    height: 5px;
+    height: 8px;
   }
   
   .stat-value {
@@ -3680,20 +3746,109 @@
   }
   
   .pet-action-buttons {
-    gap: 4px;
+    gap: 6px;
   }
   
   .pet-action-btn {
-    padding: 6px 3px;
-    font-size: 9px;
-    min-height: 35px;
+    padding: 6px 8px;
+    font-size: 10px;
+    min-height: 32px;
   }
   
   .pet-action-btn i {
-    font-size: 11px;
+    font-size: 12px;
   }
   
   .pet-action-btn span {
-    font-size: 8px;
+    font-size: 10px;
+  }
+}
+
+/* Специальные стили для мини-игр в телефоне */
+.minigame-container .crossyroad-game,
+.minigame-container .doodlejump-game,
+.minigame-container .flappybird-game,
+.minigame-container .zuma-game {
+  width: 100% !important;
+  height: 100% !important;
+  max-width: 100% !important;
+  max-height: 100% !important;
+  width: 100% !important;
+  height: 100% !important;
+  position: relative !important;
+  overflow: hidden !important;
+  display: flex !important;
+  flex-direction: column !important;
+  max-width: none !important;
+  max-height: none !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  flex: 1 !important;
+}
+
+/* Принудительное переопределение inline стилей игр */
+.minigame-container .crossyroad-game[style*="width"],
+.minigame-container .doodlejump-game[style*="width"],
+.minigame-container .flappybird-game[style*="width"],
+.minigame-container .zuma-game[style*="width"] {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.minigame-container .crossyroad-game canvas,
+.minigame-container .doodlejump-game canvas,
+.minigame-container .flappybird-game canvas,
+.minigame-container .zuma-game canvas {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: contain !important;
+  display: block !important;
+  flex: 1 !important;
+  max-width: none !important;
+  max-height: none !important;
+}
+
+/* Принудительное переопределение inline стилей canvas */
+.minigame-container .crossyroad-game canvas[style*="width"],
+.minigame-container .doodlejump-game canvas[style*="width"],
+.minigame-container .flappybird-game canvas[style*="width"],
+.minigame-container .zuma-game canvas[style*="width"] {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* Принудительное переопределение inline стилей */
+.minigame-container .crossyroad-game[style*="width"],
+.minigame-container .doodlejump-game[style*="width"],
+.minigame-container .flappybird-game[style*="width"],
+.minigame-container .zuma-game[style*="width"] {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* Принудительное скрытие элементов управления, которые могут мешать */
+.minigame-container .crossyroad-game .game-controls,
+.minigame-container .doodlejump-game .game-controls,
+.minigame-container .flappybird-game .game-controls,
+.minigame-container .zuma-game .game-controls {
+  display: none !important;
+}
+
+/* Адаптация для мобильных устройств */
+@media (max-width: 768px) {
+  .minigame-container .crossyroad-game,
+  .minigame-container .doodlejump-game,
+  .minigame-container .flappybird-game,
+  .minigame-container .zuma-game {
+    width: 100% !important;
+    height: 100% !important;
+  }
+  
+  .minigame-container .crossyroad-game canvas,
+  .minigame-container .doodlejump-game canvas,
+  .minigame-container .flappybird-game canvas,
+  .minigame-container .zuma-game canvas {
+    width: 100% !important;
+    height: 100% !important;
   }
 }

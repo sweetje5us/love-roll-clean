@@ -7,6 +7,47 @@ import { Joystick } from 'react-joystick-component';
 import { getRealFrameTime, getCurrentRefreshRate } from '../../utils/cordovaUtils';
 import { isMobileDevice, getPerformanceSettings, applyMobileOptimizations, autoApplyOptimizations, isWeakDevice } from '../../utils/mobileOptimization';
 
+// Функция для вычисления масштаба игры под размер контейнера
+const useGameScale = (originalWidth, originalHeight) => {
+  const [scale, setScale] = useState(1);
+  const [containerSize, setContainerSize] = useState({ width: originalWidth, height: originalHeight });
+  const containerRef = useRef(null);
+
+  useEffect(() => {
+    if (!containerRef.current) return;
+
+    const updateScale = () => {
+      const container = containerRef.current;
+      if (!container) return;
+
+      const rect = container.getBoundingClientRect();
+      const containerWidth = rect.width;
+      const containerHeight = rect.height;
+
+      // Вычисляем масштаб, чтобы игра поместилась в контейнер по ширине
+      // По высоте не ограничиваем, чтобы игра могла использовать всю доступную высоту
+      const scaleX = containerWidth / originalWidth;
+      const newScale = Math.min(scaleX, 1); // Не увеличиваем больше оригинального размера
+
+      setScale(newScale);
+      setContainerSize({ width: containerWidth, height: containerHeight });
+    };
+
+    updateScale();
+    
+    const resizeObserver = new ResizeObserver(updateScale);
+    resizeObserver.observe(containerRef.current);
+
+    return () => {
+      if (containerRef.current) {
+        resizeObserver.unobserve(containerRef.current);
+      }
+    };
+  }, [originalWidth, originalHeight]);
+
+  return { scale, containerSize, containerRef };
+};
+
 // Длительность анимаций Zuma (мс) - уменьшена для мобильных
 const ANIMATION_DURATION = isMobileDevice ? 200 : 300;
 
@@ -154,390 +195,6 @@ function getRandomFlyingObjectY() {
   return 40 + Math.random() * (GAME_HEIGHT / 2 - FLYING_OBJECT_SIZE - 40);
 }
 
-// FlyingOverCityGame с forwardRef
-const FlyingOverCityGame = React.forwardRef(({ petSprite, onClose, petId }, ref) => {
-  const { updatePetStats, getPetState } = usePets();
-  const [renderTick, setRenderTick] = useState(0);
-  const [score, setScore] = useState(0);
-  const [gameOver, setGameOver] = useState(false);
-  const [started, setStarted] = useState(false);
-  const [rewarded, setRewarded] = useState(false);
-  
-  // Состояние для параллакс фона
-  const [backgroundSet, setBackgroundSet] = useState(() => getRandomBackgroundSet());
-  const [parallaxPositions, setParallaxPositions] = useState([0, 0, 0, 0, 0]);
-
-  // refs для физики и объектов
-  const petY = useRef(GAME_HEIGHT / 2 - PET_SIZE / 2);
-  const velocity = useRef(0);
-  const obstacles = useRef([]); // [{x, type: 'building'|'flying', width, height, y}]
-  const lastObstacleTime = useRef(Date.now());
-  const petRef = useRef(null); // Ref для питомца
-
-  // Управление прыжком
-  const jump = () => {
-    if (!started) setStarted(true);
-    if (!gameOver) velocity.current = JUMP_VELOCITY;
-  };
-
-  // Обработка клавиш
-  useEffect(() => {
-    const handleKey = (e) => {
-      if (e.code === 'Space') {
-        e.preventDefault();
-        jump();
-      }
-    };
-    window.addEventListener('keydown', handleKey);
-    return () => window.removeEventListener('keydown', handleKey);
-  });
-
-  // ОПТИМИЗИРОВАННЫЙ игровой цикл для мобильных
-  useEffect(() => {
-    if (gameOver) return;
-    let frame;
-    let frameCount = 0;
-    let lastTime = performance.now();
-    let animationFrameCount = 0; // счетчик для пропуска кадров анимации
-    
-    // Мобильная оптимизация
-    if (isMobileDevice) {
-      const gameCanvas = document.querySelector('.flying-over-city-game');
-      if (gameCanvas) {
-        gameCanvas.style.willChange = 'transform';
-        gameCanvas.style.transform = 'translateZ(0)';
-        gameCanvas.style.backfaceVisibility = 'hidden';
-      }
-    }
-    
-    const loop = (currentTime) => {
-      if (!started) {
-        frame = requestAnimationFrame(loop);
-        return;
-      }
-      
-      const deltaTime = currentTime - lastTime;
-      lastTime = currentTime;
-      
-      // Мобильная оптимизация: ограничиваем deltaTime
-      const clampedDeltaTime = Math.min(deltaTime, MOBILE_SETTINGS.maxDeltaTime);
-      const deltaTimeSeconds = clampedDeltaTime / 1000;
-      
-      // Физика питомца с deltaTime
-      velocity.current += GRAVITY_PER_SECOND * deltaTimeSeconds;
-      petY.current += velocity.current * deltaTimeSeconds;
-      
-      if (petY.current < 0) {
-        petY.current = 0;
-        velocity.current = 0;
-      }
-      if (petY.current > GAME_HEIGHT - PET_SIZE) {
-        petY.current = GAME_HEIGHT - PET_SIZE;
-        velocity.current = 0;
-      }
-      
-      // ОПТИМИЗИРОВАННОЕ движение препятствий - только каждый N-й кадр на мобильных
-      animationFrameCount++;
-      if (animationFrameCount % MOBILE_SETTINGS.animationThrottle === 0) {
-        const obstacleMovement = OBSTACLE_SPEED_PER_SECOND * deltaTimeSeconds;
-        
-        // Обновление параллакс позиций фона (реже для производительности)
-        if (frameCount % 2 === 0) {
-          setParallaxPositions(prevPositions => {
-            const newPositions = [...prevPositions];
-            for (let i = 0; i < PARALLAX_LAYERS; i++) {
-              newPositions[i] -= obstacleMovement * PARALLAX_SPEEDS[i];
-              // Зацикливание фона
-              if (newPositions[i] <= -GAME_WIDTH) {
-                newPositions[i] = 0;
-              }
-            }
-            return newPositions;
-          });
-        }
-        
-        for (let i = obstacles.current.length - 1; i >= 0; i--) {
-          const obstacle = obstacles.current[i];
-          obstacle.x -= obstacleMovement;
-          
-          if (obstacle.x + obstacle.width <= 0) {
-            obstacles.current.splice(i, 1);
-          }
-        }
-        
-        // Добавление новых препятствий
-        if (Date.now() - lastObstacleTime.current > OBSTACLE_INTERVAL) {
-          // Случайно выбираем тип препятствия
-          const obstacleType = Math.random() < 0.7 ? 'building' : 'flying'; // 70% здания, 30% летящие объекты
-          
-          if (obstacleType === 'building') {
-            const buildingSprite = getRandomBuildingSprite();
-            obstacles.current.push({
-              x: GAME_WIDTH,
-              type: 'building',
-              width: buildingSprite.width,
-              height: buildingSprite.height,
-              y: GAME_HEIGHT - buildingSprite.height, // Здания всегда внизу
-              sprite: buildingSprite.src,
-              passed: false
-            });
-          } else {
-            obstacles.current.push({
-              x: GAME_WIDTH,
-              type: 'flying',
-              width: FLYING_OBJECT_SIZE,
-              height: FLYING_OBJECT_SIZE,
-              y: getRandomFlyingObjectY(),
-              passed: false
-            });
-          }
-          lastObstacleTime.current = Date.now();
-        }
-      }
-      
-      // Проверка столкновений
-      for (let obstacle of obstacles.current) {
-        if (
-          obstacle.x < 60 + PET_SIZE &&
-          obstacle.x + obstacle.width > 60 &&
-          petY.current < obstacle.y + obstacle.height &&
-          petY.current + PET_SIZE > obstacle.y
-        ) {
-          setGameOver(true);
-          return;
-        }
-      }
-      if (petY.current >= GAME_HEIGHT - PET_SIZE) {
-        setGameOver(true);
-        return;
-      }
-      
-      // ОПТИМИЗИРОВАННЫЙ подсчёт очков
-      for (let i = 0; i < obstacles.current.length; i++) {
-        const obstacle = obstacles.current[i];
-        if (!obstacle.passed && obstacle.x + obstacle.width < 60) {
-          obstacle.passed = true;
-          setScore(s => s + 1);
-        }
-      }
-      
-      // МОБИЛЬНАЯ ОПТИМИЗАЦИЯ: уменьшенная частота re-render
-      frameCount++;
-      if (frameCount % MOBILE_SETTINGS.renderInterval === 0) {
-        setRenderTick(t => t + 1);
-      }
-      frame = requestAnimationFrame(loop);
-    };
-    frame = requestAnimationFrame(loop);
-    return () => cancelAnimationFrame(frame);
-  }, [started, gameOver]);
-
-  // Начисление счастья после завершения игры
-  useEffect(() => {
-    if (gameOver && !rewarded && score > 0) {
-      const petState = getPetState(petId);
-      const currentHappiness = petState?.happiness || 0;
-      const newHappiness = Math.min(100, currentHappiness + 1 * score);
-      updatePetStats(petId, { happiness: newHappiness });
-      setRewarded(true);
-    }
-  }, [gameOver, rewarded, score, updatePetStats, petId, getPetState]);
-
-  // useEffect для отзеркаливания питомца
-  useEffect(() => {
-    if (petRef.current) {
-      // Питомец всегда смотрит вправо (в направлении движения)
-      petRef.current.style.setProperty('transform', 'scaleX(-1)', 'important');
-    }
-  }, [renderTick]); // Зависит от renderTick для обновления при изменении позиции
-
-  // Начальные препятствия при старте
-  useEffect(() => {
-    if (started && obstacles.current.length === 0) {
-      const buildingSprite = getRandomBuildingSprite();
-      obstacles.current = [
-        { 
-          x: GAME_WIDTH, 
-          type: 'building',
-          width: buildingSprite.width,
-          height: buildingSprite.height,
-          y: GAME_HEIGHT - buildingSprite.height,
-          sprite: buildingSprite.src,
-          passed: false 
-        }
-      ];
-    }
-  }, [started]);
-
-  // Сброс игры
-  const restart = () => {
-    petY.current = GAME_HEIGHT / 2 - PET_SIZE / 2;
-    velocity.current = 0;
-    obstacles.current = [];
-    setScore(0);
-    setGameOver(false);
-    setStarted(false);
-    lastObstacleTime.current = Date.now();
-    setRenderTick(t => t + 1);
-    setRewarded(false);
-    
-    // Сброс параллакс фона
-    setBackgroundSet(getRandomBackgroundSet());
-    setParallaxPositions([0, 0, 0, 0, 0]);
-  };
-
-  React.useImperativeHandle(ref, () => ({ jump }));
-
-  return (
-    <div className="flying-over-city-game" style={{ width: GAME_WIDTH, height: GAME_HEIGHT, position: 'relative', borderRadius: 12, overflow: 'hidden', margin: '0 auto' }}
-      tabIndex={0}
-      onClick={jump}
-    >
-      {/* Параллакс фон */}
-      {backgroundSet.layers.map((layerSrc, index) => (
-        <div
-          key={index}
-          style={{
-            position: 'absolute',
-            left: parallaxPositions[index],
-            top: 0,
-            width: GAME_WIDTH,
-            height: GAME_HEIGHT,
-            backgroundImage: `url(${getStaticPath(layerSrc)})`,
-            backgroundSize: `${GAME_WIDTH}px ${GAME_HEIGHT}px`,
-            backgroundPosition: 'center',
-            backgroundRepeat: 'no-repeat',
-            zIndex: index,
-            willChange: 'transform',
-          }}
-        />
-      ))}
-      {/* Второй экземпляр каждого слоя для бесшовного зацикливания */}
-      {backgroundSet.layers.map((layerSrc, index) => (
-        <div
-          key={`${index}-duplicate`}
-          style={{
-            position: 'absolute',
-            left: parallaxPositions[index] + GAME_WIDTH,
-            top: 0,
-            width: GAME_WIDTH,
-            height: GAME_HEIGHT,
-            backgroundImage: `url(${getStaticPath(layerSrc)})`,
-            backgroundSize: `${GAME_WIDTH}px ${GAME_HEIGHT}px`,
-            backgroundPosition: 'center',
-            backgroundRepeat: 'no-repeat',
-            zIndex: index,
-            willChange: 'transform',
-          }}
-        />
-      ))}
-      
-              {/* Питомец */}
-        <img
-          ref={petRef}
-          src={petSprite}
-          alt="pet"
-          style={{
-            position: 'absolute',
-            left: 60,
-            top: petY.current,
-            width: PET_SIZE,
-            height: PET_SIZE,
-            zIndex: 10,
-            userSelect: 'none',
-            pointerEvents: 'none',
-            willChange: 'transform', // мобильная оптимизация
-          }}
-        />
-              {/* Препятствия */}
-        {obstacles.current.map((obstacle, idx) => (
-          obstacle.type === 'building' ? (
-            <img
-              key={idx}
-              src={getStaticPath(obstacle.sprite)}
-              alt="building"
-              style={{
-                position: 'absolute',
-                left: obstacle.x,
-                top: obstacle.y,
-                width: obstacle.width,
-                height: obstacle.height,
-                willChange: 'transform', // мобильная оптимизация
-                zIndex: 8,
-                userSelect: 'none',
-                pointerEvents: 'none',
-              }}
-            />
-          ) : (
-            <div
-              key={idx}
-              style={{
-                position: 'absolute',
-                left: obstacle.x,
-                top: obstacle.y,
-                width: obstacle.width,
-                height: obstacle.height,
-                background: '#ff6b6b', // Красный для летящих объектов
-                borderRadius: 8,
-                border: '2px solid #e74c3c',
-                willChange: 'transform', // мобильная оптимизация
-                zIndex: 8,
-              }}
-            />
-          )
-        ))}
-      {/* Счёт */}
-      <div style={{
-        position: 'absolute',
-        top: 12,
-        left: 0,
-        width: '100%',
-        textAlign: 'center',
-        fontSize: 28,
-        fontWeight: 'bold',
-        color: '#0284c7',
-        textShadow: '1px 1px 2px #fff',
-        zIndex: 15
-      }}>{score}</div>
-      
-      {/* Название фона (для отладки) */}
-      <div style={{
-        position: 'absolute',
-        top: 40,
-        left: 10,
-        fontSize: 12,
-        color: '#fff',
-        textShadow: '1px 1px 2px #000',
-        zIndex: 15
-      }}>{backgroundSet.name}</div>
-      {/* Game Over */}
-      {gameOver && (
-        <div style={{
-          position: 'absolute',
-          top: '40%',
-          left: 0,
-          width: '100%',
-          textAlign: 'center',
-          color: '#dc2626',
-          fontSize: 32,
-          fontWeight: 'bold',
-          textShadow: '1px 1px 2px #fff',
-          zIndex: 20
-        }}>
-          Игра окончена!<br />
-          <button onClick={restart} style={{ marginTop: 16, padding: '8px 20px', fontSize: 18, borderRadius: 8, border: 'none', background: '#38bdf8', color: '#fff', cursor: 'pointer' }}>Заново</button>
-        </div>
-      )}
-      {/* Инструкция */}
-      {!started && !gameOver && (
-        <div style={{ position: 'absolute', top: '45%', left: 0, width: '100%', textAlign: 'center', color: '#334155', fontSize: 18, zIndex: 15 }}>
-          Кликните или нажмите пробел для полета
-        </div>
-      )}
-    </div>
-  );
-});
-
 // --- Doodle Jump MiniGame ---
 const DJ_WIDTH = 320;
 const DJ_HEIGHT = 420;
@@ -577,6 +234,10 @@ const DoodleJumpGame = ({ petSprite, onClose, petId }) => {
   const [gameOver, setGameOver] = useState(false);
   const [rewarded, setRewarded] = useState(false);
   const [started, setStarted] = useState(false);
+  
+  // Используем масштабирование
+  const { scale, containerSize, containerRef } = useGameScale(DJ_WIDTH, DJ_HEIGHT);
+
 
   // refs для физики
   const petX = useRef(DJ_WIDTH / 2 - DJ_PET_SIZE / 2);
@@ -590,7 +251,7 @@ const DoodleJumpGame = ({ petSprite, onClose, petId }) => {
   const backgroundY = useRef(0);
   
   // Массивы для хранения позиций фоновых слоев (для бесшовного зацикливания)
-  const backgroundLayers = useRef([0, DJ_HEIGHT - 50, (DJ_HEIGHT - 50) * 2]);
+  const backgroundLayers = useRef([0, DJ_HEIGHT, DJ_HEIGHT * 2]); // Слои без разрывов
   
   // refs для платформ-танков
   const platformRefs = useRef([]);
@@ -614,6 +275,8 @@ const DoodleJumpGame = ({ petSprite, onClose, petId }) => {
       window.removeEventListener('keyup', handleKeyUp);
     };
   }, []);
+
+
 
   // ОПТИМИЗИРОВАННЫЙ игровой цикл для мобильных
   useEffect(() => {
@@ -690,10 +353,20 @@ const DoodleJumpGame = ({ petSprite, onClose, petId }) => {
             
             // Перемещаем задние слои, которые вышли за границу
             for (let i = 0; i < backgroundLayers.current.length; i++) {
-              if (backgroundLayers.current[i] >= DJ_HEIGHT - 50) {
+              if (backgroundLayers.current[i] >= DJ_HEIGHT) {
                 // Находим самый верхний слой
                 let minY = Math.min(...backgroundLayers.current);
-                backgroundLayers.current[i] = minY - DJ_HEIGHT + 50;
+                backgroundLayers.current[i] = minY - DJ_HEIGHT;
+              }
+            }
+            
+            // Проверяем и исправляем разрывы между слоями
+            backgroundLayers.current.sort((a, b) => a - b);
+            for (let i = 1; i < backgroundLayers.current.length; i++) {
+              const gap = backgroundLayers.current[i] - backgroundLayers.current[i - 1];
+              if (gap > DJ_HEIGHT) {
+                // Если есть разрыв больше высоты слоя, перемещаем слой
+                backgroundLayers.current[i] = backgroundLayers.current[i - 1] + DJ_HEIGHT;
               }
             }
             
@@ -811,9 +484,9 @@ const DoodleJumpGame = ({ petSprite, onClose, petId }) => {
     velocityY.current = 0;
     maxY.current = petY.current;
     
-    // Сброс параллакс фона
+    // Сброс параллакс фона - слои располагаются без разрывов
     backgroundY.current = 0;
-    backgroundLayers.current = [0, DJ_HEIGHT - 50, (DJ_HEIGHT - 50) * 2];
+    backgroundLayers.current = [0, DJ_HEIGHT, DJ_HEIGHT * 2];
     
     setScore(0);
     setGameOver(false);
@@ -833,10 +506,33 @@ const DoodleJumpGame = ({ petSprite, onClose, petId }) => {
 
 
   return (
-    <div className="doodlejump-game" style={{ width: DJ_WIDTH, height: DJ_HEIGHT, position: 'relative', background: '#fef9c3', borderRadius: 12, overflow: 'hidden', margin: '0 auto' }}
+    <div 
+      ref={containerRef}
+      className="doodlejump-game" 
+      style={{ 
+        width: '100%', 
+        height: '100%', 
+        position: 'relative', 
+        background: '#fef9c3', 
+        overflow: 'hidden',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center'
+      }}
       tabIndex={0}
       onClick={() => setStarted(true)}
     >
+      <div
+        style={{
+          width: DJ_WIDTH,
+          height: DJ_HEIGHT,
+          transform: `scale(${scale})`,
+          transformOrigin: 'center center',
+          position: 'relative',
+          background: '#fef9c3',
+          bottom: '35px'
+        }}
+      >
       {/* Задние слои параллакс фона */}
       {backgroundLayers.current.map((y, index) => (
         <div
@@ -845,7 +541,7 @@ const DoodleJumpGame = ({ petSprite, onClose, petId }) => {
             position: 'absolute',
             left: 0,
             top: y,
-            width: DJ_WIDTH,
+            width: '100%',
             height: DJ_HEIGHT,
             backgroundImage: `url(sprites/minigames/doodle-jump/back.png)`,
             backgroundSize: `${DJ_WIDTH}px ${DJ_HEIGHT}px`,
@@ -935,6 +631,7 @@ const DoodleJumpGame = ({ petSprite, onClose, petId }) => {
         </div>
       )}
 
+      </div>
     </div>
   );
 };
@@ -1116,6 +813,9 @@ const CrossyRoadGame = ({ petSprite, onClose, petId }) => {
   const [level, setLevel] = useState(1);
   const [roadTiles] = useState(getRoadTiles()); // Тайлы дороги
   const [backgroundTile, setBackgroundTile] = useState(getRandomBackgroundTile()); // Фоновый тайл
+  
+  // Используем масштабирование
+  const { scale, containerSize, containerRef } = useGameScale(CR_WIDTH, CR_HEIGHT);
 
   // refs для физики
   const petX = useRef(CR_WIDTH / 2 - CR_PET_SIZE / 2);
@@ -1364,10 +1064,31 @@ const CrossyRoadGame = ({ petSprite, onClose, petId }) => {
 
 
   return (
-    <div className="crossyroad-game" style={{ width: CR_WIDTH, height: CR_HEIGHT, position: 'relative', borderRadius: 12, overflow: 'hidden', margin: '0 auto' }}
+    <div 
+      ref={containerRef}
+      className="crossyroad-game" 
+      style={{ 
+        width: '100%', 
+        height: '100%', 
+        position: 'relative', 
+        overflow: 'hidden',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center'
+      }}
       tabIndex={0}
       onClick={() => setStarted(true)}
     >
+      <div
+        style={{
+          width: CR_WIDTH,
+          height: CR_HEIGHT,
+          transform: `scale(${scale})`,
+          transformOrigin: 'center center',
+          position: 'relative',
+          bottom: '35px'
+        }}
+      >
       {/* Фоновый спрайт для всей игры */}
       <img
         src={backgroundTile.src}
@@ -1513,6 +1234,7 @@ const CrossyRoadGame = ({ petSprite, onClose, petId }) => {
       </div>
       {/* Не показываем стандартный оверлей победы и кнопку "заново" для Zuma, переход к следующему уровню автоматический */}
 
+      </div>
     </div>
   );
 };
@@ -1779,6 +1501,9 @@ const ZumaGame = React.forwardRef(({ petSprite, onClose, petId, onLevelChange, o
   const [score, setScore] = useState(0);
   const [animations, setAnimations] = useState([]);
   const [level, setLevel] = useState(1);
+  
+  // Используем масштабирование
+  const { scale, containerSize, containerRef } = useGameScale(ZUMA_WIDTH, ZUMA_HEIGHT);
   // параметры, зависящие от уровня
   const BASE_CHAIN_LENGTH = 12;
   const BASE_ROWS = 4;
@@ -2331,19 +2056,38 @@ const ZumaGame = React.forwardRef(({ petSprite, onClose, petId, onLevelChange, o
     handleMobileShoot,
   }));
 
-  useEffect(() => { if (onLevelChange) onLevelChange(level); }, [level]);
-  useEffect(() => { if (onNextBallChange) onNextBallChange(nextBall); }, [nextBall]);
+  useEffect(() => { if (onLevelChange) onLevelChange(level); }, [level, onLevelChange]);
+  useEffect(() => { if (onNextBallChange && nextBall) onNextBallChange(nextBall); }, [nextBall, onNextBallChange]);
   useEffect(() => { if (onSpriteFrameChange) onSpriteFrameChange(spriteFrame); }, [spriteFrame]);
 
   return (
     <div
+      ref={containerRef}
       className="zuma-game"
-      style={{ width: ZUMA_WIDTH, height: ZUMA_HEIGHT, position: 'relative', borderRadius: 12, overflow: 'hidden', margin: '0 auto' }}
+      style={{ 
+        width: '100%', 
+        height: '100%', 
+        position: 'relative', 
+        overflow: 'hidden',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center'
+      }}
       tabIndex={0}
       onClick={!isMobile ? () => setStarted(true) : undefined}
       onMouseMove={!isMobile ? handleMouseMove : undefined}
       onMouseDown={!isMobile ? handleMouseDown : undefined}
     >
+      <div
+        style={{
+          width: ZUMA_WIDTH,
+          height: ZUMA_HEIGHT,
+          transform: `scale(${scale})`,
+          transformOrigin: 'center center',
+          position: 'relative',
+          bottom: '35px'
+        }}
+      >
       {/* Многослойный анимированный фон */}
       {/* Слой 1 - статичный фон */}
       <div style={{
@@ -2353,7 +2097,7 @@ const ZumaGame = React.forwardRef(({ petSprite, onClose, petId, onLevelChange, o
         width: '100%',
         height: '100%',
         backgroundImage: `url(${getStaticPath('sprites/minigames/zuma/background/1.png')})`,
-        backgroundSize: 'cover',
+        backgroundSize: `${ZUMA_WIDTH}px ${ZUMA_HEIGHT}px`,
         backgroundPosition: 'center',
         zIndex: 0,
         willChange: 'transform',
@@ -2367,7 +2111,7 @@ const ZumaGame = React.forwardRef(({ petSprite, onClose, petId, onLevelChange, o
         width: '100%',
         height: '100%',
         backgroundImage: `url(${getStaticPath('sprites/minigames/zuma/background/2.png')})`,
-        backgroundSize: 'cover',
+        backgroundSize: `${ZUMA_WIDTH}px ${ZUMA_HEIGHT}px`,
         backgroundPosition: 'center',
         zIndex: 1,
         willChange: 'transform',
@@ -2391,12 +2135,12 @@ const ZumaGame = React.forwardRef(({ petSprite, onClose, petId, onLevelChange, o
       {/* Слой 3 - статичный слой */}
       <div style={{
         position: 'absolute',
-        top: 0,
+        top: 68,
         left: 0,
         width: '100%',
         height: '100%',
         backgroundImage: `url(${getStaticPath('sprites/minigames/zuma/background/3.png')})`,
-        backgroundSize: 'cover',
+        backgroundSize: `${ZUMA_WIDTH}px ${ZUMA_HEIGHT}px`,
         backgroundPosition: 'center',
         zIndex: 2,
         willChange: 'transform',
@@ -2410,7 +2154,7 @@ const ZumaGame = React.forwardRef(({ petSprite, onClose, petId, onLevelChange, o
         width: '100%',
         height: '100%',
         backgroundImage: `url(${getStaticPath('sprites/minigames/zuma/background/4.png')})`,
-        backgroundSize: 'cover',
+        backgroundSize: `${ZUMA_WIDTH}px ${ZUMA_HEIGHT}px`,
         backgroundPosition: 'center',
         zIndex: 3,
         willChange: 'transform',
@@ -2546,11 +2290,350 @@ const ZumaGame = React.forwardRef(({ petSprite, onClose, petId, onLevelChange, o
           Старт
         </button>
       )}
+      </div>
     </div>
   );
 });
 
-const PetMiniGameModal = ({ isOpen, onClose, pet }) => {
+export const FlyingOverCityGame = React.forwardRef(({ petSprite, onClose, petId }, ref) => {
+  const { updatePetStats, getPetState } = usePets();
+  const [renderTick, setRenderTick] = useState(0);
+  const [score, setScore] = useState(0);
+  const [gameOver, setGameOver] = useState(false);
+  const [rewarded, setRewarded] = useState(false);
+  const [started, setStarted] = useState(false);
+  
+  // Используем масштабирование
+  const { scale, containerSize, containerRef } = useGameScale(GAME_WIDTH, GAME_HEIGHT);
+
+  // refs для физики
+  const petX = useRef(GAME_WIDTH / 2 - PET_SIZE / 2);
+  const petY = useRef(GAME_HEIGHT / 2);
+  const velocityY = useRef(0);
+  const obstacles = useRef([]);
+  const backgroundLayers = useRef([]);
+  const backgroundSet = useRef(getRandomBackgroundSet());
+  
+  // refs для параллакс фона
+  const backgroundY = useRef(0);
+  
+  // Экспортируем функцию прыжка через ref
+  React.useImperativeHandle(ref, () => ({
+    jump: () => {
+      if (!gameOver && started) {
+        velocityY.current = JUMP_VELOCITY;
+      }
+    }
+  }));
+
+  // Награждение питомца
+  useEffect(() => {
+    if (gameOver && !rewarded && score > 0) {
+      const petState = getPetState(petId);
+      if (petState) {
+        const newHappiness = Math.min(100, petState.happiness + Math.floor(score / 10));
+        updatePetStats(petId, { happiness: newHappiness });
+        setRewarded(true);
+      }
+    }
+  }, [gameOver, rewarded, score, updatePetStats, petId, getPetState]);
+
+  // Игровой цикл
+  useEffect(() => {
+    if (gameOver) return;
+    let frame;
+    let lastTime = performance.now();
+    
+    // Мобильная оптимизация
+    if (isMobileDevice) {
+      const gameCanvas = document.querySelector('.flappybird-game');
+      if (gameCanvas) {
+        gameCanvas.style.willChange = 'transform';
+        gameCanvas.style.transform = 'translateZ(0)';
+        gameCanvas.style.backfaceVisibility = 'hidden';
+      }
+    }
+    
+    const loop = (currentTime) => {
+      if (!started) {
+        frame = requestAnimationFrame(loop);
+        return;
+      }
+      
+      const deltaTime = currentTime - lastTime;
+      lastTime = currentTime;
+      const deltaTimeSeconds = deltaTime / 1000;
+      
+      // Гравитация
+      velocityY.current += GRAVITY_PER_SECOND * deltaTimeSeconds;
+      petY.current += velocityY.current * deltaTimeSeconds;
+      
+      // Ограничения по высоте
+      if (petY.current < 0) {
+        petY.current = 0;
+        velocityY.current = 0;
+      }
+      if (petY.current > GAME_HEIGHT - PET_SIZE) {
+        petY.current = GAME_HEIGHT - PET_SIZE;
+        velocityY.current = 0;
+        setGameOver(true);
+      }
+      
+      // Обновление препятствий
+      for (let obstacle of obstacles.current) {
+        obstacle.x -= OBSTACLE_SPEED_PER_SECOND * deltaTimeSeconds;
+      }
+      
+      // Удаление препятствий за пределами экрана
+      obstacles.current = obstacles.current.filter(obstacle => obstacle.x > -obstacle.width);
+      
+      // Создание новых препятствий
+      if (obstacles.current.length === 0 || 
+          obstacles.current[obstacles.current.length - 1].x < GAME_WIDTH - OBSTACLE_INTERVAL) {
+        const buildingSprite = getRandomBuildingSprite();
+        const obstacleY = getRandomFlyingObjectY();
+        obstacles.current.push({
+          x: GAME_WIDTH,
+          y: obstacleY,
+          width: buildingSprite.width,
+          height: buildingSprite.height,
+          sprite: buildingSprite.sprite
+        });
+      }
+      
+      // Проверка столкновений
+      for (let obstacle of obstacles.current) {
+        if (petX.current < obstacle.x + obstacle.width &&
+            petX.current + PET_SIZE > obstacle.x &&
+            petY.current < obstacle.y + obstacle.height &&
+            petY.current + PET_SIZE > obstacle.y) {
+          setGameOver(true);
+          break;
+        }
+      }
+      
+      // Начисление очков
+      for (let obstacle of obstacles.current) {
+        if (!obstacle.passed && obstacle.x + obstacle.width < petX.current) {
+          obstacle.passed = true;
+          setScore(s => s + 1);
+        }
+      }
+      
+      // Обновление параллакс фона
+      backgroundY.current += OBSTACLE_SPEED_PER_SECOND * deltaTimeSeconds * 0.5;
+      if (backgroundY.current > BACKGROUND_HEIGHT) {
+        backgroundY.current = 0;
+      }
+      
+      setRenderTick(t => t + 1);
+      frame = requestAnimationFrame(loop);
+    };
+    
+    frame = requestAnimationFrame(loop);
+    return () => cancelAnimationFrame(frame);
+  }, [started, gameOver]);
+
+  // Управление
+  useEffect(() => {
+    const handleKey = (e) => {
+      if (e.code === 'Space' && !gameOver && started) {
+        velocityY.current = JUMP_VELOCITY;
+      }
+    };
+    
+    const handleClick = () => {
+      if (!started) {
+        setStarted(true);
+      } else if (!gameOver) {
+        velocityY.current = JUMP_VELOCITY;
+      }
+    };
+    
+    window.addEventListener('keydown', handleKey);
+    window.addEventListener('click', handleClick);
+    
+    return () => {
+      window.removeEventListener('keydown', handleKey);
+      window.removeEventListener('click', handleClick);
+    };
+  }, [started, gameOver]);
+
+  const restart = () => {
+    setScore(0);
+    setGameOver(false);
+    setStarted(false);
+    setRenderTick(t => t + 1);
+    setRewarded(false);
+    
+    // Сброс позиции питомца
+    petX.current = GAME_WIDTH / 2 - PET_SIZE / 2;
+    petY.current = GAME_HEIGHT / 2;
+    velocityY.current = 0;
+    
+    // Очистка препятствий
+    obstacles.current = [];
+    
+    // Новый фон
+    backgroundSet.current = getRandomBackgroundSet();
+  };
+
+  return (
+    <div 
+      ref={containerRef}
+      className="flappybird-game" 
+      style={{ 
+        width: '100%', 
+        height: '100%', 
+        position: 'relative', 
+        background: '#87CEEB', 
+        overflow: 'hidden',
+        cursor: 'pointer',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center'
+      }}
+      onClick={() => !started ? setStarted(true) : null}
+    >
+      <div
+        style={{
+          width: GAME_WIDTH,
+          height: GAME_HEIGHT,
+          transform: `scale(${scale})`,
+          transformOrigin: 'center center',
+          position: 'relative',
+          background: '#87CEEB',
+          bottom: '35px'
+        }}
+      >
+      {/* Параллакс фон */}
+      {backgroundSet.current.layers.map((layer, index) => (
+        <div
+          key={`bg-${index}`}
+          style={{
+            position: 'absolute',
+            left: -(backgroundY.current * PARALLAX_SPEEDS[index]) % (ZUMA_WIDTH * 2),
+            top: 0,
+            width: ZUMA_WIDTH * 2,
+            height: ZUMA_HEIGHT,
+            backgroundImage: `url(${layer})`,
+            backgroundSize: `${ZUMA_WIDTH}px ${ZUMA_HEIGHT}px`,
+            backgroundRepeat: 'repeat-x',
+            zIndex: 0,
+            willChange: 'transform',
+          }}
+        />
+      ))}
+      
+      {/* Питомец */}
+      <img
+        src={petSprite}
+        alt="pet"
+        style={{
+          position: 'absolute',
+          left: petX.current,
+          top: petY.current,
+          width: PET_SIZE,
+          height: PET_SIZE,
+          zIndex: 2,
+          userSelect: 'none',
+          pointerEvents: 'none',
+          willChange: 'transform',
+        }}
+      />
+      
+      {/* Препятствия */}
+      {obstacles.current.map((obstacle, idx) => (
+        <img
+          key={idx}
+          src={obstacle.sprite}
+          alt="obstacle"
+          style={{
+            position: 'absolute',
+            left: obstacle.x,
+            top: obstacle.y,
+            width: obstacle.width,
+            height: obstacle.height,
+            zIndex: 1,
+            willChange: 'transform',
+            userSelect: 'none',
+            pointerEvents: 'none',
+          }}
+        />
+      ))}
+      
+      {/* Счёт */}
+      <div style={{
+        position: 'absolute',
+        top: 12,
+        left: 0,
+        width: '100%',
+        textAlign: 'center',
+        fontSize: 28,
+        fontWeight: 'bold',
+        color: '#fff',
+        textShadow: '2px 2px 4px #000',
+        zIndex: 20
+      }}>{score}</div>
+      
+      {/* Game Over */}
+      {gameOver && (
+        <div style={{
+          position: 'absolute',
+          top: '40%',
+          left: 0,
+          width: '100%',
+          textAlign: 'center',
+          color: '#fff',
+          fontSize: 24,
+          fontWeight: 'bold',
+          textShadow: '2px 2px 4px #000',
+          zIndex: 30
+        }}>
+          <div>Игра окончена!</div>
+          <div style={{ fontSize: 18, marginTop: 8 }}>Счёт: {score}</div>
+          <button 
+            onClick={restart}
+            style={{
+              marginTop: 16,
+              padding: '8px 16px',
+              fontSize: 16,
+              background: '#4CAF50',
+              color: '#fff',
+              border: 'none',
+              borderRadius: 8,
+              cursor: 'pointer'
+            }}
+          >
+            Играть снова
+          </button>
+        </div>
+      )}
+      
+      {/* Начальный экран */}
+      {!started && !gameOver && (
+        <div style={{
+          position: 'absolute',
+          top: '40%',
+          left: 0,
+          width: '100%',
+          textAlign: 'center',
+          color: '#fff',
+          fontSize: 20,
+          fontWeight: 'bold',
+          textShadow: '2px 2px 4px #000',
+          zIndex: 30
+        }}>
+          <div>Нажмите для начала игры</div>
+          <div style={{ fontSize: 16, marginTop: 8 }}>Пробел или клик для прыжка</div>
+        </div>
+      )}
+      </div>
+    </div>
+  );
+});
+
+const PetMiniGameModal = ({ isOpen, pet, onClose }) => {
   if (!isOpen || !pet) return null;
   
   // Применяем мобильные оптимизации при загрузке
@@ -2790,5 +2873,8 @@ const FlyingOverCityMobileControls = ({ onJump }) => (
     </OneShotButton>
   </div>
 );
+
+// Экспортируем отдельные компоненты игр для использования в других файлах
+export { DoodleJumpGame, CrossyRoadGame, ZumaGame };
 
 export default PetMiniGameModal; 
