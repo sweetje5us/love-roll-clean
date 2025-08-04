@@ -561,7 +561,7 @@ const PhoneModal = ({ isOpen, onClose }) => {
                         <div 
                           className="home-screen-pages"
                           style={{
-                            transform: `translateX(${-currentPage * 100 + (dragOffset / 320) * 100}%)`,
+                            transform: `translateX(${-currentPage * 50 + (dragOffset / 320) * 50}%)`,
                             transition: isDragging ? 'none' : 'transform 0.3s ease'
                           }}
                         >
@@ -600,16 +600,16 @@ const PhoneModal = ({ isOpen, onClose }) => {
                                 <i className="fas fa-globe"></i>
                                 <span>Интернет</span>
                               </div>
+                              <div className="phone-app-icon" onClick={() => handleAppClick('calendar')}>
+                                <i className="fas fa-calendar"></i>
+                                <span>Календарь</span>
+                              </div>
                             </div>
                           </div>
                           
                           {/* Вторая страница приложений */}
                           <div className="home-screen-page">
                             <div className="phone-app-grid">
-                              <div className="phone-app-icon" onClick={() => handleAppClick('calendar')}>
-                                <i className="fas fa-calendar"></i>
-                                <span>Календарь</span>
-                              </div>
                               <div className="phone-app-icon" onClick={() => handleAppClick('notes')}>
                                 <i className="fas fa-sticky-note"></i>
                                 <span>Заметки</span>
