@@ -492,6 +492,33 @@
   margin: 0;
   font-size: 18px;
   font-weight: 600;
+  flex: 1;
+  text-align: center;
+}
+
+.header-change-pet-btn {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(102, 126, 234, 0.3);
+  font-size: 14px;
+}
+
+.header-change-pet-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(102, 126, 234, 0.4);
+}
+
+.header-change-pet-btn:active {
+  transform: translateY(0);
 }
 
 /* Contacts */
@@ -3282,8 +3309,7 @@
   display: flex;
   flex-direction: column;
   height: 100%;
-  padding: 10px;
-  gap: 15px;
+  
 }
 
 /* Верхняя часть - питомец и имя */
@@ -3851,4 +3877,186 @@
     width: 100% !important;
     height: 100% !important;
   }
+}
+
+/* Стили для смены питомца */
+.pet-change-section {
+  margin-top: 15px;
+  padding: 10px 0;
+  border-top: 1px solid #e0e0e0;
+}
+
+.pet-change-btn {
+  width: 100%;
+  padding: 12px 16px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+}
+
+.pet-change-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.pet-change-btn:active {
+  transform: translateY(0);
+}
+
+.pet-change-btn:disabled {
+  background: #bdc3c7;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.pet-change-btn:disabled:hover {
+  transform: none;
+  box-shadow: none;
+}
+
+.pet-change-btn i {
+  font-size: 16px;
+}
+
+/* Экран выбора питомца */
+.pet-change-view {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.pet-selection-container {
+  flex: 1;
+  padding: 15px;
+  overflow-y: auto;
+}
+
+.pet-selection-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.pet-selection-item {
+  display: flex;
+  align-items: center;
+  padding: 12px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.pet-selection-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.pet-selection-avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #e8f5e8, #f1f8e9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 12px;
+  overflow: hidden;
+}
+
+.pet-selection-avatar img {
+  width: 35px;
+  height: 35px;
+  object-fit: contain;
+}
+
+.pet-selection-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.pet-selection-name {
+  font-size: 16px;
+  font-weight: 600;
+  color: #2c3e50;
+}
+
+.pet-selection-status {
+  font-size: 12px;
+  color: #7f8c8d;
+}
+
+.pet-selection-btn {
+  padding: 8px 16px;
+  background: linear-gradient(135deg, #4CAF50, #45a049);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 80px;
+}
+
+.pet-selection-btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(76, 175, 80, 0.3);
+}
+
+.pet-selection-btn:disabled {
+  background: #bdc3c7;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.pet-selection-btn:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.pet-selection-rarity {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  margin-top: 2px;
+}
+
+.no-pets-message {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  text-align: center;
+  color: #7f8c8d;
+}
+
+.no-pets-message i {
+  font-size: 48px;
+  margin-bottom: 16px;
+  color: #bdc3c7;
+}
+
+.no-pets-message p {
+  margin: 4px 0;
+  font-size: 14px;
+}
+
+.no-pets-message p:first-of-type {
+  font-weight: 600;
+  color: #2c3e50;
 }

@@ -82,7 +82,7 @@ const PhoneModal = ({ isOpen, onClose }) => {
   const [inventoryView, setInventoryView] = useState('list'); // 'list' или 'details'
   
   // Состояния для питомца
-  const [petView, setPetView] = useState('main'); // 'main', 'minigame'
+  const [petView, setPetView] = useState('main'); // 'main', 'minigame', 'change'
   const [selectedMinigame, setSelectedMinigame] = useState(null);
   const [isMiniGameOpen, setMiniGameOpen] = useState(false);
   const [, forceUpdate] = useState({});
@@ -219,7 +219,20 @@ const PhoneModal = ({ isOpen, onClose }) => {
   useEffect(() => {
     if (activeApp === 'pet' && playerCharacter) {
       const characterPetId = playerCharacter.petId || playerCharacter.pet?.id;
-      if (characterPetId && characterPetId !== activePetId) {
+      const availablePets = getAvailablePets();
+      
+      // Если у игрока есть питомцы в инвентаре, не перезаписываем активного питомца
+      if (availablePets.length > 0) {
+        // Только добавляем питомца персонажа в коллекцию, если его там нет
+        if (characterPetId && !petCollection[characterPetId]) {
+          addPetToCollection(characterPetId, playerCharacter.petName || playerCharacter.pet?.name || '');
+        }
+        // Если нет активного питомца, устанавливаем первого доступного
+        if (!activePetId) {
+          setActivePet(availablePets[0].id);
+        }
+      } else if (characterPetId && characterPetId !== activePetId) {
+        // Если питомцев в инвентаре нет, используем питомца персонажа
         console.log('PhoneModal: Обновляем активного питомца с', activePetId, 'на', characterPetId);
         // Добавляем питомца в коллекцию, если его там нет
         if (!petCollection[characterPetId]) {
@@ -326,10 +339,10 @@ const PhoneModal = ({ isOpen, onClose }) => {
     // Сбрасываем состояние магазина при возврате на главный экран
     setShopView('list');
     setSelectedShopItem(null);
-          // Сбрасываем состояние питомца при возврате на главный экран
-      setPetView('main');
-      setSelectedMinigame(null);
-      setMiniGameOpen(false);
+    // Сбрасываем состояние питомца при возврате на главный экран
+    setPetView('main');
+    setSelectedMinigame(null);
+    setMiniGameOpen(false);
     setCurrentPage(0); // Сбрасываем на первую страницу
   };
 
@@ -631,6 +644,35 @@ const PhoneModal = ({ isOpen, onClose }) => {
     }
   };
 
+  const handleChangePet = () => {
+    setPetView('change');
+  };
+
+  const handleSelectPet = (petId) => {
+    // Получаем данные питомца из инвентаря
+    const petData = getItemById(petId);
+    
+    if (petData) {
+      // Добавляем питомца в коллекцию, если его там нет
+      if (!petCollection[petId]) {
+        addPetToCollection(petId, petData.name);
+      }
+      
+      // Меняем активного питомца
+      setActivePet(petId);
+    }
+    
+    // Возвращаемся к главному экрану
+    setPetView('main');
+    // Принудительно обновляем компонент
+    forceUpdate({});
+  };
+
+  // Функция для получения питомцев из инвентаря
+  const getAvailablePets = () => {
+    return inventoryItems.filter(item => item.type === 'pet' && item.quantity > 0);
+  };
+
   const openMinigame = (gameType) => {
     setSelectedMinigame(gameType);
     setPetView('minigame');
@@ -867,10 +909,7 @@ if (!isOpen) return null;
                                 <i className="fas fa-comments"></i>
                                 <span>Сообщения</span>
                               </div>
-                              <div className="phone-app-icon" onClick={() => handleAppClick('camera')}>
-                                <i className="fas fa-camera"></i>
-                                <span>Камера</span>
-                              </div>
+
                               <div className="phone-app-icon" onClick={() => handleAppClick('gallery')}>
                                 <i className="fas fa-images"></i>
                                 <span>Галерея</span>
@@ -879,50 +918,19 @@ if (!isOpen) return null;
                                 <i className="fas fa-cog"></i>
                                 <span>Настройки</span>
                               </div>
-                              <div className="phone-app-icon" onClick={() => handleAppClick('internet')}>
-                                <i className="fas fa-globe"></i>
-                                <span>Интернет</span>
-                              </div>
-                              <div className="phone-app-icon" onClick={() => handleAppClick('calendar')}>
-                                <i className="fas fa-calendar"></i>
-                                <span>Календарь</span>
-                              </div>
-                            </div>
-                          </div>
-                          
-                          {/* Вторая страница приложений */}
-                          <div className="home-screen-page">
-                            <div className="phone-app-grid">
                               <div className="phone-app-icon" onClick={() => handleAppClick('notes')}>
                                 <i className="fas fa-sticky-note"></i>
                                 <span>Заметки</span>
-                              </div>
-                              <div className="phone-app-icon" onClick={() => handleAppClick('calculator')}>
-                                <i className="fas fa-calculator"></i>
-                                <span>Калькулятор</span>
-                              </div>
-                              <div className="phone-app-icon" onClick={() => handleAppClick('weather')}>
-                                <i className="fas fa-cloud-sun"></i>
-                                <span>Погода</span>
-                              </div>
-                              <div className="phone-app-icon" onClick={() => handleAppClick('maps')}>
-                                <i className="fas fa-map-marker-alt"></i>
-                                <span>Карты</span>
                               </div>
                               <div className="phone-app-icon" onClick={() => handleAppClick('music')}>
                                 <i className="fas fa-music"></i>
                                 <span>Музыка</span>
                               </div>
-                              <div className="phone-app-icon" onClick={() => handleAppClick('games')}>
-                                <i className="fas fa-gamepad"></i>
-                                <span>Игры</span>
-                              </div>
-                              <div className="phone-app-icon" onClick={() => handleAppClick('health')}>
-                                <i className="fas fa-heartbeat"></i>
-                                <span>Здоровье</span>
-                              </div>
+
                             </div>
                           </div>
+                          
+
                         </div>
                       </div>
                       
@@ -1723,28 +1731,7 @@ if (!isOpen) return null;
                     </div>
                   )}
 
-                  {/* Камера */}
-                  {activeApp === 'camera' && (
-                    <div className="phone-app-content">
-                      <div className="phone-app-header">
-                        <button className="phone-back-button" onClick={handleBackToHome}>
-                          <i className="fas fa-arrow-left"></i>
-                        </button>
-                        <h3>Камера</h3>
-                      </div>
-                      <div className="phone-camera-view">
-                        <div className="camera-preview">
-                          <i className="fas fa-camera"></i>
-                          <span>Предварительный просмотр</span>
-                        </div>
-                        <div className="camera-controls">
-                          <button className="camera-button">
-                            <i className="fas fa-camera"></i>
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  )}
+
 
                   {/* Галерея */}
                   {activeApp === 'gallery' && (
@@ -1798,28 +1785,7 @@ if (!isOpen) return null;
                     </div>
                   )}
 
-                  {/* Интернет */}
-                  {activeApp === 'internet' && (
-                    <div className="phone-app-content">
-                      <div className="phone-app-header">
-                        <button className="phone-back-button" onClick={handleBackToHome}>
-                          <i className="fas fa-arrow-left"></i>
-                        </button>
-                        <h3>Интернет</h3>
-                      </div>
-                      <div className="phone-browser">
-                        <div className="browser-address-bar">
-                          <span>https://example.com</span>
-                        </div>
-                        <div className="browser-content">
-                          <div className="browser-placeholder">
-                            <i className="fas fa-globe"></i>
-                            <span>Веб-страница</span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  )}
+
 
                   {/* Телефон */}
                   {activeApp === 'phone' && (
@@ -1914,31 +1880,7 @@ if (!isOpen) return null;
                     </div>
                   )}
 
-                  {/* Календарь */}
-                  {activeApp === 'calendar' && (
-                    <div className="phone-app-content">
-                      <div className="phone-app-header">
-                        <button className="phone-back-button" onClick={handleBackToHome}>
-                          <i className="fas fa-arrow-left"></i>
-                        </button>
-                        <h3>Календарь</h3>
-                      </div>
-                      <div className="calendar-view">
-                        <div className="calendar-header">
-                          <span>Январь 2024</span>
-                        </div>
-                        <div className="calendar-grid">
-                          <div className="calendar-day">1</div>
-                          <div className="calendar-day">2</div>
-                          <div className="calendar-day">3</div>
-                          <div className="calendar-day">4</div>
-                          <div className="calendar-day">5</div>
-                          <div className="calendar-day">6</div>
-                          <div className="calendar-day">7</div>
-                        </div>
-                      </div>
-                    </div>
-                  )}
+
 
                   {/* Заметки */}
                   {activeApp === 'notes' && (
@@ -1964,77 +1906,11 @@ if (!isOpen) return null;
                     </div>
                   )}
 
-                  {/* Калькулятор */}
-                  {activeApp === 'calculator' && (
-                    <div className="phone-app-content">
-                      <div className="phone-app-header">
-                        <button className="phone-back-button" onClick={handleBackToHome}>
-                          <i className="fas fa-arrow-left"></i>
-                        </button>
-                        <h3>Калькулятор</h3>
-                      </div>
-                      <div className="calculator">
-                        <div className="calc-display">0</div>
-                        <div className="calc-buttons">
-                          <button className="calc-btn">7</button>
-                          <button className="calc-btn">8</button>
-                          <button className="calc-btn">9</button>
-                          <button className="calc-btn">÷</button>
-                          <button className="calc-btn">4</button>
-                          <button className="calc-btn">5</button>
-                          <button className="calc-btn">6</button>
-                          <button className="calc-btn">×</button>
-                          <button className="calc-btn">1</button>
-                          <button className="calc-btn">2</button>
-                          <button className="calc-btn">3</button>
-                          <button className="calc-btn">-</button>
-                          <button className="calc-btn">0</button>
-                          <button className="calc-btn">.</button>
-                          <button className="calc-btn">=</button>
-                          <button className="calc-btn">+</button>
-                        </div>
-                      </div>
-                    </div>
-                  )}
 
-                  {/* Погода */}
-                  {activeApp === 'weather' && (
-                    <div className="phone-app-content">
-                      <div className="phone-app-header">
-                        <button className="phone-back-button" onClick={handleBackToHome}>
-                          <i className="fas fa-arrow-left"></i>
-                        </button>
-                        <h3>Погода</h3>
-                      </div>
-                      <div className="weather-view">
-                        <div className="weather-current">
-                          <div className="weather-icon">
-                            <i className="fas fa-sun"></i>
-                          </div>
-                          <div className="weather-temp">22°</div>
-                          <div className="weather-desc">Солнечно</div>
-                        </div>
-                      </div>
-                    </div>
-                  )}
 
-                  {/* Карты */}
-                  {activeApp === 'maps' && (
-                    <div className="phone-app-content">
-                      <div className="phone-app-header">
-                        <button className="phone-back-button" onClick={handleBackToHome}>
-                          <i className="fas fa-arrow-left"></i>
-                        </button>
-                        <h3>Карты</h3>
-                      </div>
-                      <div className="maps-view">
-                        <div className="maps-placeholder">
-                          <i className="fas fa-map"></i>
-                          <span>Карта</span>
-                        </div>
-                      </div>
-                    </div>
-                  )}
+
+
+
 
                   {/* Музыка */}
                   {activeApp === 'music' && (
@@ -2068,52 +1944,9 @@ if (!isOpen) return null;
                     </div>
                   )}
 
-                  {/* Игры */}
-                  {activeApp === 'games' && (
-                    <div className="phone-app-content">
-                      <div className="phone-app-header">
-                        <button className="phone-back-button" onClick={handleBackToHome}>
-                          <i className="fas fa-arrow-left"></i>
-                        </button>
-                        <h3>Игры</h3>
-                      </div>
-                      <div className="games-grid">
-                        <div className="game-item">
-                          <div className="game-icon">
-                            <i className="fas fa-puzzle-piece"></i>
-                          </div>
-                          <div className="game-name">Пазл</div>
-                        </div>
-                        <div className="game-item">
-                          <div className="game-icon">
-                            <i className="fas fa-chess"></i>
-                          </div>
-                          <div className="game-name">Шахматы</div>
-                        </div>
-                      </div>
-                    </div>
-                  )}
 
-                  {/* Здоровье */}
-                  {activeApp === 'health' && (
-                    <div className="phone-app-content">
-                      <div className="phone-app-header">
-                        <button className="phone-back-button" onClick={handleBackToHome}>
-                          <i className="fas fa-arrow-left"></i>
-                        </button>
-                        <h3>Здоровье</h3>
-                      </div>
-                      <div className="health-view">
-                        <div className="health-card">
-                          <div className="health-icon">
-                            <i className="fas fa-heartbeat"></i>
-                          </div>
-                          <div className="health-value">72</div>
-                          <div className="health-label">Удары в минуту</div>
-                        </div>
-                      </div>
-                    </div>
-                  )}
+
+
 
                   {/* Питомец */}
                   {activeApp === 'pet' && (
@@ -2125,6 +1958,21 @@ if (!isOpen) return null;
                               <i className="fas fa-arrow-left"></i>
                             </button>
                             <h3>Питомец</h3>
+                            {(() => {
+                              const availablePets = getAvailablePets();
+                              if (availablePets.length > 1) {
+                                return (
+                                  <button 
+                                    className="header-change-pet-btn" 
+                                    onClick={handleChangePet}
+                                    title="Сменить питомца"
+                                  >
+                                    <i className="fas fa-exchange-alt"></i>
+                                  </button>
+                                );
+                              }
+                              return null;
+                            })()}
                           </div>
                           
                           <div className="pet-view">
@@ -2266,6 +2114,8 @@ if (!isOpen) return null;
                                     <span>Лечить</span>
                                   </button>
                                 </div>
+                                
+
                               </div>
                             ) : (
                               <div className="no-pet">
@@ -2276,6 +2126,64 @@ if (!isOpen) return null;
                             )}
                           </div>
                         </>
+                      ) : petView === 'change' ? (
+                        /* Экран выбора питомца */
+                        <div className="pet-change-view">
+                          <div className="phone-app-header">
+                            <button className="phone-back-button" onClick={() => setPetView('main')}>
+                              <i className="fas fa-arrow-left"></i>
+                            </button>
+                            <h3>Выбор питомца</h3>
+                          </div>
+                          <div className="pet-selection-container">
+                            <div className="pet-selection-list">
+                              {(() => {
+                                const availablePets = getAvailablePets();
+                                if (availablePets.length === 0) {
+                                  return (
+                                    <div className="no-pets-message">
+                                      <i className="fas fa-paw"></i>
+                                      <p>У вас нет питомцев в инвентаре</p>
+                                      <p>Питомцев можно купить в магазине</p>
+                                    </div>
+                                  );
+                                }
+                                
+                                return availablePets.map((pet, index) => (
+                                  <div key={pet.id} className="pet-selection-item">
+                                    <div className="pet-selection-avatar">
+                                      <img 
+                                        src={pet.sprite ? `/${pet.sprite}` : '/sprites/items/pets/rat.png'} 
+                                        alt={pet.name}
+                                        onError={(e) => {
+                                          e.target.src = '/sprites/items/pets/rat.png';
+                                        }}
+                                      />
+                                    </div>
+                                    <div className="pet-selection-info">
+                                      <div className="pet-selection-name">{pet.name}</div>
+                                      <div className="pet-selection-status">
+                                        {activePetData?.id === pet.id ? 'Активный' : 'Доступен'}
+                                      </div>
+                                      {pet.rarity && (
+                                        <div className="pet-selection-rarity" style={{ color: getRarityColor(pet.rarity) }}>
+                                          {pet.rarity}
+                                        </div>
+                                      )}
+                                    </div>
+                                    <button 
+                                      className="pet-selection-btn"
+                                      onClick={() => handleSelectPet(pet.id)}
+                                      disabled={activePetData?.id === pet.id}
+                                    >
+                                      {activePetData?.id === pet.id ? 'Выбран' : 'Выбрать'}
+                                    </button>
+                                  </div>
+                                ));
+                              })()}
+                            </div>
+                          </div>
+                        </div>
                       ) : (
                         /* Мини-игра */
                         <div className="minigame-view">
