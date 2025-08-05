@@ -26,17 +26,20 @@ export const isWeakDevice = () => {
 export const getPerformanceSettings = () => {
   if (isWeakDevice()) {
     return {
-      renderInterval: 3, // каждые 3 кадра (20 обновлений/сек при 60 FPS)
+      renderInterval: 2, // каждые 2 кадра (30 обновлений/сек при 60 FPS)
       maxDeltaTime: 33, // максимум 33ms (30 FPS)
-      animationThrottle: 1, // без пропуска кадров анимации
+      animationThrottle: 1, // без пропуска кадров анимации для плавности
       enableHardwareAcceleration: true, // включаем для всех устройств
     };
   } else if (isMobileDevice) {
     return {
-      renderInterval: 2, // каждые 2 кадра (30 обновлений/сек при 60 FPS)
+      renderInterval: 1, // каждый кадр (60 обновлений/сек при 60 FPS)
       maxDeltaTime: 33, // максимум 33ms (30 FPS)
-      animationThrottle: 1, // без пропуска кадров анимации
+      animationThrottle: 1, // без пропуска кадров анимации для плавности
       enableHardwareAcceleration: true,
+      // Дополнительные настройки для мобильных устройств
+      enableContainment: true, // включаем CSS containment
+      enableImageOptimization: true, // оптимизация изображений
     };
   } else {
     return {
@@ -59,6 +62,17 @@ export const applyMobileOptimizations = (element) => {
     element.style.transform = 'translateZ(0)';
     element.style.backfaceVisibility = 'hidden';
     element.style.perspective = '1000px';
+  }
+  
+  if (settings.enableContainment) {
+    element.style.contain = 'layout style paint';
+    element.style.containIntrinsicSize = 'auto';
+  }
+  
+  if (settings.enableImageOptimization) {
+    element.style.imageRendering = 'optimizeSpeed';
+    element.style.imageRendering = '-webkit-optimize-contrast';
+    element.style.imageRendering = 'crisp-edges';
   }
   
   // Отключаем touch события для лучшей производительности
@@ -197,6 +211,23 @@ export const autoApplyOptimizations = () => {
   // Оптимизируем все изображения в играх
   const gameImages = document.querySelectorAll('.flappybird-game img, .doodlejump-game img, .crossyroad-game img, .zuma-game img');
   gameImages.forEach(optimizeImageForMobile);
+};
+
+// Функция для очистки памяти в играх
+export const cleanupGameMemory = (refs, objects) => {
+  if (!isMobileDevice) return;
+  
+  // Очищаем неиспользуемые refs
+  Object.keys(refs).forEach(key => {
+    if (!objects[parseInt(key)]) {
+      delete refs[key];
+    }
+  });
+  
+  // Принудительная сборка мусора (если доступно)
+  if (window.gc) {
+    window.gc();
+  }
 };
 
 // Экспорт настроек по умолчанию

@@ -2,7 +2,7 @@
 
 .App {
   text-align: center;
-  min-height: 100vh;
+  height: 100vh;
   background: linear-gradient(to bottom, #fdf2f8, #f3e8ff);
   position: relative;
   overflow: hidden;
@@ -15,7 +15,7 @@
 
 /* Стили для главного меню */
 .main-menu {
-  min-height: 100vh;
+  height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;

@@ -1,5 +1,13 @@
 /* Оптимизации производительности для мобильных устройств */
 
+/* Предотвращение скролла на мобильных устройствах */
+html, body {
+  height: 100vh;
+  overflow: hidden;
+  position: fixed;
+  width: 100%;
+}
+
 /* Базовые оптимизации GPU ускорения */
 @media (max-width: 768px) {
   /* Включаем hardware acceleration для игровых элементов */
@@ -42,6 +50,21 @@
   .shop-screen,
   .collection-screen {
     contain: layout style paint;
+  }
+
+  /* Предотвращаем скролл в главном меню */
+  .main-menu {
+    height: 100vh !important;
+    overflow: hidden !important;
+    position: fixed !important;
+    top: 0;
+    left: 0;
+    width: 100%;
+  }
+
+  .main-menu-container {
+    height: 100vh !important;
+    overflow: hidden !important;
   }
 
   /* Упрощаем тени */

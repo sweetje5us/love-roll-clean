@@ -10,7 +10,7 @@
 }
 
 .main-menu {
-  min-height: 100vh;
+  height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -21,7 +21,7 @@
   box-sizing: border-box;
   font-family: 'Poppins', sans-serif;
   color: var(--dark);
-  overflow-x: hidden;
+  overflow: hidden;
 }
 
 /* Анимированный фон с кубиками */
@@ -124,7 +124,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-height: 100vh;
+  height: 100vh;
   position: relative;
   z-index: 10;
   gap: 2rem;
@@ -137,7 +137,7 @@
   justify-content: space-between;
   margin-bottom: 1rem;
   z-index: 20;
-  position: fixed;
+  position: absolute;
   top: 1rem;
   left: 0;
   padding: 0 1rem;
@@ -250,7 +250,7 @@
   flex-direction: column;
   gap: 1rem;
   margin-top: 1rem;
-  position: fixed;
+  position: absolute;
   bottom: 2rem;
   left: 0;
   right: 0;

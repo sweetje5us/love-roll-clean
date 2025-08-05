@@ -4,8 +4,7 @@ import { getStaticPath } from '../../utils/pathUtils';
 import './PetMiniGameModal.css';
 import { usePets } from '../../contexts/PetContext';
 import { Joystick } from 'react-joystick-component';
-import { getRealFrameTime, getCurrentRefreshRate } from '../../utils/cordovaUtils';
-import { isMobileDevice, getPerformanceSettings, applyMobileOptimizations, autoApplyOptimizations, isWeakDevice } from '../../utils/mobileOptimization';
+// Убираем импорт мобильных оптимизаций для лучшего игрового процесса
 
 // Функция для вычисления масштаба игры под размер контейнера
 const useGameScale = (originalWidth, originalHeight) => {
@@ -48,11 +47,15 @@ const useGameScale = (originalWidth, originalHeight) => {
   return { scale, containerSize, containerRef };
 };
 
-// Длительность анимаций Zuma (мс) - уменьшена для мобильных
-const ANIMATION_DURATION = isMobileDevice ? 200 : 300;
+// Длительность анимаций Zuma (мс)
+const ANIMATION_DURATION = 300;
 
-// Мобильные настройки производительности
-const MOBILE_SETTINGS = getPerformanceSettings();
+// Настройки производительности (убраны все мобильные оптимизации)
+const MOBILE_SETTINGS = {
+  renderInterval: 1, // каждый кадр
+  maxDeltaTime: 1000, // без ограничения deltaTime
+  animationThrottle: 1, // без пропуска кадров
+};
 
 const getGameTypeText = (gameType) => {
   switch (gameType) {
@@ -72,11 +75,11 @@ const getGameTypeText = (gameType) => {
 // --- Полет над городом MiniGame ---
 const GAME_WIDTH = 320;
 const GAME_HEIGHT = 420;
-// Константы в единицах "на секунду" (оптимизированы для мобильных)
-const GRAVITY_PER_SECOND = isMobileDevice ? 600 : 600; // возвращаем нормальную гравитацию
-const JUMP_VELOCITY = isMobileDevice ? -240 : -240; // возвращаем нормальную скорость прыжка
-const OBSTACLE_SPEED_PER_SECOND = isMobileDevice ? 120 : 120; // возвращаем нормальную скорость препятствий
-const OBSTACLE_INTERVAL = isMobileDevice ? 1400 : 1400; // возвращаем нормальный интервал
+// Константы в единицах "на секунду"
+const GRAVITY_PER_SECOND = 600;
+const JUMP_VELOCITY = -240;
+const OBSTACLE_SPEED_PER_SECOND = 120;
+const OBSTACLE_INTERVAL = 1400;
 const PET_SIZE = 44;
 
 // Параллакс фон константы
@@ -219,10 +222,10 @@ const DJ_TANK_ORIGINAL_HEIGHT = 48;
 const DJ_TANK_SCALE = DJ_PLATFORM_WIDTH / DJ_TANK_ORIGINAL_WIDTH;
 const DJ_TANK_DISPLAY_WIDTH = DJ_TANK_ORIGINAL_WIDTH * DJ_TANK_SCALE;
 const DJ_TANK_DISPLAY_HEIGHT = DJ_TANK_ORIGINAL_HEIGHT * DJ_TANK_SCALE;
-// Константы в единицах "на секунду" (оптимизированы для мобильных)
-const DJ_GRAVITY_PER_SECOND = isMobileDevice ? 400 : 400; // возвращаем нормальную гравитацию
-const DJ_JUMP_VELOCITY = isMobileDevice ? -300 : -300; // возвращаем нормальную скорость прыжка
-const DJ_MOVE_SPEED_PER_SECOND = isMobileDevice ? 240 : 240; // возвращаем нормальную скорость движения
+// Константы в единицах "на секунду"
+const DJ_GRAVITY_PER_SECOND = 400;
+const DJ_JUMP_VELOCITY = -300;
+const DJ_MOVE_SPEED_PER_SECOND = 240;
 
 function getRandomPlatformX() {
   return Math.random() * (DJ_WIDTH - DJ_PLATFORM_WIDTH);
@@ -283,35 +286,17 @@ const DoodleJumpGame = ({ petSprite, onClose, petId }) => {
 
 
 
-  // ОПТИМИЗИРОВАННЫЙ игровой цикл для мобильных
+  // Игровой цикл
   useEffect(() => {
     if (gameOver) return;
     let frame;
     let frameCount = 0;
     let lastTime = performance.now();
-    let animationFrameCount = 0; // счетчик для пропуска кадров анимации
-    
-    // Мобильная оптимизация
-    if (isMobileDevice) {
-      const gameCanvas = document.querySelector('.doodlejump-game');
-      if (gameCanvas) {
-        gameCanvas.style.willChange = 'transform';
-        gameCanvas.style.transform = 'translateZ(0)';
-        gameCanvas.style.backfaceVisibility = 'hidden';
-      }
-    }
     
     const loop = (currentTime) => {
-      if (!started) {
-        frame = requestAnimationFrame(loop);
-        return;
-      }
-      
       const deltaTime = currentTime - lastTime;
       lastTime = currentTime;
-      // Мобильная оптимизация: ограничиваем deltaTime
-      const clampedDeltaTime = Math.min(deltaTime, MOBILE_SETTINGS.maxDeltaTime);
-      const deltaTimeSeconds = clampedDeltaTime / 1000;
+      const deltaTimeSeconds = deltaTime / 1000;
       
       // Движение по горизонтали с deltaTime
       const currentMoveDir = window.doodleJumpMoveDir || moveDir.current;
@@ -341,68 +326,64 @@ const DoodleJumpGame = ({ petSprite, onClose, petId }) => {
         }
       }
       
-      // ОПТИМИЗИРОВАННОЕ движение платформ - только каждый N-й кадр на мобильных
-      animationFrameCount++;
-      if (animationFrameCount % MOBILE_SETTINGS.animationThrottle === 0) {
-                  // Движение платформ вниз, если питомец поднимается выше середины
-          if (petY.current < DJ_HEIGHT / 2) {
-            const diff = DJ_HEIGHT / 2 - petY.current;
-            petY.current = DJ_HEIGHT / 2;
-            maxY.current -= diff;
-            
-            // Параллакс эффект для фоновых слоев с бесшовным зацикливанием
-            // Задний слой движется медленнее
-            for (let i = 0; i < backgroundLayers.current.length; i++) {
-              backgroundLayers.current[i] += diff * 0.3;
-            }
-            
-            // Перемещаем задние слои, которые вышли за границу
-            for (let i = 0; i < backgroundLayers.current.length; i++) {
-              if (backgroundLayers.current[i] >= DJ_HEIGHT) {
-                // Находим самый верхний слой
-                let minY = Math.min(...backgroundLayers.current);
-                backgroundLayers.current[i] = minY - DJ_HEIGHT;
-              }
-            }
-            
-            // Проверяем и исправляем разрывы между слоями
-            backgroundLayers.current.sort((a, b) => a - b);
-            for (let i = 1; i < backgroundLayers.current.length; i++) {
-              const gap = backgroundLayers.current[i] - backgroundLayers.current[i - 1];
-              if (gap > DJ_HEIGHT) {
-                // Если есть разрыв больше высоты слоя, перемещаем слой
-                backgroundLayers.current[i] = backgroundLayers.current[i - 1] + DJ_HEIGHT;
-              }
-            }
-            
-            // ОПТИМИЗИРОВАННОЕ движение платформ - изменяем in-place
-            for (let i = 0; i < platforms.current.length; i++) {
-              platforms.current[i].y += diff;
-            }
-          
-          // Добавляем платформы (оптимизированный поиск минимального Y)
-          while (platforms.current.length < DJ_PLATFORM_COUNT) {
-            let minY = platforms.current[0]?.y || 0;
-            for (let i = 1; i < platforms.current.length; i++) {
-              if (platforms.current[i].y < minY) {
-                minY = platforms.current[i].y;
-              }
-            }
-            platforms.current.push({
-              x: getRandomPlatformX(),
-              y: minY - 60 - Math.random() * 30,
-              sprite: getRandomTankSprite(),
-              direction: Math.random() > 0.5 ? 1 : -1 // 1 = вправо, -1 = влево
-            });
-          }
-          
-          // ОПТИМИЗИРОВАННОЕ удаление платформ - splice вместо filter
-          for (let i = platforms.current.length - 1; i >= 0; i--) {
-            if (platforms.current[i].y >= DJ_HEIGHT) {
-              platforms.current.splice(i, 1);
-            }
+      // Движение платформ вниз, если питомец поднимается выше середины
+      if (petY.current < DJ_HEIGHT / 2) {
+        const diff = DJ_HEIGHT / 2 - petY.current;
+        petY.current = DJ_HEIGHT / 2;
+        maxY.current -= diff;
+        
+        // Параллакс эффект для фоновых слоев с бесшовным зацикливанием
+        // Задний слой движется медленнее
+        for (let i = 0; i < backgroundLayers.current.length; i++) {
+          backgroundLayers.current[i] += diff * 0.3;
+        }
+        
+        // Перемещаем задние слои, которые вышли за границу
+        for (let i = 0; i < backgroundLayers.current.length; i++) {
+          if (backgroundLayers.current[i] >= DJ_HEIGHT) {
+            // Находим самый верхний слой
+            let minY = Math.min(...backgroundLayers.current);
+            backgroundLayers.current[i] = minY - DJ_HEIGHT;
           }
         }
+        
+        // Проверяем и исправляем разрывы между слоев
+        backgroundLayers.current.sort((a, b) => a - b);
+        for (let i = 1; i < backgroundLayers.current.length; i++) {
+          const gap = backgroundLayers.current[i] - backgroundLayers.current[i - 1];
+          if (gap > DJ_HEIGHT) {
+            // Если есть разрыв больше высоты слоя, перемещаем слой
+            backgroundLayers.current[i] = backgroundLayers.current[i - 1] + DJ_HEIGHT;
+          }
+        }
+        
+        // Движение платформ - изменяем in-place
+        for (let i = 0; i < platforms.current.length; i++) {
+          platforms.current[i].y += diff;
+        }
+      
+      // Добавляем платформы
+      while (platforms.current.length < DJ_PLATFORM_COUNT) {
+        let minY = platforms.current[0]?.y || 0;
+        for (let i = 1; i < platforms.current.length; i++) {
+          if (platforms.current[i].y < minY) {
+            minY = platforms.current[i].y;
+          }
+        }
+        platforms.current.push({
+          x: getRandomPlatformX(),
+          y: minY - 60 - Math.random() * 30,
+          sprite: getRandomTankSprite(),
+          direction: Math.random() > 0.5 ? 1 : -1 // 1 = вправо, -1 = влево
+        });
+      }
+      
+      // Удаление платформ - splice вместо filter
+      for (let i = platforms.current.length - 1; i >= 0; i--) {
+        if (platforms.current[i].y >= DJ_HEIGHT) {
+          platforms.current.splice(i, 1);
+        }
+      }
       }
       
       // Game over если упал вниз
@@ -411,16 +392,13 @@ const DoodleJumpGame = ({ petSprite, onClose, petId }) => {
         return;
       }
       
-      // МОБИЛЬНАЯ ОПТИМИЗАЦИЯ: уменьшенная частота re-render
-      frameCount++;
-      if (frameCount % MOBILE_SETTINGS.renderInterval === 0) {
-        setRenderTick(t => t + 1);
-      }
+      // Обновление рендера
+      setRenderTick(t => t + 1);
       frame = requestAnimationFrame(loop);
     };
     frame = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(frame);
-  }, [started, gameOver]);
+  }, [gameOver]);
 
   // Начисление счастья
   useEffect(() => {
@@ -444,7 +422,7 @@ const DoodleJumpGame = ({ petSprite, onClose, petId }) => {
 
   // Инициализация платформ
   useEffect(() => {
-    if (!started || platforms.current.length > 0) return;
+    if (platforms.current.length > 0) return;
     let plats = [];
     for (let i = 0; i < DJ_PLATFORM_COUNT; i++) {
       plats.push({
@@ -463,7 +441,7 @@ const DoodleJumpGame = ({ petSprite, onClose, petId }) => {
     petX.current = DJ_WIDTH / 2 - DJ_PET_SIZE / 2;
     petY.current = plats[0].y - DJ_PET_SIZE;
     velocityY.current = 0;
-  }, [started]);
+  }, []);
 
   // Сброс игры
   const restart = () => {
@@ -552,47 +530,44 @@ const DoodleJumpGame = ({ petSprite, onClose, petId }) => {
             backgroundSize: `${DJ_WIDTH}px ${DJ_HEIGHT}px`,
             backgroundRepeat: 'no-repeat',
             zIndex: 0,
-            willChange: 'transform',
           }}
         />
       ))}
       
       {/* Питомец */}
-      <img
-        src={petSprite}
-        alt="pet"
-        style={{
-          position: 'absolute',
-          left: petX.current,
-          top: petY.current,
-          width: DJ_PET_SIZE,
-          height: DJ_PET_SIZE,
-          zIndex: 2,
-          userSelect: 'none',
-          pointerEvents: 'none',
-          willChange: 'transform', // мобильная оптимизация
-        }}
-      />
-      
-      {/* Платформы-танки */}
-      {platforms.current.map((plat, idx) => (
-        <img
-          key={idx}
-          ref={el => platformRefs.current[idx] = el}
-          src={plat.sprite}
-          alt="tank platform"
+              <img
+          src={petSprite}
+          alt="pet"
           style={{
             position: 'absolute',
-            left: plat.x - (DJ_TANK_DISPLAY_WIDTH - DJ_PLATFORM_WIDTH) / 2, // центрируем танк относительно физического тела
-            top: plat.y - (DJ_TANK_DISPLAY_HEIGHT - DJ_PLATFORM_HEIGHT), // выравниваем по нижней границе
-            width: DJ_TANK_DISPLAY_WIDTH,
-            height: DJ_TANK_DISPLAY_HEIGHT,
-            zIndex: 3,
-            willChange: 'transform', // мобильная оптимизация
+            left: petX.current,
+            top: petY.current,
+            width: DJ_PET_SIZE,
+            height: DJ_PET_SIZE,
+            zIndex: 2,
             userSelect: 'none',
             pointerEvents: 'none',
           }}
         />
+      
+      {/* Платформы-танки */}
+      {platforms.current.map((plat, idx) => (
+                  <img
+            key={idx}
+            ref={el => platformRefs.current[idx] = el}
+            src={plat.sprite}
+            alt="tank platform"
+            style={{
+              position: 'absolute',
+              left: plat.x - (DJ_TANK_DISPLAY_WIDTH - DJ_PLATFORM_WIDTH) / 2, // центрируем танк относительно физического тела
+              top: plat.y - (DJ_TANK_DISPLAY_HEIGHT - DJ_PLATFORM_HEIGHT), // выравниваем по нижней границе
+              width: DJ_TANK_DISPLAY_WIDTH,
+              height: DJ_TANK_DISPLAY_HEIGHT,
+              zIndex: 3,
+              userSelect: 'none',
+              pointerEvents: 'none',
+            }}
+          />
       ))}
       
 
@@ -649,8 +624,8 @@ const CR_LANE_HEIGHT = 48;
 const CR_LANE_COUNT = 7;
 const CR_OBSTACLE_WIDTH = 60;
 const CR_OBSTACLE_HEIGHT = 36;
-// Константы теперь в единицах "на секунду" (оптимизированы для мобильных)
-const CR_OBSTACLE_SPEED_PER_SECOND = isMobileDevice ? 150 : 150; // возвращаем нормальную скорость препятствий
+// Константы теперь в единицах "на секунду"
+const CR_OBSTACLE_SPEED_PER_SECOND = 150;
 
 // --- Crossy Road Road Tiles System ---
 const CR_ROAD_TILES = {
@@ -769,6 +744,17 @@ function getRandomCarSprite() {
 
 // Функция для создания препятствия с спрайтом машины
 function createCarObstacle(x, y, dir) {
+  // Проверяем корректность параметров
+  if (isNaN(x) || isNaN(y) || !isFinite(x) || !isFinite(y)) {
+    console.warn('Некорректные координаты для машины:', x, y);
+    return null;
+  }
+  
+  if (dir !== 1 && dir !== -1) {
+    console.warn('Некорректное направление для машины:', dir);
+    return null;
+  }
+  
   const carSprite = getRandomCarSprite();
   return {
     x,
@@ -779,23 +765,23 @@ function createCarObstacle(x, y, dir) {
 }
 
 // Функция для генерации позиций машин без наложений
-function generateCarPositions(laneY, carCount, carWidth = 60) {
+function generateCarPositions(laneY, carCount, carWidth = 60, direction = 1) {
   const positions = [];
   const minSpacing = carWidth + 20; // Минимальное расстояние между машинами
   const laneWidth = CR_WIDTH;
   
-  // Разделяем дорогу на секции для равномерного распределения
-  const sectionWidth = laneWidth / carCount;
-  
   for (let i = 0; i < carCount; i++) {
-    // Генерируем позицию в пределах секции с небольшим случайным смещением
-    const sectionStart = i * sectionWidth;
-    const sectionEnd = (i + 1) * sectionWidth;
-    const randomOffset = (Math.random() - 0.5) * (sectionWidth * 0.3); // ±15% от ширины секции
-    let x = sectionStart + (sectionWidth / 2) + randomOffset;
+    let x;
     
-    // Убеждаемся, что машина не выходит за границы дороги
-    x = Math.max(0, Math.min(x, laneWidth - carWidth));
+    // Для машин, движущихся справа налево (direction < 0)
+    if (direction < 0) {
+      // Начинаем за правой границей экрана
+      x = CR_WIDTH + 100 + (i * minSpacing * 2);
+    } else {
+      // Для машин, движущихся слева направо (direction > 0)
+      // Начинаем за левой границей экрана
+      x = -100 - (i * minSpacing * 2);
+    }
     
     positions.push(x);
   }
@@ -831,6 +817,10 @@ const CrossyRoadGame = ({ petSprite, onClose, petId }) => {
   
   // refs для прямого управления DOM элементами машин
   const carRefs = useRef({});
+  
+  // Простая система респауна
+  const spawnTimer = useRef(0);
+  const spawnInterval = useRef(1500); // 1.5 секунды между появлением новых машин
 
   // useEffect для отзеркаливания машин
   useEffect(() => {
@@ -860,50 +850,45 @@ const CrossyRoadGame = ({ petSprite, onClose, petId }) => {
     };
   }, []);
 
-  // ОПТИМИЗИРОВАННЫЙ игровой цикл для мобильных
+  // Простой игровой цикл
   useEffect(() => {
-    if (gameOver || win) return;
     let frame;
     let frameCount = 0;
     let lastTime = performance.now();
-    let animationFrameCount = 0; // счетчик для пропуска кадров анимации
-    // Скорость зависит от уровня
-    const baseObstacleSpeed = CR_OBSTACLE_SPEED_PER_SECOND + (level - 1) * 30; // Увеличиваем скорость с уровнем
-    
-    // Мобильная оптимизация
-    if (isMobileDevice) {
-      const gameCanvas = document.querySelector('.crossyroad-game');
-      if (gameCanvas) {
-        gameCanvas.style.willChange = 'transform';
-        gameCanvas.style.transform = 'translateZ(0)';
-        gameCanvas.style.backfaceVisibility = 'hidden';
-      }
-    }
     
     const loop = (currentTime) => {
-      if (!started) {
+      // Игровой цикл работает всегда, но игровая логика только когда started = true
+      if (gameOver || win) {
         frame = requestAnimationFrame(loop);
         return;
       }
       
+      if (!started) {
+        // Если игра не началась, просто продолжаем цикл
+        frame = requestAnimationFrame(loop);
+        return;
+      }
+      
+      // Отладочная информация
+      if (frameCount % 60 === 0) { // каждую секунду при 60 FPS
+        console.log('Игровой цикл работает, started:', started, 'машин:', obstacles.current.length);
+      }
+      
       const deltaTime = currentTime - lastTime;
       lastTime = currentTime;
-      // Мобильная оптимизация: ограничиваем deltaTime
-      const clampedDeltaTime = Math.min(deltaTime, MOBILE_SETTINGS.maxDeltaTime);
-      const deltaTimeSeconds = clampedDeltaTime / 1000;
+      const deltaTimeSeconds = deltaTime / 1000; // без ограничений для лучшего игрового процесса
       
-      // Движение питомца по горизонтали с deltaTime
+      // Движение питомца
       const currentMoveDir = window.crossyMoveDir || moveDir.current;
-      petX.current += currentMoveDir * 300 * deltaTimeSeconds; // 300 пикселей в секунду
+      petX.current += currentMoveDir * 300 * deltaTimeSeconds;
       if (petX.current < 0) petX.current = 0;
       if (petX.current > CR_WIDTH - CR_PET_SIZE) petX.current = CR_WIDTH - CR_PET_SIZE;
       
-      // Движение питомца вперёд (дискретное движение, не зависит от FPS)
+      // Движение питомца вперёд
       if (window.crossyMoveForward) {
         petY.current -= CR_LANE_HEIGHT;
         if (petY.current < 0) petY.current = 0;
         window.crossyMoveForward = false;
-        window.crossyMoveForwardTime = null;
       }
       if (moveForward.current) {
         petY.current -= CR_LANE_HEIGHT;
@@ -911,54 +896,96 @@ const CrossyRoadGame = ({ petSprite, onClose, petId }) => {
         moveForward.current = false;
       }
       
-      // ОПТИМИЗИРОВАННОЕ движение препятствий - только каждый N-й кадр на мобильных
-      animationFrameCount++;
-      if (animationFrameCount % MOBILE_SETTINGS.animationThrottle === 0) {
-        for (let i = 0; i < obstacles.current.length; i++) {
-          const obs = obstacles.current[i];
-          obs.x += obs.dir * baseObstacleSpeed * deltaTimeSeconds;
-          if (obs.x < -obs.sprite.displayWidth) obs.x = CR_WIDTH;
-          if (obs.x > CR_WIDTH) obs.x = -obs.sprite.displayWidth;
+      // Движение машин
+      const speed = (CR_OBSTACLE_SPEED_PER_SECOND + (level - 1) * 30) * deltaTimeSeconds;
+      
+      for (let i = obstacles.current.length - 1; i >= 0; i--) {
+        const obs = obstacles.current[i];
+        obs.x += obs.dir * speed;
+        
+        // Удаляем машины, которые вышли за пределы экрана
+        if (obs.dir > 0 && obs.x > CR_WIDTH + 60) {
+          obstacles.current.splice(i, 1);
+          if (carRefs.current[i]) {
+            delete carRefs.current[i];
+          }
+        } else if (obs.dir < 0 && obs.x < -60) {
+          obstacles.current.splice(i, 1);
+          if (carRefs.current[i]) {
+            delete carRefs.current[i];
+          }
         }
       }
       
-      // ОПТИМИЗИРОВАННАЯ проверка столкновений - только для близких препятствий
+      // Создание новых машин - частота и количество зависят от уровня
+      spawnTimer.current += deltaTime;
+      const spawnTime = Math.max(800, 2500 - (level - 1) * 150); // от 2.5 до 0.8 секунды
+      const maxCars = Math.min(6 + Math.floor(level / 2), 12); // Увеличиваем максимальное количество машин с уровнем
+      
+      if (spawnTimer.current >= spawnTime && obstacles.current.length < maxCars) {
+        spawnTimer.current = 0;
+        
+        // Выбираем случайную дорожную полосу
+        const lanes = Math.min(CR_LANE_COUNT, 3 + Math.floor(level / 2));
+        const roadLanes = [];
+        for (let i = 0; i < lanes; i++) {
+          if (i % 2 === 1) roadLanes.push(i);
+        }
+        
+        if (roadLanes.length > 0) {
+          const laneIndex = roadLanes[Math.floor(Math.random() * roadLanes.length)];
+          const laneY = CR_HEIGHT - (laneIndex + 1) * CR_LANE_HEIGHT;
+          const direction = laneIndex % 4 === 1 ? 1 : -1;
+          const spawnX = direction > 0 ? -100 : CR_WIDTH + 100;
+          
+          // Проверяем, нет ли уже машины на этой полосе
+          const hasCarOnLane = obstacles.current.some(obs => 
+            Math.abs(obs.y - laneY) < CR_LANE_HEIGHT / 2
+          );
+          
+          if (!hasCarOnLane) {
+            const newCar = createCarObstacle(spawnX, laneY, direction);
+            if (newCar) {
+              obstacles.current.push(newCar);
+            }
+          }
+        }
+      }
+      
+      // Проверка столкновений
       const petLeft = petX.current;
       const petRight = petX.current + CR_PET_SIZE;
       const petTop = petY.current;
       const petBottom = petY.current + CR_PET_SIZE;
       
-      for (let i = 0; i < obstacles.current.length; i++) {
-        const obs = obstacles.current[i];
-        // Быстрая проверка - только если препятствие на той же высоте (±1 полоса)
-        if (Math.abs(obs.y - petY.current) > CR_LANE_HEIGHT) continue;
-        
-        // Точная проверка столкновения с размерами спрайта машины
-        if (
-          petTop < obs.y + obs.sprite.displayHeight &&
-          petBottom > obs.y &&
-          petLeft < obs.x + obs.sprite.displayWidth &&
-          petRight > obs.x
-        ) {
-          setGameOver(true);
-          return;
+      for (let obs of obstacles.current) {
+        if (Math.abs(obs.y - petY.current) <= CR_LANE_HEIGHT) {
+          if (
+            petTop < obs.y + obs.sprite.displayHeight &&
+            petBottom > obs.y &&
+            petLeft < obs.x + obs.sprite.displayWidth &&
+            petRight > obs.x
+          ) {
+            setGameOver(true);
+            return;
+          }
         }
       }
       
-      // Победа — дошёл до верхней границы
+      // Победа
       if (petY.current <= 0) {
         setWin(true);
         setScore(s => s + 1);
         return;
       }
       
-      // МОБИЛЬНАЯ ОПТИМИЗАЦИЯ: уменьшенная частота re-render
+      // Обновление рендера
+      setRenderTick(t => t + 1);
       frameCount++;
-      if (frameCount % MOBILE_SETTINGS.renderInterval === 0) {
-        setRenderTick(t => t + 1);
-      }
+      
       frame = requestAnimationFrame(loop);
     };
+    
     frame = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(frame);
   }, [started, gameOver, win, level]);
@@ -1015,16 +1042,20 @@ const CrossyRoadGame = ({ petSprite, onClose, petId }) => {
       
       // Размещаем машины только на дорожных полосах
       if (isRoadLane) {
-        // На более высоких уровнях — больше препятствий на полосу
-        const obsPerLane = Math.min(1 + Math.floor(level / 3), 4); // Максимум 4 машины на полосу
-        const carPositions = generateCarPositions(laneY, obsPerLane, 60);
+        // Простое размещение машин
+        const obsPerLane = Math.min(2 + Math.floor(level / 3), 4); // Максимум 4 машины на полосу
+        const direction = i % 4 === 1 ? 1 : -1; // Чередуем направление движения
+        const carPositions = generateCarPositions(laneY, obsPerLane, 60, direction);
         
         for (let j = 0; j < obsPerLane; j++) {
-          obsArr.push(createCarObstacle(
+          const newCar = createCarObstacle(
             carPositions[j],
             laneY,
-            i % 4 === 1 ? 1 : -1 // Чередуем направление движения
-          ));
+            direction
+          );
+          if (newCar) {
+            obsArr.push(newCar);
+          }
         }
       }
     }
@@ -1037,16 +1068,28 @@ const CrossyRoadGame = ({ petSprite, onClose, petId }) => {
     setStarted(false);
     setWin(false);
     setRewarded(false); // Сбрасываем флаг награды для нового уровня
+    // Сбрасываем таймер респауна
+    spawnTimer.current = 0;
     setRenderTick(t => t + 1);
   };
 
-  // Инициализация препятствий
+  // Инициализация игры
   useEffect(() => {
-    if (!started || obstacles.current.length > 0) return;
+    if (obstacles.current.length > 0) return;
+    console.log('Инициализация игры...');
     nextLevel();
     setLevel(1);
     setScore(0);
-  }, [started]);
+    // Игра запускается автоматически
+    console.log('Игра запущена автоматически');
+  }, []);
+
+  // Игра запускается автоматически
+  useEffect(() => {
+    if (obstacles.current.length > 0) {
+      // Игра уже запущена
+    }
+  }, [obstacles.current.length]);
 
   // Сброс игры
   const restart = () => {
@@ -1055,6 +1098,8 @@ const CrossyRoadGame = ({ petSprite, onClose, petId }) => {
     setRewarded(false); // Сбрасываем флаг награды
     // Очищаем refs для машин
     carRefs.current = {};
+    // Сбрасываем таймер респауна
+    spawnTimer.current = 0;
     nextLevel();
   };
 
@@ -1082,7 +1127,12 @@ const CrossyRoadGame = ({ petSprite, onClose, petId }) => {
         justifyContent: 'center'
       }}
       tabIndex={0}
-      onClick={() => setStarted(true)}
+      onClick={() => {
+        // Клик только для управления
+        if (!started && !gameOver && !win) {
+          setStarted(true);
+        }
+      }}
     >
       <div
         style={{
@@ -1101,7 +1151,7 @@ const CrossyRoadGame = ({ petSprite, onClose, petId }) => {
         style={{
           position: 'absolute',
           left: 0,
-          top: 0,
+          top: '18px', // Сдвигаем на 18px для мобильного представления
           width: CR_WIDTH,
           height: CR_HEIGHT,
           zIndex: 0,
@@ -1163,7 +1213,6 @@ const CrossyRoadGame = ({ petSprite, onClose, petId }) => {
             zIndex: 2,
             userSelect: 'none',
             pointerEvents: 'none',
-            willChange: 'transform', // мобильная оптимизация
           }}
         />
       ))}
@@ -1180,7 +1229,6 @@ const CrossyRoadGame = ({ petSprite, onClose, petId }) => {
           zIndex: 3,
           userSelect: 'none',
           pointerEvents: 'none',
-          willChange: 'transform', // мобильная оптимизация
         }}
       />
       {/* Победа */}
@@ -1227,7 +1275,7 @@ const CrossyRoadGame = ({ petSprite, onClose, petId }) => {
       {/* Инструкция */}
       {!started && !gameOver && !win && (
         <div style={{ position: 'absolute', top: '45%', left: 0, width: '100%', textAlign: 'center', color: '#334155', fontSize: 18, zIndex: 15 }}>
-          Кликните или используйте стрелки/A/D для управления, стрелка вверх/пробел — вперёд
+          Используйте стрелки/A/D для управления, стрелка вверх/пробел — вперёд
         </div>
       )}
       {/* Уровень и скорость */}
@@ -1254,8 +1302,8 @@ function getRandomBallColor() {
   return ZUMA_BALL_COLORS[Math.floor(Math.random() * ZUMA_BALL_COLORS.length)];
 }
 const ZUMA_CHAIN_LENGTH = 16;
-// Константы теперь в единицах "на секунду" (оптимизированы для мобильных)
-const ZUMA_CHAIN_SPEED_PER_SECOND = isMobileDevice ? 24 : 24; // возвращаем нормальную скорость цепочки
+// Константы теперь в единицах "на секунду"
+const ZUMA_CHAIN_SPEED_PER_SECOND = 24;
 const ZUMA_BALL_SPACING = ZUMA_BALL_RADIUS * 2 - 2; // уменьшенное расстояние между центрами шаров
 // Адаптивный зигзагообразный путь внутри контейнера
 const PADDING_X = 30;
@@ -1691,47 +1739,26 @@ const ZumaGame = React.forwardRef(({ petSprite, onClose, petId, onLevelChange, o
     setNextBall(newBall);
   };
 
-  // ОПТИМИЗИРОВАННЫЙ игровой цикл для мобильных
+  // Игровой цикл без мобильных оптимизаций
   useEffect(() => {
     if (gameOver || win) return;
     let frame;
     let frameCount = 0;
     let lastTime = performance.now();
-    let animationFrameCount = 0; // счетчик для пропуска кадров анимации
-    
-    // Мобильная оптимизация
-    if (isMobileDevice) {
-      const gameCanvas = document.querySelector('.zuma-game');
-      if (gameCanvas) {
-        gameCanvas.style.willChange = 'transform';
-        gameCanvas.style.transform = 'translateZ(0)';
-        gameCanvas.style.backfaceVisibility = 'hidden';
-      }
-    }
-    
-
     
     const loop = (currentTime) => {
-      if (!started) {
-        frame = requestAnimationFrame(loop);
-        return;
-      }
       
       const deltaTime = currentTime - lastTime;
       lastTime = currentTime;
-      // Мобильная оптимизация: ограничиваем deltaTime
-      const clampedDeltaTime = Math.min(deltaTime, MOBILE_SETTINGS.maxDeltaTime);
-      const deltaTimeSeconds = clampedDeltaTime / 1000;
+      // Убираем ограничение deltaTime для лучшего игрового процесса
+      const deltaTimeSeconds = deltaTime / 1000;
       
-      // ОПТИМИЗИРОВАННОЕ движение цепочки - только каждый N-й кадр на мобильных
-      animationFrameCount++;
-      if (animationFrameCount % MOBILE_SETTINGS.animationThrottle === 0) {
-        const { total: totalLength } = getPathSegments(ZUMA_PATH);
-        headDistRef.current += ZUMA_CHAIN_SPEED * deltaTimeSeconds;
-        for (let i = 0; i < chain.current.length; i++) {
-          const t = (headDistRef.current - i * ZUMA_BALL_SPACING) / totalLength;
-          chain.current[i].t = Math.max(0, t);
-        }
+      // Движение цепочки - без пропуска кадров
+      const { total: totalLength } = getPathSegments(ZUMA_PATH);
+      headDistRef.current += ZUMA_CHAIN_SPEED * deltaTimeSeconds;
+      for (let i = 0; i < chain.current.length; i++) {
+        const t = (headDistRef.current - i * ZUMA_BALL_SPACING) / totalLength;
+        chain.current[i].t = Math.max(0, t);
       }
       // Проверка проигрыша: если головной шар дошёл до конца пути
       if (chain.current.length > 0 && chain.current[0].t >= 1) {
@@ -1777,10 +1804,10 @@ const ZumaGame = React.forwardRef(({ petSprite, onClose, petId, onLevelChange, o
           }
           return false;
         }));
-        // УПРОЩЕНИЕ: Убираем дополнительные ререндеры для анимаций
-        // if (changed) setRenderTick(t => t + 1);
+              // Убираем дополнительные ререндеры для анимаций
+      if (changed) setRenderTick(t => t + 1);
       }
-      // Движение выстрела
+      // Движение выстрела - всегда активно
       if (shot.current) {
         shot.current.x += shot.current.dx;
         shot.current.y += shot.current.dy;
@@ -1816,7 +1843,6 @@ const ZumaGame = React.forwardRef(({ petSprite, onClose, petId, onLevelChange, o
             }]);
             // Пересчитать t для всей цепочки, чтобы не было наложения
             let headDist2 = headDistRef.current;
-            const { total: totalLength } = getPathSegments(ZUMA_PATH);
             for (let j = 0; j < chain.current.length; j++) {
               chain.current[j].t = Math.max(0, (headDist2 - j * ZUMA_BALL_SPACING) / totalLength);
             }
@@ -1887,24 +1913,18 @@ const ZumaGame = React.forwardRef(({ petSprite, onClose, petId, onLevelChange, o
         }
       }
       
-      // Получаем общую длину пути для расчетов
-      const { total: totalLength } = getPathSegments(ZUMA_PATH);
-      
       // Победа
       if (chain.current.length === 0) {
         setWin(true);
         return;
       }
-      // МОБИЛЬНАЯ ОПТИМИЗАЦИЯ: уменьшенная частота re-render
-      frameCount++;
-      if (frameCount % MOBILE_SETTINGS.renderInterval === 0) {
-        setRenderTick(t => t + 1);
-      }
+      // Обновление рендера без ограничений
+      setRenderTick(t => t + 1);
       
-      // Анимация спрайтов
+      // Анимация спрайтов - всегда активна
       setSpriteAnimationTime(prev => {
         const newTime = prev + deltaTimeSeconds;
-        if (newTime >= 0.2) { // Смена кадра каждые 0.2 секунды (замедлили)
+        if (newTime >= 0.2) { // Смена кадра каждые 0.2 секунды
           setSpriteFrame(prevFrame => (prevFrame + 1) % 8); // 8 кадров для большинства спрайтов
           return 0;
         }
@@ -1915,7 +1935,7 @@ const ZumaGame = React.forwardRef(({ petSprite, onClose, petId, onLevelChange, o
     };
     frame = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(frame);
-  }, [started, gameOver, win, animations]);
+  }, [gameOver, win, animations]);
 
   // Начисление счастья за победу
   useEffect(() => {
@@ -1961,7 +1981,7 @@ const ZumaGame = React.forwardRef(({ petSprite, onClose, petId, onLevelChange, o
 
   // Инициализация цепочки
   useEffect(() => {
-    if (!started || chain.current.length > 0) return;
+    if (chain.current.length > 0) return;
     const { total: totalLength } = getPathSegments(ZUMA_PATH);
     let arr = [];
     for (let i = 0; i < ZUMA_CHAIN_LENGTH; i++) {
@@ -1978,7 +1998,7 @@ const ZumaGame = React.forwardRef(({ petSprite, onClose, petId, onLevelChange, o
     chainHeadT.current = 0;
     headDistRef.current = 0; // Инициализация headDistRef
     setScore(0);
-  }, [started]);
+  }, []);
 
   // Сброс игры
   const restart = () => {
@@ -2105,7 +2125,6 @@ const ZumaGame = React.forwardRef(({ petSprite, onClose, petId, onLevelChange, o
         backgroundSize: `${ZUMA_WIDTH}px ${ZUMA_HEIGHT}px`,
         backgroundPosition: 'center',
         zIndex: 0,
-        willChange: 'transform',
       }} />
       
       {/* Слой 2 - анимированный слой */}
@@ -2119,15 +2138,9 @@ const ZumaGame = React.forwardRef(({ petSprite, onClose, petId, onLevelChange, o
         backgroundSize: `${ZUMA_WIDTH}px ${ZUMA_HEIGHT}px`,
         backgroundPosition: 'center',
         zIndex: 1,
-        willChange: 'transform',
         // Отзеркаливание управляется через DOM
         transform: 'scaleX(1)', // Начальное состояние
         filter: 'none',
-        // Принудительное обновление стилей
-        willChange: 'transform, filter',
-        backfaceVisibility: 'hidden',
-        perspective: '1000px',
-        transformStyle: 'preserve-3d',
         transformOrigin: 'center center',
         transition: 'transform 0.3s ease-in-out', // Плавный переход для отзеркаливания
       }} 
@@ -2148,11 +2161,10 @@ const ZumaGame = React.forwardRef(({ petSprite, onClose, petId, onLevelChange, o
         backgroundSize: `${ZUMA_WIDTH}px ${ZUMA_HEIGHT}px`,
         backgroundPosition: 'center',
         zIndex: 2,
-        willChange: 'transform',
       }} />
       
-      {/* Слой 4 - статичный слой */}
-      <div style={{
+      {/* Слой 4 - статичный слой - УБРАН для мобильного представления */}
+      {/* <div style={{
         position: 'absolute',
         top: 0,
         left: 0,
@@ -2162,8 +2174,7 @@ const ZumaGame = React.forwardRef(({ petSprite, onClose, petId, onLevelChange, o
         backgroundSize: `${ZUMA_WIDTH}px ${ZUMA_HEIGHT}px`,
         backgroundPosition: 'center',
         zIndex: 3,
-        willChange: 'transform',
-      }} />
+      }} /> */}
 
       {/* Цепочка */}
       {chain.current.map((ball, idx) => {
@@ -2196,7 +2207,7 @@ const ZumaGame = React.forwardRef(({ petSprite, onClose, petId, onLevelChange, o
               transform: `scale(${scale})`,
               opacity,
               transition: disappearAnim ? 'none' : 'transform 0.1s',
-              willChange: 'transform', // мобильная оптимизация
+  
               ...spriteStyle
             }} 
           />
@@ -2211,7 +2222,6 @@ const ZumaGame = React.forwardRef(({ petSprite, onClose, petId, onLevelChange, o
           width: ZUMA_BALL_RADIUS * 2,
           height: ZUMA_BALL_RADIUS * 2,
           zIndex: 10,
-          willChange: 'transform', // мобильная оптимизация
           ...getSpriteStyle(shot.current.sprite, spriteFrame, shot.current.sprite.currentRow || 0)
         }} />
       )}
@@ -2242,7 +2252,6 @@ const ZumaGame = React.forwardRef(({ petSprite, onClose, petId, onLevelChange, o
           userSelect: 'none',
           pointerEvents: 'none',
           transform: `rotate(${aimAngle.current * 180 / Math.PI}deg)`,
-          willChange: 'transform', // мобильная оптимизация
         }}
       />
       {/* Победа и кнопка Заново не отображаются для Zuma, переход к следующему уровню автоматический */}
@@ -2300,7 +2309,7 @@ const ZumaGame = React.forwardRef(({ petSprite, onClose, petId, onLevelChange, o
   );
 });
 
-export const FlyingOverCityGame = React.forwardRef(({ petSprite, onClose, petId }, ref) => {
+const FlyingOverCityGame = React.forwardRef(({ petSprite, onClose, petId }, ref) => {
   const { updatePetStats, getPetState } = usePets();
   const [renderTick, setRenderTick] = useState(0);
   const [score, setScore] = useState(0);
@@ -2358,21 +2367,7 @@ export const FlyingOverCityGame = React.forwardRef(({ petSprite, onClose, petId 
     let frame;
     let lastTime = performance.now();
     
-    // Мобильная оптимизация
-    if (isMobileDevice) {
-      const gameCanvas = document.querySelector('.flappybird-game');
-      if (gameCanvas) {
-        gameCanvas.style.willChange = 'transform';
-        gameCanvas.style.transform = 'translateZ(0)';
-        gameCanvas.style.backfaceVisibility = 'hidden';
-      }
-    }
-    
     const loop = (currentTime) => {
-      if (!started) {
-        frame = requestAnimationFrame(loop);
-        return;
-      }
       
       const deltaTime = currentTime - lastTime;
       lastTime = currentTime;
@@ -2450,20 +2445,18 @@ export const FlyingOverCityGame = React.forwardRef(({ petSprite, onClose, petId 
     
     frame = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(frame);
-  }, [started, gameOver]);
+  }, [gameOver]);
 
   // Управление
   useEffect(() => {
     const handleKey = (e) => {
-      if (e.code === 'Space' && !gameOver && started) {
+      if (e.code === 'Space' && !gameOver) {
         velocityY.current = JUMP_VELOCITY;
       }
     };
     
     const handleClick = () => {
-      if (!started) {
-        setStarted(true);
-      } else if (!gameOver) {
+      if (!gameOver) {
         velocityY.current = JUMP_VELOCITY;
       }
     };
@@ -2475,7 +2468,7 @@ export const FlyingOverCityGame = React.forwardRef(({ petSprite, onClose, petId 
       window.removeEventListener('keydown', handleKey);
       window.removeEventListener('click', handleClick);
     };
-  }, [started, gameOver]);
+  }, [gameOver]);
 
   const restart = () => {
     setScore(0);
@@ -2511,7 +2504,7 @@ export const FlyingOverCityGame = React.forwardRef(({ petSprite, onClose, petId 
         alignItems: 'center',
         justifyContent: 'center'
       }}
-      onClick={() => !started ? setStarted(true) : null}
+      onClick={() => null}
     >
       <div
         style={{
@@ -2532,14 +2525,13 @@ export const FlyingOverCityGame = React.forwardRef(({ petSprite, onClose, petId 
           style={{
             position: 'absolute',
             left: -(backgroundY.current * PARALLAX_SPEEDS[index]) % (GAME_WIDTH * 2),
-            top: 0,
+            top: index === 4 ? '35px' : 0, // Самый ближний слой (индекс 4) сдвигаем на 35px для мобильного
             width: GAME_WIDTH * 2,
             height: GAME_HEIGHT,
             backgroundImage: `url(${layer})`,
             backgroundSize: `${GAME_WIDTH}px ${GAME_HEIGHT}px`,
             backgroundRepeat: 'repeat-x',
             zIndex: 0,
-            willChange: 'transform',
           }}
         />
       ))}
@@ -2557,7 +2549,6 @@ export const FlyingOverCityGame = React.forwardRef(({ petSprite, onClose, petId 
           zIndex: 2,
           userSelect: 'none',
           pointerEvents: 'none',
-          willChange: 'transform',
           transform: 'scaleX(-1)', // Отзеркаливаем питомца
         }}
       />
@@ -2575,7 +2566,6 @@ export const FlyingOverCityGame = React.forwardRef(({ petSprite, onClose, petId 
             width: obstacle.width,
             height: obstacle.height,
             zIndex: 1,
-            willChange: 'transform',
             userSelect: 'none',
             pointerEvents: 'none',
           }}
@@ -2667,12 +2657,7 @@ export const FlyingOverCityGame = React.forwardRef(({ petSprite, onClose, petId 
 const PetMiniGameModal = ({ isOpen, pet, onClose }) => {
   if (!isOpen || !pet) return null;
   
-  // Применяем мобильные оптимизации при загрузке
-  useEffect(() => {
-    if (isOpen) {
-      autoApplyOptimizations();
-    }
-  }, [isOpen]);
+  // Убираем все мобильные оптимизации для лучшего игрового процесса
   
   const petSprite = getStaticPath(pet.sprite);
   // Определяем мобильное устройство по ширине экрана
@@ -2906,6 +2891,6 @@ const FlyingOverCityMobileControls = ({ onJump }) => (
 );
 
 // Экспортируем отдельные компоненты игр для использования в других файлах
-export { DoodleJumpGame, CrossyRoadGame, ZumaGame };
+export { DoodleJumpGame, CrossyRoadGame, ZumaGame, FlyingOverCityGame };
 
 export default PetMiniGameModal; 
