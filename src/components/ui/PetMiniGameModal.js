@@ -1537,20 +1537,36 @@ const ZumaGame = React.forwardRef(({ petSprite, onClose, petId, onLevelChange, o
   
   // Используем масштабирование
   const { scale, containerSize, containerRef } = useGameScale(ZUMA_WIDTH, ZUMA_HEIGHT);
-  // параметры, зависящие от уровня
-  const BASE_CHAIN_LENGTH = 12;
-  const BASE_ROWS = 4;
-  const BASE_SPEED = 0.4;
-  const MAX_CHAIN_LENGTH = 24;
-  const MAX_ROWS = 7;
-  const MAX_SPEED = BASE_SPEED * 1.5;
-  const chainLength = Math.min(BASE_CHAIN_LENGTH + (level - 1) * 2, MAX_CHAIN_LENGTH);
-  const rows = Math.min(BASE_ROWS + Math.floor((level - 1) / 2), MAX_ROWS);
-  const speed = Math.min(BASE_SPEED * (1 + 0.05 * (level - 1)), MAX_SPEED);
+  // Функция для вычисления параметров уровня
+  const getLevelParams = (currentLevel) => {
+    const BASE_CHAIN_LENGTH = 12;
+    const BASE_ROWS = 4;
+    const BASE_SPEED = 0.4;
+    const MAX_CHAIN_LENGTH = 24;
+    const MAX_ROWS = 7;
+    const MAX_SPEED = BASE_SPEED * 1.5;
+    
+    const chainLength = Math.min(BASE_CHAIN_LENGTH + (currentLevel - 1) * 2, MAX_CHAIN_LENGTH);
+    const rows = Math.min(BASE_ROWS + Math.floor((currentLevel - 1) / 2), MAX_ROWS);
+    const speed = Math.min(BASE_SPEED * (1 + 0.05 * (currentLevel - 1)), MAX_SPEED);
+    
+    return {
+      chainLength,
+      rows,
+      speed: speed * 60 // конвертируем скорость "на кадр" в "на секунду"
+    };
+  };
 
-  const ZUMA_CHAIN_LENGTH = chainLength;
-  const ZUMA_CHAIN_SPEED = speed * 60; // конвертируем скорость "на кадр" в "на секунду"
-  const ROWS = rows;
+  // Состояние для параметров уровня
+  const [levelParams, setLevelParams] = useState(getLevelParams(level));
+  const ZUMA_CHAIN_LENGTH = levelParams.chainLength;
+  const ZUMA_CHAIN_SPEED = levelParams.speed;
+  const ROWS = levelParams.rows;
+
+  // Обновляем параметры уровня при изменении уровня
+  useEffect(() => {
+    setLevelParams(getLevelParams(level));
+  }, [level]);
 
   // refs для физики
   const petX = useRef(ZUMA_WIDTH / 2);
@@ -1929,14 +1945,7 @@ const ZumaGame = React.forwardRef(({ petSprite, onClose, petId, onLevelChange, o
         setRenderTick(t => t + 1);
       }
       
-      // Отладка обновления рендера - только раз в секунду
-      if (frameCountRef.current % 120 === 0) { // Логируем каждые 120 кадров (~2 секунды)
-        console.log('🔄 ZUMA RENDER UPDATE DEBUG:');
-        console.log('  - frameCount:', frameCountRef.current);
-        console.log('  - renderTick:', renderTick);
-        console.log('  - isMobile:', isMobile);
-        console.log('  - spriteFrame:', spriteFrameRef.current);
-      }
+
       
       // Анимация спрайтов - всегда активна
       setSpriteAnimationTime(prev => {
@@ -1946,10 +1955,7 @@ const ZumaGame = React.forwardRef(({ petSprite, onClose, petId, onLevelChange, o
           spriteFrameRef.current = newFrame;
           setSpriteFrame(newFrame);
           
-          // Отладка анимации спрайтов - только при смене кадра
-          console.log('🎬 ZUMA SPRITE ANIMATION DEBUG:');
-          console.log('  - spriteFrame:', spriteFrameRef.current - 1, '->', newFrame);
-          console.log('  - isMobile:', isMobile);
+
           
           // Уведомляем родительский компонент о смене кадра
           if (onSpriteFrameChange) {
@@ -2034,9 +2040,10 @@ const ZumaGame = React.forwardRef(({ petSprite, onClose, petId, onLevelChange, o
   // Сброс игры
   const restart = () => {
     setLevel(1);
+    const currentLevelParams = getLevelParams(1);
     const { total: totalLength } = getPathSegments(ZUMA_PATH);
     let arr = [];
-    for (let i = 0; i < ZUMA_CHAIN_LENGTH; i++) {
+    for (let i = 0; i < currentLevelParams.chainLength; i++) {
       const color = getRandomBallColor();
       const ball = createBallWithSprite(color);
       arr.push({
@@ -2085,10 +2092,11 @@ const ZumaGame = React.forwardRef(({ petSprite, onClose, petId, onLevelChange, o
     setScore(0);
     setRewarded(false);
     setAnimations([]);
-    // Сбросить цепочку и выстрел
+    // Сбросить цепочку и выстрел с новыми параметрами уровня
+    const currentLevelParams = getLevelParams(newLevel);
     const { total: totalLength } = getPathSegments(ZUMA_PATH);
     let arr = [];
-    for (let i = 0; i < ZUMA_CHAIN_LENGTH; i++) {
+    for (let i = 0; i < currentLevelParams.chainLength; i++) {
       const color = getRandomBallColor();
       const ball = createBallWithSprite(color);
       arr.push({
@@ -2127,18 +2135,12 @@ const ZumaGame = React.forwardRef(({ petSprite, onClose, petId, onLevelChange, o
   
   useEffect(() => { 
     if (onNextBallChange && nextBall) {
-      console.log('🔄 ZUMA NEXTBALL USEFFECT DEBUG:');
-      console.log('  - nextBall changed to:', nextBall.color);
       onNextBallChange(nextBall);
     }
   }, [nextBall, onNextBallChange]);
   
   useEffect(() => { 
     if (onSpriteFrameChange) {
-      console.log('🔄 ZUMA SPRITE FRAME CHANGE DEBUG:');
-      console.log('  - spriteFrame:', spriteFrame);
-      console.log('  - spriteFrameRef.current:', spriteFrameRef.current);
-      console.log('  - calling onSpriteFrameChange with:', spriteFrame);
       onSpriteFrameChange(spriteFrame);
     }
   }, [spriteFrame, onSpriteFrameChange]);
@@ -2249,14 +2251,7 @@ const ZumaGame = React.forwardRef(({ petSprite, onClose, petId, onLevelChange, o
         const direction = getBallDirection(ball.t);
         const spriteStyle = getSpriteStyle(sprite, frameWithOffset, sprite.currentRow || 0);
         
-        // Отладка рендера шара - только для первого шара и редко
-        if (idx === 0 && frameCountRef.current % 300 === 0) { // Логируем первый шар каждые 300 кадров (~5 секунд)
-          console.log('🎨 ZUMA BALL RENDER DEBUG:');
-          console.log('  - Ball color:', ball.color);
-          console.log('  - spriteFrame:', spriteFrameRef.current);
-          console.log('  - frameWithOffset:', frameWithOffset);
-          console.log('  - ball.animationOffset:', ball.animationOffset);
-        }
+
         
         // Создаем ref для шара, если его еще нет
         if (!ballRefs[idx]) {
@@ -2345,7 +2340,6 @@ const ZumaGame = React.forwardRef(({ petSprite, onClose, petId, onLevelChange, o
         </div>
       )}
 
-      {/* Не показываем стандартный оверлей победы и кнопку "заново" для Zuma, переход к следующему уровню автоматический */}
 
 
       </div>

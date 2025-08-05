@@ -49,19 +49,7 @@ function getSpriteStyle(sprite, currentFrame = 0, row = 0) {
     backgroundRepeat: 'no-repeat'
   };
   
-  // Отладка для спрайтов Zuma
-  if (sprite.src && sprite.src.includes('zuma')) {
-    console.log('🎨 PHONE ZUMA SPRITE STYLE DEBUG:');
-    console.log('  - sprite:', sprite.src);
-    console.log('  - currentFrame:', currentFrame);
-    console.log('  - maxFrames:', maxFrames);
-    console.log('  - clampedFrame:', clampedFrame);
-    console.log('  - frameWidth:', sprite.frameWidth);
-    console.log('  - frameHeight:', sprite.frameHeight);
-    console.log('  - frameX:', frameX);
-    console.log('  - frameY:', frameY);
-    console.log('  - returned style:', style);
-  }
+
   
   return style;
 }
@@ -802,16 +790,7 @@ const PhoneModal = ({ isOpen, onClose }) => {
 const [zumaNextBall, setZumaNextBall] = useState(null);
 const [zumaSpriteFrame, setZumaSpriteFrame] = useState(0);
 
-// Отладка изменений zumaSpriteFrame
-useEffect(() => {
-  if (zumaNextBall) {
-    console.log('🔄 PHONE ZUMA SPRITE FRAME DEBUG:');
-    console.log('  - zumaSpriteFrame:', zumaSpriteFrame);
-    console.log('  - zumaNextBall color:', zumaNextBall.color);
-    console.log('  - zumaNextBall sprite frames:', zumaNextBall.sprite.frames);
-    console.log('  - zumaNextBall sprite:', zumaNextBall.sprite);
-  }
-}, [zumaSpriteFrame, zumaNextBall]);
+
 
 if (!isOpen) return null;
 
