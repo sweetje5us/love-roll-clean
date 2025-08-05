@@ -33,9 +33,14 @@ import { FlyingOverCityGame, DoodleJumpGame, CrossyRoadGame, ZumaGame } from './
 function getSpriteStyle(sprite, currentFrame = 0, row = 0) {
   if (!sprite) return {};
   
-  const frameX = currentFrame * sprite.frameWidth;
+  // Ограничиваем currentFrame количеством кадров в спрайте
+  const maxFrames = sprite.frames || 8;
+  const clampedFrame = currentFrame % maxFrames;
+  
+  const frameX = clampedFrame * sprite.frameWidth;
   const frameY = row * sprite.frameHeight;
-  return {
+  
+  const style = {
     backgroundImage: `url(${sprite.src})`,
     backgroundPosition: `-${frameX}px -${frameY}px`,
     backgroundSize: `${sprite.width}px ${sprite.height}px`,
@@ -43,6 +48,22 @@ function getSpriteStyle(sprite, currentFrame = 0, row = 0) {
     height: `${sprite.frameHeight}px`,
     backgroundRepeat: 'no-repeat'
   };
+  
+  // Отладка для спрайтов Zuma
+  if (sprite.src && sprite.src.includes('zuma')) {
+    console.log('🎨 PHONE ZUMA SPRITE STYLE DEBUG:');
+    console.log('  - sprite:', sprite.src);
+    console.log('  - currentFrame:', currentFrame);
+    console.log('  - maxFrames:', maxFrames);
+    console.log('  - clampedFrame:', clampedFrame);
+    console.log('  - frameWidth:', sprite.frameWidth);
+    console.log('  - frameHeight:', sprite.frameHeight);
+    console.log('  - frameX:', frameX);
+    console.log('  - frameY:', frameY);
+    console.log('  - returned style:', style);
+  }
+  
+  return style;
 }
 
 import './PhoneModal.css';
@@ -781,16 +802,16 @@ const PhoneModal = ({ isOpen, onClose }) => {
 const [zumaNextBall, setZumaNextBall] = useState(null);
 const [zumaSpriteFrame, setZumaSpriteFrame] = useState(0);
 
-// Анимация спрайта шара в заголовке
+// Отладка изменений zumaSpriteFrame
 useEffect(() => {
-  if (!zumaNextBall) return;
-  
-  const interval = setInterval(() => {
-    setZumaSpriteFrame(prev => (prev + 1) % 8);
-  }, 150); // 150ms на кадр = ~6.7 FPS
-  
-  return () => clearInterval(interval);
-}, [zumaNextBall]);
+  if (zumaNextBall) {
+    console.log('🔄 PHONE ZUMA SPRITE FRAME DEBUG:');
+    console.log('  - zumaSpriteFrame:', zumaSpriteFrame);
+    console.log('  - zumaNextBall color:', zumaNextBall.color);
+    console.log('  - zumaNextBall sprite frames:', zumaNextBall.sprite.frames);
+    console.log('  - zumaNextBall sprite:', zumaNextBall.sprite);
+  }
+}, [zumaSpriteFrame, zumaNextBall]);
 
 if (!isOpen) return null;
 
@@ -2201,12 +2222,14 @@ if (!isOpen) return null;
                                   {zumaNextBall && (
                                     <span style={{marginLeft: 12, fontSize: 14, verticalAlign: 'middle'}}>
                                       <div 
+                                        key={`zuma-ball-${zumaNextBall.color}-${zumaSpriteFrame}`}
                                         style={{
                                           display: 'inline-block',
                                           verticalAlign: 'middle',
                                           transform: 'scale(0.75)', // Уменьшаем размер для заголовка
-                                          ...getSpriteStyle(zumaNextBall.sprite, zumaSpriteFrame, zumaNextBall.sprite?.currentRow || 0)
+                                          ...getSpriteStyle(zumaNextBall.sprite, zumaSpriteFrame, 0)
                                         }}
+                                        title={`Frame: ${zumaSpriteFrame}, Color: ${zumaNextBall.color}, Frames: ${zumaNextBall.sprite.frames}`}
                                       />
                                     </span>
                                   )}

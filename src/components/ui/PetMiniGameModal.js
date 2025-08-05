@@ -241,7 +241,6 @@ const DoodleJumpGame = ({ petSprite, onClose, petId }) => {
   const [score, setScore] = useState(0);
   const [gameOver, setGameOver] = useState(false);
   const [rewarded, setRewarded] = useState(false);
-  const [started, setStarted] = useState(false);
   
   // Используем масштабирование
   const { scale, containerSize, containerRef } = useGameScale(DJ_WIDTH, DJ_HEIGHT);
@@ -290,7 +289,6 @@ const DoodleJumpGame = ({ petSprite, onClose, petId }) => {
   useEffect(() => {
     if (gameOver) return;
     let frame;
-    let frameCount = 0;
     let lastTime = performance.now();
     
     const loop = (currentTime) => {
@@ -392,7 +390,7 @@ const DoodleJumpGame = ({ petSprite, onClose, petId }) => {
         return;
       }
       
-      // Обновление рендера
+      // Обновление рендера - обновляем каждый кадр для плавной анимации
       setRenderTick(t => t + 1);
       frame = requestAnimationFrame(loop);
     };
@@ -473,7 +471,6 @@ const DoodleJumpGame = ({ petSprite, onClose, petId }) => {
     
     setScore(0);
     setGameOver(false);
-    setStarted(false);
     setRenderTick(t => t + 1);
     setRewarded(false);
   };
@@ -491,6 +488,7 @@ const DoodleJumpGame = ({ petSprite, onClose, petId }) => {
   return (
     <div 
       ref={containerRef}
+      key={renderTick}
       className="doodlejump-game" 
       style={{ 
         width: '100%', 
@@ -503,7 +501,7 @@ const DoodleJumpGame = ({ petSprite, onClose, petId }) => {
         justifyContent: 'center'
       }}
       tabIndex={0}
-      onClick={() => setStarted(true)}
+      onClick={() => null}
     >
       <div
         style={{
@@ -604,12 +602,7 @@ const DoodleJumpGame = ({ petSprite, onClose, petId }) => {
           <button onClick={restart} style={{ marginTop: 16, padding: '8px 20px', fontSize: 18, borderRadius: 8, border: 'none', background: '#fde047', color: '#fff', cursor: 'pointer' }}>Заново</button>
         </div>
       )}
-      {/* Инструкция */}
-      {!started && !gameOver && (
-        <div style={{ position: 'absolute', top: '45%', left: 0, width: '100%', textAlign: 'center', color: '#a16207', fontSize: 18, zIndex: 20 }}>
-          Кликните или нажмите стрелки/A/D для управления
-        </div>
-      )}
+
 
       </div>
     </div>
@@ -799,7 +792,6 @@ const CrossyRoadGame = ({ petSprite, onClose, petId }) => {
   const [score, setScore] = useState(0);
   const [gameOver, setGameOver] = useState(false);
   const [rewarded, setRewarded] = useState(false);
-  const [started, setStarted] = useState(false);
   const [win, setWin] = useState(false);
   const [level, setLevel] = useState(1);
   const [roadTiles] = useState(getRoadTiles()); // Тайлы дороги
@@ -853,26 +845,18 @@ const CrossyRoadGame = ({ petSprite, onClose, petId }) => {
   // Простой игровой цикл
   useEffect(() => {
     let frame;
-    let frameCount = 0;
     let lastTime = performance.now();
     
     const loop = (currentTime) => {
-      // Игровой цикл работает всегда, но игровая логика только когда started = true
+      // Игровой цикл работает всегда
       if (gameOver || win) {
         frame = requestAnimationFrame(loop);
         return;
       }
       
-      if (!started) {
-        // Если игра не началась, просто продолжаем цикл
-        frame = requestAnimationFrame(loop);
-        return;
-      }
+
       
-      // Отладочная информация
-      if (frameCount % 60 === 0) { // каждую секунду при 60 FPS
-        console.log('Игровой цикл работает, started:', started, 'машин:', obstacles.current.length);
-      }
+      // Отладочная информация - убрана для уменьшения логов
       
       const deltaTime = currentTime - lastTime;
       lastTime = currentTime;
@@ -979,16 +963,15 @@ const CrossyRoadGame = ({ petSprite, onClose, petId }) => {
         return;
       }
       
-      // Обновление рендера
+      // Обновление рендера - обновляем каждый кадр для плавной анимации
       setRenderTick(t => t + 1);
-      frameCount++;
       
       frame = requestAnimationFrame(loop);
     };
     
     frame = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(frame);
-  }, [started, gameOver, win, level]);
+  }, [gameOver, win, level]);
 
   // Начисление счастья за победу и переход на следующий уровень
   useEffect(() => {
@@ -1065,7 +1048,6 @@ const CrossyRoadGame = ({ petSprite, onClose, petId }) => {
     petX.current = CR_WIDTH / 2 - CR_PET_SIZE / 2;
     petY.current = CR_HEIGHT - CR_PET_SIZE - 8;
     setGameOver(false);
-    setStarted(false);
     setWin(false);
     setRewarded(false); // Сбрасываем флаг награды для нового уровня
     // Сбрасываем таймер респауна
@@ -1116,6 +1098,7 @@ const CrossyRoadGame = ({ petSprite, onClose, petId }) => {
   return (
     <div 
       ref={containerRef}
+      key={renderTick}
       className="crossyroad-game" 
       style={{ 
         width: '100%', 
@@ -1128,9 +1111,8 @@ const CrossyRoadGame = ({ petSprite, onClose, petId }) => {
       }}
       tabIndex={0}
       onClick={() => {
-        // Клик только для управления
-        if (!started && !gameOver && !win) {
-          setStarted(true);
+        if (!gameOver && !win) {
+          // Игра уже запущена
         }
       }}
     >
@@ -1272,12 +1254,7 @@ const CrossyRoadGame = ({ petSprite, onClose, petId }) => {
           <button onClick={restart} style={{ marginTop: 16, padding: '8px 20px', fontSize: 18, borderRadius: 8, border: 'none', background: '#64748b', color: '#fff', cursor: 'pointer' }}>Заново</button>
         </div>
       )}
-      {/* Инструкция */}
-      {!started && !gameOver && !win && (
-        <div style={{ position: 'absolute', top: '45%', left: 0, width: '100%', textAlign: 'center', color: '#334155', fontSize: 18, zIndex: 15 }}>
-          Используйте стрелки/A/D для управления, стрелка вверх/пробел — вперёд
-        </div>
-      )}
+
       {/* Уровень и скорость */}
       <div style={{ position: 'absolute', top: 10, left: 10, color: '#334155', fontWeight: 'bold', fontSize: 16, zIndex: 15 }}>
         Уровень: {level}
@@ -1531,7 +1508,11 @@ function getBallDirection(t) {
 function getSpriteStyle(sprite, currentFrame = 0, row = 0) {
   if (!sprite) return {};
   
-  const frameX = currentFrame * sprite.frameWidth;
+  // Ограничиваем currentFrame количеством кадров в спрайте
+  const maxFrames = sprite.frames || 8;
+  const clampedFrame = currentFrame % maxFrames;
+  
+  const frameX = clampedFrame * sprite.frameWidth;
   const frameY = row * sprite.frameHeight;
   return {
     backgroundImage: `url(${getStaticPath(sprite.src)})`,
@@ -1550,7 +1531,6 @@ const ZumaGame = React.forwardRef(({ petSprite, onClose, petId, onLevelChange, o
   const [gameOver, setGameOver] = useState(false);
   const [win, setWin] = useState(false);
   const [rewarded, setRewarded] = useState(false);
-  const [started, setStarted] = useState(false);
   const [score, setScore] = useState(0);
   const [animations, setAnimations] = useState([]);
   const [level, setLevel] = useState(1);
@@ -1579,10 +1559,13 @@ const ZumaGame = React.forwardRef(({ petSprite, onClose, petId, onLevelChange, o
   const chain = useRef([]); // [{t, color}]
   const shot = useRef(null); // {x, y, dx, dy, color}
   const chainHeadT = useRef(0); // прогресс головы цепочки (0..1)
-  const [nextBall, setNextBall] = useState(() => {
+  const nextBallRef = useRef((() => {
     const color = getRandomBallColor();
-    return createBallWithSprite(color);
-  });
+    const ball = createBallWithSprite(color);
+    return ball;
+  })());
+  
+  const [nextBall, setNextBall] = useState(nextBallRef.current);
   // ref для позиции головы цепочки (в пикселях по длине пути)
   const headDistRef = useRef(0);
   const [joystickActive, setJoystickActive] = useState(false);
@@ -1606,6 +1589,8 @@ const ZumaGame = React.forwardRef(({ petSprite, onClose, petId, onLevelChange, o
   const [spriteAnimationTime, setSpriteAnimationTime] = useState(0);
   const [ballAnimationOffsets, setBallAnimationOffsets] = useState({});
   const [ballRefs, setBallRefs] = useState({});
+  const frameCountRef = useRef(0);
+  const spriteFrameRef = useRef(0); // Добавляем ref для spriteFrame
 
   // Простая анимация для 2-го слоя фона
   useEffect(() => {
@@ -1638,10 +1623,8 @@ const ZumaGame = React.forwardRef(({ petSprite, onClose, petId, onLevelChange, o
       setLayer2Position(currentPosition);
       setLayer2DirectionState(currentDirection);
       
-      // Прямое управление transform через DOM
-      if (layer2Ref.current) {
-        layer2Ref.current.style.setProperty('transform', currentDirection === 1 ? 'scaleX(-1)' : 'scaleX(1)', 'important');
-      }
+      // Обновляем состояние React для отражения
+      setLayer2DirectionState(currentDirection);
       
       frame = requestAnimationFrame(animateLayer2);
     };
@@ -1724,6 +1707,9 @@ const ZumaGame = React.forwardRef(({ petSprite, onClose, petId, onLevelChange, o
   // Выстрел
   const shoot = () => {
     if (shot.current || gameOver || win) return;
+    
+
+    
     const angle = aimAngle.current;
     const speed = 7;
     shot.current = {
@@ -1731,22 +1717,33 @@ const ZumaGame = React.forwardRef(({ petSprite, onClose, petId, onLevelChange, o
       y: petY.current,
       dx: Math.sin(angle) * speed,
       dy: -Math.cos(angle) * speed,
-      color: nextBall.color,
-      sprite: nextBall.sprite
+      color: nextBallRef.current.color,
+      sprite: nextBallRef.current.sprite
     };
+    
+    // Создаем новый шар для следующего выстрела
     const newColor = getRandomBallColor();
     const newBall = createBallWithSprite(newColor);
+    
+    // Обновляем ref и состояние
+    nextBallRef.current = newBall;
     setNextBall(newBall);
+    
+    // Уведомляем родительский компонент о смене шара
+    if (onNextBallChange) {
+      onNextBallChange(newBall);
+    }
   };
 
   // Игровой цикл без мобильных оптимизаций
   useEffect(() => {
     if (gameOver || win) return;
     let frame;
-    let frameCount = 0;
     let lastTime = performance.now();
     
     const loop = (currentTime) => {
+      const currentFrameCount = frameCountRef.current + 1;
+      frameCountRef.current = currentFrameCount;
       
       const deltaTime = currentTime - lastTime;
       lastTime = currentTime;
@@ -1827,12 +1824,17 @@ const ZumaGame = React.forwardRef(({ petSprite, onClose, petId, onLevelChange, o
           const dx = shot.current.x - ballPos.x;
           const dy = shot.current.y - ballPos.y;
           if (dx * dx + dy * dy < (ZUMA_BALL_RADIUS * 2) ** 2) {
+
+            
             // Сохраняем координаты выстрела ДО сброса shot.current
             const shotPos = { x: shot.current.x, y: shot.current.y, color: shot.current.color };
             // Вставляем шарик в цепочку
             const t = chain.current[i].t;
             const ball = createBallWithSprite(shot.current.color);
             chain.current.splice(i, 0, { t, ...ball });
+            
+            console.log('  - Created ball:', ball);
+            console.log('  - Ball animationOffset:', ball.animationOffset);
             // Анимация вставки
             setAnimations(prev => [...prev, {
               type: 'insert',
@@ -1916,20 +1918,49 @@ const ZumaGame = React.forwardRef(({ petSprite, onClose, petId, onLevelChange, o
       // Победа
       if (chain.current.length === 0) {
         setWin(true);
+        // Уведомляем родительский компонент об изменении уровня
+        if (onLevelChange) {
+          onLevelChange(level + 1);
+        }
         return;
       }
-      // Обновление рендера без ограничений
-      setRenderTick(t => t + 1);
+      // Обновление рендера - только при необходимости
+      if (frameCountRef.current % 2 === 0) { // Обновляем каждые 2 кадра для плавности
+        setRenderTick(t => t + 1);
+      }
+      
+      // Отладка обновления рендера - только раз в секунду
+      if (frameCountRef.current % 120 === 0) { // Логируем каждые 120 кадров (~2 секунды)
+        console.log('🔄 ZUMA RENDER UPDATE DEBUG:');
+        console.log('  - frameCount:', frameCountRef.current);
+        console.log('  - renderTick:', renderTick);
+        console.log('  - isMobile:', isMobile);
+        console.log('  - spriteFrame:', spriteFrameRef.current);
+      }
       
       // Анимация спрайтов - всегда активна
       setSpriteAnimationTime(prev => {
         const newTime = prev + deltaTimeSeconds;
         if (newTime >= 0.2) { // Смена кадра каждые 0.2 секунды
-          setSpriteFrame(prevFrame => (prevFrame + 1) % 8); // 8 кадров для большинства спрайтов
+          const newFrame = (spriteFrameRef.current + 1) % 8;
+          spriteFrameRef.current = newFrame;
+          setSpriteFrame(newFrame);
+          
+          // Отладка анимации спрайтов - только при смене кадра
+          console.log('🎬 ZUMA SPRITE ANIMATION DEBUG:');
+          console.log('  - spriteFrame:', spriteFrameRef.current - 1, '->', newFrame);
+          console.log('  - isMobile:', isMobile);
+          
+          // Уведомляем родительский компонент о смене кадра
+          if (onSpriteFrameChange) {
+            onSpriteFrameChange(newFrame);
+          }
           return 0;
         }
         return newTime;
       });
+      
+      // Принудительное обновление анимации для мобильных устройств - убрано, так как вызывает проблемы
       
       frame = requestAnimationFrame(loop);
     };
@@ -2020,11 +2051,11 @@ const ZumaGame = React.forwardRef(({ petSprite, onClose, petId, onLevelChange, o
     headDistRef.current = 0; // Сброс headDistRef
     setScore(0);
     setGameOver(false);
-    setStarted(false);
     setWin(false);
     setRewarded(false);
     const newColor = getRandomBallColor();
     const newBall = createBallWithSprite(newColor);
+    nextBallRef.current = newBall;
     setNextBall(newBall);
     setRenderTick(t => t + 1);
   };
@@ -2042,13 +2073,15 @@ const ZumaGame = React.forwardRef(({ petSprite, onClose, petId, onLevelChange, o
 
   // Кнопка для перехода к следующему уровню
   const handleNextLevel = () => {
-    setLevel(lvl => lvl + 1);
-    // сбросить состояние игры, цепочку, счёт, win/gameOver и т.д.
-    // (реализовать сброс как в начале игры)
-    // ...
+    const newLevel = level + 1;
+    setLevel(newLevel);
+    // Уведомляем родительский компонент об изменении уровня
+    if (onLevelChange) {
+      onLevelChange(newLevel);
+    }
+    
     setWin(false);
     setGameOver(false);
-    setStarted(false);
     setScore(0);
     setRewarded(false);
     setAnimations([]);
@@ -2070,7 +2103,13 @@ const ZumaGame = React.forwardRef(({ petSprite, onClose, petId, onLevelChange, o
     headDistRef.current = 0;
     const newColor = getRandomBallColor();
     const newBall = createBallWithSprite(newColor);
+    nextBallRef.current = newBall;
     setNextBall(newBall);
+    
+    // Уведомляем родительский компонент о смене шара
+    if (onNextBallChange) {
+      onNextBallChange(newBall);
+    }
   };
 
 
@@ -2081,13 +2120,33 @@ const ZumaGame = React.forwardRef(({ petSprite, onClose, petId, onLevelChange, o
     handleMobileShoot,
   }));
 
-  useEffect(() => { if (onLevelChange) onLevelChange(level); }, [level, onLevelChange]);
-  useEffect(() => { if (onNextBallChange && nextBall) onNextBallChange(nextBall); }, [nextBall, onNextBallChange]);
-  useEffect(() => { if (onSpriteFrameChange) onSpriteFrameChange(spriteFrame); }, [spriteFrame]);
+  // Уведомляем родительский компонент об изменениях
+  useEffect(() => { 
+    if (onLevelChange) onLevelChange(level); 
+  }, [level, onLevelChange]);
+  
+  useEffect(() => { 
+    if (onNextBallChange && nextBall) {
+      console.log('🔄 ZUMA NEXTBALL USEFFECT DEBUG:');
+      console.log('  - nextBall changed to:', nextBall.color);
+      onNextBallChange(nextBall);
+    }
+  }, [nextBall, onNextBallChange]);
+  
+  useEffect(() => { 
+    if (onSpriteFrameChange) {
+      console.log('🔄 ZUMA SPRITE FRAME CHANGE DEBUG:');
+      console.log('  - spriteFrame:', spriteFrame);
+      console.log('  - spriteFrameRef.current:', spriteFrameRef.current);
+      console.log('  - calling onSpriteFrameChange with:', spriteFrame);
+      onSpriteFrameChange(spriteFrame);
+    }
+  }, [spriteFrame, onSpriteFrameChange]);
 
   return (
     <div
       ref={containerRef}
+      key={renderTick}
       className="zuma-game"
       style={{ 
         width: '100%', 
@@ -2099,7 +2158,7 @@ const ZumaGame = React.forwardRef(({ petSprite, onClose, petId, onLevelChange, o
         justifyContent: 'center'
       }}
       tabIndex={0}
-      onClick={!isMobile ? () => setStarted(true) : undefined}
+      onClick={undefined}
       onMouseMove={!isMobile ? handleMouseMove : undefined}
       onMouseDown={!isMobile ? handleMouseDown : undefined}
     >
@@ -2107,10 +2166,10 @@ const ZumaGame = React.forwardRef(({ petSprite, onClose, petId, onLevelChange, o
         style={{
           width: ZUMA_WIDTH,
           height: ZUMA_HEIGHT,
-          transform: `scale(${scale})`,
+          transform: isMobile ? 'none' : `scale(${scale})`,
           transformOrigin: 'center center',
           position: 'relative',
-          bottom: '35px'
+          bottom: isMobile ? '27px' : '35px'
         }}
       >
       {/* Многослойный анимированный фон */}
@@ -2128,26 +2187,26 @@ const ZumaGame = React.forwardRef(({ petSprite, onClose, petId, onLevelChange, o
       }} />
       
       {/* Слой 2 - анимированный слой */}
-      <div style={{
-        position: 'absolute',
-        top: 0,
-        left: layer2Position,
-        width: '100%',
-        height: '100%',
-        backgroundImage: `url(${getStaticPath('sprites/minigames/zuma/background/2.png')})`,
-        backgroundSize: `${ZUMA_WIDTH}px ${ZUMA_HEIGHT}px`,
-        backgroundPosition: 'center',
-        zIndex: 1,
-        // Отзеркаливание управляется через DOM
-        transform: 'scaleX(1)', // Начальное состояние
-        filter: 'none',
-        transformOrigin: 'center center',
-        transition: 'transform 0.3s ease-in-out', // Плавный переход для отзеркаливания
-      }} 
-      onError={(e) => {
-        console.error('Ошибка загрузки изображения 2-го слоя:', e);
-      }}
-      ref={layer2Ref}
+      <div 
+        key={`layer2-${layer2DirectionState}-${renderTick}`}
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: layer2Position,
+          width: '100%',
+          height: '100%',
+          backgroundImage: `url(${getStaticPath('sprites/minigames/zuma/background/2.png')})`,
+          backgroundSize: `${ZUMA_WIDTH}px ${ZUMA_HEIGHT}px`,
+          backgroundPosition: 'center',
+          zIndex: 1,
+          transform: layer2DirectionState === 1 ? 'scaleX(-1)' : 'scaleX(1)',
+          transformOrigin: 'center center',
+          transition: 'transform 0.3s ease-in-out', // Плавный переход для отзеркаливания
+        }} 
+        onError={(e) => {
+          console.error('Ошибка загрузки изображения 2-го слоя:', e);
+        }}
+        ref={layer2Ref}
       />
       
       {/* Слой 3 - статичный слой */}
@@ -2186,9 +2245,18 @@ const ZumaGame = React.forwardRef(({ petSprite, onClose, petId, onLevelChange, o
         
         // Используем сохраненный спрайт шара с индивидуальным смещением анимации
         const sprite = ball.sprite;
-        const frameWithOffset = (spriteFrame + (ball.animationOffset || 0)) % 8;
+        const frameWithOffset = (spriteFrameRef.current + (ball.animationOffset || 0)) % 8;
         const direction = getBallDirection(ball.t);
         const spriteStyle = getSpriteStyle(sprite, frameWithOffset, sprite.currentRow || 0);
+        
+        // Отладка рендера шара - только для первого шара и редко
+        if (idx === 0 && frameCountRef.current % 300 === 0) { // Логируем первый шар каждые 300 кадров (~5 секунд)
+          console.log('🎨 ZUMA BALL RENDER DEBUG:');
+          console.log('  - Ball color:', ball.color);
+          console.log('  - spriteFrame:', spriteFrameRef.current);
+          console.log('  - frameWithOffset:', frameWithOffset);
+          console.log('  - ball.animationOffset:', ball.animationOffset);
+        }
         
         // Создаем ref для шара, если его еще нет
         if (!ballRefs[idx]) {
@@ -2197,14 +2265,14 @@ const ZumaGame = React.forwardRef(({ petSprite, onClose, petId, onLevelChange, o
         
         return (
           <div 
-            key={idx} 
+            key={`ball-${idx}-${renderTick}`} 
             ref={ballRefs[idx]}
             style={{
               position: 'absolute',
               left: pos.x - (sprite ? sprite.frameWidth / 2 : ZUMA_BALL_RADIUS),
               top: pos.y - (sprite ? sprite.frameHeight / 2 : ZUMA_BALL_RADIUS),
               zIndex: 10,
-              transform: `scale(${scale})`,
+              transform: `scale(${scale}) ${direction === -1 ? 'scaleX(-1)' : ''}`,
               opacity,
               transition: disappearAnim ? 'none' : 'transform 0.1s',
   
@@ -2215,15 +2283,18 @@ const ZumaGame = React.forwardRef(({ petSprite, onClose, petId, onLevelChange, o
       })}
       {/* Выстрел */}
       {shot.current && (
-        <div style={{
-          position: 'absolute',
-          left: shot.current.x - ZUMA_BALL_RADIUS,
-          top: shot.current.y - ZUMA_BALL_RADIUS,
-          width: ZUMA_BALL_RADIUS * 2,
-          height: ZUMA_BALL_RADIUS * 2,
-          zIndex: 10,
-          ...getSpriteStyle(shot.current.sprite, spriteFrame, shot.current.sprite.currentRow || 0)
-        }} />
+        <div 
+          key={`shot-${renderTick}`}
+          style={{
+            position: 'absolute',
+            left: shot.current.x - ZUMA_BALL_RADIUS,
+            top: shot.current.y - ZUMA_BALL_RADIUS,
+            width: ZUMA_BALL_RADIUS * 2,
+            height: ZUMA_BALL_RADIUS * 2,
+            zIndex: 10,
+            ...getSpriteStyle(shot.current.sprite, spriteFrameRef.current, shot.current.sprite.currentRow || 0)
+          }} 
+        />
       )}
       {/* Прицел */}
       <svg width={ZUMA_WIDTH} height={ZUMA_HEIGHT} style={{ position: 'absolute', left: 0, top: 0, zIndex: 10, pointerEvents: 'none' }}>
@@ -2273,37 +2344,10 @@ const ZumaGame = React.forwardRef(({ petSprite, onClose, petId, onLevelChange, o
           <button onClick={restart} style={{ marginTop: 16, padding: '8px 20px', fontSize: 18, borderRadius: 8, border: 'none', background: '#64748b', color: '#fff', cursor: 'pointer' }}>Заново</button>
         </div>
       )}
-      {/* Инструкция */}
-      {!started && !gameOver && !win && (
-        <div style={{ position: 'absolute', top: '45%', left: 0, width: '100%', textAlign: 'center', color: '#334155', fontSize: 18, zIndex: 15 }}>
-          Кликните или используйте стрелки/A/D для прицеливания, пробел/клик — выстрел
-        </div>
-      )}
+
       {/* Не показываем стандартный оверлей победы и кнопку "заново" для Zuma, переход к следующему уровню автоматический */}
 
-      {/* Кнопка Старт для мобильных */}
-      {isMobile && !started && (
-        <button
-          style={{
-            position: 'absolute',
-            left: '50%',
-            top: '50%',
-            transform: 'translate(-50%, -50%)',
-            fontSize: 28,
-            padding: '18px 48px',
-            borderRadius: 16,
-            background: '#38bdf8',
-            color: '#fff',
-            border: 'none',
-            zIndex: 100,
-            boxShadow: '0 2px 8px rgba(0,0,0,0.18)',
-          }}
-          onClick={() => setStarted(true)}
-          onTouchStart={e => { e.stopPropagation(); setStarted(true); }}
-        >
-          Старт
-        </button>
-      )}
+
       </div>
     </div>
   );
@@ -2315,7 +2359,6 @@ const FlyingOverCityGame = React.forwardRef(({ petSprite, onClose, petId }, ref)
   const [score, setScore] = useState(0);
   const [gameOver, setGameOver] = useState(false);
   const [rewarded, setRewarded] = useState(false);
-  const [started, setStarted] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   
   // Используем масштабирование
@@ -2343,7 +2386,7 @@ const FlyingOverCityGame = React.forwardRef(({ petSprite, onClose, petId }, ref)
   // Экспортируем функцию прыжка через ref
   React.useImperativeHandle(ref, () => ({
     jump: () => {
-      if (!gameOver && started) {
+      if (!gameOver) {
         velocityY.current = JUMP_VELOCITY;
       }
     }
@@ -2473,7 +2516,6 @@ const FlyingOverCityGame = React.forwardRef(({ petSprite, onClose, petId }, ref)
   const restart = () => {
     setScore(0);
     setGameOver(false);
-    setStarted(false);
     setRenderTick(t => t + 1);
     setRewarded(false);
     
@@ -2492,6 +2534,7 @@ const FlyingOverCityGame = React.forwardRef(({ petSprite, onClose, petId }, ref)
   return (
     <div 
       ref={containerRef}
+      key={renderTick}
       className="flappybird-game" 
       style={{ 
         width: '100%', 
@@ -2621,7 +2664,7 @@ const FlyingOverCityGame = React.forwardRef(({ petSprite, onClose, petId }, ref)
       )}
       
       {/* Начальный экран */}
-      {!started && !gameOver && (
+      {!gameOver && (
         <div style={{
           position: 'absolute',
           top: '40%',
@@ -2640,10 +2683,10 @@ const FlyingOverCityGame = React.forwardRef(({ petSprite, onClose, petId }, ref)
       )}
       
       {/* Мобильные элементы управления */}
-      {isMobile && started && !gameOver && (
+      {isMobile && !gameOver && (
         <FlyingOverCityMobileControls 
           onJump={() => {
-            if (!gameOver && started) {
+            if (!gameOver) {
               velocityY.current = JUMP_VELOCITY;
             }
           }} 
