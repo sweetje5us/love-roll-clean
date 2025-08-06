@@ -3991,8 +3991,8 @@
   position: absolute !important;
   transform-origin: top left !important;
   margin: 0 !important;
-  width: 320px !important;
-  height: 420px !important;
+  width: 100% !important;
+  height: 100% !important;
 }
 
 .minigame-container .crossyroad-game canvas,
@@ -4061,7 +4061,9 @@
   .minigame-container .doodlejump-game > div,
   .minigame-container .flappybird-game > div,
   .minigame-container .zuma-game > div {
-    margin: auto !important;
+    width: 100% !important;
+    height: 100% !important;
+    margin: 0 !important;
   }
 }
 

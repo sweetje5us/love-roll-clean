@@ -295,6 +295,15 @@ function getRandomTankSprite() {
   return DJ_TANK_SPRITES[Math.floor(Math.random() * DJ_TANK_SPRITES.length)];
 }
 
+// Функции для получения масштабированных размеров Flappy Bird
+function getScaledFlappyPetSize(scale) {
+  return PET_SIZE * scale;
+}
+
+function getScaledFlappyObstacleInterval(scale) {
+  return OBSTACLE_INTERVAL * scale;
+}
+
 const DoodleJumpGame = ({ petSprite, onClose, petId }) => {
   const { updatePetStats, getPetState } = usePets();
   const [renderTick, setRenderTick] = useState(0);
@@ -2978,12 +2987,13 @@ const FlyingOverCityGame = React.forwardRef(({ petSprite, onClose, petId }, ref)
   const [score, setScore] = useState(0);
   const [gameOver, setGameOver] = useState(false);
   const [rewarded, setRewarded] = useState(false);
-  // Используем масштабирование
+  
+  // Используем масштабирование с правильной логикой для minigame-container
   const { scale, containerSize, containerRef, isInMinigameContainer } = useGameScale(GAME_WIDTH, GAME_HEIGHT);
 
-  // refs для физики
-  const petX = useRef(GAME_WIDTH / 2 - PET_SIZE / 2);
-  const petY = useRef(GAME_HEIGHT / 2);
+  // refs для физики - инициализируем после получения containerSize
+  const petX = useRef(0);
+  const petY = useRef(0);
   const velocityY = useRef(0);
   const obstacles = useRef([]);
   const backgroundLayers = useRef([]);
@@ -2991,6 +3001,14 @@ const FlyingOverCityGame = React.forwardRef(({ petSprite, onClose, petId }, ref)
   
   // refs для параллакс фона
   const backgroundY = useRef(0);
+  
+  // Инициализация позиции питомца после получения размеров контейнера
+  useEffect(() => {
+    if (containerSize.width > 0 && containerSize.height > 0) {
+      petX.current = containerSize.width / 2 - getScaledFlappyPetSize(scale) / 2;
+      petY.current = containerSize.height / 2;
+    }
+  }, [containerSize.width, containerSize.height, scale]);
   
   // Экспортируем функцию прыжка через ref
   React.useImperativeHandle(ref, () => ({
@@ -3015,7 +3033,7 @@ const FlyingOverCityGame = React.forwardRef(({ petSprite, onClose, petId }, ref)
 
   // Игровой цикл
   useEffect(() => {
-    if (gameOver) return;
+    if (gameOver || containerSize.width === 0 || containerSize.height === 0) return;
     let frame;
     let lastTime = performance.now();
     
@@ -3034,8 +3052,8 @@ const FlyingOverCityGame = React.forwardRef(({ petSprite, onClose, petId }, ref)
         petY.current = 0;
         velocityY.current = 0;
       }
-      if (petY.current > GAME_HEIGHT - PET_SIZE) {
-        petY.current = GAME_HEIGHT - PET_SIZE;
+      if (petY.current > containerSize.height - getScaledFlappyPetSize(scale)) {
+        petY.current = containerSize.height - getScaledFlappyPetSize(scale);
         velocityY.current = 0;
         setGameOver(true);
       }
@@ -3050,16 +3068,15 @@ const FlyingOverCityGame = React.forwardRef(({ petSprite, onClose, petId }, ref)
       
       // Создание новых препятствий
       if (obstacles.current.length === 0 || 
-          obstacles.current[obstacles.current.length - 1].x < GAME_WIDTH - OBSTACLE_INTERVAL) {
+          obstacles.current[obstacles.current.length - 1].x < containerSize.width - getScaledFlappyObstacleInterval(scale)) {
         const buildingSprite = getRandomBuildingSprite();
-        // Физические координаты Y для столкновений
-        // Спрайты отображаются с bottom: -70, поэтому их физическая позиция должна быть на 70px выше
-        const physicalY = GAME_HEIGHT + 70 - buildingSprite.height;
+        // Физические координаты Y для столкновений - здания должны быть видимы в контейнере
+        const physicalY = containerSize.height - buildingSprite.height * scale;
         obstacles.current.push({
-          x: GAME_WIDTH,
+          x: containerSize.width,
           y: physicalY, // Используем правильные физические координаты
-          width: buildingSprite.width,
-          height: buildingSprite.height,
+          width: buildingSprite.width * scale,
+          height: buildingSprite.height * scale,
           src: buildingSprite.src
         });
       }
@@ -3067,9 +3084,9 @@ const FlyingOverCityGame = React.forwardRef(({ petSprite, onClose, petId }, ref)
       // Проверка столкновений
       for (let obstacle of obstacles.current) {
         if (petX.current < obstacle.x + obstacle.width &&
-            petX.current + PET_SIZE > obstacle.x &&
+            petX.current + getScaledFlappyPetSize(scale) > obstacle.x &&
             petY.current < obstacle.y + obstacle.height &&
-            petY.current + PET_SIZE > obstacle.y) {
+            petY.current + getScaledFlappyPetSize(scale) > obstacle.y) {
           setGameOver(true);
           break;
         }
@@ -3093,7 +3110,7 @@ const FlyingOverCityGame = React.forwardRef(({ petSprite, onClose, petId }, ref)
     
     frame = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(frame);
-  }, [gameOver]);
+  }, [gameOver, containerSize.width, containerSize.height, scale]);
 
   // Управление
   useEffect(() => {
@@ -3124,9 +3141,11 @@ const FlyingOverCityGame = React.forwardRef(({ petSprite, onClose, petId }, ref)
     setRenderTick(t => t + 1);
     setRewarded(false);
     
-    // Сброс позиции питомца
-    petX.current = GAME_WIDTH / 2 - PET_SIZE / 2;
-    petY.current = GAME_HEIGHT / 2;
+    // Сброс позиции питомца только если контейнер имеет размеры
+    if (containerSize.width > 0 && containerSize.height > 0) {
+      petX.current = containerSize.width / 2 - getScaledFlappyPetSize(scale) / 2;
+      petY.current = containerSize.height / 2;
+    }
     velocityY.current = 0;
     
     // Очистка препятствий
@@ -3150,42 +3169,48 @@ const FlyingOverCityGame = React.forwardRef(({ petSprite, onClose, petId }, ref)
         position: 'relative', 
         background: '#87CEEB', 
         overflow: 'hidden',
-        cursor: 'pointer',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center'
+        cursor: 'pointer'
       }}
       onClick={() => null}
     >
-      <div
-        style={{
-          width: isInMinigameContainer ? '100%' : GAME_WIDTH,
-          height: isInMinigameContainer ? '100%' : GAME_HEIGHT,
-          transform: isInMinigameContainer ? 'none' : `scale(var(--game-scale, ${scale}))`,
-          transformOrigin: 'center center',
-          position: 'relative',
-          background: '#87CEEB',
-          bottom: '0px',
-          overflow: 'hidden'
-        }}
-      >
       {/* Параллакс фон */}
-      {backgroundSet.current.layers.map((layer, index) => (
-        <div
-          key={`bg-${index}-${renderTick}`}
-          style={{
-            position: 'absolute',
-            left: isInMinigameContainer ? -(backgroundY.current * PARALLAX_SPEEDS[index]) % 100 : -(backgroundY.current * PARALLAX_SPEEDS[index]) % GAME_WIDTH,
-            top: index === 4 ? '35px' : 0, // Самый ближний слой (индекс 4) сдвигаем на 35px для мобильного
-            width: isInMinigameContainer ? '200%' : GAME_WIDTH * 2,
-            height: isInMinigameContainer ? '100%' : GAME_HEIGHT,
-            backgroundImage: `url(${layer})`,
-            backgroundSize: isInMinigameContainer ? '50% 100%' : `${GAME_WIDTH}px ${GAME_HEIGHT}px`,
-            backgroundRepeat: 'repeat-x',
-            zIndex: 0,
-          }}
-        />
-      ))}
+      {backgroundSet.current.layers.map((layer, index) => {
+        const layerOffset = -(backgroundY.current * PARALLAX_SPEEDS[index]) % containerSize.width;
+        return (
+          <React.Fragment key={`bg-${index}-${renderTick}`}>
+            {/* Первый элемент слоя */}
+            <div
+              style={{
+                position: 'absolute',
+                left: layerOffset,
+                top: index === 4 ? 35 * scale : 0, // Самый ближний слой (индекс 4) сдвигаем на 35px
+                width: containerSize.width,
+                height: containerSize.height,
+                backgroundImage: `url(${layer})`,
+                backgroundSize: `${containerSize.width}px ${containerSize.height}px`,
+                backgroundRepeat: 'no-repeat',
+                backgroundPosition: '0 0',
+                zIndex: 0,
+              }}
+            />
+            {/* Второй элемент слоя для бесшовного перехода */}
+            <div
+              style={{
+                position: 'absolute',
+                left: layerOffset + containerSize.width,
+                top: index === 4 ? 35 * scale : 0, // Самый ближний слой (индекс 4) сдвигаем на 35px
+                width: containerSize.width,
+                height: containerSize.height,
+                backgroundImage: `url(${layer})`,
+                backgroundSize: `${containerSize.width}px ${containerSize.height}px`,
+                backgroundRepeat: 'no-repeat',
+                backgroundPosition: '0 0',
+                zIndex: 0,
+              }}
+            />
+          </React.Fragment>
+        );
+      })}
       
       {/* Питомец */}
       <img
@@ -3195,8 +3220,8 @@ const FlyingOverCityGame = React.forwardRef(({ petSprite, onClose, petId }, ref)
           position: 'absolute',
           left: petX.current,
           top: petY.current,
-          width: PET_SIZE,
-          height: PET_SIZE,
+          width: getScaledFlappyPetSize(scale),
+          height: getScaledFlappyPetSize(scale),
           zIndex: 2,
           userSelect: 'none',
           pointerEvents: 'none',
@@ -3213,7 +3238,7 @@ const FlyingOverCityGame = React.forwardRef(({ petSprite, onClose, petId }, ref)
           style={{
             position: 'absolute',
             left: obstacle.x,
-            bottom: -70, // Размещаем здания у фактической нижней границы
+            top: obstacle.y, // Используем top вместо bottom для правильного позиционирования
             width: obstacle.width,
             height: obstacle.height,
             zIndex: 1,
@@ -3226,11 +3251,11 @@ const FlyingOverCityGame = React.forwardRef(({ petSprite, onClose, petId }, ref)
       {/* Счёт */}
       <div style={{
         position: 'absolute',
-        top: 12,
+        top: 12 * scale,
         left: 0,
         width: '100%',
         textAlign: 'center',
-        fontSize: 28,
+        fontSize: 28 * scale,
         fontWeight: 'bold',
         color: '#fff',
         textShadow: '2px 2px 4px #000',
@@ -3241,28 +3266,28 @@ const FlyingOverCityGame = React.forwardRef(({ petSprite, onClose, petId }, ref)
       {gameOver && (
         <div style={{
           position: 'absolute',
-          top: '40%',
-          left: 0,
-          width: '100%',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
           textAlign: 'center',
           color: '#fff',
-          fontSize: 24,
+          fontSize: 24 * scale,
           fontWeight: 'bold',
           textShadow: '2px 2px 4px #000',
           zIndex: 30
         }}>
           <div>Игра окончена!</div>
-          <div style={{ fontSize: 18, marginTop: 8 }}>Счёт: {score}</div>
+          <div style={{ fontSize: 18 * scale, marginTop: 8 * scale }}>Счёт: {score}</div>
           <button 
             onClick={restart}
             style={{
-              marginTop: 16,
-              padding: '8px 16px',
-              fontSize: 16,
+              marginTop: 16 * scale,
+              padding: `${8 * scale}px ${16 * scale}px`,
+              fontSize: 16 * scale,
               background: '#4CAF50',
               color: '#fff',
               border: 'none',
-              borderRadius: 8,
+              borderRadius: 8 * scale,
               cursor: 'pointer'
             }}
           >
@@ -3270,11 +3295,6 @@ const FlyingOverCityGame = React.forwardRef(({ petSprite, onClose, petId }, ref)
           </button>
         </div>
       )}
-      
-
-      
-      
-      </div>
     </div>
   );
 });
