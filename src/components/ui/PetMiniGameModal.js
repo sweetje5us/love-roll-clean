@@ -257,16 +257,38 @@ const DJ_TANK_SPRITES = [
 ];
 const DJ_TANK_ORIGINAL_WIDTH = 122;
 const DJ_TANK_ORIGINAL_HEIGHT = 48;
-const DJ_TANK_SCALE = DJ_PLATFORM_WIDTH / DJ_TANK_ORIGINAL_WIDTH;
-const DJ_TANK_DISPLAY_WIDTH = DJ_TANK_ORIGINAL_WIDTH * DJ_TANK_SCALE;
-const DJ_TANK_DISPLAY_HEIGHT = DJ_TANK_ORIGINAL_HEIGHT * DJ_TANK_SCALE;
 // Константы в единицах "на секунду"
 const DJ_GRAVITY_PER_SECOND = 400;
 const DJ_JUMP_VELOCITY = -300;
 const DJ_MOVE_SPEED_PER_SECOND = 240;
 
-function getRandomPlatformX() {
-  return Math.random() * (DJ_WIDTH - DJ_PLATFORM_WIDTH);
+// Функции для получения масштабированных размеров
+function getScaledPetSize(scale) {
+  return DJ_PET_SIZE * scale;
+}
+
+function getScaledPlatformWidth(scale) {
+  return DJ_PLATFORM_WIDTH * scale;
+}
+
+function getScaledPlatformHeight(scale) {
+  return DJ_PLATFORM_HEIGHT * scale;
+}
+
+function getScaledTankScale(scale) {
+  return getScaledPlatformWidth(scale) / DJ_TANK_ORIGINAL_WIDTH;
+}
+
+function getScaledTankDisplayWidth(scale) {
+  return DJ_TANK_ORIGINAL_WIDTH * getScaledTankScale(scale);
+}
+
+function getScaledTankDisplayHeight(scale) {
+  return DJ_TANK_ORIGINAL_HEIGHT * getScaledTankScale(scale);
+}
+
+function getRandomPlatformX(containerWidth, platformWidth) {
+  return Math.random() * (containerWidth - platformWidth);
 }
 
 function getRandomTankSprite() {
@@ -285,8 +307,8 @@ const DoodleJumpGame = ({ petSprite, onClose, petId }) => {
 
 
   // refs для физики
-  const petX = useRef(DJ_WIDTH / 2 - DJ_PET_SIZE / 2);
-  const petY = useRef(DJ_HEIGHT - DJ_PET_SIZE - 10);
+  const petX = useRef(containerSize.width / 2 - getScaledPetSize(scale) / 2);
+  const petY = useRef(containerSize.height - getScaledPetSize(scale) - 10 * scale);
   const velocityY = useRef(0);
   const platforms = useRef([]);
   const maxY = useRef(petY.current);
@@ -296,7 +318,7 @@ const DoodleJumpGame = ({ petSprite, onClose, petId }) => {
   const backgroundY = useRef(0);
   
   // Массивы для хранения позиций фоновых слоев (для бесшовного зацикливания)
-  const backgroundLayers = useRef([0, DJ_HEIGHT, DJ_HEIGHT * 2]); // Слои без разрывов
+  const backgroundLayers = useRef([]); // Будет инициализирован позже
   
   // refs для платформ-танков
   const platformRefs = useRef([]);
@@ -337,8 +359,12 @@ const DoodleJumpGame = ({ petSprite, onClose, petId }) => {
       // Движение по горизонтали с deltaTime
       const currentMoveDir = window.doodleJumpMoveDir || moveDir.current;
       petX.current += currentMoveDir * DJ_MOVE_SPEED_PER_SECOND * deltaTimeSeconds;
+      
+      // Ограничиваем движение питомца в пределах контейнера
       if (petX.current < 0) petX.current = 0;
-      if (petX.current > DJ_WIDTH - DJ_PET_SIZE) petX.current = DJ_WIDTH - DJ_PET_SIZE;
+      if (petX.current > containerSize.width - getScaledPetSize(scale)) {
+        petX.current = containerSize.width - getScaledPetSize(scale);
+      }
       
       // Гравитация с deltaTime
       velocityY.current += DJ_GRAVITY_PER_SECOND * deltaTimeSeconds;
@@ -347,10 +373,10 @@ const DoodleJumpGame = ({ petSprite, onClose, petId }) => {
       // Прыжок от платформ и начисление очков только за новые платформы
       for (let plat of platforms.current) {
         if (
-          petY.current + DJ_PET_SIZE > plat.y &&
-          petY.current + DJ_PET_SIZE < plat.y + DJ_PLATFORM_HEIGHT &&
-          petX.current + DJ_PET_SIZE > plat.x &&
-          petX.current < plat.x + DJ_PLATFORM_WIDTH &&
+          petY.current + getScaledPetSize(scale) > plat.y &&
+          petY.current + getScaledPetSize(scale) < plat.y + getScaledPlatformHeight(scale) &&
+          petX.current + getScaledPetSize(scale) > plat.x &&
+          petX.current < plat.x + getScaledPlatformWidth(scale) &&
           velocityY.current > 0
         ) {
           velocityY.current = DJ_JUMP_VELOCITY;
@@ -363,9 +389,9 @@ const DoodleJumpGame = ({ petSprite, onClose, petId }) => {
       }
       
       // Движение платформ вниз, если питомец поднимается выше середины
-      if (petY.current < DJ_HEIGHT / 2) {
-        const diff = DJ_HEIGHT / 2 - petY.current;
-        petY.current = DJ_HEIGHT / 2;
+      if (petY.current < containerSize.height / 2) {
+        const diff = containerSize.height / 2 - petY.current;
+        petY.current = containerSize.height / 2;
         maxY.current -= diff;
         
         // Параллакс эффект для фоновых слоев с бесшовным зацикливанием
@@ -376,10 +402,10 @@ const DoodleJumpGame = ({ petSprite, onClose, petId }) => {
         
         // Перемещаем задние слои, которые вышли за границу
         for (let i = 0; i < backgroundLayers.current.length; i++) {
-          if (backgroundLayers.current[i] >= DJ_HEIGHT) {
+          if (backgroundLayers.current[i] >= containerSize.height) {
             // Находим самый верхний слой
             let minY = Math.min(...backgroundLayers.current);
-            backgroundLayers.current[i] = minY - DJ_HEIGHT;
+            backgroundLayers.current[i] = minY - containerSize.height;
           }
         }
         
@@ -387,16 +413,23 @@ const DoodleJumpGame = ({ petSprite, onClose, petId }) => {
         backgroundLayers.current.sort((a, b) => a - b);
         for (let i = 1; i < backgroundLayers.current.length; i++) {
           const gap = backgroundLayers.current[i] - backgroundLayers.current[i - 1];
-          if (gap > DJ_HEIGHT) {
+          if (gap > containerSize.height) {
             // Если есть разрыв больше высоты слоя, перемещаем слой
-            backgroundLayers.current[i] = backgroundLayers.current[i - 1] + DJ_HEIGHT;
+            backgroundLayers.current[i] = backgroundLayers.current[i - 1] + containerSize.height;
           }
+        }
+        
+        // Добавляем дополнительные слои, если их недостаточно
+        while (backgroundLayers.current.length < 5) {
+          let minY = Math.min(...backgroundLayers.current);
+          backgroundLayers.current.push(minY - containerSize.height);
         }
         
         // Движение платформ - изменяем in-place
         for (let i = 0; i < platforms.current.length; i++) {
           platforms.current[i].y += diff;
         }
+      }
       
       // Добавляем платформы
       while (platforms.current.length < DJ_PLATFORM_COUNT) {
@@ -407,8 +440,8 @@ const DoodleJumpGame = ({ petSprite, onClose, petId }) => {
           }
         }
         platforms.current.push({
-          x: getRandomPlatformX(),
-          y: minY - 60 - Math.random() * 30,
+          x: getRandomPlatformX(containerSize.width, getScaledPlatformWidth(scale)),
+          y: minY - 60 * scale - Math.random() * 30 * scale,
           sprite: getRandomTankSprite(),
           direction: Math.random() > 0.5 ? 1 : -1 // 1 = вправо, -1 = влево
         });
@@ -416,14 +449,13 @@ const DoodleJumpGame = ({ petSprite, onClose, petId }) => {
       
       // Удаление платформ - splice вместо filter
       for (let i = platforms.current.length - 1; i >= 0; i--) {
-        if (platforms.current[i].y >= DJ_HEIGHT) {
+        if (platforms.current[i].y >= containerSize.height) {
           platforms.current.splice(i, 1);
         }
       }
-      }
       
       // Game over если упал вниз
-      if (petY.current > DJ_HEIGHT) {
+      if (petY.current > containerSize.height) {
         setGameOver(true);
         return;
       }
@@ -456,56 +488,74 @@ const DoodleJumpGame = ({ petSprite, onClose, petId }) => {
     });
   }, [renderTick]);
 
-  // Инициализация платформ
+  // Инициализация платформ и фоновых слоев
   useEffect(() => {
     if (platforms.current.length > 0) return;
+    
+    // Инициализация фоновых слоев
+    if (backgroundLayers.current.length === 0) {
+      backgroundLayers.current = [
+        0, 
+        containerSize.height, 
+        containerSize.height * 2,
+        containerSize.height * 3,
+        containerSize.height * 4
+      ];
+    }
+    
     let plats = [];
     for (let i = 0; i < DJ_PLATFORM_COUNT; i++) {
       plats.push({
-        x: getRandomPlatformX(),
-        y: DJ_HEIGHT - i * 60 - 40,
+        x: getRandomPlatformX(containerSize.width, getScaledPlatformWidth(scale)),
+        y: containerSize.height - i * 60 * scale - 40 * scale,
         visited: i === 0, // первая платформа сразу отмечена как посещённая
         sprite: getRandomTankSprite(),
         direction: Math.random() > 0.5 ? 1 : -1 // 1 = вправо, -1 = влево
       });
     }
     // Первая платформа строго под питомцем
-    plats[0].x = DJ_WIDTH / 2 - DJ_PLATFORM_WIDTH / 2;
-    plats[0].y = DJ_HEIGHT - DJ_PLATFORM_HEIGHT - 10;
+    plats[0].x = containerSize.width / 2 - getScaledPlatformWidth(scale) / 2;
+    plats[0].y = containerSize.height - getScaledPlatformHeight(scale) - 10 * scale;
     platforms.current = plats;
     // Питомец стоит на первой платформе
-    petX.current = DJ_WIDTH / 2 - DJ_PET_SIZE / 2;
-    petY.current = plats[0].y - DJ_PET_SIZE;
+    petX.current = containerSize.width / 2 - getScaledPetSize(scale) / 2;
+    petY.current = plats[0].y - getScaledPetSize(scale);
     velocityY.current = 0;
-  }, []);
+  }, [containerSize, scale]);
 
   // Сброс игры
   const restart = () => {
-    petX.current = DJ_WIDTH / 2 - DJ_PET_SIZE / 2;
-    petY.current = DJ_HEIGHT - DJ_PET_SIZE - 10;
+    petX.current = containerSize.width / 2 - getScaledPetSize(scale) / 2;
+    petY.current = containerSize.height - getScaledPetSize(scale) - 10 * scale;
     velocityY.current = 0;
     // Пересоздаём платформы и ставим питомца на первую платформу
     let plats = [];
     for (let i = 0; i < DJ_PLATFORM_COUNT; i++) {
       plats.push({
-        x: getRandomPlatformX(),
-        y: DJ_HEIGHT - i * 60 - 40,
+        x: getRandomPlatformX(containerSize.width, getScaledPlatformWidth(scale)),
+        y: containerSize.height - i * 60 * scale - 40 * scale,
         visited: i === 0,
         sprite: getRandomTankSprite(),
         direction: Math.random() > 0.5 ? 1 : -1 // 1 = вправо, -1 = влево
       });
     }
-    plats[0].x = DJ_WIDTH / 2 - DJ_PLATFORM_WIDTH / 2;
-    plats[0].y = DJ_HEIGHT - DJ_PLATFORM_HEIGHT - 10;
+    plats[0].x = containerSize.width / 2 - getScaledPlatformWidth(scale) / 2;
+    plats[0].y = containerSize.height - getScaledPlatformHeight(scale) - 10 * scale;
     platforms.current = plats;
-    petX.current = DJ_WIDTH / 2 - DJ_PET_SIZE / 2;
-    petY.current = plats[0].y - DJ_PET_SIZE;
+    petX.current = containerSize.width / 2 - getScaledPetSize(scale) / 2;
+    petY.current = plats[0].y - getScaledPetSize(scale);
     velocityY.current = 0;
     maxY.current = petY.current;
     
     // Сброс параллакс фона - слои располагаются без разрывов
     backgroundY.current = 0;
-    backgroundLayers.current = [0, DJ_HEIGHT, DJ_HEIGHT * 2];
+    backgroundLayers.current = [
+      0, 
+      containerSize.height, 
+      containerSize.height * 2,
+      containerSize.height * 3,
+      containerSize.height * 4
+    ];
     
     setScore(0);
     setGameOver(false);
@@ -534,9 +584,6 @@ const DoodleJumpGame = ({ petSprite, onClose, petId }) => {
         position: 'relative', 
         background: '#fef9c3', 
         overflow: 'hidden',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
         transform: 'none',
         transition: 'none',
         animation: 'none'
@@ -546,13 +593,15 @@ const DoodleJumpGame = ({ petSprite, onClose, petId }) => {
     >
       <div
         style={{
-          width: DJ_WIDTH,
-          height: DJ_HEIGHT,
-          transform: isInMinigameContainer ? `scale(${scale})` : `scale(var(--game-scale, ${scale}))`,
-          transformOrigin: 'center center',
-          position: 'relative',
+          width: `${containerSize.width}px`,
+          height: `${containerSize.height}px`,
+          transform: 'none',
+          transformOrigin: 'top left',
+          position: 'absolute',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
           background: '#fef9c3',
-          bottom: '0px',
           overflow: 'hidden'
         }}
       >
@@ -564,50 +613,51 @@ const DoodleJumpGame = ({ petSprite, onClose, petId }) => {
             position: 'absolute',
             left: 0,
             top: y,
-            width: '100%',
-            height: DJ_HEIGHT,
+            width: `${containerSize.width}px`,
+            height: `${containerSize.height}px`,
             backgroundImage: `url(sprites/minigames/doodle-jump/back.png)`,
-            backgroundSize: `${DJ_WIDTH}px ${DJ_HEIGHT}px`,
+            backgroundSize: `${containerSize.width}px ${containerSize.height}px`,
             backgroundRepeat: 'no-repeat',
+            backgroundPosition: 'center center',
             zIndex: 0,
           }}
         />
       ))}
       
       {/* Питомец */}
-              <img
-          src={petSprite}
-          alt="pet"
+      <img
+        src={petSprite}
+        alt="pet"
+        style={{
+          position: 'absolute',
+          left: petX.current,
+          top: petY.current,
+          width: getScaledPetSize(scale),
+          height: getScaledPetSize(scale),
+          zIndex: 2,
+          userSelect: 'none',
+          pointerEvents: 'none',
+        }}
+      />
+      
+      {/* Платформы-танки */}
+      {platforms.current.map((plat, idx) => (
+        <img
+          key={idx}
+          ref={el => platformRefs.current[idx] = el}
+          src={plat.sprite}
+          alt="tank platform"
           style={{
             position: 'absolute',
-            left: petX.current,
-            top: petY.current,
-            width: DJ_PET_SIZE,
-            height: DJ_PET_SIZE,
-            zIndex: 2,
+            left: plat.x - (getScaledTankDisplayWidth(scale) - getScaledPlatformWidth(scale)) / 2, // центрируем танк относительно физического тела
+            top: plat.y - (getScaledTankDisplayHeight(scale) - getScaledPlatformHeight(scale)), // выравниваем по нижней границе
+            width: getScaledTankDisplayWidth(scale),
+            height: getScaledTankDisplayHeight(scale),
+            zIndex: 3,
             userSelect: 'none',
             pointerEvents: 'none',
           }}
         />
-      
-      {/* Платформы-танки */}
-      {platforms.current.map((plat, idx) => (
-                  <img
-            key={idx}
-            ref={el => platformRefs.current[idx] = el}
-            src={plat.sprite}
-            alt="tank platform"
-            style={{
-              position: 'absolute',
-              left: plat.x - (DJ_TANK_DISPLAY_WIDTH - DJ_PLATFORM_WIDTH) / 2, // центрируем танк относительно физического тела
-              top: plat.y - (DJ_TANK_DISPLAY_HEIGHT - DJ_PLATFORM_HEIGHT), // выравниваем по нижней границе
-              width: DJ_TANK_DISPLAY_WIDTH,
-              height: DJ_TANK_DISPLAY_HEIGHT,
-              zIndex: 3,
-              userSelect: 'none',
-              pointerEvents: 'none',
-            }}
-          />
       ))}
       
 
