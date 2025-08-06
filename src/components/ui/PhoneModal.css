@@ -1,3 +1,84 @@
+/* Немедленное применение стилей для мини-игр */
+.minigame-container,
+.minigame-container *,
+.minigame-container .crossyroad-game,
+.minigame-container .doodlejump-game,
+.minigame-container .flappybird-game,
+.minigame-container .zuma-game,
+.minigame-container canvas {
+  box-sizing: border-box !important;
+}
+
+/* Принудительное применение стилей без задержки */
+.minigame-container .crossyroad-game,
+.minigame-container .doodlejump-game,
+.minigame-container .flappybird-game,
+.minigame-container .zuma-game {
+  width: 100% !important;
+  height: 100% !important;
+  max-width: none !important;
+  max-height: none !important;
+  position: relative !important;
+  overflow: hidden !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  flex: 1 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: none !important;
+  border-radius: 0 !important;
+  box-sizing: border-box !important;
+}
+
+/* Принудительное применение стилей для canvas */
+.minigame-container canvas {
+  width: 100% !important;
+  height: 100% !important;
+  max-width: none !important;
+  max-height: none !important;
+  object-fit: cover !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: none !important;
+  border-radius: 0 !important;
+  box-sizing: border-box !important;
+  display: block !important;
+}
+
+/* Принудительное применение стилей для модального контента */
+.minigame-container .pet-minigame-modal-content {
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  background: #000 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  transform: none !important;
+  max-width: none !important;
+  max-height: none !important;
+  width: 100% !important;
+  height: 100% !important;
+  display: flex !important;
+  flex-direction: column !important;
+  box-sizing: border-box !important;
+}
+
+.minigame-container .pet-minigame-modal-body {
+  flex: 1 !important;
+  height: 100% !important;
+  padding: 0 !important;
+  min-height: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  box-sizing: border-box !important;
+}
+
 /* Phone Modal Overlay */
 .phone-modal-overlay {
   position: fixed;
@@ -3617,15 +3698,14 @@
 }
 
 .minigame-container {
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  position: relative;
-  flex: 1;
-  position: relative;
-  overflow: hidden;
-  width: 100%;
-  height: 100%;
+  width: 100% !important;
+  height: 100% !important;
+  overflow: hidden !important;
+  position: relative !important;
+  flex: 1 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  box-sizing: border-box !important;
 }
 
 .minigame-content {
@@ -3647,21 +3727,22 @@
 }
 
 .minigame-container .pet-minigame-modal-content {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: #000;
-  border-radius: 0;
-  box-shadow: none;
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  background: #000 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
   transform: none !important;
-  max-width: none;
-  max-height: none;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
+  max-width: none !important;
+  max-height: none !important;
+  width: 100% !important;
+  height: 100% !important;
+  display: flex !important;
+  flex-direction: column !important;
+  box-sizing: border-box !important;
 }
 
 .minigame-container .pet-minigame-modal-header {
@@ -3669,29 +3750,105 @@
 }
 
 .minigame-container .pet-minigame-modal-body {
-  flex: 1;
-  height: 100%;
-  padding: 0;
-  min-height: 0;
-  display: flex;
-  flex-direction: column;
+  flex: 1 !important;
+  height: 100% !important;
+  padding: 0 !important;
+  min-height: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  box-sizing: border-box !important;
+}
+
+/* Принудительное применение стилей для внутренних div'ов игр */
+.minigame-container .crossyroad-game > div,
+.minigame-container .doodlejump-game > div,
+.minigame-container .flappybird-game > div,
+.minigame-container .zuma-game > div {
+  position: absolute !important;
+  transform-origin: top left !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  box-sizing: border-box !important;
+  overflow: hidden !important;
+  width: 320px !important;
+  height: 420px !important;
+}
+
+/* Принудительное масштабирование всех элементов внутри игр */
+.minigame-container .crossyroad-game *,
+.minigame-container .doodlejump-game *,
+.minigame-container .flappybird-game *,
+.minigame-container .zuma-game * {
+  transform-origin: center center !important;
+}
+
+/* Принудительное масштабирование изображений внутри игр */
+.minigame-container .crossyroad-game img,
+.minigame-container .doodlejump-game img,
+.minigame-container .flappybird-game img,
+.minigame-container .zuma-game img {
+  transform-origin: center center !important;
+  max-width: 100% !important;
+  max-height: 100% !important;
+}
+
+/* Принудительное масштабирование всех элементов с фиксированными размерами */
+.minigame-container .crossyroad-game *,
+.minigame-container .doodlejump-game *,
+.minigame-container .flappybird-game *,
+.minigame-container .zuma-game * {
+  max-width: 100% !important;
+  max-height: 100% !important;
+  box-sizing: border-box !important;
+}
+
+/* Принудительное масштабирование фоновых изображений */
+.minigame-container .crossyroad-game div[style*="background"],
+.minigame-container .doodlejump-game div[style*="background"],
+.minigame-container .flappybird-game div[style*="background"],
+.minigame-container .zuma-game div[style*="background"] {
+  background-size: 100% 100% !important;
+  background-position: center !important;
+}
+
+/* Принудительное масштабирование всех игровых элементов */
+.minigame-container .crossyroad-game *,
+.minigame-container .doodlejump-game *,
+.minigame-container .flappybird-game *,
+.minigame-container .zuma-game * {
+  transform-origin: center center !important;
+}
+
+/* Принудительное масштабирование позиций элементов */
+.minigame-container .crossyroad-game img[style*="left"],
+.minigame-container .crossyroad-game img[style*="top"],
+.minigame-container .doodlejump-game img[style*="left"],
+.minigame-container .doodlejump-game img[style*="top"],
+.minigame-container .flappybird-game img[style*="left"],
+.minigame-container .flappybird-game img[style*="top"],
+.minigame-container .zuma-game img[style*="left"],
+.minigame-container .zuma-game img[style*="top"] {
+  transform-origin: center center !important;
 }
 
 /* Адаптация игрового контента для телефона */
 .minigame-container canvas {
-  max-width: 100%;
-  max-height: 100%;
-  object-fit: contain;
+  width: 100% !important;
+  height: 100% !important;
+  max-width: none !important;
+  max-height: none !important;
+  object-fit: cover !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: none !important;
+  border-radius: 0 !important;
+  box-sizing: border-box !important;
+  display: block !important;
 }
 
-/* Мобильные элементы управления */
+/* Мобильные элементы управления - скрыты */
 .minigame-container .mobile-controls {
-  position: absolute;
-  bottom: 10px;
-  left: 10px;
-  right: 10px;
-  z-index: 10;
-  pointer-events: auto;
+  display: none !important;
 }
 
 /* Специальные стили для мобильных элементов управления в телефоне */
@@ -3742,7 +3899,7 @@
 /* Мобильные стили для приложения питомца */
 @media (max-width: 768px) {
   .pet-container {
-    padding: 8px;
+   
     gap: 12px;
   }
   
@@ -3802,19 +3959,19 @@
 .minigame-container .zuma-game {
   width: 100% !important;
   height: 100% !important;
-  max-width: 100% !important;
-  max-height: 100% !important;
-  width: 100% !important;
-  height: 100% !important;
-  position: relative !important;
-  overflow: hidden !important;
-  display: flex !important;
-  flex-direction: column !important;
   max-width: none !important;
   max-height: none !important;
+  position: relative !important;
+  overflow: hidden !important;
+  display: block !important;
   min-width: 0 !important;
   min-height: 0 !important;
-  flex: 1 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: none !important;
+  border-radius: 0 !important;
+  box-sizing: border-box !important;
+  transform: none !important;
 }
 
 /* Принудительное переопределение inline стилей игр */
@@ -3826,17 +3983,33 @@
   height: 100% !important;
 }
 
+/* Стили для внутренних div'ов игр */
+.minigame-container .crossyroad-game > div,
+.minigame-container .doodlejump-game > div,
+.minigame-container .flappybird-game > div,
+.minigame-container .zuma-game > div {
+  position: absolute !important;
+  transform-origin: top left !important;
+  margin: 0 !important;
+  width: 320px !important;
+  height: 420px !important;
+}
+
 .minigame-container .crossyroad-game canvas,
 .minigame-container .doodlejump-game canvas,
 .minigame-container .flappybird-game canvas,
 .minigame-container .zuma-game canvas {
   width: 100% !important;
   height: 100% !important;
-  object-fit: contain !important;
+  object-fit: cover !important;
   display: block !important;
   flex: 1 !important;
   max-width: none !important;
   max-height: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: none !important;
+  border-radius: 0 !important;
 }
 
 /* Принудительное переопределение inline стилей canvas */
@@ -3873,6 +4046,7 @@
   .minigame-container .zuma-game {
     width: 100% !important;
     height: 100% !important;
+    display: block !important;
   }
   
   .minigame-container .crossyroad-game canvas,
@@ -3881,6 +4055,13 @@
   .minigame-container .zuma-game canvas {
     width: 100% !important;
     height: 100% !important;
+  }
+  
+  .minigame-container .crossyroad-game > div,
+  .minigame-container .doodlejump-game > div,
+  .minigame-container .flappybird-game > div,
+  .minigame-container .zuma-game > div {
+    margin: auto !important;
   }
 }
 

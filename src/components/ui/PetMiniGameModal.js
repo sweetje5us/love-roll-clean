@@ -3,7 +3,6 @@ import { motion } from 'framer-motion';
 import { getStaticPath } from '../../utils/pathUtils';
 import './PetMiniGameModal.css';
 import { usePets } from '../../contexts/PetContext';
-import { Joystick } from 'react-joystick-component';
 // Убираем импорт мобильных оптимизаций для лучшего игрового процесса
 
 // Функция для вычисления масштаба игры под размер контейнера
@@ -23,13 +22,34 @@ const useGameScale = (originalWidth, originalHeight) => {
       const containerWidth = rect.width;
       const containerHeight = rect.height;
 
-      // Вычисляем масштаб, чтобы игра поместилась в контейнер по ширине
-      // По высоте не ограничиваем, чтобы игра могла использовать всю доступную высоту
-      const scaleX = containerWidth / originalWidth;
-      const newScale = Math.min(scaleX, 1); // Не увеличиваем больше оригинального размера
-
-      setScale(newScale);
-      setContainerSize({ width: containerWidth, height: containerHeight });
+      // Проверяем, находимся ли мы внутри minigame-container
+      const isInMinigameContainer = container.closest('.minigame-container');
+      
+      if (isInMinigameContainer) {
+        // Внутри телефона - вычисляем масштаб для правильного размера
+        const scaleX = containerWidth / originalWidth;
+        const scaleY = containerHeight / originalHeight;
+        const newScale = Math.min(scaleX, scaleY); // Масштабируем под размер контейнера
+        setScale(newScale);
+        setContainerSize({ width: containerWidth, height: containerHeight });
+        
+        // Устанавливаем CSS переменную для масштабирования
+        if (container) {
+          container.style.setProperty('--game-scale', newScale.toString());
+        }
+        
+        // Отладочная информация
+        console.log('Container size:', containerWidth, 'x', containerHeight);
+        console.log('Game size:', originalWidth, 'x', originalHeight);
+        console.log('Scale:', newScale);
+      } else {
+        // Вне телефона - используем оригинальную логику масштабирования
+        const scaleX = containerWidth / originalWidth;
+        const scaleY = containerHeight / originalHeight;
+        const newScale = Math.min(scaleX, scaleY, 1); // Не увеличиваем больше оригинального размера
+        setScale(newScale);
+        setContainerSize({ width: containerWidth, height: containerHeight });
+      }
     };
 
     updateScale();
@@ -44,7 +64,28 @@ const useGameScale = (originalWidth, originalHeight) => {
     };
   }, [originalWidth, originalHeight]);
 
-  return { scale, containerSize, containerRef };
+  return { scale, containerSize, containerRef, isInMinigameContainer: containerRef.current?.closest('.minigame-container') };
+};
+
+// Функция для масштабирования размеров объектов
+const useScaledDimensions = (originalWidth, originalHeight) => {
+  const { scale, isInMinigameContainer } = useGameScale(originalWidth, originalHeight);
+  
+  const getScaledSize = (size) => {
+    if (isInMinigameContainer) {
+      return size * scale;
+    }
+    return size;
+  };
+  
+  const getScaledPosition = (pos) => {
+    if (isInMinigameContainer) {
+      return pos * scale;
+    }
+    return pos;
+  };
+  
+  return { getScaledSize, getScaledPosition, scale, isInMinigameContainer };
 };
 
 // Длительность анимаций Zuma (мс)
@@ -243,7 +284,7 @@ const DoodleJumpGame = ({ petSprite, onClose, petId }) => {
   const [rewarded, setRewarded] = useState(false);
   
   // Используем масштабирование
-  const { scale, containerSize, containerRef } = useGameScale(DJ_WIDTH, DJ_HEIGHT);
+  const { scale, containerSize, containerRef, isInMinigameContainer } = useGameScale(DJ_WIDTH, DJ_HEIGHT);
 
 
   // refs для физики
@@ -498,7 +539,10 @@ const DoodleJumpGame = ({ petSprite, onClose, petId }) => {
         overflow: 'hidden',
         display: 'flex',
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
+        transform: 'none',
+        transition: 'none',
+        animation: 'none'
       }}
       tabIndex={0}
       onClick={() => null}
@@ -507,11 +551,12 @@ const DoodleJumpGame = ({ petSprite, onClose, petId }) => {
         style={{
           width: DJ_WIDTH,
           height: DJ_HEIGHT,
-          transform: `scale(${scale})`,
+          transform: isInMinigameContainer ? `scale(${scale})` : `scale(var(--game-scale, ${scale}))`,
           transformOrigin: 'center center',
           position: 'relative',
           background: '#fef9c3',
-          bottom: '35px'
+          bottom: '0px',
+          overflow: 'hidden'
         }}
       >
       {/* Задние слои параллакс фона */}
@@ -761,7 +806,7 @@ function createCarObstacle(x, y, dir) {
 function generateCarPositions(laneY, carCount, carWidth = 60, direction = 1) {
   const positions = [];
   const minSpacing = carWidth + 20; // Минимальное расстояние между машинами
-  const laneWidth = CR_WIDTH;
+  const laneWidth = CR_WIDTH; // Используем оригинальную ширину для вычислений
   
   for (let i = 0; i < carCount; i++) {
     let x;
@@ -786,6 +831,63 @@ function getRandomObstacleX() {
   return Math.random() * (CR_WIDTH - 60); // Используем стандартную ширину спрайта машины
 }
 
+// Функция для генерации динамической конфигурации полос
+function generateLaneConfiguration(level) {
+  // Базовое количество полос увеличивается с уровнем
+  const baseLanes = Math.min(9, 5 + Math.floor(level / 3)); // от 5 до 9 полос
+  
+  // Определяем количество дорожных полос (от 2 до 5)
+  const roadLanesCount = Math.min(5, 2 + Math.floor(level / 2));
+  
+  // Создаем массив полос (true = дорога, false = безопасная)
+  const lanes = new Array(baseLanes).fill(false);
+  
+  // Гарантируем безопасные полосы: начальная, конечная и еще одна
+  lanes[0] = false; // Начальная полоса всегда безопасная
+  lanes[baseLanes - 1] = false; // Конечная полоса всегда безопасная
+  
+  // Выбираем случайную безопасную полосу между начальной и конечной
+  const safeLaneIndex = 1 + Math.floor(Math.random() * (baseLanes - 2));
+  lanes[safeLaneIndex] = false;
+  
+  // Теперь размещаем дорожные полосы
+  const availableLanes = [];
+  for (let i = 1; i < baseLanes - 1; i++) {
+    if (i !== safeLaneIndex) {
+      availableLanes.push(i);
+    }
+  }
+  
+  // Выбираем случайные полосы для дорог
+  const selectedRoadLanes = [];
+  for (let i = 0; i < Math.min(roadLanesCount, availableLanes.length); i++) {
+    const randomIndex = Math.floor(Math.random() * availableLanes.length);
+    const laneIndex = availableLanes.splice(randomIndex, 1)[0];
+    selectedRoadLanes.push(laneIndex);
+  }
+  
+  // Отмечаем выбранные полосы как дорожные
+  selectedRoadLanes.forEach(laneIndex => {
+    lanes[laneIndex] = true;
+  });
+  
+  return {
+    lanes: lanes,
+    totalLanes: baseLanes,
+    roadLanes: selectedRoadLanes,
+    safeLanes: [0, safeLaneIndex, baseLanes - 1]
+  };
+}
+
+// Функция для определения, является ли полоса дорожной
+function isLaneRoad(laneIndex, laneConfig) {
+  if (!laneConfig || !laneConfig.lanes) {
+    // Если конфигурация не загружена, используем старую логику для совместимости
+    return laneIndex % 2 === 1;
+  }
+  return laneConfig.lanes[laneIndex] === true;
+}
+
 const CrossyRoadGame = ({ petSprite, onClose, petId }) => {
   const { updatePetStats, getPetState } = usePets();
   const [renderTick, setRenderTick] = useState(0);
@@ -796,13 +898,23 @@ const CrossyRoadGame = ({ petSprite, onClose, petId }) => {
   const [level, setLevel] = useState(1);
   const [roadTiles] = useState(getRoadTiles()); // Тайлы дороги
   const [backgroundTile, setBackgroundTile] = useState(getRandomBackgroundTile()); // Фоновый тайл
+  const [laneConfig, setLaneConfig] = useState(null); // Конфигурация полос (инициализируется позже)
   
-  // Используем масштабирование
-  const { scale, containerSize, containerRef } = useGameScale(CR_WIDTH, CR_HEIGHT);
+  // Используем фиксированный масштаб для minigame-container
+  const isInMinigameContainer = true; // Всегда true для CrossyRoad в телефоне
+  const containerSize = { width: 288, height: 376 }; // Фиксированный размер экрана телефона
+  const scaleX = containerSize.width / CR_WIDTH;
+  const scaleY = containerSize.height / CR_HEIGHT;
+  const scale = Math.min(scaleX, scaleY); // 288/320 = 0.9, 376/420 = 0.895, берем 0.895
+  const containerRef = useRef(null);
+  
+
+  
+
 
   // refs для физики
-  const petX = useRef(CR_WIDTH / 2 - CR_PET_SIZE / 2);
-  const petY = useRef(CR_HEIGHT - CR_PET_SIZE - 8);
+  const petX = useRef(containerSize.width / 2 - CR_PET_SIZE * scale / 2);
+  const petY = useRef(containerSize.height - CR_PET_SIZE * scale - 8); // Ставим на самую нижнюю безопасную полосу (строка 0)
   const obstacles = useRef([]); // [{x, y, dir, sprite}]
   const moveDir = useRef(0); // -1 влево, 1 вправо
   const moveForward = useRef(false);
@@ -810,9 +922,10 @@ const CrossyRoadGame = ({ petSprite, onClose, petId }) => {
   // refs для прямого управления DOM элементами машин
   const carRefs = useRef({});
   
-  // Простая система респауна
+  // Улучшенная система респауна
   const spawnTimer = useRef(0);
   const spawnInterval = useRef(1500); // 1.5 секунды между появлением новых машин
+  const carGroupTimer = useRef(0); // Таймер для создания групп машин
 
   // useEffect для отзеркаливания машин
   useEffect(() => {
@@ -826,9 +939,57 @@ const CrossyRoadGame = ({ petSprite, onClose, petId }) => {
   // Управление
   useEffect(() => {
     const handleKey = (e) => {
-      if (e.code === 'ArrowLeft' || e.code === 'KeyA') moveDir.current = -1;
-      if (e.code === 'ArrowRight' || e.code === 'KeyD') moveDir.current = 1;
-      if (e.code === 'ArrowUp' || e.code === 'Space') moveForward.current = true;
+      if (e.code === 'ArrowLeft' || e.code === 'KeyA') {
+        moveDir.current = -1;
+        console.log('LEFT pressed - Pet position:', petX.current, petY.current);
+        
+        // Определяем, на какой полосе находится питомец
+        const petLaneIndex = Math.floor((containerSize.height - petY.current) / (CR_LANE_HEIGHT * scale));
+        const isPetOnRoadLane = isLaneRoad(petLaneIndex, laneConfig);
+        console.log('Pet lane index:', petLaneIndex, 'Is on road lane:', isPetOnRoadLane);
+        
+        if (isPetOnRoadLane) {
+          const obstaclesOnLane = obstacles.current.filter(obs => 
+            Math.floor((containerSize.height - obs.y - CR_OBSTACLE_HEIGHT * scale / 2) / (CR_LANE_HEIGHT * scale)) === petLaneIndex
+          );
+          console.log('Obstacles on same lane:', obstaclesOnLane.length);
+        }
+      }
+      if (e.code === 'ArrowRight' || e.code === 'KeyD') {
+        moveDir.current = 1;
+        console.log('RIGHT pressed - Pet position:', petX.current, petY.current);
+        
+        // Определяем, на какой полосе находится питомец
+        const petLaneIndex = Math.floor((containerSize.height - petY.current) / (CR_LANE_HEIGHT * scale));
+        const isPetOnRoadLane = isLaneRoad(petLaneIndex, laneConfig);
+        console.log('Pet lane index:', petLaneIndex, 'Is on road lane:', isPetOnRoadLane);
+        
+        if (isPetOnRoadLane) {
+          const obstaclesOnLane = obstacles.current.filter(obs => 
+            Math.floor((containerSize.height - obs.y - CR_OBSTACLE_HEIGHT * scale / 2) / (CR_LANE_HEIGHT * scale)) === petLaneIndex
+          );
+          console.log('Obstacles on same lane:', obstaclesOnLane.length);
+        }
+      }
+      if (e.code === 'ArrowUp' || e.code === 'Space') {
+        moveForward.current = true;
+        console.log('UP pressed - Pet position:', petX.current, petY.current);
+        
+        // Определяем, на какой полосе находится питомец
+        const petLaneIndex = Math.floor((containerSize.height - petY.current) / (CR_LANE_HEIGHT * scale));
+        const isPetOnRoadLane = isLaneRoad(petLaneIndex, laneConfig);
+        console.log('Pet lane index:', petLaneIndex, 'Is on road lane:', isPetOnRoadLane);
+        
+        if (isPetOnRoadLane) {
+          const obstaclesOnLane = obstacles.current.filter(obs => 
+            Math.floor((containerSize.height - obs.y - CR_OBSTACLE_HEIGHT * scale / 2) / (CR_LANE_HEIGHT * scale)) === petLaneIndex
+          );
+          console.log('Obstacles on same lane:', obstaclesOnLane.length);
+          if (obstaclesOnLane.length > 0) {
+            console.log('Car Y positions:', obstaclesOnLane.map(obs => obs.y));
+          }
+        }
+      }
     };
     const handleKeyUp = (e) => {
       if (e.code === 'ArrowLeft' || e.code === 'KeyA' || e.code === 'ArrowRight' || e.code === 'KeyD') moveDir.current = 0;
@@ -864,36 +1025,38 @@ const CrossyRoadGame = ({ petSprite, onClose, petId }) => {
       
       // Движение питомца
       const currentMoveDir = window.crossyMoveDir || moveDir.current;
-      petX.current += currentMoveDir * 300 * deltaTimeSeconds;
-      if (petX.current < 0) petX.current = 0;
-      if (petX.current > CR_WIDTH - CR_PET_SIZE) petX.current = CR_WIDTH - CR_PET_SIZE;
+              petX.current += currentMoveDir * 300 * deltaTimeSeconds;
+        if (petX.current < 0) petX.current = 0;
+        if (petX.current > containerSize.width - CR_PET_SIZE * scale) petX.current = containerSize.width - CR_PET_SIZE * scale;
       
       // Движение питомца вперёд
       if (window.crossyMoveForward) {
-        petY.current -= CR_LANE_HEIGHT;
+        petY.current -= CR_LANE_HEIGHT * scale;
         if (petY.current < 0) petY.current = 0;
         window.crossyMoveForward = false;
       }
       if (moveForward.current) {
-        petY.current -= CR_LANE_HEIGHT;
+        petY.current -= CR_LANE_HEIGHT * scale;
         if (petY.current < 0) petY.current = 0;
         moveForward.current = false;
       }
       
-      // Движение машин
-      const speed = (CR_OBSTACLE_SPEED_PER_SECOND + (level - 1) * 30) * deltaTimeSeconds;
+      // Движение машин с прогрессивной сложностью
+      const baseSpeed = CR_OBSTACLE_SPEED_PER_SECOND;
+      const speedIncrease = Math.min((level - 1) * 25, 200); // Ограничиваем максимальное увеличение скорости
+      const speed = (baseSpeed + speedIncrease) * deltaTimeSeconds;
       
       for (let i = obstacles.current.length - 1; i >= 0; i--) {
         const obs = obstacles.current[i];
         obs.x += obs.dir * speed;
         
         // Удаляем машины, которые вышли за пределы экрана
-        if (obs.dir > 0 && obs.x > CR_WIDTH + 60) {
+        if (obs.dir > 0 && obs.x > containerSize.width + 60 * scale) {
           obstacles.current.splice(i, 1);
           if (carRefs.current[i]) {
             delete carRefs.current[i];
           }
-        } else if (obs.dir < 0 && obs.x < -60) {
+        } else if (obs.dir < 0 && obs.x < -60 * scale) {
           obstacles.current.splice(i, 1);
           if (carRefs.current[i]) {
             delete carRefs.current[i];
@@ -901,36 +1064,107 @@ const CrossyRoadGame = ({ petSprite, onClose, petId }) => {
         }
       }
       
-      // Создание новых машин - частота и количество зависят от уровня
+      // Улучшенная система спавна машин
       spawnTimer.current += deltaTime;
-      const spawnTime = Math.max(800, 2500 - (level - 1) * 150); // от 2.5 до 0.8 секунды
-      const maxCars = Math.min(6 + Math.floor(level / 2), 12); // Увеличиваем максимальное количество машин с уровнем
+      carGroupTimer.current += deltaTime;
       
-      if (spawnTimer.current >= spawnTime && obstacles.current.length < maxCars) {
+      // Прогрессивная сложность: увеличиваем частоту спавна с уровнем
+      const baseSpawnTime = Math.max(600, 2000 - (level - 1) * 120); // от 2.0 до 0.6 секунды
+      const maxCars = Math.min(8 + Math.floor(level / 2), 15); // Больше машин на экране
+      
+      // Создание групп машин для более динамичного геймплея
+      const groupSpawnTime = Math.max(3000, 8000 - (level - 1) * 500); // Группы появляются реже
+      
+      if (spawnTimer.current >= baseSpawnTime && obstacles.current.length < maxCars) {
         spawnTimer.current = 0;
         
-        // Выбираем случайную дорожную полосу
-        const lanes = Math.min(CR_LANE_COUNT, 3 + Math.floor(level / 2));
-        const roadLanes = [];
-        for (let i = 0; i < lanes; i++) {
-          if (i % 2 === 1) roadLanes.push(i);
+        // Определяем активные дорожные полосы из текущей конфигурации
+        let roadLanes = [];
+        if (laneConfig && laneConfig.roadLanes) {
+          roadLanes = laneConfig.roadLanes.slice(); // Копируем массив дорожных полос
+        } else {
+          // Если конфигурация не загружена, используем старую логику
+          const lanes = Math.min(CR_LANE_COUNT, 3 + Math.floor(level / 3));
+          for (let i = 0; i < lanes; i++) {
+            if (i % 2 === 1) roadLanes.push(i);
+          }
+        }
+        
+        if (roadLanes.length > 0) {
+          // Выбираем полосу с наименьшим количеством машин
+          const laneCarCounts = {};
+          roadLanes.forEach(laneIndex => {
+            const laneY = containerSize.height - (laneIndex + 1) * CR_LANE_HEIGHT * scale;
+            laneCarCounts[laneIndex] = obstacles.current.filter(obs => 
+              Math.abs(obs.y - laneY) < CR_LANE_HEIGHT * scale / 2
+            ).length;
+          });
+          
+          // Находим полосы с наименьшим количеством машин
+          const minCars = Math.min(...Object.values(laneCarCounts));
+          const availableLanes = roadLanes.filter(laneIndex => laneCarCounts[laneIndex] === minCars);
+          
+          if (availableLanes.length > 0) {
+            const laneIndex = availableLanes[Math.floor(Math.random() * availableLanes.length)];
+            const laneY = containerSize.height - (laneIndex + 1) * CR_LANE_HEIGHT * scale;
+            const direction = laneIndex % 4 === 1 ? 1 : -1;
+            const spawnX = direction > 0 ? -100 * scale : containerSize.width + 100 * scale;
+            
+            // Проверяем безопасное расстояние от других машин на той же полосе
+            const carsOnLane = obstacles.current.filter(obs => 
+              Math.abs(obs.y - laneY) < CR_LANE_HEIGHT * scale / 2
+            );
+            
+            const minSafeDistance = 120 * scale; // Минимальное безопасное расстояние
+            const canSpawn = carsOnLane.every(car => {
+              const distance = Math.abs(car.x - spawnX);
+              return distance > minSafeDistance;
+            });
+            
+            if (canSpawn) {
+              const newCar = createCarObstacle(spawnX, laneY, direction);
+              if (newCar) {
+                obstacles.current.push(newCar);
+                console.log('Car created on lane:', laneIndex, 'at Y:', laneY, 'direction:', direction);
+              }
+            }
+          }
+        }
+      }
+      
+      // Создание групп машин для создания "потоков"
+      if (carGroupTimer.current >= groupSpawnTime && obstacles.current.length < maxCars - 2) {
+        carGroupTimer.current = 0;
+        
+        let roadLanes = [];
+        if (laneConfig && laneConfig.roadLanes) {
+          roadLanes = laneConfig.roadLanes.slice(); // Используем текущую конфигурацию полос
+        } else {
+          // Если конфигурация не загружена, используем старую логику
+          const lanes = Math.min(CR_LANE_COUNT, 3 + Math.floor(level / 3));
+          for (let i = 0; i < lanes; i++) {
+            if (i % 2 === 1) roadLanes.push(i);
+          }
         }
         
         if (roadLanes.length > 0) {
           const laneIndex = roadLanes[Math.floor(Math.random() * roadLanes.length)];
-          const laneY = CR_HEIGHT - (laneIndex + 1) * CR_LANE_HEIGHT;
+          const laneY = containerSize.height - (laneIndex + 1) * CR_LANE_HEIGHT * scale;
           const direction = laneIndex % 4 === 1 ? 1 : -1;
-          const spawnX = direction > 0 ? -100 : CR_WIDTH + 100;
           
-          // Проверяем, нет ли уже машины на этой полосе
-          const hasCarOnLane = obstacles.current.some(obs => 
-            Math.abs(obs.y - laneY) < CR_LANE_HEIGHT / 2
-          );
+          // Создаем группу из 2-3 машин
+          const groupSize = Math.min(2 + Math.floor(level / 4), 4);
+          const minSpacing = 60 * scale;
           
-          if (!hasCarOnLane) {
+          for (let j = 0; j < groupSize; j++) {
+            const spawnX = direction > 0 
+              ? -100 * scale - (j * minSpacing)
+              : containerSize.width + 100 * scale + (j * minSpacing);
+            
             const newCar = createCarObstacle(spawnX, laneY, direction);
             if (newCar) {
               obstacles.current.push(newCar);
+              console.log('Group car created on lane:', laneIndex, 'group member:', j + 1);
             }
           }
         }
@@ -938,20 +1172,31 @@ const CrossyRoadGame = ({ petSprite, onClose, petId }) => {
       
       // Проверка столкновений
       const petLeft = petX.current;
-      const petRight = petX.current + CR_PET_SIZE;
+      const petRight = petX.current + CR_PET_SIZE * scale;
       const petTop = petY.current;
-      const petBottom = petY.current + CR_PET_SIZE;
+      const petBottom = petY.current + CR_PET_SIZE * scale;
       
-      for (let obs of obstacles.current) {
-        if (Math.abs(obs.y - petY.current) <= CR_LANE_HEIGHT) {
-          if (
-            petTop < obs.y + obs.sprite.displayHeight &&
-            petBottom > obs.y &&
-            petLeft < obs.x + obs.sprite.displayWidth &&
-            petRight > obs.x
-          ) {
-            setGameOver(true);
-            return;
+      // Определяем, на какой полосе находится питомец
+      const petLaneIndex = Math.floor((containerSize.height - petY.current - CR_PET_SIZE * scale / 2) / (CR_LANE_HEIGHT * scale));
+      const isPetOnRoadLane = isLaneRoad(petLaneIndex, laneConfig); // Используем динамическую конфигурацию
+      
+      // Проверяем коллизии только если питомец на дорожной полосе
+      if (isPetOnRoadLane) {
+        for (let obs of obstacles.current) {
+          const obsLaneIndex = Math.floor((containerSize.height - obs.y - CR_OBSTACLE_HEIGHT * scale / 2) / (CR_LANE_HEIGHT * scale));
+          
+          // Проверяем коллизию только если препятствие на той же полосе
+          if (obsLaneIndex === petLaneIndex) {
+            if (
+              petTop < obs.y + obs.sprite.displayHeight * scale &&
+              petBottom > obs.y &&
+              petLeft < obs.x + obs.sprite.displayWidth * scale &&
+              petRight > obs.x
+            ) {
+              console.log('Collision detected! Pet:', petLeft, petTop, petRight, petBottom, 'Car:', obs.x, obs.y, obs.x + obs.sprite.displayWidth * scale, obs.y + obs.sprite.displayHeight * scale);
+              setGameOver(true);
+              return;
+            }
           }
         }
       }
@@ -1009,35 +1254,44 @@ const CrossyRoadGame = ({ petSprite, onClose, petId }) => {
     // Выбираем новый фоновый тайл
     setBackgroundTile(getRandomBackgroundTile());
     
+    // Генерируем новую конфигурацию полос для этого уровня
+    const newLaneConfig = generateLaneConfiguration(level);
+    setLaneConfig(newLaneConfig);
+    
     // Увеличиваем сложность: больше полос с препятствиями, выше скорость
     let obsArr = [];
-    const lanes = Math.min(CR_LANE_COUNT, 3 + Math.floor(level / 2)); // от 3 до 7 полос, увеличиваем медленнее
+    const totalLanes = newLaneConfig.totalLanes;
     
-    // В упрощенной системе тайлов:
-    // - Нечетные полосы (i=1,3,5...) - дороги с машинами
-    // - Четные полосы (i=2,4,6...) - пустые полосы (газон, тротуар и т.д.)
+    console.log('Level', level, 'Lane configuration:', newLaneConfig);
+    console.log('Total lanes:', totalLanes, 'Road lanes:', newLaneConfig.roadLanes);
     
-    const startLane = lanes - 1; // Стартовая полоса всегда самая нижняя
-    
-    for (let i = 0; i < lanes; i++) {
-      const laneY = CR_HEIGHT - (i + 1) * CR_LANE_HEIGHT;
-      const isRoadLane = i % 2 === 1; // Нечетные полосы - дороги с машинами
+    for (let i = 0; i < totalLanes; i++) {
+      const laneY = containerSize.height - (i + 1) * CR_LANE_HEIGHT * scale;
+      const isRoadLane = newLaneConfig.lanes[i]; // Используем динамическую конфигурацию
       
       // Размещаем машины только на дорожных полосах
       if (isRoadLane) {
-        // Простое размещение машин
-        const obsPerLane = Math.min(2 + Math.floor(level / 3), 4); // Максимум 4 машины на полосу
-        const direction = i % 4 === 1 ? 1 : -1; // Чередуем направление движения
-        const carPositions = generateCarPositions(laneY, obsPerLane, 60, direction);
+        // Улучшенное размещение машин с прогрессивной сложностью
+        const baseCarsPerLane = Math.min(3 + Math.floor(level / 2), 6); // Больше машин на полосу
+        const direction = i % 2 === 1 ? 1 : -1; // Чередуем направление движения для разнообразия
         
-        for (let j = 0; j < obsPerLane; j++) {
-          const newCar = createCarObstacle(
-            carPositions[j],
-            laneY,
-            direction
-          );
+        // Создаем машины с лучшим распределением
+        for (let j = 0; j < baseCarsPerLane; j++) {
+          let spawnX;
+          const minSpacing = 80 * scale; // Минимальное расстояние между машинами
+          
+          if (direction < 0) {
+            // Машины справа налево
+            spawnX = containerSize.width + 100 * scale + (j * minSpacing * 1.5);
+          } else {
+            // Машины слева направо
+            spawnX = -100 * scale - (j * minSpacing * 1.5);
+          }
+          
+          const newCar = createCarObstacle(spawnX, laneY, direction);
           if (newCar) {
             obsArr.push(newCar);
+            console.log('Initial car created on lane:', i, 'at Y:', laneY, 'direction:', direction, 'position:', spawnX);
           }
         }
       }
@@ -1045,13 +1299,15 @@ const CrossyRoadGame = ({ petSprite, onClose, petId }) => {
     obstacles.current = obsArr;
     // Очищаем refs для машин
     carRefs.current = {};
-    petX.current = CR_WIDTH / 2 - CR_PET_SIZE / 2;
-    petY.current = CR_HEIGHT - CR_PET_SIZE - 8;
+    petX.current = containerSize.width / 2 - CR_PET_SIZE * scale / 2;
+    // Ставим питомца на самую нижнюю безопасную полосу (индекс 0)
+    petY.current = containerSize.height - CR_PET_SIZE * scale - 8;
     setGameOver(false);
     setWin(false);
     setRewarded(false); // Сбрасываем флаг награды для нового уровня
-    // Сбрасываем таймер респауна
+    // Сбрасываем таймеры респауна
     spawnTimer.current = 0;
+    carGroupTimer.current = 0;
     setRenderTick(t => t + 1);
   };
 
@@ -1059,9 +1315,9 @@ const CrossyRoadGame = ({ petSprite, onClose, petId }) => {
   useEffect(() => {
     if (obstacles.current.length > 0) return;
     console.log('Инициализация игры...');
-    nextLevel();
     setLevel(1);
     setScore(0);
+    nextLevel();
     // Игра запускается автоматически
     console.log('Игра запущена автоматически');
   }, []);
@@ -1080,8 +1336,9 @@ const CrossyRoadGame = ({ petSprite, onClose, petId }) => {
     setRewarded(false); // Сбрасываем флаг награды
     // Очищаем refs для машин
     carRefs.current = {};
-    // Сбрасываем таймер респауна
+    // Сбрасываем таймеры респауна
     spawnTimer.current = 0;
+    carGroupTimer.current = 0;
     nextLevel();
   };
 
@@ -1105,9 +1362,10 @@ const CrossyRoadGame = ({ petSprite, onClose, petId }) => {
         height: '100%', 
         position: 'relative', 
         overflow: 'hidden',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center'
+        transform: 'none',
+        transition: 'none',
+        animation: 'none',
+
       }}
       tabIndex={0}
       onClick={() => {
@@ -1118,12 +1376,15 @@ const CrossyRoadGame = ({ petSprite, onClose, petId }) => {
     >
       <div
         style={{
-          width: CR_WIDTH,
-          height: CR_HEIGHT,
-          transform: `scale(${scale})`,
-          transformOrigin: 'center center',
-          position: 'relative',
-          bottom: '35px'
+          width: `${containerSize.width}px`,
+          height: `${containerSize.height}px`,
+          transform: 'none',
+          transformOrigin: 'top left',
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          overflow: 'hidden',
+          border: '2px solid red' // Отладочная рамка
         }}
       >
       {/* Фоновый спрайт для всей игры */}
@@ -1133,9 +1394,9 @@ const CrossyRoadGame = ({ petSprite, onClose, petId }) => {
         style={{
           position: 'absolute',
           left: 0,
-          top: '18px', // Сдвигаем на 18px для мобильного представления
-          width: CR_WIDTH,
-          height: CR_HEIGHT,
+          top: 0,
+          width: `${containerSize.width}px`,
+          height: `${containerSize.height}px`,
           zIndex: 0,
           userSelect: 'none',
           pointerEvents: 'none',
@@ -1143,28 +1404,33 @@ const CrossyRoadGame = ({ petSprite, onClose, petId }) => {
       />
       
       {/* Дороги (состоящие из нескольких блоков) */}
-      {[...Array(CR_LANE_COUNT)].map((_, i) => {
-        const laneY = CR_HEIGHT - (i + 1) * CR_LANE_HEIGHT;
-        const isRoadLane = i % 2 === 1; // Нечетные полосы - дороги с машинами
+      {[...Array(laneConfig ? laneConfig.totalLanes : CR_LANE_COUNT)].map((_, i) => {
+        const laneY = containerSize.height - (i + 1) * CR_LANE_HEIGHT * scale;
+        const isRoadLane = isLaneRoad(i, laneConfig); // Используем динамическую конфигурацию
+        
+        // Отладочное логирование для первой итерации
+        if (i === 0) {
+          console.log('Rendering lanes. LaneConfig:', laneConfig, 'Total lanes:', laneConfig ? laneConfig.totalLanes : CR_LANE_COUNT);
+        }
         
         if (isRoadLane) {
           // Чередуем два типа дорожных тайлов для разнообразия
-          const tileSprite = i % 4 === 1 ? roadTiles.road : roadTiles.roadAlt;
+          const tileSprite = i % 2 === 1 ? roadTiles.road : roadTiles.roadAlt;
           
           // Создаем несколько блоков дороги для покрытия всей ширины
-          const blocksNeeded = Math.ceil(CR_WIDTH / tileSprite.displayWidth) + 1; // +1 для перекрытия
+          const blocksNeeded = Math.ceil(containerSize.width / (tileSprite.displayWidth * scale)) + 1; // +1 для перекрытия
           
-          return [...Array(blocksNeeded)].map((_, blockIndex) => (
+                      return [...Array(blocksNeeded)].map((_, blockIndex) => (
             <img
               key={`road-${i}-${blockIndex}`}
               src={tileSprite.src}
               alt="road tile"
               style={{
                 position: 'absolute',
-                left: blockIndex * tileSprite.displayWidth,
+                left: blockIndex * tileSprite.displayWidth * scale,
                 top: laneY,
-                width: tileSprite.displayWidth,
-                height: tileSprite.displayHeight,
+                width: tileSprite.displayWidth * scale,
+                height: tileSprite.displayHeight * scale,
                 zIndex: 1,
                 userSelect: 'none',
                 pointerEvents: 'none',
@@ -1190,8 +1456,8 @@ const CrossyRoadGame = ({ petSprite, onClose, petId }) => {
             position: 'absolute',
             left: obs.x,
             top: obs.y,
-            width: obs.sprite.displayWidth,
-            height: obs.sprite.displayHeight,
+            width: obs.sprite.displayWidth * scale,
+            height: obs.sprite.displayHeight * scale,
             zIndex: 2,
             userSelect: 'none',
             pointerEvents: 'none',
@@ -1206,8 +1472,8 @@ const CrossyRoadGame = ({ petSprite, onClose, petId }) => {
           position: 'absolute',
           left: petX.current,
           top: petY.current,
-          width: CR_PET_SIZE,
-          height: CR_PET_SIZE,
+          width: CR_PET_SIZE * scale,
+          height: CR_PET_SIZE * scale,
           zIndex: 3,
           userSelect: 'none',
           pointerEvents: 'none',
@@ -1536,7 +1802,7 @@ const ZumaGame = React.forwardRef(({ petSprite, onClose, petId, onLevelChange, o
   const [level, setLevel] = useState(1);
   
   // Используем масштабирование
-  const { scale, containerSize, containerRef } = useGameScale(ZUMA_WIDTH, ZUMA_HEIGHT);
+  const { scale, containerSize, containerRef, isInMinigameContainer } = useGameScale(ZUMA_WIDTH, ZUMA_HEIGHT);
   // Функция для вычисления параметров уровня
   const getLevelParams = (currentLevel) => {
     const BASE_CHAIN_LENGTH = 12;
@@ -2157,21 +2423,25 @@ const ZumaGame = React.forwardRef(({ petSprite, onClose, petId, onLevelChange, o
         overflow: 'hidden',
         display: 'flex',
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
+        transform: 'none',
+        transition: 'none',
+        animation: 'none'
       }}
       tabIndex={0}
       onClick={undefined}
-      onMouseMove={!isMobile ? handleMouseMove : undefined}
-      onMouseDown={!isMobile ? handleMouseDown : undefined}
+              onMouseMove={handleMouseMove}
+        onMouseDown={handleMouseDown}
     >
       <div
         style={{
           width: ZUMA_WIDTH,
           height: ZUMA_HEIGHT,
-          transform: isMobile ? 'none' : `scale(${scale})`,
+          transform: isInMinigameContainer ? `scale(${scale})` : `scale(var(--game-scale, ${scale}))`,
           transformOrigin: 'center center',
           position: 'relative',
-          bottom: isMobile ? '27px' : '35px'
+          bottom: '0px',
+          overflow: 'hidden'
         }}
       >
       {/* Многослойный анимированный фон */}
@@ -2183,7 +2453,7 @@ const ZumaGame = React.forwardRef(({ petSprite, onClose, petId, onLevelChange, o
         width: '100%',
         height: '100%',
         backgroundImage: `url(${getStaticPath('sprites/minigames/zuma/background/1.png')})`,
-        backgroundSize: `${ZUMA_WIDTH}px ${ZUMA_HEIGHT}px`,
+        backgroundSize: '100% 100%',
         backgroundPosition: 'center',
         zIndex: 0,
       }} />
@@ -2198,7 +2468,7 @@ const ZumaGame = React.forwardRef(({ petSprite, onClose, petId, onLevelChange, o
           width: '100%',
           height: '100%',
           backgroundImage: `url(${getStaticPath('sprites/minigames/zuma/background/2.png')})`,
-          backgroundSize: `${ZUMA_WIDTH}px ${ZUMA_HEIGHT}px`,
+          backgroundSize: '100% 100%',
           backgroundPosition: 'center',
           zIndex: 1,
           transform: layer2DirectionState === 1 ? 'scaleX(-1)' : 'scaleX(1)',
@@ -2219,7 +2489,7 @@ const ZumaGame = React.forwardRef(({ petSprite, onClose, petId, onLevelChange, o
         width: '100%',
         height: '100%',
         backgroundImage: `url(${getStaticPath('sprites/minigames/zuma/background/3.png')})`,
-        backgroundSize: `${ZUMA_WIDTH}px ${ZUMA_HEIGHT}px`,
+        backgroundSize: '100% 100%',
         backgroundPosition: 'center',
         zIndex: 2,
       }} />
@@ -2353,18 +2623,8 @@ const FlyingOverCityGame = React.forwardRef(({ petSprite, onClose, petId }, ref)
   const [score, setScore] = useState(0);
   const [gameOver, setGameOver] = useState(false);
   const [rewarded, setRewarded] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
-  
   // Используем масштабирование
-  const { scale, containerSize, containerRef } = useGameScale(GAME_WIDTH, GAME_HEIGHT);
-
-  // Определяем мобильное устройство
-  useEffect(() => {
-    const handleResize = () => setIsMobile(window.innerWidth < 700);
-    handleResize();
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
+  const { scale, containerSize, containerRef, isInMinigameContainer } = useGameScale(GAME_WIDTH, GAME_HEIGHT);
 
   // refs для физики
   const petX = useRef(GAME_WIDTH / 2 - PET_SIZE / 2);
@@ -2438,10 +2698,8 @@ const FlyingOverCityGame = React.forwardRef(({ petSprite, onClose, petId }, ref)
           obstacles.current[obstacles.current.length - 1].x < GAME_WIDTH - OBSTACLE_INTERVAL) {
         const buildingSprite = getRandomBuildingSprite();
         // Физические координаты Y для столкновений
-        // Спрайты отображаются с bottom: -70, что означает их нижняя граница на 70px ниже контейнера
-        // Значит их верхняя граница на: GAME_HEIGHT + 70 - высота_здания
-        // Но это неправильно! Нужно использовать те же координаты, что и для отображения
-        const physicalY = GAME_HEIGHT - buildingSprite.height; // Убираем +70, используем простые координаты
+        // Спрайты отображаются с bottom: -70, поэтому их физическая позиция должна быть на 70px выше
+        const physicalY = GAME_HEIGHT + 70 - buildingSprite.height;
         obstacles.current.push({
           x: GAME_WIDTH,
           y: physicalY, // Используем правильные физические координаты
@@ -2470,11 +2728,9 @@ const FlyingOverCityGame = React.forwardRef(({ petSprite, onClose, petId }, ref)
         }
       }
       
-      // Обновление параллакс фона
+      // Обновление параллакс фона - исправлено для устранения разрывов и скачков
       backgroundY.current += OBSTACLE_SPEED_PER_SECOND * deltaTimeSeconds * 0.5;
-      if (backgroundY.current > BACKGROUND_HEIGHT) {
-        backgroundY.current = 0;
-      }
+      // Убираем сброс backgroundY - пусть он растет бесконечно, а позиция вычисляется через модуль
       
       setRenderTick(t => t + 1);
       frame = requestAnimationFrame(loop);
@@ -2521,6 +2777,9 @@ const FlyingOverCityGame = React.forwardRef(({ petSprite, onClose, petId }, ref)
     // Очистка препятствий
     obstacles.current = [];
     
+    // Сброс параллакс фона
+    backgroundY.current = 0;
+    
     // Новый фон
     backgroundSet.current = getRandomBackgroundSet();
   };
@@ -2545,28 +2804,28 @@ const FlyingOverCityGame = React.forwardRef(({ petSprite, onClose, petId }, ref)
     >
       <div
         style={{
-          width: GAME_WIDTH,
-          height: GAME_HEIGHT,
-          transform: `scale(${scale})`,
+          width: isInMinigameContainer ? '100%' : GAME_WIDTH,
+          height: isInMinigameContainer ? '100%' : GAME_HEIGHT,
+          transform: isInMinigameContainer ? 'none' : `scale(var(--game-scale, ${scale}))`,
           transformOrigin: 'center center',
           position: 'relative',
           background: '#87CEEB',
-          bottom: '35px',
-  
+          bottom: '0px',
+          overflow: 'hidden'
         }}
       >
       {/* Параллакс фон */}
       {backgroundSet.current.layers.map((layer, index) => (
         <div
-          key={`bg-${index}`}
+          key={`bg-${index}-${renderTick}`}
           style={{
             position: 'absolute',
-            left: -(backgroundY.current * PARALLAX_SPEEDS[index]) % (GAME_WIDTH * 2),
+            left: isInMinigameContainer ? -(backgroundY.current * PARALLAX_SPEEDS[index]) % 100 : -(backgroundY.current * PARALLAX_SPEEDS[index]) % GAME_WIDTH,
             top: index === 4 ? '35px' : 0, // Самый ближний слой (индекс 4) сдвигаем на 35px для мобильного
-            width: GAME_WIDTH * 2,
-            height: GAME_HEIGHT,
+            width: isInMinigameContainer ? '200%' : GAME_WIDTH * 2,
+            height: isInMinigameContainer ? '100%' : GAME_HEIGHT,
             backgroundImage: `url(${layer})`,
-            backgroundSize: `${GAME_WIDTH}px ${GAME_HEIGHT}px`,
+            backgroundSize: isInMinigameContainer ? '50% 100%' : `${GAME_WIDTH}px ${GAME_HEIGHT}px`,
             backgroundRepeat: 'repeat-x',
             zIndex: 0,
           }}
@@ -2657,35 +2916,9 @@ const FlyingOverCityGame = React.forwardRef(({ petSprite, onClose, petId }, ref)
         </div>
       )}
       
-      {/* Начальный экран */}
-      {!gameOver && (
-        <div style={{
-          position: 'absolute',
-          top: '40%',
-          left: 0,
-          width: '100%',
-          textAlign: 'center',
-          color: '#fff',
-          fontSize: 20,
-          fontWeight: 'bold',
-          textShadow: '2px 2px 4px #000',
-          zIndex: 30
-        }}>
-          <div>Нажмите для начала игры</div>
-          <div style={{ fontSize: 16, marginTop: 8 }}>Пробел или клик для прыжка</div>
-        </div>
-      )}
+
       
-      {/* Мобильные элементы управления */}
-      {isMobile && !gameOver && (
-        <FlyingOverCityMobileControls 
-          onJump={() => {
-            if (!gameOver) {
-              velocityY.current = JUMP_VELOCITY;
-            }
-          }} 
-        />
-      )}
+      
       </div>
     </div>
   );
@@ -2754,20 +2987,7 @@ const PetMiniGameModal = ({ isOpen, pet, onClose }) => {
               <div style={{ padding: 32, textAlign: 'center' }}>Мини-игра для этого питомца не реализована</div>
             )}
           </div>
-          {/* Панель управления для мобильных — рендерится под сценой */}
-          {pet.gameType === 'can_fly' && isMobile && (
-            <FlyingOverCityMobileControls onJump={() => flappyRef.current?.jump()} />
-          )}
-          {pet.gameType === 'can_jump' && isMobile && <DoodleJumpMobileControls />}
-          {pet.gameType === 'can_walk' && isMobile && <CrossyRoadMobileControls />}
-          {pet.gameType === 'can_swim' && isMobile && (
-            <ZumaMobileControls
-              onJoystickMove={(evt, data) => zumaRef.current?.handleJoystickMove(evt, data)}
-              onJoystickEnd={evt => zumaRef.current?.handleJoystickEnd(evt)}
-              onShoot={e => zumaRef.current?.handleMobileShoot(e)}
-              style={{ pointerEvents: 'auto', zIndex: 200 }}
-            />
-          )}
+
           {/* Отображение следующего шара для Zuma */}
           {pet.gameType === 'can_swim' && zumaNextBall && (
             <div style={{ display: 'flex', justifyContent: 'center', marginTop: 12 }}>
@@ -2783,149 +3003,7 @@ const PetMiniGameModal = ({ isOpen, pet, onClose }) => {
   );
 };
 
-// Компоненты мобильного управления
-const DoodleJumpMobileControls = () => {
-  const handleLeftDown = (e) => { if (e && e.stopPropagation) e.stopPropagation(); window.doodleJumpMoveDir = -1; };
-  const handleLeftUp = (e) => { if (e && e.stopPropagation) e.stopPropagation(); window.doodleJumpMoveDir = 0; };
-  const handleRightDown = (e) => { if (e && e.stopPropagation) e.stopPropagation(); window.doodleJumpMoveDir = 1; };
-  const handleRightUp = (e) => { if (e && e.stopPropagation) e.stopPropagation(); window.doodleJumpMoveDir = 0; };
-  return (
-    <div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', padding: '0 12px 8px 12px', boxSizing: 'border-box', pointerEvents: 'none' }}>
-      <button style={{ width: 52, height: 52, borderRadius: '50%', background: '#fbbf24', color: '#fff', fontSize: 28, border: 'none', pointerEvents: 'auto' }}
-        onTouchStart={handleLeftDown} onTouchEnd={handleLeftUp} onMouseDown={handleLeftDown} onMouseUp={handleLeftUp}>
-        <i className="fas fa-arrow-left"></i>
-      </button>
-      <div style={{ flex: 1 }} />
-      <button style={{ width: 52, height: 52, borderRadius: '50%', background: '#fbbf24', color: '#fff', fontSize: 28, border: 'none', pointerEvents: 'auto' }}
-        onTouchStart={handleRightDown} onTouchEnd={handleRightUp} onMouseDown={handleRightDown} onMouseUp={handleRightUp}>
-        <i className="fas fa-arrow-right"></i>
-      </button>
-    </div>
-  );
-};
 
-// Универсальная кнопка для однократного действия
-const OneShotButton = ({ onAction, children, style }) => {
-  const isTouchDevice = React.useMemo(() => (
-    typeof window !== 'undefined' && ('ontouchstart' in window || navigator.maxTouchPoints > 0)
-  ), []);
-  const pressedRef = React.useRef(false);
-
-  const handleTouchStart = (e) => {
-    if (e && e.stopPropagation) e.stopPropagation();
-    if (!pressedRef.current) {
-      pressedRef.current = true;
-      onAction(e);
-    }
-  };
-  const handleTouchEnd = (e) => {
-    if (e && e.stopPropagation) e.stopPropagation();
-    pressedRef.current = false;
-  };
-  const handleMouseDown = (e) => {
-    if (e && e.stopPropagation) e.stopPropagation();
-    if (!pressedRef.current) {
-      pressedRef.current = true;
-      onAction(e);
-    }
-  };
-  const handleMouseUp = (e) => {
-    if (e && e.stopPropagation) e.stopPropagation();
-    pressedRef.current = false;
-  };
-
-  if (isTouchDevice) {
-    return (
-      <button
-        style={style}
-        onTouchStart={handleTouchStart}
-        onTouchEnd={handleTouchEnd}
-      >
-        {children}
-      </button>
-    );
-  } else {
-    return (
-      <button
-        style={style}
-        onMouseDown={handleMouseDown}
-        onMouseUp={handleMouseUp}
-      >
-        {children}
-      </button>
-    );
-  }
-};
-
-const CrossyRoadMobileControls = () => {
-  const handleLeftDown = (e) => { if (e && e.stopPropagation) e.stopPropagation(); window.crossyMoveDir = -1; };
-  const handleLeftUp = (e) => { if (e && e.stopPropagation) e.stopPropagation(); window.crossyMoveDir = 0; };
-  const handleRightDown = (e) => { if (e && e.stopPropagation) e.stopPropagation(); window.crossyMoveDir = 1; };
-  const handleRightUp = (e) => { if (e && e.stopPropagation) e.stopPropagation(); window.crossyMoveDir = 0; };
-  const handleUpAction = (e) => {
-    window.crossyMoveForward = true;
-  };
-  return (
-    <>
-      <div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', padding: '0 12px 8px 12px', boxSizing: 'border-box', pointerEvents: 'none' }}>
-        <button style={{ width: 52, height: 52, borderRadius: '50%', background: '#64748b', color: '#fff', fontSize: 28, border: 'none', pointerEvents: 'auto' }}
-          onTouchStart={handleLeftDown} onTouchEnd={handleLeftUp} onMouseDown={handleLeftDown} onMouseUp={handleLeftUp}>
-          <i className="fas fa-arrow-left"></i>
-        </button>
-        <div style={{ flex: 1 }} />
-        <button style={{ width: 52, height: 52, borderRadius: '50%', background: '#64748b', color: '#fff', fontSize: 28, border: 'none', pointerEvents: 'auto' }}
-          onTouchStart={handleRightDown} onTouchEnd={handleRightUp} onMouseDown={handleRightDown} onMouseUp={handleRightUp}>
-          <i className="fas fa-arrow-right"></i>
-        </button>
-      </div>
-      <div style={{ width: '100%', display: 'flex', justifyContent: 'center', marginBottom: 4, pointerEvents: 'none' }}>
-        <OneShotButton
-          style={{ width: 52, height: 52, borderRadius: '50%', background: '#22c55e', color: '#fff', fontSize: 28, border: 'none', pointerEvents: 'auto' }}
-          onAction={handleUpAction}
-        >
-          <i className="fas fa-arrow-up"></i>
-        </OneShotButton>
-      </div>
-    </>
-  );
-};
-
-const ZumaMobileControls = ({ onJoystickMove, onJoystickEnd, onShoot }) => (
-  <div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0 12px 8px 12px', boxSizing: 'border-box', pointerEvents: 'none', zIndex: 200 }}>
-    {/* Джойстик */}
-    <div style={{ width: 100, height: 100, position: 'relative', pointerEvents: 'auto' }}>
-      <Joystick
-        size={100}
-        baseColor="#64748b"
-        stickColor="#94a3b8"
-        move={onJoystickMove}
-        stop={onJoystickEnd}
-        throttle={50}
-        minDistance={10}
-        mode="static"
-      />
-    </div>
-    <div style={{ flex: 1 }} />
-    <OneShotButton
-      onAction={onShoot}
-      style={{ width: 60, height: 60, borderRadius: '50%', background: '#ef4444', color: '#fff', fontSize: 24, border: 'none', pointerEvents: 'auto', boxShadow: '0 2px 8px rgba(0,0,0,0.18)' }}
-    >
-      <i className="fas fa-crosshairs"></i>
-    </OneShotButton>
-  </div>
-);
-
-// Flying Over City Mobile Controls
-const FlyingOverCityMobileControls = ({ onJump }) => (
-  <div style={{ width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '0 0 12px 0', pointerEvents: 'none', zIndex: 200 }}>
-    <OneShotButton
-      onAction={onJump}
-      style={{ width: 60, height: 60, borderRadius: '50%', background: '#38bdf8', color: '#fff', fontSize: 28, border: 'none', pointerEvents: 'auto', boxShadow: '0 2px 8px rgba(0,0,0,0.18)' }}
-    >
-      <i className="fas fa-arrow-up"></i>
-    </OneShotButton>
-  </div>
-);
 
 // Экспортируем отдельные компоненты игр для использования в других файлах
 export { DoodleJumpGame, CrossyRoadGame, ZumaGame, FlyingOverCityGame };
