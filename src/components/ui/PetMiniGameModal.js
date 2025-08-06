@@ -38,10 +38,7 @@ const useGameScale = (originalWidth, originalHeight) => {
           container.style.setProperty('--game-scale', newScale.toString());
         }
         
-        // Отладочная информация
-        console.log('Container size:', containerWidth, 'x', containerHeight);
-        console.log('Game size:', originalWidth, 'x', originalHeight);
-        console.log('Scale:', newScale);
+
       } else {
         // Вне телефона - используем оригинальную логику масштабирования
         const scaleX = containerWidth / originalWidth;
@@ -780,8 +777,61 @@ function getRandomCarSprite() {
   return CR_CAR_SPRITES[randomType];
 }
 
+// Функция для создания специальной машины
+function createSpecialCar(x, y, dir, level) {
+  const carSprite = getRandomCarSprite();
+  
+  // Шанс для диагональных машин (5% + бонус за уровень)
+  const diagonalBaseChance = 0.05; // 5% базовый шанс
+  const diagonalLevelBonus = Math.min(0.01 * level, 0.05); // +1% за уровень, максимум 5%
+  const diagonalTotalChance = diagonalBaseChance + diagonalLevelBonus;
+  
+  // Шанс для преследователей (0.5% + бонус за уровень)
+  const hunterBaseChance = 0.005; // 0.5% базовый шанс
+  const hunterLevelBonus = Math.min(0.002 * level, 0.01); // +0.2% за уровень, максимум 1%
+  const hunterTotalChance = hunterBaseChance + hunterLevelBonus;
+  
+  // Проверяем шанс диагональной машины
+  if (Math.random() < diagonalTotalChance) {
+    return {
+      x,
+      y,
+      dir,
+      sprite: carSprite,
+      special: 'diagonal',
+      originalLane: y, // Запоминаем исходную полосу
+      targetX: null, // Для диагонального движения
+      targetY: null, // Для диагонального движения
+      huntTimer: 0, // Для преследования
+      state: 'normal', // normal, braking, diagonal, hunting
+      brakeTimer: 0, // Таймер торможения
+      brakeDuration: 1000, // Длительность торможения (1 секунда)
+      angle: 0, // Угол поворота спрайта (в градусах)
+      hasBraked: false // Флаг, что торможение уже произошло
+    };
+  }
+  
+  // Проверяем шанс преследователя
+  if (Math.random() < hunterTotalChance) {
+    return {
+      x,
+      y,
+      dir,
+      sprite: carSprite,
+      special: 'hunter',
+      originalLane: y, // Запоминаем исходную полосу
+      targetX: null, // Для диагонального движения
+      targetY: null, // Для диагонального движения
+      huntTimer: 0, // Для преследования
+      state: 'normal' // normal, diagonal, hunting
+    };
+  }
+  
+  return null; // Обычная машина
+}
+
 // Функция для создания препятствия с спрайтом машины
-function createCarObstacle(x, y, dir) {
+function createCarObstacle(x, y, dir, level = 1) {
   // Проверяем корректность параметров
   if (isNaN(x) || isNaN(y) || !isFinite(x) || !isFinite(y)) {
     console.warn('Некорректные координаты для машины:', x, y);
@@ -793,6 +843,13 @@ function createCarObstacle(x, y, dir) {
     return null;
   }
   
+  // Пытаемся создать специальную машину
+  const specialCar = createSpecialCar(x, y, dir, level);
+  if (specialCar) {
+    return specialCar;
+  }
+  
+  // Обычная машина
   const carSprite = getRandomCarSprite();
   return {
     x,
@@ -833,26 +890,25 @@ function getRandomObstacleX() {
 
 // Функция для генерации динамической конфигурации полос
 function generateLaneConfiguration(level) {
-  // Базовое количество полос увеличивается с уровнем
-  const baseLanes = Math.min(9, 5 + Math.floor(level / 3)); // от 5 до 9 полос
+  // Определяем количество дорожных полос (от 2 до 6)
+  const roadLanesCount = Math.min(6, 2 + Math.floor(level / 2));
   
-  // Определяем количество дорожных полос (от 2 до 5)
-  const roadLanesCount = Math.min(5, 2 + Math.floor(level / 2));
+  // Базовое количество полос: дорожные + 2 безопасные (начальная + одна случайная)
+  const baseLanes = Math.max(roadLanesCount + 2, 5 + Math.floor(level / 3));
   
   // Создаем массив полос (true = дорога, false = безопасная)
   const lanes = new Array(baseLanes).fill(false);
   
-  // Гарантируем безопасные полосы: начальная, конечная и еще одна
+  // Гарантируем безопасные полосы: только начальная и еще одна
   lanes[0] = false; // Начальная полоса всегда безопасная
-  lanes[baseLanes - 1] = false; // Конечная полоса всегда безопасная
   
   // Выбираем случайную безопасную полосу между начальной и конечной
-  const safeLaneIndex = 1 + Math.floor(Math.random() * (baseLanes - 2));
+  const safeLaneIndex = 1 + Math.floor(Math.random() * (baseLanes - 1));
   lanes[safeLaneIndex] = false;
   
   // Теперь размещаем дорожные полосы
   const availableLanes = [];
-  for (let i = 1; i < baseLanes - 1; i++) {
+  for (let i = 1; i < baseLanes; i++) {
     if (i !== safeLaneIndex) {
       availableLanes.push(i);
     }
@@ -875,7 +931,7 @@ function generateLaneConfiguration(level) {
     lanes: lanes,
     totalLanes: baseLanes,
     roadLanes: selectedRoadLanes,
-    safeLanes: [0, safeLaneIndex, baseLanes - 1]
+    safeLanes: [0, safeLaneIndex]
   };
 }
 
@@ -888,7 +944,7 @@ function isLaneRoad(laneIndex, laneConfig) {
   return laneConfig.lanes[laneIndex] === true;
 }
 
-const CrossyRoadGame = ({ petSprite, onClose, petId }) => {
+const CrossyRoadGame = ({ petSprite, onClose, petId, onLevelChange }) => {
   const { updatePetStats, getPetState } = usePets();
   const [renderTick, setRenderTick] = useState(0);
   const [score, setScore] = useState(0);
@@ -898,7 +954,7 @@ const CrossyRoadGame = ({ petSprite, onClose, petId }) => {
   const [level, setLevel] = useState(1);
   const [roadTiles] = useState(getRoadTiles()); // Тайлы дороги
   const [backgroundTile, setBackgroundTile] = useState(getRandomBackgroundTile()); // Фоновый тайл
-  const [laneConfig, setLaneConfig] = useState(null); // Конфигурация полос (инициализируется позже)
+  const [laneConfig, setLaneConfig] = useState(() => generateLaneConfiguration(1)); // Инициализируем сразу конфигурацию для первого уровня
   
   // Используем фиксированный масштаб для minigame-container
   const isInMinigameContainer = true; // Всегда true для CrossyRoad в телефоне
@@ -927,11 +983,46 @@ const CrossyRoadGame = ({ petSprite, onClose, petId }) => {
   const spawnInterval = useRef(1500); // 1.5 секунды между появлением новых машин
   const carGroupTimer = useRef(0); // Таймер для создания групп машин
 
-  // useEffect для отзеркаливания машин
+  // useEffect для поворота машин
   useEffect(() => {
     obstacles.current.forEach((obs, idx) => {
       if (carRefs.current[idx]) {
-        carRefs.current[idx].style.setProperty('transform', obs.dir === 1 ? 'scaleX(-1)' : 'scaleX(1)', 'important');
+        let transform = '';
+        
+        if (obs.special === 'hunter' && obs.huntTimer > 2) {
+          // Машина-преследователь: поворачиваем в направлении движения к игроку
+          const targetX = petX.current;
+          const targetY = petY.current;
+          const dx = targetX - obs.x;
+          const dy = targetY - obs.y;
+          
+          if (Math.abs(dx) > 5) { // Если есть значительное движение по X
+            transform = dx > 0 ? 'scaleX(-1)' : 'scaleX(1)';
+          } else if (Math.abs(dy) > 5) { // Если движемся в основном по Y
+            // Для движения вверх/вниз можно добавить специальную логику
+            transform = obs.dir === 1 ? 'scaleX(-1)' : 'scaleX(1)';
+          } else {
+            transform = obs.dir === 1 ? 'scaleX(-1)' : 'scaleX(1)';
+          }
+        } else if (obs.special === 'diagonal') {
+          // Диагональная машина: поворачиваем спрайт под углом движения
+          if (obs.state === 'diagonal' && obs.angle !== undefined) {
+            // Применяем поворот на вычисленный угол
+            const rotation = obs.angle;
+            transform = `rotate(${rotation}deg)`;
+          } else if (obs.state === 'braking') {
+            // Во время торможения - стандартный поворот
+            transform = obs.dir === 1 ? 'scaleX(-1)' : 'scaleX(1)';
+          } else {
+            // В обычном состоянии - стандартный поворот
+            transform = obs.dir === 1 ? 'scaleX(-1)' : 'scaleX(1)';
+          }
+        } else {
+          // Обычные машины: стандартный поворот
+          transform = obs.dir === 1 ? 'scaleX(-1)' : 'scaleX(1)';
+        }
+        
+        carRefs.current[idx].style.setProperty('transform', transform, 'important');
       }
     });
   }, [renderTick]); // Зависит от renderTick для обновления при изменении направления
@@ -939,56 +1030,17 @@ const CrossyRoadGame = ({ petSprite, onClose, petId }) => {
   // Управление
   useEffect(() => {
     const handleKey = (e) => {
+      // Предотвращаем повторяющиеся события при зажатии клавиши
+      if (e.repeat) return;
+      
       if (e.code === 'ArrowLeft' || e.code === 'KeyA') {
         moveDir.current = -1;
-        console.log('LEFT pressed - Pet position:', petX.current, petY.current);
-        
-        // Определяем, на какой полосе находится питомец
-        const petLaneIndex = Math.floor((containerSize.height - petY.current) / (CR_LANE_HEIGHT * scale));
-        const isPetOnRoadLane = isLaneRoad(petLaneIndex, laneConfig);
-        console.log('Pet lane index:', petLaneIndex, 'Is on road lane:', isPetOnRoadLane);
-        
-        if (isPetOnRoadLane) {
-          const obstaclesOnLane = obstacles.current.filter(obs => 
-            Math.floor((containerSize.height - obs.y - CR_OBSTACLE_HEIGHT * scale / 2) / (CR_LANE_HEIGHT * scale)) === petLaneIndex
-          );
-          console.log('Obstacles on same lane:', obstaclesOnLane.length);
-        }
       }
       if (e.code === 'ArrowRight' || e.code === 'KeyD') {
         moveDir.current = 1;
-        console.log('RIGHT pressed - Pet position:', petX.current, petY.current);
-        
-        // Определяем, на какой полосе находится питомец
-        const petLaneIndex = Math.floor((containerSize.height - petY.current) / (CR_LANE_HEIGHT * scale));
-        const isPetOnRoadLane = isLaneRoad(petLaneIndex, laneConfig);
-        console.log('Pet lane index:', petLaneIndex, 'Is on road lane:', isPetOnRoadLane);
-        
-        if (isPetOnRoadLane) {
-          const obstaclesOnLane = obstacles.current.filter(obs => 
-            Math.floor((containerSize.height - obs.y - CR_OBSTACLE_HEIGHT * scale / 2) / (CR_LANE_HEIGHT * scale)) === petLaneIndex
-          );
-          console.log('Obstacles on same lane:', obstaclesOnLane.length);
-        }
       }
       if (e.code === 'ArrowUp' || e.code === 'Space') {
         moveForward.current = true;
-        console.log('UP pressed - Pet position:', petX.current, petY.current);
-        
-        // Определяем, на какой полосе находится питомец
-        const petLaneIndex = Math.floor((containerSize.height - petY.current) / (CR_LANE_HEIGHT * scale));
-        const isPetOnRoadLane = isLaneRoad(petLaneIndex, laneConfig);
-        console.log('Pet lane index:', petLaneIndex, 'Is on road lane:', isPetOnRoadLane);
-        
-        if (isPetOnRoadLane) {
-          const obstaclesOnLane = obstacles.current.filter(obs => 
-            Math.floor((containerSize.height - obs.y - CR_OBSTACLE_HEIGHT * scale / 2) / (CR_LANE_HEIGHT * scale)) === petLaneIndex
-          );
-          console.log('Obstacles on same lane:', obstaclesOnLane.length);
-          if (obstaclesOnLane.length > 0) {
-            console.log('Car Y positions:', obstaclesOnLane.map(obs => obs.y));
-          }
-        }
       }
     };
     const handleKeyUp = (e) => {
@@ -1029,7 +1081,7 @@ const CrossyRoadGame = ({ petSprite, onClose, petId }) => {
         if (petX.current < 0) petX.current = 0;
         if (petX.current > containerSize.width - CR_PET_SIZE * scale) petX.current = containerSize.width - CR_PET_SIZE * scale;
       
-      // Движение питомца вперёд
+      // Движение питомца вперёд (одно нажатие = одно движение)
       if (window.crossyMoveForward) {
         petY.current -= CR_LANE_HEIGHT * scale;
         if (petY.current < 0) petY.current = 0;
@@ -1046,17 +1098,141 @@ const CrossyRoadGame = ({ petSprite, onClose, petId }) => {
       const speedIncrease = Math.min((level - 1) * 25, 200); // Ограничиваем максимальное увеличение скорости
       const speed = (baseSpeed + speedIncrease) * deltaTimeSeconds;
       
+      // Проверяем столкновения между машинами
+      for (let i = obstacles.current.length - 1; i >= 0; i--) {
+        for (let j = i - 1; j >= 0; j--) {
+          const car1 = obstacles.current[i];
+          const car2 = obstacles.current[j];
+          
+          // Проверяем столкновение между машинами
+          if (car1 && car2) {
+            const car1Left = car1.x;
+            const car1Right = car1.x + car1.sprite.displayWidth * scale;
+            const car1Top = car1.y;
+            const car1Bottom = car1.y + car1.sprite.displayHeight * scale;
+            
+            const car2Left = car2.x;
+            const car2Right = car2.x + car2.sprite.displayWidth * scale;
+            const car2Top = car2.y;
+            const car2Bottom = car2.y + car2.sprite.displayHeight * scale;
+            
+            if (car1Top < car2Bottom && car1Bottom > car2Top &&
+                car1Left < car2Right && car1Right > car2Left) {
+              // Столкновение! Удаляем обе машины
+              obstacles.current.splice(i, 1);
+              obstacles.current.splice(j, 1);
+              if (carRefs.current[i]) delete carRefs.current[i];
+              if (carRefs.current[j]) delete carRefs.current[j];
+              break; // Выходим из внутреннего цикла
+            }
+          }
+        }
+      }
+      
+      // Движение машин
       for (let i = obstacles.current.length - 1; i >= 0; i--) {
         const obs = obstacles.current[i];
-        obs.x += obs.dir * speed;
+        
+        // Обычное движение
+        if (!obs.special) {
+          obs.x += obs.dir * speed;
+        } else {
+          // Специальное движение
+          if (obs.special === 'diagonal' && obs.state === 'normal') {
+            // Диагональная машина - движется по прямой, пока не достигнет центра экрана
+            obs.x += obs.dir * speed;
+            
+            // Когда машина достигает центра экрана и еще не тормозила, начинаем торможение
+            if (!obs.hasBraked && obs.dir > 0 && obs.x > containerSize.width * 0.4) {
+              obs.state = 'braking';
+              obs.brakeTimer = 0;
+              obs.hasBraked = true; // Отмечаем, что торможение произошло
+              obs.targetX = obs.x + 100 * scale;
+              obs.targetY = obs.y + CR_LANE_HEIGHT * scale;
+            } else if (!obs.hasBraked && obs.dir < 0 && obs.x < containerSize.width * 0.6) {
+              obs.state = 'braking';
+              obs.brakeTimer = 0;
+              obs.hasBraked = true; // Отмечаем, что торможение произошло
+              obs.targetX = obs.x - 100 * scale;
+              obs.targetY = obs.y + CR_LANE_HEIGHT * scale;
+            }
+          } else if (obs.special === 'diagonal' && obs.state === 'braking') {
+            // Состояние торможения - машина замедляется и начинает поворачивать
+            obs.brakeTimer += deltaTime;
+            
+            // Вычисляем прогресс торможения (от 0 до 1)
+            const brakeProgress = Math.min(obs.brakeTimer / obs.brakeDuration, 1);
+            
+            // Замедляем движение во время торможения
+            const brakeSpeed = speed * (1 - brakeProgress * 0.6); // Постепенно замедляемся до 40% от обычной скорости
+            
+            // Вычисляем угол поворота во время торможения
+            const dx = obs.targetX - obs.x;
+            const dy = obs.targetY - obs.y;
+            const targetAngle = Math.atan2(dy, dx) * (180 / Math.PI);
+            
+            // Плавно поворачиваем от 0 до целевого угла
+            obs.angle = targetAngle * brakeProgress;
+            
+            // Движемся в направлении поворота
+            const moveSpeed = brakeSpeed * 0.8; // Немного медленнее во время поворота
+            obs.x += Math.cos(targetAngle * Math.PI / 180) * moveSpeed;
+            obs.y += Math.sin(targetAngle * Math.PI / 180) * moveSpeed;
+            
+            // После завершения торможения переходим к диагональному движению
+            if (obs.brakeTimer >= obs.brakeDuration) {
+              obs.state = 'diagonal';
+            }
+          } else if (obs.special === 'diagonal' && obs.state === 'diagonal') {
+            // Диагональное движение - продолжаем движение в том же направлении
+            const dx = obs.targetX - obs.x;
+            const dy = obs.targetY - obs.y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+            
+            if (distance > 5) {
+              const moveSpeed = speed * 0.7; // Медленнее обычного движения
+              obs.x += (dx / distance) * moveSpeed;
+              obs.y += (dy / distance) * moveSpeed;
+              
+              // Сохраняем текущий угол поворота
+              const angleRadians = Math.atan2(dy, dx);
+              obs.angle = angleRadians * (180 / Math.PI);
+            } else {
+              // Достигли цели, возвращаемся к обычному движению
+              obs.state = 'normal';
+              obs.x = obs.targetX;
+              obs.y = obs.targetY;
+              obs.angle = 0; // Сбрасываем угол
+              // НЕ сбрасываем hasBraked - торможение должно произойти только один раз
+            }
+          } else if (obs.special === 'hunter') {
+            // Машина-охотник
+            obs.huntTimer += deltaTimeSeconds;
+            
+            if (obs.huntTimer > 2) { // Начинаем преследование через 2 секунды
+              // Очень медленно движемся к игроку
+              const targetX = petX.current;
+              const targetY = petY.current;
+              
+              const dx = targetX - obs.x;
+              const dy = targetY - obs.y;
+              const distance = Math.sqrt(dx * dx + dy * dy);
+              
+              if (distance > 10) {
+                const huntSpeed = speed * 0.15; // Очень медленно (15% от обычной скорости)
+                obs.x += (dx / distance) * huntSpeed;
+                obs.y += (dy / distance) * huntSpeed;
+              }
+            } else {
+              // Обычное движение до начала преследования
+              obs.x += obs.dir * speed * 0.3; // Очень медленно (30% от обычной скорости)
+            }
+          }
+        }
         
         // Удаляем машины, которые вышли за пределы экрана
-        if (obs.dir > 0 && obs.x > containerSize.width + 60 * scale) {
-          obstacles.current.splice(i, 1);
-          if (carRefs.current[i]) {
-            delete carRefs.current[i];
-          }
-        } else if (obs.dir < 0 && obs.x < -60 * scale) {
+        if (obs.x > containerSize.width + 100 * scale || obs.x < -100 * scale ||
+            obs.y > containerSize.height + 100 * scale || obs.y < -100 * scale) {
           obstacles.current.splice(i, 1);
           if (carRefs.current[i]) {
             delete carRefs.current[i];
@@ -1069,13 +1245,15 @@ const CrossyRoadGame = ({ petSprite, onClose, petId }) => {
       carGroupTimer.current += deltaTime;
       
       // Прогрессивная сложность: увеличиваем частоту спавна с уровнем
-      const baseSpawnTime = Math.max(600, 2000 - (level - 1) * 120); // от 2.0 до 0.6 секунды
-      const maxCars = Math.min(8 + Math.floor(level / 2), 15); // Больше машин на экране
+      const baseSpawnTime = Math.max(400, 1500 - (level - 1) * 80); // от 1.5 до 0.4 секунды (быстрее)
+      const maxCars = Math.min(12 + Math.floor(level / 2), 20); // Еще больше машин на экране
       
       // Создание групп машин для более динамичного геймплея
-      const groupSpawnTime = Math.max(3000, 8000 - (level - 1) * 500); // Группы появляются реже
+      const groupSpawnTime = Math.max(2000, 6000 - (level - 1) * 300); // Группы появляются чаще
       
-      if (spawnTimer.current >= baseSpawnTime && obstacles.current.length < maxCars) {
+              // Добавляем случайность в спавн для непредсказуемости
+        const randomSpawnTime = baseSpawnTime + (Math.random() - 0.5) * 200; // ±100ms случайности
+        if (spawnTimer.current >= randomSpawnTime && obstacles.current.length < maxCars) {
         spawnTimer.current = 0;
         
         // Определяем активные дорожные полосы из текущей конфигурации
@@ -1115,17 +1293,16 @@ const CrossyRoadGame = ({ petSprite, onClose, petId }) => {
               Math.abs(obs.y - laneY) < CR_LANE_HEIGHT * scale / 2
             );
             
-            const minSafeDistance = 120 * scale; // Минимальное безопасное расстояние
+            const minSafeDistance = 80 * scale; // Уменьшенное минимальное безопасное расстояние для более плотного потока
             const canSpawn = carsOnLane.every(car => {
               const distance = Math.abs(car.x - spawnX);
               return distance > minSafeDistance;
             });
             
             if (canSpawn) {
-              const newCar = createCarObstacle(spawnX, laneY, direction);
+              const newCar = createCarObstacle(spawnX, laneY, direction, level);
               if (newCar) {
                 obstacles.current.push(newCar);
-                console.log('Car created on lane:', laneIndex, 'at Y:', laneY, 'direction:', direction);
               }
             }
           }
@@ -1152,19 +1329,18 @@ const CrossyRoadGame = ({ petSprite, onClose, petId }) => {
           const laneY = containerSize.height - (laneIndex + 1) * CR_LANE_HEIGHT * scale;
           const direction = laneIndex % 4 === 1 ? 1 : -1;
           
-          // Создаем группу из 2-3 машин
-          const groupSize = Math.min(2 + Math.floor(level / 4), 4);
-          const minSpacing = 60 * scale;
+          // Создаем группу из 3-5 машин (более плотные группы)
+          const groupSize = Math.min(3 + Math.floor(level / 3), 6);
+          const minSpacing = 40 * scale; // Более плотное расположение машин в группе
           
           for (let j = 0; j < groupSize; j++) {
             const spawnX = direction > 0 
               ? -100 * scale - (j * minSpacing)
               : containerSize.width + 100 * scale + (j * minSpacing);
             
-            const newCar = createCarObstacle(spawnX, laneY, direction);
+            const newCar = createCarObstacle(spawnX, laneY, direction, level);
             if (newCar) {
               obstacles.current.push(newCar);
-              console.log('Group car created on lane:', laneIndex, 'group member:', j + 1);
             }
           }
         }
@@ -1180,9 +1356,10 @@ const CrossyRoadGame = ({ petSprite, onClose, petId }) => {
       const petLaneIndex = Math.floor((containerSize.height - petY.current - CR_PET_SIZE * scale / 2) / (CR_LANE_HEIGHT * scale));
       const isPetOnRoadLane = isLaneRoad(petLaneIndex, laneConfig); // Используем динамическую конфигурацию
       
-      // Проверяем коллизии только если питомец на дорожной полосе
-      if (isPetOnRoadLane) {
-        for (let obs of obstacles.current) {
+      // Проверяем коллизии с машинами
+      for (let obs of obstacles.current) {
+        // Для обычных машин проверяем только если питомец на дорожной полосе
+        if (!obs.special && isPetOnRoadLane) {
           const obsLaneIndex = Math.floor((containerSize.height - obs.y - CR_OBSTACLE_HEIGHT * scale / 2) / (CR_LANE_HEIGHT * scale));
           
           // Проверяем коллизию только если препятствие на той же полосе
@@ -1193,10 +1370,21 @@ const CrossyRoadGame = ({ petSprite, onClose, petId }) => {
               petLeft < obs.x + obs.sprite.displayWidth * scale &&
               petRight > obs.x
             ) {
-              console.log('Collision detected! Pet:', petLeft, petTop, petRight, petBottom, 'Car:', obs.x, obs.y, obs.x + obs.sprite.displayWidth * scale, obs.y + obs.sprite.displayHeight * scale);
               setGameOver(true);
               return;
             }
+          }
+        }
+        // Для специальных машин (преследователи, диагональные) проверяем всегда
+        else if (obs.special) {
+          if (
+            petTop < obs.y + obs.sprite.displayHeight * scale &&
+            petBottom > obs.y &&
+            petLeft < obs.x + obs.sprite.displayWidth * scale &&
+            petRight > obs.x
+          ) {
+            setGameOver(true);
+            return;
           }
         }
       }
@@ -1230,7 +1418,9 @@ const CrossyRoadGame = ({ petSprite, onClose, petId }) => {
       setRewarded(true);
       // Через короткую паузу — следующий уровень
       setTimeout(() => {
-        setLevel(lvl => lvl + 1);
+        const newLevel = level + 1;
+        setLevel(newLevel);
+        if (onLevelChange) onLevelChange(newLevel);
         nextLevel();
       }, 1200);
     }
@@ -1262,8 +1452,7 @@ const CrossyRoadGame = ({ petSprite, onClose, petId }) => {
     let obsArr = [];
     const totalLanes = newLaneConfig.totalLanes;
     
-    console.log('Level', level, 'Lane configuration:', newLaneConfig);
-    console.log('Total lanes:', totalLanes, 'Road lanes:', newLaneConfig.roadLanes);
+
     
     for (let i = 0; i < totalLanes; i++) {
       const laneY = containerSize.height - (i + 1) * CR_LANE_HEIGHT * scale;
@@ -1288,10 +1477,10 @@ const CrossyRoadGame = ({ petSprite, onClose, petId }) => {
             spawnX = -100 * scale - (j * minSpacing * 1.5);
           }
           
-          const newCar = createCarObstacle(spawnX, laneY, direction);
+          const newCar = createCarObstacle(spawnX, laneY, direction, level);
           if (newCar) {
             obsArr.push(newCar);
-            console.log('Initial car created on lane:', i, 'at Y:', laneY, 'direction:', direction, 'position:', spawnX);
+
           }
         }
       }
@@ -1316,10 +1505,13 @@ const CrossyRoadGame = ({ petSprite, onClose, petId }) => {
     if (obstacles.current.length > 0) return;
     console.log('Инициализация игры...');
     setLevel(1);
+    if (onLevelChange) onLevelChange(1);
     setScore(0);
+    // Принудительно обновляем конфигурацию полос для первого уровня
+    setLaneConfig(generateLaneConfiguration(1));
     nextLevel();
     // Игра запускается автоматически
-    console.log('Игра запущена автоматически');
+
   }, []);
 
   // Игра запускается автоматически
@@ -1332,6 +1524,7 @@ const CrossyRoadGame = ({ petSprite, onClose, petId }) => {
   // Сброс игры
   const restart = () => {
     setLevel(1);
+    if (onLevelChange) onLevelChange(1);
     setScore(0);
     setRewarded(false); // Сбрасываем флаг награды
     // Очищаем refs для машин
@@ -1339,6 +1532,8 @@ const CrossyRoadGame = ({ petSprite, onClose, petId }) => {
     // Сбрасываем таймеры респауна
     spawnTimer.current = 0;
     carGroupTimer.current = 0;
+    // Принудительно обновляем конфигурацию полос для первого уровня
+    setLaneConfig(generateLaneConfiguration(1));
     nextLevel();
   };
 
@@ -1368,9 +1563,42 @@ const CrossyRoadGame = ({ petSprite, onClose, petId }) => {
 
       }}
       tabIndex={0}
-      onClick={() => {
+      onClick={(e) => {
         if (!gameOver && !win) {
-          // Игра уже запущена
+          // Мобильное управление
+          if (isMobile) {
+            const rect = e.currentTarget.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            const width = rect.width;
+            const height = rect.height;
+            
+            // Разделяем экран на области
+            const isTopHalf = y < height / 2;
+            const isLeftQuarter = x < width / 2;
+            
+            if (isTopHalf) {
+              // Верхняя половина - движение вверх
+              window.crossyMoveForward = true;
+            } else {
+              // Нижняя половина
+              if (isLeftQuarter) {
+                // Левая четвертинка - движение влево
+                window.crossyMoveDir = -1;
+                // Сбрасываем направление через короткое время
+                setTimeout(() => {
+                  window.crossyMoveDir = 0;
+                }, 100);
+              } else {
+                // Правая четвертинка - движение вправо
+                window.crossyMoveDir = 1;
+                // Сбрасываем направление через короткое время
+                setTimeout(() => {
+                  window.crossyMoveDir = 0;
+                }, 100);
+              }
+            }
+          }
         }
       }}
     >
@@ -1384,7 +1612,7 @@ const CrossyRoadGame = ({ petSprite, onClose, petId }) => {
           top: 0,
           left: 0,
           overflow: 'hidden',
-          border: '2px solid red' // Отладочная рамка
+
         }}
       >
       {/* Фоновый спрайт для всей игры */}
@@ -1404,14 +1632,11 @@ const CrossyRoadGame = ({ petSprite, onClose, petId }) => {
       />
       
       {/* Дороги (состоящие из нескольких блоков) */}
-      {[...Array(laneConfig ? laneConfig.totalLanes : CR_LANE_COUNT)].map((_, i) => {
+      {laneConfig && laneConfig.lanes && laneConfig.totalLanes > 0 && [...Array(laneConfig.totalLanes)].map((_, i) => {
         const laneY = containerSize.height - (i + 1) * CR_LANE_HEIGHT * scale;
         const isRoadLane = isLaneRoad(i, laneConfig); // Используем динамическую конфигурацию
         
-        // Отладочное логирование для первой итерации
-        if (i === 0) {
-          console.log('Rendering lanes. LaneConfig:', laneConfig, 'Total lanes:', laneConfig ? laneConfig.totalLanes : CR_LANE_COUNT);
-        }
+
         
         if (isRoadLane) {
           // Чередуем два типа дорожных тайлов для разнообразия
@@ -1494,8 +1719,7 @@ const CrossyRoadGame = ({ petSprite, onClose, petId }) => {
           zIndex: 20
         }}>
           Победа!<br />
-          Уровень: {level}<br />
-          <button onClick={restart} style={{ marginTop: 16, padding: '8px 20px', fontSize: 18, borderRadius: 8, border: 'none', background: '#22c55e', color: '#fff', cursor: 'pointer' }}>Заново</button>
+          Уровень: {level}
         </div>
       )}
       {/* Game Over */}
@@ -1521,14 +1745,96 @@ const CrossyRoadGame = ({ petSprite, onClose, petId }) => {
         </div>
       )}
 
-      {/* Уровень и скорость */}
-      <div style={{ position: 'absolute', top: 10, left: 10, color: '#334155', fontWeight: 'bold', fontSize: 16, zIndex: 15 }}>
-        Уровень: {level}
-      </div>
-      <div style={{ position: 'absolute', top: 30, left: 10, color: '#64748b', fontWeight: 'bold', fontSize: 14, zIndex: 15 }}>
-        Скорость: {CR_OBSTACLE_SPEED_PER_SECOND + (level - 1) * 30}
-      </div>
+
       {/* Не показываем стандартный оверлей победы и кнопку "заново" для Zuma, переход к следующему уровню автоматический */}
+
+      {/* Визуальные индикаторы областей для мобильного управления */}
+      {isMobile && !gameOver && !win && (
+        <>
+          {/* Верхняя половина - движение вверх */}
+          <div style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: '50%',
+            border: '2px solid rgba(255, 255, 255, 0.3)',
+            borderBottom: 'none',
+            pointerEvents: 'none',
+            zIndex: 15
+          }}>
+            <div style={{
+              position: 'absolute',
+              top: '10px',
+              left: '10px',
+              background: 'rgba(0, 0, 0, 0.5)',
+              color: 'white',
+              padding: '4px 8px',
+              borderRadius: '4px',
+              fontSize: '12px',
+              fontWeight: 'bold'
+            }}>
+              ↑ ВВЕРХ
+            </div>
+          </div>
+          
+          {/* Нижняя левая четвертинка - движение влево */}
+          <div style={{
+            position: 'absolute',
+            bottom: 0,
+            left: 0,
+            width: '50%',
+            height: '50%',
+            border: '2px solid rgba(255, 255, 255, 0.3)',
+            borderTop: 'none',
+            borderRight: 'none',
+            pointerEvents: 'none',
+            zIndex: 15
+          }}>
+            <div style={{
+              position: 'absolute',
+              bottom: '10px',
+              left: '10px',
+              background: 'rgba(0, 0, 0, 0.5)',
+              color: 'white',
+              padding: '4px 8px',
+              borderRadius: '4px',
+              fontSize: '12px',
+              fontWeight: 'bold'
+            }}>
+              ← ВЛЕВО
+            </div>
+          </div>
+          
+          {/* Нижняя правая четвертинка - движение вправо */}
+          <div style={{
+            position: 'absolute',
+            bottom: 0,
+            right: 0,
+            width: '50%',
+            height: '50%',
+            border: '2px solid rgba(255, 255, 255, 0.3)',
+            borderTop: 'none',
+            borderLeft: 'none',
+            pointerEvents: 'none',
+            zIndex: 15
+          }}>
+            <div style={{
+              position: 'absolute',
+              bottom: '10px',
+              right: '10px',
+              background: 'rgba(0, 0, 0, 0.5)',
+              color: 'white',
+              padding: '4px 8px',
+              borderRadius: '4px',
+              fontSize: '12px',
+              fontWeight: 'bold'
+            }}>
+              ВПРАВО →
+            </div>
+          </div>
+        </>
+      )}
 
       </div>
     </div>
@@ -2115,8 +2421,7 @@ const ZumaGame = React.forwardRef(({ petSprite, onClose, petId, onLevelChange, o
             const ball = createBallWithSprite(shot.current.color);
             chain.current.splice(i, 0, { t, ...ball });
             
-            console.log('  - Created ball:', ball);
-            console.log('  - Ball animationOffset:', ball.animationOffset);
+
             // Анимация вставки
             setAnimations(prev => [...prev, {
               type: 'insert',

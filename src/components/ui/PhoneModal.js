@@ -786,9 +786,10 @@ const PhoneModal = ({ isOpen, onClose }) => {
   };
 
   // Внутри PhoneModal, перед return:
-  const [zumaLevel, setZumaLevel] = useState(1);
-const [zumaNextBall, setZumaNextBall] = useState(null);
-const [zumaSpriteFrame, setZumaSpriteFrame] = useState(0);
+    const [zumaLevel, setZumaLevel] = useState(1);
+  const [zumaNextBall, setZumaNextBall] = useState(null);
+  const [zumaSpriteFrame, setZumaSpriteFrame] = useState(0);
+  const [crossyRoadLevel, setCrossyRoadLevel] = useState(1);
 
 
 
@@ -2194,7 +2195,12 @@ if (!isOpen) return null;
                             <h3>
                               {activePetData?.gameType === 'can_fly' && 'Полет над городом'}
                               {activePetData?.gameType === 'can_jump' && 'Doodle Jump'}
-                              {activePetData?.gameType === 'can_walk' && 'Crossy Road'}
+                              {activePetData?.gameType === 'can_walk' && (
+                                <>
+                                  Crossy Road
+                                  <span style={{marginLeft: 8, fontSize: 14, verticalAlign: 'middle'}}>Уровень: {crossyRoadLevel}</span>
+                                </>
+                              )}
                               {activePetData?.gameType === 'can_swim' && (
                                 <>
                                   Zuma
@@ -2240,6 +2246,7 @@ if (!isOpen) return null;
                                     petSprite={activePetData.sprite ? `/${activePetData.sprite}` : '/sprites/items/pets/rat.png'} 
                                     onClose={closeMinigame} 
                                     petId={activePetData.id} 
+                                    onLevelChange={setCrossyRoadLevel}
                                   />
                                 )}
                                 {activePetData.gameType === 'can_swim' && (
