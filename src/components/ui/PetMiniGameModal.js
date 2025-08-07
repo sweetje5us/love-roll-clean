@@ -100,7 +100,7 @@ const getGameTypeText = (gameType) => {
     case 'can_fly':
       return 'Мини-игра: Полет над городом (летающий питомец)';
     case 'can_jump':
-      return 'Мини-игра: Doodle Jump (прыгающий питомец)';
+      return 'Мини-игра: Прыжки (прыгающий питомец)';
     case 'can_walk':
       return 'Мини-игра: Crossy Road (ходящий питомец)';
     case 'can_swim':
@@ -249,17 +249,46 @@ const DJ_PLATFORM_WIDTH = 60;
 const DJ_PLATFORM_HEIGHT = 12;
 const DJ_PLATFORM_COUNT = 8;
 
-// Константы для танков-платформ
-const DJ_TANK_SPRITES = [
-  'sprites/minigames/doodle-jump/Props/tank-1.png',
-  'sprites/minigames/doodle-jump/Props/tank-2.png',
-  'sprites/minigames/doodle-jump/Props/tank-3.png'
+// Константы для платформ-камней
+const DJ_PLATFORM_SPRITES = [
+  'sprites/minigames/doodle-jump/platform/rock1.png',
+  'sprites/minigames/doodle-jump/platform/rock2.png',
+  'sprites/minigames/doodle-jump/platform/rock3.png'
 ];
-const DJ_TANK_ORIGINAL_WIDTH = 122;
-const DJ_TANK_ORIGINAL_HEIGHT = 48;
+
+// Константы для разных типов платформ
+const DJ_PLATFORM_TYPES = {
+  NORMAL: 'normal',
+  DISAPPEARING: 'disappearing',
+  BREAKABLE: 'breakable',
+  MOVING: 'moving'
+};
+
+// Спрайты для разных типов платформ
+const DJ_PLATFORM_SPRITES_BY_TYPE = {
+  [DJ_PLATFORM_TYPES.NORMAL]: [
+    'sprites/minigames/doodle-jump/platform/rock1.png',
+    'sprites/minigames/doodle-jump/platform/rock2.png',
+    'sprites/minigames/doodle-jump/platform/rock3.png'
+  ],
+  [DJ_PLATFORM_TYPES.DISAPPEARING]: [
+    'sprites/minigames/doodle-jump/platform/snow1.png',
+    'sprites/minigames/doodle-jump/platform/snow2.png'
+  ],
+  [DJ_PLATFORM_TYPES.BREAKABLE]: [
+    'sprites/minigames/doodle-jump/platform/not_broken.png',
+    'sprites/minigames/doodle-jump/platform/almost_broken.png'
+  ],
+  [DJ_PLATFORM_TYPES.MOVING]: [
+    'sprites/minigames/doodle-jump/platform/moving1.png',
+    'sprites/minigames/doodle-jump/platform/moving2.png'
+  ]
+};
+const DJ_PLATFORM_ORIGINAL_WIDTH = 16;
+const DJ_PLATFORM_ORIGINAL_HEIGHT = 16;
 // Константы в единицах "на секунду"
-const DJ_GRAVITY_PER_SECOND = 400;
-const DJ_JUMP_VELOCITY = -300;
+const DJ_GRAVITY_PER_SECOND = 600;
+const DJ_JUMP_VELOCITY = -350;
 const DJ_MOVE_SPEED_PER_SECOND = 240;
 
 // Функции для получения масштабированных размеров
@@ -275,25 +304,72 @@ function getScaledPlatformHeight(scale) {
   return DJ_PLATFORM_HEIGHT * scale;
 }
 
-function getScaledTankScale(scale) {
-  return getScaledPlatformWidth(scale) / DJ_TANK_ORIGINAL_WIDTH;
+function getScaledPlatformScale(scale) {
+  return getScaledPlatformWidth(scale) / DJ_PLATFORM_ORIGINAL_WIDTH;
 }
 
-function getScaledTankDisplayWidth(scale) {
-  return DJ_TANK_ORIGINAL_WIDTH * getScaledTankScale(scale);
+function getScaledPlatformDisplayWidth(scale) {
+  return getScaledPlatformWidth(scale); // Используем физический размер платформы
 }
 
-function getScaledTankDisplayHeight(scale) {
-  return DJ_TANK_ORIGINAL_HEIGHT * getScaledTankScale(scale);
+function getScaledPlatformDisplayHeight(scale) {
+  return getScaledPlatformHeight(scale); // Используем физический размер платформы
 }
 
 function getRandomPlatformX(containerWidth, platformWidth) {
   return Math.random() * (containerWidth - platformWidth);
 }
 
-function getRandomTankSprite() {
-  return DJ_TANK_SPRITES[Math.floor(Math.random() * DJ_TANK_SPRITES.length)];
+// Функция для получения случайного типа платформы
+function getRandomPlatformType() {
+  const types = Object.values(DJ_PLATFORM_TYPES);
+  const weights = [0.6, 0.15, 0.15, 0.1]; // 60% обычные, 15% исчезающие, 15% ломающиеся, 10% движущиеся
+  const random = Math.random();
+  let cumulativeWeight = 0;
+  
+  for (let i = 0; i < weights.length; i++) {
+    cumulativeWeight += weights[i];
+    if (random <= cumulativeWeight) {
+      return types[i];
+    }
+  }
+  return types[0]; // fallback
 }
+
+// Функция для получения случайного спрайта для типа платформы
+function getRandomPlatformSprite(type = DJ_PLATFORM_TYPES.NORMAL) {
+  const sprites = DJ_PLATFORM_SPRITES_BY_TYPE[type];
+  return sprites[Math.floor(Math.random() * sprites.length)];
+}
+
+// Функция для создания платформы с типом
+function createPlatformTiles(platformWidth, scale) {
+  const platformType = getRandomPlatformType();
+  const sprite = getRandomPlatformSprite(platformType);
+  
+  return [{
+    sprite: sprite,
+    x: 0,
+    width: platformWidth,
+    height: getScaledPlatformHeight(scale),
+    type: platformType,
+    state: platformType === DJ_PLATFORM_TYPES.BREAKABLE ? 'intact' : 'normal',
+    moveDirection: platformType === DJ_PLATFORM_TYPES.MOVING ? (Math.random() > 0.5 ? 1 : -1) : 0,
+    moveSpeed: platformType === DJ_PLATFORM_TYPES.MOVING ? 80 : 0, // пикселей в секунду
+    animationFrame: platformType === DJ_PLATFORM_TYPES.MOVING ? 0 : null
+  }];
+}
+
+// Предварительная загрузка изображений (отключена для производительности)
+// const preloadedImages = {};
+// function preloadImage(src) {
+//   if (!preloadedImages[src]) {
+//     const img = new Image();
+//     img.src = src;
+//     preloadedImages[src] = img;
+//   }
+//   return preloadedImages[src];
+// }
 
 // Функции для получения масштабированных размеров Flappy Bird
 function getScaledFlappyPetSize(scale) {
@@ -375,8 +451,8 @@ const DoodleJumpGame = ({ petSprite, onClose, petId }) => {
   // Массивы для хранения позиций фоновых слоев (для бесшовного зацикливания)
   const backgroundLayers = useRef([]); // Будет инициализирован позже
   
-  // refs для платформ-танков
-  const platformRefs = useRef([]);
+  // refs для платформ-камней (больше не используются, так как отзеркаливание отключено)
+  // const platformRefs = useRef([]);
 
   // Управление
   useEffect(() => {
@@ -437,6 +513,35 @@ const DoodleJumpGame = ({ petSprite, onClose, petId }) => {
           velocityY.current > 0
         ) {
           velocityY.current = DJ_JUMP_VELOCITY;
+          
+          // Обработка разных типов платформ
+          const mainTile = plat.tiles[0];
+          let shouldRemovePlatform = false;
+          
+          if (mainTile.type === DJ_PLATFORM_TYPES.DISAPPEARING) {
+            // Исчезающая платформа - удаляем после приземления
+            shouldRemovePlatform = true;
+          } else if (mainTile.type === DJ_PLATFORM_TYPES.BREAKABLE) {
+            // Ломающаяся платформа
+            if (mainTile.state === 'intact') {
+              mainTile.state = 'cracked';
+              mainTile.sprite = DJ_PLATFORM_SPRITES_BY_TYPE[DJ_PLATFORM_TYPES.BREAKABLE][1]; // треснутая текстура
+            } else if (mainTile.state === 'cracked') {
+              // Удаляем платформу после второго приземления
+              shouldRemovePlatform = true;
+            }
+          }
+          
+          // Удаляем платформу после цикла, чтобы не нарушить индексы
+          if (shouldRemovePlatform) {
+            setTimeout(() => {
+              const index = platforms.current.indexOf(plat);
+              if (index > -1) {
+                platforms.current.splice(index, 1);
+              }
+            }, 0);
+          }
+          
           if (!plat.visited) {
             plat.visited = true;
             setScore(s => s + 1);
@@ -452,6 +557,17 @@ const DoodleJumpGame = ({ petSprite, onClose, petId }) => {
         maxY.current -= diff;
         
         // Параллакс эффект для фоновых слоев с бесшовным зацикливанием
+        // Инициализируем фоновые слои, если они не созданы
+        if (backgroundLayers.current.length === 0) {
+          backgroundLayers.current = [
+            0, 
+            containerSize.height, 
+            containerSize.height * 2,
+            containerSize.height * 3,
+            containerSize.height * 4
+          ];
+        }
+        
         // Задний слой движется медленнее
         for (let i = 0; i < backgroundLayers.current.length; i++) {
           backgroundLayers.current[i] += diff * 0.3;
@@ -484,7 +600,34 @@ const DoodleJumpGame = ({ petSprite, onClose, petId }) => {
         
         // Движение платформ - изменяем in-place
         for (let i = 0; i < platforms.current.length; i++) {
-          platforms.current[i].y += diff;
+          const platform = platforms.current[i];
+          platform.y += diff;
+        }
+        
+        // Движение движущихся платформ (независимо от параллакса)
+        for (let i = 0; i < platforms.current.length; i++) {
+          const platform = platforms.current[i];
+          const mainTile = platform.tiles[0];
+          if (mainTile.type === DJ_PLATFORM_TYPES.MOVING) {
+            // Используем фиксированную скорость движения
+            const moveDistance = mainTile.moveSpeed * 0.016; // примерно 60 FPS
+            platform.x += mainTile.moveDirection * moveDistance;
+            
+            // Анимация движущихся платформ (переключение спрайтов)
+            if (!mainTile.animationFrame) mainTile.animationFrame = 0;
+            mainTile.animationFrame += 1;
+            if (mainTile.animationFrame % 30 === 0) { // каждые 30 кадров (0.5 секунды)
+              const spriteIndex = (mainTile.animationFrame / 30) % 2;
+              mainTile.sprite = DJ_PLATFORM_SPRITES_BY_TYPE[DJ_PLATFORM_TYPES.MOVING][spriteIndex];
+            }
+            
+            // Отражение от краев экрана
+            if (platform.x <= 0 || platform.x + getScaledPlatformWidth(scale) >= containerSize.width) {
+              mainTile.moveDirection *= -1;
+              // Предотвращаем выход за границы
+              platform.x = Math.max(0, Math.min(containerSize.width - getScaledPlatformWidth(scale), platform.x));
+            }
+          }
         }
       }
       
@@ -496,12 +639,13 @@ const DoodleJumpGame = ({ petSprite, onClose, petId }) => {
             minY = platforms.current[i].y;
           }
         }
-        platforms.current.push({
+        const newPlatform = {
           x: getRandomPlatformX(containerSize.width, getScaledPlatformWidth(scale)),
           y: minY - 60 * scale - Math.random() * 30 * scale,
-          sprite: getRandomTankSprite(),
           direction: Math.random() > 0.5 ? 1 : -1 // 1 = вправо, -1 = влево
-        });
+        };
+        newPlatform.tiles = createPlatformTiles(getScaledPlatformWidth(scale), scale);
+        platforms.current.push(newPlatform);
       }
       
       // Удаление платформ - splice вместо filter
@@ -536,14 +680,19 @@ const DoodleJumpGame = ({ petSprite, onClose, petId }) => {
     }
   }, [gameOver, rewarded, score, updatePetStats, petId, getPetState]);
 
-  // Применение отзеркаливания к платформам
-  useEffect(() => {
-    platforms.current.forEach((plat, idx) => {
-      if (platformRefs.current[idx]) {
-        platformRefs.current[idx].style.setProperty('transform', plat.direction === 1 ? 'scaleX(-1)' : 'scaleX(1)', 'important');
-      }
-    });
-  }, [renderTick]);
+  // Применение отзеркаливания к платформам (отключено для камней)
+  // useEffect(() => {
+  //   platforms.current.forEach((plat, idx) => {
+  //     if (platformRefs.current[idx]) {
+  //       platformRefs.current[idx].style.setProperty('transform', plat.direction === 1 ? 'scaleX(-1)' : 'scaleX(1)', 'important');
+  //     }
+  //   });
+  // }, [renderTick]);
+
+  // Инициализация шаблонов платформ при загрузке (больше не нужно)
+  // useEffect(() => {
+  //   generatePlatformTemplates();
+  // }, []);
 
   // Инициализация платформ и фоновых слоев
   useEffect(() => {
@@ -562,17 +711,20 @@ const DoodleJumpGame = ({ petSprite, onClose, petId }) => {
     
     let plats = [];
     for (let i = 0; i < DJ_PLATFORM_COUNT; i++) {
-      plats.push({
+      const newPlatform = {
         x: getRandomPlatformX(containerSize.width, getScaledPlatformWidth(scale)),
         y: containerSize.height - i * 60 * scale - 40 * scale,
         visited: i === 0, // первая платформа сразу отмечена как посещённая
-        sprite: getRandomTankSprite(),
         direction: Math.random() > 0.5 ? 1 : -1 // 1 = вправо, -1 = влево
-      });
+      };
+      newPlatform.tiles = createPlatformTiles(getScaledPlatformWidth(scale), scale);
+      plats.push(newPlatform);
     }
-    // Первая платформа строго под питомцем
+    // Первая платформа строго под питомцем (всегда обычная)
     plats[0].x = containerSize.width / 2 - getScaledPlatformWidth(scale) / 2;
     plats[0].y = containerSize.height - getScaledPlatformHeight(scale) - 10 * scale;
+    plats[0].tiles[0].type = DJ_PLATFORM_TYPES.NORMAL;
+    plats[0].tiles[0].sprite = getRandomPlatformSprite(DJ_PLATFORM_TYPES.NORMAL);
     platforms.current = plats;
     // Питомец стоит на первой платформе
     petX.current = containerSize.width / 2 - getScaledPetSize(scale) / 2;
@@ -588,16 +740,19 @@ const DoodleJumpGame = ({ petSprite, onClose, petId }) => {
     // Пересоздаём платформы и ставим питомца на первую платформу
     let plats = [];
     for (let i = 0; i < DJ_PLATFORM_COUNT; i++) {
-      plats.push({
+      const newPlatform = {
         x: getRandomPlatformX(containerSize.width, getScaledPlatformWidth(scale)),
         y: containerSize.height - i * 60 * scale - 40 * scale,
         visited: i === 0,
-        sprite: getRandomTankSprite(),
         direction: Math.random() > 0.5 ? 1 : -1 // 1 = вправо, -1 = влево
-      });
+      };
+      newPlatform.tiles = createPlatformTiles(getScaledPlatformWidth(scale), scale);
+      plats.push(newPlatform);
     }
     plats[0].x = containerSize.width / 2 - getScaledPlatformWidth(scale) / 2;
     plats[0].y = containerSize.height - getScaledPlatformHeight(scale) - 10 * scale;
+    plats[0].tiles[0].type = DJ_PLATFORM_TYPES.NORMAL;
+    plats[0].tiles[0].sprite = getRandomPlatformSprite(DJ_PLATFORM_TYPES.NORMAL);
     platforms.current = plats;
     petX.current = containerSize.width / 2 - getScaledPetSize(scale) / 2;
     petY.current = plats[0].y - getScaledPetSize(scale);
@@ -723,7 +878,7 @@ const DoodleJumpGame = ({ petSprite, onClose, petId }) => {
         }}
       >
       {/* Задние слои параллакс фона */}
-      {backgroundLayers.current.map((y, index) => (
+      {backgroundLayers.current && backgroundLayers.current.length > 0 && backgroundLayers.current.map((y, index) => (
         <div
           key={`background-${index}`}
           style={{
@@ -757,25 +912,37 @@ const DoodleJumpGame = ({ petSprite, onClose, petId }) => {
         }}
       />
       
-      {/* Платформы-танки */}
-      {platforms.current.map((plat, idx) => (
-        <img
-          key={idx}
-          ref={el => platformRefs.current[idx] = el}
-          src={plat.sprite}
-          alt="tank platform"
-          style={{
-            position: 'absolute',
-            left: plat.x - (getScaledTankDisplayWidth(scale) - getScaledPlatformWidth(scale)) / 2, // центрируем танк относительно физического тела
-            top: plat.y - (getScaledTankDisplayHeight(scale) - getScaledPlatformHeight(scale)), // выравниваем по нижней границе
-            width: getScaledTankDisplayWidth(scale),
-            height: getScaledTankDisplayHeight(scale),
-            zIndex: 3,
-            userSelect: 'none',
-            pointerEvents: 'none',
-          }}
-        />
-      ))}
+      {/* Платформы-камни (оптимизированный рендеринг) */}
+      {platforms.current.map((plat, idx) => {
+        // Используем сохраненные тайлы платформы или создаем новые
+        if (!plat.tiles) {
+          plat.tiles = createPlatformTiles(getScaledPlatformWidth(scale), scale);
+        }
+        
+        // Используем только первый тайл как основную текстуру платформы
+        const mainTile = plat.tiles[0];
+        
+        return (
+          <img
+            key={`platform-${idx}-${mainTile.state || 'normal'}-${mainTile.animationFrame || 0}`}
+            src={mainTile.sprite}
+            alt={`${mainTile.type} platform`}
+            style={{
+              position: 'absolute',
+              left: plat.x,
+              top: plat.y,
+              width: getScaledPlatformWidth(scale),
+              height: getScaledPlatformHeight(scale),
+              zIndex: 3,
+              userSelect: 'none',
+              pointerEvents: 'none',
+              imageRendering: 'pixelated', // Для пиксельной графики
+              opacity: mainTile.type === DJ_PLATFORM_TYPES.DISAPPEARING ? 0.8 : 1, // Исчезающие платформы немного прозрачные
+              borderRadius: '2px', // Скругление углов
+            }}
+          />
+        );
+      })}
       
 
       
@@ -1152,6 +1319,14 @@ function generateLaneConfiguration(level) {
     lanes[laneIndex] = true;
   });
   
+  // Добавляем отладочную информацию
+  console.log('Генерируем конфигурацию полос для уровня', level, {
+    lanes: lanes,
+    totalLanes: baseLanes,
+    roadLanes: selectedRoadLanes,
+    safeLanes: [0, safeLaneIndex]
+  });
+  
   return {
     lanes: lanes,
     totalLanes: baseLanes,
@@ -1166,7 +1341,11 @@ function isLaneRoad(laneIndex, laneConfig) {
     // Если конфигурация не загружена, используем старую логику для совместимости
     return laneIndex % 2 === 1;
   }
-  return laneConfig.lanes[laneIndex] === true;
+  // Проверяем, что индекс полосы находится в пределах массива
+  if (laneIndex >= 0 && laneIndex < laneConfig.lanes.length) {
+    return laneConfig.lanes[laneIndex] === true;
+  }
+  return false; // Если индекс вне диапазона, считаем полосу безопасной
 }
 
 const CrossyRoadGame = ({ petSprite, onClose, petId, onLevelChange }) => {
@@ -1207,12 +1386,17 @@ const CrossyRoadGame = ({ petSprite, onClose, petId, onLevelChange }) => {
       setScale(newScale);
     };
     
+    // Принудительно обновляем размеры сразу
     updateContainerSize();
+    
+    // Добавляем небольшую задержку для гарантии правильного размера
+    const timeoutId = setTimeout(updateContainerSize, 100);
     
     const resizeObserver = new ResizeObserver(updateContainerSize);
     resizeObserver.observe(containerRef.current);
     
     return () => {
+      clearTimeout(timeoutId);
       if (containerRef.current) {
         resizeObserver.unobserve(containerRef.current);
       }
@@ -1221,9 +1405,18 @@ const CrossyRoadGame = ({ petSprite, onClose, petId, onLevelChange }) => {
   
   const isInMinigameContainer = true; // Всегда true для CrossyRoad в телефоне
   
-
-  
-
+  // Отладочная функция для включения отладки полос
+  useEffect(() => {
+    // Добавляем глобальную функцию для включения отладки
+    window.toggleCrossyLaneDebug = () => {
+      window.debugLanes = !window.debugLanes;
+      console.log('Crossy Road lane debug:', window.debugLanes ? 'enabled' : 'disabled');
+    };
+    
+    return () => {
+      delete window.toggleCrossyLaneDebug;
+    };
+  }, []);
 
   // refs для физики
   const petX = useRef(0);
@@ -1242,6 +1435,9 @@ const CrossyRoadGame = ({ petSprite, onClose, petId, onLevelChange }) => {
   
   // refs для прямого управления DOM элементами машин
   const carRefs = useRef({});
+  
+  // Ref для хранения актуальной конфигурации полос
+  const currentLaneConfigRef = useRef(null);
   
   // Улучшенная система респауна
   const spawnTimer = useRef(0);
@@ -1363,6 +1559,11 @@ const CrossyRoadGame = ({ petSprite, onClose, petId, onLevelChange }) => {
       const speedIncrease = Math.min((level - 1) * 25, 200); // Ограничиваем максимальное увеличение скорости
       const speed = (baseSpeed + speedIncrease) * deltaTimeSeconds;
       
+      // Отладочная информация о движении машин
+      if (window.debugLanes && obstacles.current.length > 0) {
+        console.log(`Движение машин: скорость=${speed.toFixed(2)}, машин=${obstacles.current.length}`);
+      }
+      
       // Проверяем столкновения между машинами
       for (let i = obstacles.current.length - 1; i >= 0; i--) {
         for (let j = i - 1; j >= 0; j--) {
@@ -1400,7 +1601,30 @@ const CrossyRoadGame = ({ petSprite, onClose, petId, onLevelChange }) => {
         
         // Обычное движение
         if (!obs.special) {
-          obs.x += obs.dir * speed;
+          // Определяем полосу машины
+          const obsLaneIndex = Math.floor((containerSize.height - obs.y - CR_OBSTACLE_HEIGHT * scale / 2) / (CR_LANE_HEIGHT * scale));
+          const currentConfig = currentLaneConfigRef.current || laneConfig;
+          const isObsOnRoadLane = isLaneRoad(obsLaneIndex, currentConfig);
+          
+          // Двигаем машину только если она на дорожной полосе
+          if (isObsOnRoadLane) {
+            obs.x += obs.dir * speed;
+            
+            // Отладочная информация
+            if (window.debugLanes) {
+              console.log(`Машина ${i}: движется по полосе ${obsLaneIndex}, X: ${obs.x.toFixed(1)}, Y: ${obs.y.toFixed(1)}`);
+            }
+          } else {
+            // Если машина не на дорожной полосе, удаляем её
+            if (window.debugLanes) {
+              console.log(`Машина ${i}: не на дорожной полосе (${obsLaneIndex}), удаляем`);
+            }
+            obstacles.current.splice(i, 1);
+            if (carRefs.current[i]) {
+              delete carRefs.current[i];
+            }
+            continue; // Пропускаем остальную логику для этой машины
+          }
         } else {
           // Специальное движение
           if (obs.special === 'diagonal' && obs.state === 'normal') {
@@ -1521,16 +1745,25 @@ const CrossyRoadGame = ({ petSprite, onClose, petId, onLevelChange }) => {
         if (spawnTimer.current >= randomSpawnTime && obstacles.current.length < maxCars) {
         spawnTimer.current = 0;
         
-        // Определяем активные дорожные полосы из текущей конфигурации
+        // Определяем активные дорожные полосы из актуальной конфигурации
         let roadLanes = [];
-        if (laneConfig && laneConfig.roadLanes) {
-          roadLanes = laneConfig.roadLanes.slice(); // Копируем массив дорожных полос
+        const currentConfig = currentLaneConfigRef.current || laneConfig;
+        
+        if (currentConfig && currentConfig.lanes) {
+          // Создаем массив индексов дорожных полос
+          for (let i = 0; i < currentConfig.lanes.length; i++) {
+            if (currentConfig.lanes[i] === true) {
+              roadLanes.push(i);
+            }
+          }
+          console.log(`Спавн: активные дорожные полосы: ${roadLanes.join(', ')}, конфигурация: [${currentConfig.lanes.join(', ')}], уровень: ${level}`);
         } else {
           // Если конфигурация не загружена, используем старую логику
           const lanes = Math.min(CR_LANE_COUNT, 3 + Math.floor(level / 3));
           for (let i = 0; i < lanes; i++) {
             if (i % 2 === 1) roadLanes.push(i);
           }
+          console.log(`Спавн: используется старая логика, дорожные полосы: ${roadLanes.join(', ')}, уровень: ${level}`);
         }
         
         if (roadLanes.length > 0) {
@@ -1541,6 +1774,11 @@ const CrossyRoadGame = ({ petSprite, onClose, petId, onLevelChange }) => {
             laneCarCounts[laneIndex] = obstacles.current.filter(obs => 
               Math.abs(obs.y - laneY) < CR_LANE_HEIGHT * scale / 2
             ).length;
+            
+            // Добавляем отладочную информацию
+            if (window.debugLanes) {
+              console.log(`Спавн: Полоса ${laneIndex}: Y=${laneY}, машин=${laneCarCounts[laneIndex]}`);
+            }
           });
           
           // Находим полосы с наименьшим количеством машин
@@ -1579,20 +1817,34 @@ const CrossyRoadGame = ({ petSprite, onClose, petId, onLevelChange }) => {
         carGroupTimer.current = 0;
         
         let roadLanes = [];
-        if (laneConfig && laneConfig.roadLanes) {
-          roadLanes = laneConfig.roadLanes.slice(); // Используем текущую конфигурацию полос
+        const currentConfig = currentLaneConfigRef.current || laneConfig;
+        
+        if (currentConfig && currentConfig.lanes) {
+          // Создаем массив индексов дорожных полос
+          for (let i = 0; i < currentConfig.lanes.length; i++) {
+            if (currentConfig.lanes[i] === true) {
+              roadLanes.push(i);
+            }
+          }
+          console.log(`Группа машин: активные дорожные полосы: ${roadLanes.join(', ')}, конфигурация: [${currentConfig.lanes.join(', ')}], уровень: ${level}`);
         } else {
           // Если конфигурация не загружена, используем старую логику
           const lanes = Math.min(CR_LANE_COUNT, 3 + Math.floor(level / 3));
           for (let i = 0; i < lanes; i++) {
             if (i % 2 === 1) roadLanes.push(i);
           }
+          console.log(`Группа машин: используется старая логика, дорожные полосы: ${roadLanes.join(', ')}, уровень: ${level}`);
         }
         
         if (roadLanes.length > 0) {
           const laneIndex = roadLanes[Math.floor(Math.random() * roadLanes.length)];
           const laneY = containerSize.height - (laneIndex + 1) * CR_LANE_HEIGHT * scale;
           const direction = laneIndex % 4 === 1 ? 1 : -1;
+          
+          // Добавляем отладочную информацию
+          if (window.debugLanes) {
+            console.log(`Группа машин: Полоса ${laneIndex}: Y=${laneY}, направление=${direction}`);
+          }
           
           // Создаем группу из 3-5 машин (более плотные группы)
           const groupSize = Math.min(3 + Math.floor(level / 3), 6);
@@ -1619,25 +1871,38 @@ const CrossyRoadGame = ({ petSprite, onClose, petId, onLevelChange }) => {
       
       // Определяем, на какой полосе находится питомец
       const petLaneIndex = Math.floor((containerSize.height - petY.current - CR_PET_SIZE * scale / 2) / (CR_LANE_HEIGHT * scale));
-      const isPetOnRoadLane = isLaneRoad(petLaneIndex, laneConfig); // Используем динамическую конфигурацию
+      const currentConfig = currentLaneConfigRef.current || laneConfig;
+      const isPetOnRoadLane = isLaneRoad(petLaneIndex, currentConfig); // Используем динамическую конфигурацию
+      
+      // Отладочная информация для проверки полос
+      if (window.debugLanes) {
+        console.log('Питомец на полосе:', petLaneIndex, 'На дороге:', isPetOnRoadLane, 'Всего полос:', laneConfig?.totalLanes, 'Y питомца:', Math.round(petY.current));
+      }
       
       // Проверяем коллизии с машинами
       for (let obs of obstacles.current) {
-        // Для обычных машин проверяем только если питомец на дорожной полосе
-        if (!obs.special && isPetOnRoadLane) {
-          const obsLaneIndex = Math.floor((containerSize.height - obs.y - CR_OBSTACLE_HEIGHT * scale / 2) / (CR_LANE_HEIGHT * scale));
-          
-          // Проверяем коллизию только если препятствие на той же полосе
-          if (obsLaneIndex === petLaneIndex) {
-            if (
-              petTop < obs.y + obs.sprite.displayHeight * scale &&
-              petBottom > obs.y &&
-              petLeft < obs.x + obs.sprite.displayWidth * scale &&
-              petRight > obs.x
-            ) {
-              setGameOver(true);
-              return;
-            }
+        // Определяем полосу машины
+        const obsLaneIndex = Math.floor((containerSize.height - obs.y - CR_OBSTACLE_HEIGHT * scale / 2) / (CR_LANE_HEIGHT * scale));
+        const currentConfig = currentLaneConfigRef.current || laneConfig;
+        const isObsOnRoadLane = isLaneRoad(obsLaneIndex, currentConfig);
+        
+        // Отладочная информация для машин
+        if (window.debugLanes) {
+          console.log(`Машина ${idx}: полоса ${obsLaneIndex}, на дороге: ${isObsOnRoadLane}, Y: ${Math.round(obs.y)}`);
+        }
+        
+        // Для обычных машин проверяем коллизию только если:
+        // 1. Машина находится на дорожной полосе
+        // 2. Питомец находится на той же полосе
+        if (!obs.special && isObsOnRoadLane && obsLaneIndex === petLaneIndex) {
+          if (
+            petTop < obs.y + obs.sprite.displayHeight * scale &&
+            petBottom > obs.y &&
+            petLeft < obs.x + obs.sprite.displayWidth * scale &&
+            petRight > obs.x
+          ) {
+            setGameOver(true);
+            return;
           }
         }
         // Для специальных машин (преследователи, диагональные) проверяем всегда
@@ -1686,7 +1951,10 @@ const CrossyRoadGame = ({ petSprite, onClose, petId, onLevelChange }) => {
         const newLevel = level + 1;
         setLevel(newLevel);
         if (onLevelChange) onLevelChange(newLevel);
-        nextLevel();
+        // Вызываем nextLevel с новым уровнем
+        setTimeout(() => {
+          nextLevel();
+        }, 100);
       }, 1200);
     }
   }, [win, rewarded, updatePetStats, petId, getPetState, level]);
@@ -1706,6 +1974,14 @@ const CrossyRoadGame = ({ petSprite, onClose, petId, onLevelChange }) => {
 
   // Функция перехода на следующий уровень
   const nextLevel = () => {
+    // Проверяем, что размеры контейнера установлены правильно
+    if (containerSize.width === 0 || containerSize.height === 0 || scale === 0) {
+      console.log('Размеры контейнера не готовы, откладываем nextLevel');
+      return;
+    }
+    
+    console.log('Переход на следующий уровень:', { level, containerSize, scale });
+    
     // Выбираем новый фоновый тайл
     setBackgroundTile(getRandomBackgroundTile());
     
@@ -1713,43 +1989,66 @@ const CrossyRoadGame = ({ petSprite, onClose, petId, onLevelChange }) => {
     const newLaneConfig = generateLaneConfiguration(level);
     setLaneConfig(newLaneConfig);
     
+    // Сохраняем актуальную конфигурацию в ref для использования в игровом цикле
+    currentLaneConfigRef.current = newLaneConfig;
+    
+    // Добавляем отладочную информацию о конфигурации
+    console.log('Новая конфигурация полос:', {
+      level: level,
+      lanes: newLaneConfig.lanes,
+      roadLanes: newLaneConfig.roadLanes,
+      totalLanes: newLaneConfig.totalLanes
+    });
+    
     // Увеличиваем сложность: больше полос с препятствиями, выше скорость
     let obsArr = [];
     const totalLanes = newLaneConfig.totalLanes;
     
-
-    
-    for (let i = 0; i < totalLanes; i++) {
-      const laneY = containerSize.height - (i + 1) * CR_LANE_HEIGHT * scale;
-      const isRoadLane = newLaneConfig.lanes[i]; // Используем динамическую конфигурацию
-      
-      // Размещаем машины только на дорожных полосах
-      if (isRoadLane) {
-        // Улучшенное размещение машин с прогрессивной сложностью
-        const baseCarsPerLane = Math.min(3 + Math.floor(level / 2), 6); // Больше машин на полосу
-        const direction = i % 2 === 1 ? 1 : -1; // Чередуем направление движения для разнообразия
+          for (let i = 0; i < totalLanes; i++) {
+        const laneY = containerSize.height - (i + 1) * CR_LANE_HEIGHT * scale;
+        const isRoadLane = newLaneConfig.lanes[i]; // Используем динамическую конфигурацию
         
-        // Создаем машины с лучшим распределением
-        for (let j = 0; j < baseCarsPerLane; j++) {
-          let spawnX;
-          const minSpacing = 80 * scale; // Минимальное расстояние между машинами
+        // Добавляем отладочную информацию
+        if (window.debugLanes) {
+          console.log(`Создание машин: Полоса ${i}: Y=${laneY}, isRoad=${isRoadLane}`);
+        }
+        
+        // Размещаем машины только на дорожных полосах
+        if (isRoadLane) {
+          console.log(`Создаем машины на дорожной полосе ${i} (Y=${laneY})`);
           
-          if (direction < 0) {
-            // Машины справа налево
-            spawnX = containerSize.width + 100 * scale + (j * minSpacing * 1.5);
-          } else {
-            // Машины слева направо
-            spawnX = -100 * scale - (j * minSpacing * 1.5);
-          }
+          // Улучшенное размещение машин с прогрессивной сложностью
+          const baseCarsPerLane = Math.min(3 + Math.floor(level / 2), 6); // Больше машин на полосу
+          const direction = i % 2 === 1 ? 1 : -1; // Чередуем направление движения для разнообразия
           
-          const newCar = createCarObstacle(spawnX, laneY, direction, level);
-          if (newCar) {
-            obsArr.push(newCar);
-
+          // Создаем машины с лучшим распределением
+          for (let j = 0; j < baseCarsPerLane; j++) {
+            let spawnX;
+            const minSpacing = 80 * scale; // Минимальное расстояние между машинами
+            
+            if (direction < 0) {
+              // Машины справа налево
+              spawnX = containerSize.width + 100 * scale + (j * minSpacing * 1.5);
+            } else {
+              // Машины слева направо
+              spawnX = -100 * scale - (j * minSpacing * 1.5);
+            }
+            
+            const newCar = createCarObstacle(spawnX, laneY, direction, level);
+            if (newCar) {
+              // Проверяем, что машина создалась на правильной полосе
+              const carLaneIndex = Math.floor((containerSize.height - newCar.y - CR_OBSTACLE_HEIGHT * scale / 2) / (CR_LANE_HEIGHT * scale));
+              const isCarOnRoadLane = isLaneRoad(carLaneIndex, newLaneConfig);
+              
+              console.log(`Создана машина ${j} на полосе ${i}: Y=${newCar.y}, проверка полосы=${carLaneIndex}, на дороге=${isCarOnRoadLane}`);
+              
+              obsArr.push(newCar);
+            }
           }
+        } else {
+          console.log(`Полоса ${i} не дорожная, пропускаем создание машин`);
         }
       }
-    }
     obstacles.current = obsArr;
     // Очищаем refs для машин
     carRefs.current = {};
@@ -1767,24 +2066,104 @@ const CrossyRoadGame = ({ petSprite, onClose, petId, onLevelChange }) => {
 
   // Инициализация игры
   useEffect(() => {
-    if (obstacles.current.length > 0) return;
-    console.log('Инициализация игры...');
+    if (containerSize.width === 0 || containerSize.height === 0 || scale === 0) return; // Ждем правильных размеров
+    
+    console.log('Инициализация игры...', { containerSize, scale });
     setLevel(1);
     if (onLevelChange) onLevelChange(1);
     setScore(0);
+    
     // Принудительно обновляем конфигурацию полос для первого уровня
-    setLaneConfig(generateLaneConfiguration(1));
-    nextLevel();
+    const initialLaneConfig = generateLaneConfiguration(1);
+    setLaneConfig(initialLaneConfig);
+    
+    // Инициализируем currentLaneConfigRef
+    currentLaneConfigRef.current = initialLaneConfig;
+    
+    console.log('Инициализирована конфигурация полос:', {
+      lanes: initialLaneConfig.lanes,
+      roadLanes: initialLaneConfig.roadLanes
+    });
+    
+    // Очищаем существующие машины перед созданием новых
+    obstacles.current = [];
+    carRefs.current = {};
+    
+    // Добавляем небольшую задержку для гарантии правильной установки размеров
+    const timeoutId = setTimeout(() => {
+      nextLevel();
+    }, 200);
+    
+    return () => clearTimeout(timeoutId);
     // Игра запускается автоматически
 
-  }, []);
+  }, [containerSize.width, containerSize.height, scale]);
 
-  // Игра запускается автоматически
+  // Пересоздание машин при изменении размеров
   useEffect(() => {
-    if (obstacles.current.length > 0) {
-      // Игра уже запущена
+    if (containerSize.width > 0 && containerSize.height > 0 && scale > 0 && obstacles.current.length > 0) {
+      // Если размеры изменились и машины уже есть, пересоздаем их
+      console.log('Пересоздание машин из-за изменения размеров...', { containerSize, scale });
+      
+      // Сохраняем текущий уровень
+      const currentLevel = level;
+      
+      // Очищаем существующие машины
+      obstacles.current = [];
+      carRefs.current = {};
+      
+      // Пересоздаем машины с новыми размерами
+      const newLaneConfig = generateLaneConfiguration(currentLevel);
+      setLaneConfig(newLaneConfig);
+      
+      // ОБНОВЛЯЕМ currentLaneConfigRef с новой конфигурацией
+      currentLaneConfigRef.current = newLaneConfig;
+      
+      console.log('Обновлена конфигурация при пересоздании:', {
+        level: currentLevel,
+        lanes: newLaneConfig.lanes,
+        roadLanes: newLaneConfig.roadLanes
+      });
+      
+      // Создаем новые машины с правильными размерами
+      let obsArr = [];
+      const totalLanes = newLaneConfig.totalLanes;
+      
+      for (let i = 0; i < totalLanes; i++) {
+        const laneY = containerSize.height - (i + 1) * CR_LANE_HEIGHT * scale;
+        const isRoadLane = newLaneConfig.lanes[i];
+        
+        // Добавляем отладочную информацию
+        if (window.debugLanes) {
+          console.log(`Пересоздание: Полоса ${i}: Y=${laneY}, isRoad=${isRoadLane}`);
+        }
+        
+        if (isRoadLane) {
+          const baseCarsPerLane = Math.min(3 + Math.floor(currentLevel / 2), 6);
+          const direction = i % 2 === 1 ? 1 : -1;
+          
+          for (let j = 0; j < baseCarsPerLane; j++) {
+            let spawnX;
+            const minSpacing = 80 * scale;
+            
+            if (direction < 0) {
+              spawnX = containerSize.width + 100 * scale + (j * minSpacing * 1.5);
+            } else {
+              spawnX = -100 * scale - (j * minSpacing * 1.5);
+            }
+            
+            const newCar = createCarObstacle(spawnX, laneY, direction, currentLevel);
+            if (newCar) {
+              obsArr.push(newCar);
+            }
+          }
+        }
+      }
+      
+      obstacles.current = obsArr;
+      setRenderTick(t => t + 1);
     }
-  }, [obstacles.current.length]);
+  }, [containerSize.width, containerSize.height, scale, level]);
 
   // Сброс игры
   const restart = () => {
@@ -1877,7 +2256,7 @@ const CrossyRoadGame = ({ petSprite, onClose, petId, onLevelChange }) => {
           top: 0,
           left: 0,
           overflow: 'hidden',
-
+          background: '#8bc34a', // Добавляем базовый цвет фона на случай, если изображение не загрузилось
         }}
       >
       {/* Фоновый спрайт для всей игры */}
@@ -1893,15 +2272,20 @@ const CrossyRoadGame = ({ petSprite, onClose, petId, onLevelChange }) => {
           zIndex: 0,
           userSelect: 'none',
           pointerEvents: 'none',
+          objectFit: 'cover', // Растягиваем фон на весь контейнер
         }}
       />
       
       {/* Дороги (состоящие из нескольких блоков) */}
       {laneConfig && laneConfig.lanes && laneConfig.totalLanes > 0 && [...Array(laneConfig.totalLanes)].map((_, i) => {
         const laneY = containerSize.height - (i + 1) * CR_LANE_HEIGHT * scale;
-        const isRoadLane = isLaneRoad(i, laneConfig); // Используем динамическую конфигурацию
+        const currentConfig = currentLaneConfigRef.current || laneConfig;
+        const isRoadLane = isLaneRoad(i, currentConfig); // Используем динамическую конфигурацию
         
-
+        // Добавляем отладочную информацию
+        if (window.debugLanes) {
+          console.log(`Отображение дороги: Полоса ${i}: Y=${laneY}, isRoad=${isRoadLane}`);
+        }
         
         if (isRoadLane) {
           // Чередуем два типа дорожных тайлов для разнообразия
@@ -1910,7 +2294,7 @@ const CrossyRoadGame = ({ petSprite, onClose, petId, onLevelChange }) => {
           // Создаем несколько блоков дороги для покрытия всей ширины
           const blocksNeeded = Math.ceil(containerSize.width / (tileSprite.displayWidth * scale)) + 1; // +1 для перекрытия
           
-                      return [...Array(blocksNeeded)].map((_, blockIndex) => (
+          return [...Array(blocksNeeded)].map((_, blockIndex) => (
             <img
               key={`road-${i}-${blockIndex}`}
               src={tileSprite.src}
@@ -1928,8 +2312,40 @@ const CrossyRoadGame = ({ petSprite, onClose, petId, onLevelChange }) => {
             />
           ));
         } else {
-          return null; // Четные полосы теперь используют общий фоновый спрайт
+          return null; // Безопасные полосы используют общий фоновый спрайт
         }
+      })}
+      
+      {/* Отладочная информация о полосах */}
+      {window.debugLanes && laneConfig && laneConfig.lanes && laneConfig.totalLanes > 0 && [...Array(laneConfig.totalLanes)].map((_, i) => {
+        const laneY = containerSize.height - (i + 1) * CR_LANE_HEIGHT * scale;
+        const currentConfig = currentLaneConfigRef.current || laneConfig;
+        const isRoadLane = isLaneRoad(i, currentConfig);
+        
+        return (
+          <div
+            key={`debug-lane-${i}`}
+            style={{
+              position: 'absolute',
+              left: 0,
+              top: laneY,
+              width: '100%',
+              height: CR_LANE_HEIGHT * scale,
+              border: `2px solid ${isRoadLane ? '#ff0000' : '#00ff00'}`,
+              backgroundColor: isRoadLane ? 'rgba(255, 0, 0, 0.2)' : 'rgba(0, 255, 0, 0.2)',
+              zIndex: 10,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontSize: '12px',
+              fontWeight: 'bold',
+              color: '#000',
+              textShadow: '1px 1px 2px #fff',
+            }}
+          >
+            {isRoadLane ? `ДОРОГА ${i} (Y=${Math.round(laneY)})` : `БЕЗОПАСНАЯ ${i} (Y=${Math.round(laneY)})`}
+          </div>
+        );
       })}
       {/* Препятствия - машины */}
       {obstacles.current.map((obs, idx) => (
@@ -1954,6 +2370,38 @@ const CrossyRoadGame = ({ petSprite, onClose, petId, onLevelChange }) => {
           }}
         />
       ))}
+      
+      {/* Отладочная информация о машинах */}
+      {window.debugLanes && obstacles.current.map((obs, idx) => {
+        const obsLaneIndex = Math.floor((containerSize.height - obs.y - CR_OBSTACLE_HEIGHT * scale / 2) / (CR_LANE_HEIGHT * scale));
+        const currentConfig = currentLaneConfigRef.current || laneConfig;
+        const isObsOnRoadLane = isLaneRoad(obsLaneIndex, currentConfig);
+        
+        return (
+          <div
+            key={`debug-car-${idx}`}
+            style={{
+              position: 'absolute',
+              left: obs.x,
+              top: obs.y,
+              width: obs.sprite.displayWidth * scale,
+              height: obs.sprite.displayHeight * scale,
+              border: `2px solid ${isObsOnRoadLane ? '#ff0000' : '#ffff00'}`,
+              backgroundColor: 'rgba(255, 255, 0, 0.3)',
+              zIndex: 11,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontSize: '8px',
+              fontWeight: 'bold',
+              color: '#000',
+              textShadow: '1px 1px 1px #fff',
+            }}
+          >
+            {isObsOnRoadLane ? 'ДОРОГА' : 'ВНЕ ДОРОГИ'}
+          </div>
+        );
+      })}
       {/* Питомец */}
       <img
         src={petSprite}
@@ -1969,6 +2417,32 @@ const CrossyRoadGame = ({ petSprite, onClose, petId, onLevelChange }) => {
           pointerEvents: 'none',
         }}
       />
+      
+      {/* Отладочная информация о позиции питомца */}
+      {window.debugLanes && (
+        <div
+          style={{
+            position: 'absolute',
+            top: 10,
+            left: 10,
+            background: 'rgba(0, 0, 0, 0.8)',
+            color: '#fff',
+            padding: '8px',
+            borderRadius: '4px',
+            fontSize: '12px',
+            zIndex: 20,
+            fontFamily: 'monospace',
+          }}
+        >
+          <div>Питомец: X={Math.round(petX.current)}, Y={Math.round(petY.current)}</div>
+          <div>Полоса: {Math.floor((containerSize.height - petY.current - CR_PET_SIZE * scale / 2) / (CR_LANE_HEIGHT * scale))}</div>
+          <div>На дороге: {isLaneRoad(Math.floor((containerSize.height - petY.current - CR_PET_SIZE * scale / 2) / (CR_LANE_HEIGHT * scale)), currentLaneConfigRef.current || laneConfig) ? 'ДА' : 'НЕТ'}</div>
+          <div>Машин на экране: {obstacles.current.length}</div>
+          <div>Размеры: {Math.round(containerSize.width)}x{Math.round(containerSize.height)}</div>
+          <div>Масштаб: {scale.toFixed(2)}</div>
+          <div>Уровень: {level}</div>
+        </div>
+      )}
       {/* Победа */}
       {win && (
         <div style={{

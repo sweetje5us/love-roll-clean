@@ -2171,7 +2171,7 @@ if (!isOpen) return null;
                             </button>
                             <h3>
                               {activePetData?.gameType === 'can_fly' && 'Полет над городом'}
-                              {activePetData?.gameType === 'can_jump' && 'Doodle Jump'}
+                              {activePetData?.gameType === 'can_jump' && 'Прыжки'}
                               {activePetData?.gameType === 'can_walk' && (
                                 <>
                                   Crossy Road
