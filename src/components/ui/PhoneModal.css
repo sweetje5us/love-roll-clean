@@ -3770,8 +3770,8 @@
   padding: 0 !important;
   box-sizing: border-box !important;
   overflow: hidden !important;
-  width: 320px !important;
-  height: 420px !important;
+  width: 100% !important;
+  height: 100% !important;
 }
 
 /* Принудительное масштабирование всех элементов внутри игр */
@@ -3813,6 +3813,32 @@
 /* ИСКЛЮЧЕНИЕ: Не переопределять анимацию спрайтов в Zuma */
 .minigame-container .zuma-game .zuma-sprite-animation {
   /* Убираем inherit !important, чтобы не переопределять inline стили */
+}
+
+/* Ограничение игровой области для всех мини-игр */
+.minigame-container .crossyroad-game,
+.minigame-container .doodlejump-game,
+.minigame-container .flappybird-game,
+.minigame-container .zuma-game {
+  overflow: hidden !important;
+  position: relative !important;
+  width: 288px !important;
+  height: 376px !important;
+  transform: scale(0.833691) !important;
+  transform-origin: center center !important;
+  position: relative !important;
+  bottom: 0px !important;
+}
+
+/* Ограничение для внутренних элементов игр */
+.minigame-container .crossyroad-game > div,
+.minigame-container .doodlejump-game > div,
+.minigame-container .flappybird-game > div,
+.minigame-container .zuma-game > div {
+  overflow: hidden !important;
+  position: relative !important;
+  width: 100% !important;
+  height: 100% !important;
 }
 
 /* Принудительное масштабирование всех игровых элементов */
