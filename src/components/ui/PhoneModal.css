@@ -3805,10 +3805,14 @@
 /* Принудительное масштабирование фоновых изображений */
 .minigame-container .crossyroad-game div[style*="background"],
 .minigame-container .doodlejump-game div[style*="background"],
-.minigame-container .flappybird-game div[style*="background"],
-.minigame-container .zuma-game div[style*="background"] {
+.minigame-container .flappybird-game div[style*="background"] {
   background-size: 100% 100% !important;
   background-position: center !important;
+}
+
+/* ИСКЛЮЧЕНИЕ: Не переопределять анимацию спрайтов в Zuma */
+.minigame-container .zuma-game .zuma-sprite-animation {
+  /* Убираем inherit !important, чтобы не переопределять inline стили */
 }
 
 /* Принудительное масштабирование всех игровых элементов */

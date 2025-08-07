@@ -27,32 +27,9 @@ import {
 import ItemCard from './ItemCard';
 import ChestModal from './ChestModal';
 import PetMiniGameModal from './PetMiniGameModal';
-import { FlyingOverCityGame, DoodleJumpGame, CrossyRoadGame, ZumaGame } from './PetMiniGameModal';
+import { FlyingOverCityGame, DoodleJumpGame, CrossyRoadGame, ZumaGame, getSpriteStyle } from './PetMiniGameModal';
 
-// Функция для получения CSS для анимированного спрайта
-function getSpriteStyle(sprite, currentFrame = 0, row = 0) {
-  if (!sprite) return {};
-  
-  // Ограничиваем currentFrame количеством кадров в спрайте
-  const maxFrames = sprite.frames || 8;
-  const clampedFrame = currentFrame % maxFrames;
-  
-  const frameX = clampedFrame * sprite.frameWidth;
-  const frameY = row * sprite.frameHeight;
-  
-  const style = {
-    backgroundImage: `url(${sprite.src})`,
-    backgroundPosition: `-${frameX}px -${frameY}px`,
-    backgroundSize: `${sprite.width}px ${sprite.height}px`,
-    width: `${sprite.frameWidth}px`,
-    height: `${sprite.frameHeight}px`,
-    backgroundRepeat: 'no-repeat'
-  };
-  
 
-  
-  return style;
-}
 
 import './PhoneModal.css';
 
@@ -2212,7 +2189,7 @@ if (!isOpen) return null;
                                           display: 'inline-block',
                                           verticalAlign: 'middle',
                                           transform: 'scale(0.75)', // Уменьшаем размер для заголовка
-                                          ...getSpriteStyle(zumaNextBall.sprite, zumaSpriteFrame, 0)
+                                          ...getSpriteStyle(zumaNextBall.sprite, zumaSpriteFrame, 0, 1)
                                         }}
                                         title={`Frame: ${zumaSpriteFrame}, Color: ${zumaNextBall.color}, Frames: ${zumaNextBall.sprite.frames}`}
                                       />

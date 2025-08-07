@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect, useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { getStaticPath } from '../../utils/pathUtils';
 import './PetMiniGameModal.css';
@@ -311,17 +311,31 @@ const DoodleJumpGame = ({ petSprite, onClose, petId }) => {
   const [gameOver, setGameOver] = useState(false);
   const [rewarded, setRewarded] = useState(false);
   
-  // Используем масштабирование
-  const { scale, containerSize, containerRef, isInMinigameContainer } = useGameScale(DJ_WIDTH, DJ_HEIGHT);
+  // Используем фиксированный масштаб для minigame-container
+  const isInMinigameContainer = true; // Всегда true для DoodleJump в телефоне
+  const containerSize = { width: 288, height: 376 }; // Фиксированный размер экрана телефона
+  const scaleX = containerSize.width / DJ_WIDTH;
+  const scaleY = containerSize.height / DJ_HEIGHT;
+  const scale = Math.min(scaleX, scaleY); // 288/320 = 0.9, 376/420 = 0.895, берем 0.895
+  const containerRef = useRef(null);
 
 
   // refs для физики
-  const petX = useRef(containerSize.width / 2 - getScaledPetSize(scale) / 2);
-  const petY = useRef(containerSize.height - getScaledPetSize(scale) - 10 * scale);
+  const petX = useRef(0);
+  const petY = useRef(0);
   const velocityY = useRef(0);
   const platforms = useRef([]);
-  const maxY = useRef(petY.current);
+  const maxY = useRef(0);
   const moveDir = useRef(0); // -1 влево, 1 вправо
+  
+  // Инициализация позиции питомца после получения размеров контейнера
+  useEffect(() => {
+    if (containerSize.width > 0 && containerSize.height > 0) {
+      petX.current = containerSize.width / 2 - getScaledPetSize(scale) / 2;
+      petY.current = containerSize.height - getScaledPetSize(scale) - 10 * scale;
+      maxY.current = petY.current;
+    }
+  }, [containerSize.width, containerSize.height, scale]);
   
   // refs для параллакс фона
   const backgroundY = useRef(0);
@@ -1912,7 +1926,7 @@ function getRandomBallColor() {
 const ZUMA_CHAIN_LENGTH = 16;
 // Константы теперь в единицах "на секунду"
 const ZUMA_CHAIN_SPEED_PER_SECOND = 24;
-const ZUMA_BALL_SPACING = ZUMA_BALL_RADIUS * 2 - 2; // уменьшенное расстояние между центрами шаров
+// ZUMA_BALL_SPACING будет вычисляться динамически в компоненте
 // Адаптивный зигзагообразный путь внутри контейнера
 const PADDING_X = 30;
 const PADDING_Y = 30;
@@ -2136,7 +2150,7 @@ function getBallDirection(t) {
 }
 
 // Функция для получения CSS для анимированного спрайта
-function getSpriteStyle(sprite, currentFrame = 0, row = 0) {
+function getSpriteStyle(sprite, currentFrame = 0, row = 0, scale = 1) {
   if (!sprite) return {};
   
   // Ограничиваем currentFrame количеством кадров в спрайте
@@ -2145,14 +2159,21 @@ function getSpriteStyle(sprite, currentFrame = 0, row = 0) {
   
   const frameX = clampedFrame * sprite.frameWidth;
   const frameY = row * sprite.frameHeight;
-  return {
+  
+
+  
+  const style = {
     backgroundImage: `url(${getStaticPath(sprite.src)})`,
-    backgroundPosition: `-${frameX}px -${frameY}px`,
-    backgroundSize: `${sprite.width}px ${sprite.height}px`,
-    width: `${sprite.frameWidth}px`,
-    height: `${sprite.frameHeight}px`,
+    backgroundPosition: `-${frameX * scale}px -${frameY * scale}px`,
+    backgroundSize: `${sprite.frameWidth * sprite.frames * scale}px ${sprite.frameHeight * sprite.rows * scale}px`,
+    width: `${sprite.frameWidth * scale}px`,
+    height: `${sprite.frameHeight * scale}px`,
     backgroundRepeat: 'no-repeat'
   };
+  
+  
+  
+  return style;
 }
 
 // ZumaGame с forwardRef
@@ -2166,8 +2187,39 @@ const ZumaGame = React.forwardRef(({ petSprite, onClose, petId, onLevelChange, o
   const [animations, setAnimations] = useState([]);
   const [level, setLevel] = useState(1);
   
-  // Используем масштабирование
-  const { scale, containerSize, containerRef, isInMinigameContainer } = useGameScale(ZUMA_WIDTH, ZUMA_HEIGHT);
+  // Используем правильное масштабирование для minigame-container
+  const isInMinigameContainer = true; // Всегда true для Zuma в телефоне
+  const containerSize = { width: 288, height: 376 }; // Правильный размер экрана телефона (как в CrossyRoad)
+  const scaleX = containerSize.width / ZUMA_WIDTH;
+  const scaleY = containerSize.height / ZUMA_HEIGHT;
+  const scale = Math.min(scaleX, scaleY); // 288/320 = 0.9, 376/420 = 0.895, берем 0.895
+  const containerRef = useRef(null);
+  
+  // Создаем динамический путь ZUMA_PATH для новых размеров
+  const ZUMA_PATH = useMemo(() => {
+    const path = [];
+    const PADDING_X = 30 * scale;
+    const PADDING_Y = 30 * scale;
+    const ROWS = 5; // последний ряд не входит в путь
+    
+    for (let row = 0; row < ROWS; row++) {
+      const y = PADDING_Y + row * ((containerSize.height - 2 * PADDING_Y) / (ROWS - 1));
+      if (row % 2 === 0) {
+        // слева направо
+        path.push({ x: PADDING_X, y });
+        path.push({ x: containerSize.width - PADDING_X, y });
+      } else {
+        // справа налево
+        path.push({ x: containerSize.width - PADDING_X, y });
+        path.push({ x: PADDING_X, y });
+      }
+    }
+    return path;
+  }, [containerSize.width, containerSize.height, scale]);
+  
+  // Динамическое вычисление расстояния между шарами
+  const ZUMA_BALL_SPACING = ZUMA_BALL_RADIUS * 2 * scale - 2 * scale;
+  
   // Функция для вычисления параметров уровня
   const getLevelParams = (currentLevel) => {
     const BASE_CHAIN_LENGTH = 12;
@@ -2200,8 +2252,8 @@ const ZumaGame = React.forwardRef(({ petSprite, onClose, petId, onLevelChange, o
   }, [level]);
 
   // refs для физики
-  const petX = useRef(ZUMA_WIDTH / 2);
-  const petY = useRef(ZUMA_HEIGHT - ZUMA_PET_SIZE / 2 - 60); // Подняли питомца выше последней строки шаров
+  const petX = useRef(containerSize.width / 2);
+  const petY = useRef(containerSize.height - ZUMA_PET_SIZE * scale / 2 - 60 * scale); // Подняли питомца выше последней строки шаров
   const aimAngle = useRef(0); // угол прицеливания (радианы)
   const chain = useRef([]); // [{t, color}]
   const shot = useRef(null); // {x, y, dx, dy, color}
@@ -2384,11 +2436,14 @@ const ZumaGame = React.forwardRef(({ petSprite, onClose, petId, onLevelChange, o
 
   // Игровой цикл без мобильных оптимизаций
   useEffect(() => {
-    if (gameOver || win) return;
+    // Анимация спрайтов должна работать всегда, независимо от состояния игры
+    // if (gameOver || win) return;
     let frame;
     let lastTime = performance.now();
     
     const loop = (currentTime) => {
+
+      
       const currentFrameCount = frameCountRef.current + 1;
       frameCountRef.current = currentFrameCount;
       
@@ -2407,7 +2462,8 @@ const ZumaGame = React.forwardRef(({ petSprite, onClose, petId, onLevelChange, o
       // Проверка проигрыша: если головной шар дошёл до конца пути
       if (chain.current.length > 0 && chain.current[0].t >= 1) {
         setGameOver(true);
-        return;
+        // НЕ ПРЕРЫВАЕМ ЦИКЛ - анимация спрайтов должна работать всегда
+        // return;
       }
       // Анимация вставки
       if (animations.length > 0) {
@@ -2457,8 +2513,8 @@ const ZumaGame = React.forwardRef(({ petSprite, onClose, petId, onLevelChange, o
         shot.current.y += shot.current.dy;
         // Проверка выхода за пределы
         if (
-          shot.current.x < 0 || shot.current.x > ZUMA_WIDTH ||
-          shot.current.y < 0 || shot.current.y > ZUMA_HEIGHT
+          shot.current.x < 0 || shot.current.x > containerSize.width ||
+          shot.current.y < 0 || shot.current.y > containerSize.height
         ) {
           shot.current = null;
         }
@@ -2470,7 +2526,7 @@ const ZumaGame = React.forwardRef(({ petSprite, onClose, petId, onLevelChange, o
           const ballPos = getPointOnPath(ZUMA_PATH, chain.current[i].t);
           const dx = shot.current.x - ballPos.x;
           const dy = shot.current.y - ballPos.y;
-          if (dx * dx + dy * dy < (ZUMA_BALL_RADIUS * 2) ** 2) {
+          if (dx * dx + dy * dy < (ZUMA_BALL_RADIUS * scale * 2) ** 2) {
 
             
             // Сохраняем координаты выстрела ДО сброса shot.current
@@ -2585,7 +2641,14 @@ const ZumaGame = React.forwardRef(({ petSprite, onClose, petId, onLevelChange, o
           spriteFrameRef.current = newFrame;
           setSpriteFrame(newFrame);
           
-
+          // Принудительно обновляем renderTick для перерисовки
+          setRenderTick(prev => prev + 1);
+          
+          console.log('ANIMATION FRAME UPDATE:', {
+            newFrame,
+            spriteFrame,
+            renderTick
+          });
           
           // Уведомляем родительский компонент о смене кадра
           if (onSpriteFrameChange) {
@@ -2602,7 +2665,7 @@ const ZumaGame = React.forwardRef(({ petSprite, onClose, petId, onLevelChange, o
     };
     frame = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(frame);
-  }, [gameOver, win, animations]);
+  }, [gameOver, win, animations, renderTick, spriteFrame]);
 
   // Начисление счастья за победу
   useEffect(() => {
@@ -2702,7 +2765,10 @@ const ZumaGame = React.forwardRef(({ petSprite, onClose, petId, onLevelChange, o
     const rect = e.currentTarget.getBoundingClientRect();
     const mx = e.clientX - rect.left;
     const my = e.clientY - rect.top;
-    aimAngle.current = Math.atan2(mx - petX.current, petY.current - my);
+    // Масштабируем координаты мыши под размер контейнера
+    const scaledMx = mx * (containerSize.width / rect.width);
+    const scaledMy = my * (containerSize.height / rect.height);
+    aimAngle.current = Math.atan2(scaledMx - petX.current, petY.current - scaledMy);
   };
   const handleMouseDown = () => {
     shoot();
@@ -2785,26 +2851,24 @@ const ZumaGame = React.forwardRef(({ petSprite, onClose, petId, onLevelChange, o
         height: '100%', 
         position: 'relative', 
         overflow: 'hidden',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
         transform: 'none',
         transition: 'none',
         animation: 'none'
       }}
       tabIndex={0}
       onClick={undefined}
-              onMouseMove={handleMouseMove}
-        onMouseDown={handleMouseDown}
+      onMouseMove={handleMouseMove}
+      onMouseDown={handleMouseDown}
     >
       <div
         style={{
-          width: ZUMA_WIDTH,
-          height: ZUMA_HEIGHT,
-          transform: isInMinigameContainer ? `scale(${scale})` : `scale(var(--game-scale, ${scale}))`,
-          transformOrigin: 'center center',
-          position: 'relative',
-          bottom: '0px',
+          width: `${containerSize.width}px`,
+          height: `${containerSize.height}px`,
+          transform: 'none',
+          transformOrigin: 'top left',
+          position: 'absolute',
+          top: 0,
+          left: 0,
           overflow: 'hidden'
         }}
       >
@@ -2876,14 +2940,15 @@ const ZumaGame = React.forwardRef(({ petSprite, onClose, petId, onLevelChange, o
         const pos = getPointOnPath(ZUMA_PATH, ball.t);
         // Анимация исчезновения
         const disappearAnim = animations.find(a => a.type === 'disappear' && a.index === idx);
-        const scale = disappearAnim ? 1 - Math.min(1, (performance.now() - disappearAnim.startTime) / ANIMATION_DURATION) : 1;
-        const opacity = disappearAnim ? scale : 1;
+        const disappearScale = disappearAnim ? 1 - Math.min(1, (performance.now() - disappearAnim.startTime) / ANIMATION_DURATION) : 1;
+        const opacity = disappearAnim ? disappearScale : 1;
         
         // Используем сохраненный спрайт шара с индивидуальным смещением анимации
         const sprite = ball.sprite;
-        const frameWithOffset = (spriteFrameRef.current + (ball.animationOffset || 0)) % 8;
+        const frameWithOffset = (spriteFrame + (ball.animationOffset || 0)) % 8;
         const direction = getBallDirection(ball.t);
-        const spriteStyle = getSpriteStyle(sprite, frameWithOffset, sprite.currentRow || 0);
+        
+
         
 
         
@@ -2896,16 +2961,17 @@ const ZumaGame = React.forwardRef(({ petSprite, onClose, petId, onLevelChange, o
           <div 
             key={`ball-${idx}-${renderTick}`} 
             ref={ballRefs[idx]}
+            className="zuma-sprite-animation"
             style={{
               position: 'absolute',
-              left: pos.x - (sprite ? sprite.frameWidth / 2 : ZUMA_BALL_RADIUS),
-              top: pos.y - (sprite ? sprite.frameHeight / 2 : ZUMA_BALL_RADIUS),
+              left: pos.x - (sprite ? sprite.frameWidth * scale / 2 : ZUMA_BALL_RADIUS * scale),
+              top: pos.y - (sprite ? sprite.frameHeight * scale / 2 : ZUMA_BALL_RADIUS * scale),
               zIndex: 10,
-              transform: `scale(${scale}) ${direction === -1 ? 'scaleX(-1)' : ''}`,
+              transform: `${direction === -1 ? 'scaleX(-1)' : ''}`,
               opacity,
               transition: disappearAnim ? 'none' : 'transform 0.1s',
   
-              ...spriteStyle
+              ...getSpriteStyle(sprite, frameWithOffset, sprite.currentRow || 0, 1)
             }} 
           />
         );
@@ -2914,19 +2980,20 @@ const ZumaGame = React.forwardRef(({ petSprite, onClose, petId, onLevelChange, o
       {shot.current && (
         <div 
           key={`shot-${renderTick}`}
+          className="zuma-sprite-animation"
           style={{
             position: 'absolute',
-            left: shot.current.x - ZUMA_BALL_RADIUS,
-            top: shot.current.y - ZUMA_BALL_RADIUS,
-            width: ZUMA_BALL_RADIUS * 2,
-            height: ZUMA_BALL_RADIUS * 2,
+            left: shot.current.x - ZUMA_BALL_RADIUS * scale,
+            top: shot.current.y - ZUMA_BALL_RADIUS * scale,
+            width: ZUMA_BALL_RADIUS * 2 * scale,
+            height: ZUMA_BALL_RADIUS * 2 * scale,
             zIndex: 10,
-            ...getSpriteStyle(shot.current.sprite, spriteFrameRef.current, shot.current.sprite.currentRow || 0)
+            ...getSpriteStyle(shot.current.sprite, spriteFrame, shot.current.sprite.currentRow || 0, 1)
           }} 
         />
       )}
       {/* Прицел */}
-      <svg width={ZUMA_WIDTH} height={ZUMA_HEIGHT} style={{ position: 'absolute', left: 0, top: 0, zIndex: 10, pointerEvents: 'none' }}>
+      <svg width={containerSize.width} height={containerSize.height} style={{ position: 'absolute', left: 0, top: 0, zIndex: 10, pointerEvents: 'none' }}>
         <line
           x1={petX.current}
           y1={petY.current}
@@ -2944,10 +3011,10 @@ const ZumaGame = React.forwardRef(({ petSprite, onClose, petId, onLevelChange, o
         alt="pet"
         style={{
           position: 'absolute',
-          left: petX.current - ZUMA_PET_SIZE / 2,
-          top: petY.current - ZUMA_PET_SIZE / 2,
-          width: ZUMA_PET_SIZE,
-          height: ZUMA_PET_SIZE,
+          left: petX.current - ZUMA_PET_SIZE * scale / 2,
+          top: petY.current - ZUMA_PET_SIZE * scale / 2,
+          width: ZUMA_PET_SIZE * scale,
+          height: ZUMA_PET_SIZE * scale,
           zIndex: 10,
           userSelect: 'none',
           pointerEvents: 'none',
@@ -2988,8 +3055,13 @@ const FlyingOverCityGame = React.forwardRef(({ petSprite, onClose, petId }, ref)
   const [gameOver, setGameOver] = useState(false);
   const [rewarded, setRewarded] = useState(false);
   
-  // Используем масштабирование с правильной логикой для minigame-container
-  const { scale, containerSize, containerRef, isInMinigameContainer } = useGameScale(GAME_WIDTH, GAME_HEIGHT);
+  // Используем фиксированный масштаб для minigame-container
+  const isInMinigameContainer = true; // Всегда true для FlyingOverCity в телефоне
+  const containerSize = { width: 288, height: 376 }; // Фиксированный размер экрана телефона
+  const scaleX = containerSize.width / GAME_WIDTH;
+  const scaleY = containerSize.height / GAME_HEIGHT;
+  const scale = Math.min(scaleX, scaleY); // 288/320 = 0.9, 376/420 = 0.895, берем 0.895
+  const containerRef = useRef(null);
 
   // refs для физики - инициализируем после получения containerSize
   const petX = useRef(0);
@@ -3368,7 +3440,7 @@ const PetMiniGameModal = ({ isOpen, pet, onClose }) => {
             <div style={{ display: 'flex', justifyContent: 'center', marginTop: 12 }}>
               <div style={{
                 width: 32, height: 32,
-                ...getSpriteStyle(zumaNextBall.sprite, zumaSpriteFrame, zumaNextBall.sprite.currentRow || 0)
+                ...getSpriteStyle(zumaNextBall.sprite, zumaSpriteFrame, zumaNextBall.sprite.currentRow || 0, 1)
               }} />
             </div>
           )}
@@ -3381,6 +3453,6 @@ const PetMiniGameModal = ({ isOpen, pet, onClose }) => {
 
 
 // Экспортируем отдельные компоненты игр для использования в других файлах
-export { DoodleJumpGame, CrossyRoadGame, ZumaGame, FlyingOverCityGame };
+export { DoodleJumpGame, CrossyRoadGame, ZumaGame, FlyingOverCityGame, getSpriteStyle };
 
 export default PetMiniGameModal; 
