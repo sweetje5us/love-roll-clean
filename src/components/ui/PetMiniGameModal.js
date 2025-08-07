@@ -311,13 +311,45 @@ const DoodleJumpGame = ({ petSprite, onClose, petId }) => {
   const [gameOver, setGameOver] = useState(false);
   const [rewarded, setRewarded] = useState(false);
   
-  // Используем фиксированный масштаб для minigame-container
-  const isInMinigameContainer = true; // Всегда true для DoodleJump в телефоне
-  const containerSize = { width: 288, height: 376 }; // Фиксированный размер экрана телефона
-  const scaleX = containerSize.width / DJ_WIDTH;
-  const scaleY = containerSize.height / DJ_HEIGHT;
-  const scale = Math.min(scaleX, scaleY); // 288/320 = 0.9, 376/420 = 0.895, берем 0.895
+  // Динамическое вычисление масштаба для minigame-container
   const containerRef = useRef(null);
+  const [containerSize, setContainerSize] = useState({ width: 288, height: 376 });
+  const [scale, setScale] = useState(1);
+  
+  // Динамическое вычисление размера контейнера
+  useEffect(() => {
+    if (!containerRef.current) return;
+    
+    const updateContainerSize = () => {
+      const container = containerRef.current;
+      if (!container) return;
+      
+      const rect = container.getBoundingClientRect();
+      const width = rect.width || 288;
+      const height = rect.height || 376;
+      
+      setContainerSize({ width, height });
+      
+      // Вычисляем масштаб
+      const scaleX = width / DJ_WIDTH;
+      const scaleY = height / DJ_HEIGHT;
+      const newScale = Math.min(scaleX, scaleY);
+      setScale(newScale);
+    };
+    
+    updateContainerSize();
+    
+    const resizeObserver = new ResizeObserver(updateContainerSize);
+    resizeObserver.observe(containerRef.current);
+    
+    return () => {
+      if (containerRef.current) {
+        resizeObserver.unobserve(containerRef.current);
+      }
+    };
+  }, []);
+  
+  const isInMinigameContainer = true; // Всегда true для DoodleJump в телефоне
 
 
   // refs для физики
@@ -330,7 +362,7 @@ const DoodleJumpGame = ({ petSprite, onClose, petId }) => {
   
   // Инициализация позиции питомца после получения размеров контейнера
   useEffect(() => {
-    if (containerSize.width > 0 && containerSize.height > 0) {
+    if (containerSize.width > 0 && containerSize.height > 0 && scale > 0) {
       petX.current = containerSize.width / 2 - getScaledPetSize(scale) / 2;
       petY.current = containerSize.height - getScaledPetSize(scale) - 10 * scale;
       maxY.current = petY.current;
@@ -1029,21 +1061,61 @@ const CrossyRoadGame = ({ petSprite, onClose, petId, onLevelChange }) => {
   const [backgroundTile, setBackgroundTile] = useState(getRandomBackgroundTile()); // Фоновый тайл
   const [laneConfig, setLaneConfig] = useState(() => generateLaneConfiguration(1)); // Инициализируем сразу конфигурацию для первого уровня
   
-  // Используем фиксированный масштаб для minigame-container
-  const isInMinigameContainer = true; // Всегда true для CrossyRoad в телефоне
-  const containerSize = { width: 288, height: 376 }; // Фиксированный размер экрана телефона
-  const scaleX = containerSize.width / CR_WIDTH;
-  const scaleY = containerSize.height / CR_HEIGHT;
-  const scale = Math.min(scaleX, scaleY); // 288/320 = 0.9, 376/420 = 0.895, берем 0.895
+  // Динамическое вычисление масштаба для minigame-container
   const containerRef = useRef(null);
+  const [containerSize, setContainerSize] = useState({ width: 288, height: 376 });
+  const [scale, setScale] = useState(1);
+  
+  // Динамическое вычисление размера контейнера
+  useEffect(() => {
+    if (!containerRef.current) return;
+    
+    const updateContainerSize = () => {
+      const container = containerRef.current;
+      if (!container) return;
+      
+      const rect = container.getBoundingClientRect();
+      const width = rect.width || 288;
+      const height = rect.height || 376;
+      
+      setContainerSize({ width, height });
+      
+      // Вычисляем масштаб
+      const scaleX = width / CR_WIDTH;
+      const scaleY = height / CR_HEIGHT;
+      const newScale = Math.min(scaleX, scaleY);
+      setScale(newScale);
+    };
+    
+    updateContainerSize();
+    
+    const resizeObserver = new ResizeObserver(updateContainerSize);
+    resizeObserver.observe(containerRef.current);
+    
+    return () => {
+      if (containerRef.current) {
+        resizeObserver.unobserve(containerRef.current);
+      }
+    };
+  }, []);
+  
+  const isInMinigameContainer = true; // Всегда true для CrossyRoad в телефоне
   
 
   
 
 
   // refs для физики
-  const petX = useRef(containerSize.width / 2 - CR_PET_SIZE * scale / 2);
-  const petY = useRef(containerSize.height - CR_PET_SIZE * scale - 8); // Ставим на самую нижнюю безопасную полосу (строка 0)
+  const petX = useRef(0);
+  const petY = useRef(0);
+  
+  // Инициализация позиции питомца после получения размеров контейнера
+  useEffect(() => {
+    if (containerSize.width > 0 && containerSize.height > 0 && scale > 0) {
+      petX.current = containerSize.width / 2 - CR_PET_SIZE * scale / 2;
+      petY.current = containerSize.height - CR_PET_SIZE * scale - 8; // Ставим на самую нижнюю безопасную полосу (строка 0)
+    }
+  }, [containerSize.width, containerSize.height, scale]);
   const obstacles = useRef([]); // [{x, y, dir, sprite}]
   const moveDir = useRef(0); // -1 влево, 1 вправо
   const moveForward = useRef(false);
@@ -2187,13 +2259,56 @@ const ZumaGame = React.forwardRef(({ petSprite, onClose, petId, onLevelChange, o
   const [animations, setAnimations] = useState([]);
   const [level, setLevel] = useState(1);
   
-  // Используем правильное масштабирование для minigame-container
-  const isInMinigameContainer = true; // Всегда true для Zuma в телефоне
-  const containerSize = { width: 288, height: 376 }; // Правильный размер экрана телефона (как в CrossyRoad)
-  const scaleX = containerSize.width / ZUMA_WIDTH;
-  const scaleY = containerSize.height / ZUMA_HEIGHT;
-  const scale = Math.min(scaleX, scaleY); // 288/320 = 0.9, 376/420 = 0.895, берем 0.895
+  // Динамическое вычисление масштаба для minigame-container
   const containerRef = useRef(null);
+  const [containerSize, setContainerSize] = useState({ width: 288, height: 376 });
+  const [scale, setScale] = useState(1);
+  
+  // Динамическое вычисление размера контейнера
+  useEffect(() => {
+    if (!containerRef.current) return;
+    
+    const updateContainerSize = () => {
+      const container = containerRef.current;
+      if (!container) return;
+      
+      const rect = container.getBoundingClientRect();
+      const width = rect.width || 288;
+      const height = rect.height || 376;
+      
+      // Определяем, мобильная это версия или десктопная по размеру окна
+      const isMobile = window.innerWidth < 700;
+      
+      if (isMobile) {
+        // Мобильная версия - используем фиксированные размеры
+        setContainerSize({ width: 288, height: 376 });
+        const scaleX = 288 / ZUMA_WIDTH;
+        const scaleY = 376 / ZUMA_HEIGHT;
+        const newScale = Math.min(scaleX, scaleY);
+        setScale(newScale);
+      } else {
+        // Десктопная версия - используем динамические размеры
+        setContainerSize({ width, height });
+        const scaleX = width / ZUMA_WIDTH;
+        const scaleY = height / ZUMA_HEIGHT;
+        const newScale = Math.min(scaleX, scaleY);
+        setScale(newScale);
+      }
+    };
+    
+    updateContainerSize();
+    
+    const resizeObserver = new ResizeObserver(updateContainerSize);
+    resizeObserver.observe(containerRef.current);
+    
+    return () => {
+      if (containerRef.current) {
+        resizeObserver.unobserve(containerRef.current);
+      }
+    };
+  }, []);
+  
+  const isInMinigameContainer = true; // Всегда true для Zuma в телефоне
   
   // Создаем динамический путь ZUMA_PATH для новых размеров
   const ZUMA_PATH = useMemo(() => {
@@ -2252,8 +2367,16 @@ const ZumaGame = React.forwardRef(({ petSprite, onClose, petId, onLevelChange, o
   }, [level]);
 
   // refs для физики
-  const petX = useRef(containerSize.width / 2);
-  const petY = useRef(containerSize.height - ZUMA_PET_SIZE * scale / 2 - 60 * scale); // Подняли питомца выше последней строки шаров
+  const petX = useRef(0);
+  const petY = useRef(0);
+  
+  // Инициализация позиции питомца после получения размеров контейнера
+  useEffect(() => {
+    if (containerSize.width > 0 && containerSize.height > 0 && scale > 0) {
+      petX.current = containerSize.width / 2;
+      petY.current = containerSize.height - ZUMA_PET_SIZE * scale / 2 - 60 * scale; // Подняли питомца выше последней строки шаров
+    }
+  }, [containerSize.width, containerSize.height, scale]);
   const aimAngle = useRef(0); // угол прицеливания (радианы)
   const chain = useRef([]); // [{t, color}]
   const shot = useRef(null); // {x, y, dx, dy, color}
@@ -3055,13 +3178,56 @@ const FlyingOverCityGame = React.forwardRef(({ petSprite, onClose, petId }, ref)
   const [gameOver, setGameOver] = useState(false);
   const [rewarded, setRewarded] = useState(false);
   
-  // Используем фиксированный масштаб для minigame-container
-  const isInMinigameContainer = true; // Всегда true для FlyingOverCity в телефоне
-  const containerSize = { width: 288, height: 376 }; // Фиксированный размер экрана телефона
-  const scaleX = containerSize.width / GAME_WIDTH;
-  const scaleY = containerSize.height / GAME_HEIGHT;
-  const scale = Math.min(scaleX, scaleY); // 288/320 = 0.9, 376/420 = 0.895, берем 0.895
+  // Динамическое вычисление масштаба для minigame-container
   const containerRef = useRef(null);
+  const [containerSize, setContainerSize] = useState({ width: 288, height: 376 });
+  const [scale, setScale] = useState(1);
+  
+  // Динамическое вычисление размера контейнера
+  useEffect(() => {
+    if (!containerRef.current) return;
+    
+    const updateContainerSize = () => {
+      const container = containerRef.current;
+      if (!container) return;
+      
+      const rect = container.getBoundingClientRect();
+      const width = rect.width || 288;
+      const height = rect.height || 376;
+      
+      // Определяем, мобильная это версия или десктопная по размеру окна
+      const isMobile = window.innerWidth < 700;
+      
+      if (isMobile) {
+        // Мобильная версия - используем фиксированные размеры
+        setContainerSize({ width: 288, height: 376 });
+        const scaleX = 288 / GAME_WIDTH;
+        const scaleY = 376 / GAME_HEIGHT;
+        const newScale = Math.min(scaleX, scaleY);
+        setScale(newScale);
+      } else {
+        // Десктопная версия - используем динамические размеры
+        setContainerSize({ width, height });
+        const scaleX = width / GAME_WIDTH;
+        const scaleY = height / GAME_HEIGHT;
+        const newScale = Math.min(scaleX, scaleY);
+        setScale(newScale);
+      }
+    };
+    
+    updateContainerSize();
+    
+    const resizeObserver = new ResizeObserver(updateContainerSize);
+    resizeObserver.observe(containerRef.current);
+    
+    return () => {
+      if (containerRef.current) {
+        resizeObserver.unobserve(containerRef.current);
+      }
+    };
+  }, []);
+  
+  const isInMinigameContainer = true; // Всегда true для FlyingOverCity в телефоне
 
   // refs для физики - инициализируем после получения containerSize
   const petX = useRef(0);
@@ -3076,7 +3242,7 @@ const FlyingOverCityGame = React.forwardRef(({ petSprite, onClose, petId }, ref)
   
   // Инициализация позиции питомца после получения размеров контейнера
   useEffect(() => {
-    if (containerSize.width > 0 && containerSize.height > 0) {
+    if (containerSize.width > 0 && containerSize.height > 0 && scale > 0) {
       petX.current = containerSize.width / 2 - getScaledFlappyPetSize(scale) / 2;
       petY.current = containerSize.height / 2;
     }

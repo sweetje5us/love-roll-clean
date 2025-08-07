@@ -3802,6 +3802,8 @@
   box-sizing: border-box !important;
 }
 
+
+
 /* Принудительное масштабирование фоновых изображений */
 .minigame-container .crossyroad-game div[style*="background"],
 .minigame-container .doodlejump-game div[style*="background"],
@@ -3809,6 +3811,8 @@
   background-size: 100% 100% !important;
   background-position: center !important;
 }
+
+
 
 /* ИСКЛЮЧЕНИЕ: Не переопределять анимацию спрайтов в Zuma */
 .minigame-container .zuma-game .zuma-sprite-animation {
@@ -3822,11 +3826,9 @@
 .minigame-container .zuma-game {
   overflow: hidden !important;
   position: relative !important;
-  width: 288px !important;
-  height: 376px !important;
-  transform: scale(0.833691) !important;
+  width: 100% !important;
+  height: 100% !important;
   transform-origin: center center !important;
-  position: relative !important;
   bottom: 0px !important;
 }
 
@@ -3874,6 +3876,24 @@
   border-radius: 0 !important;
   box-sizing: border-box !important;
   display: block !important;
+}
+
+/* Принудительное переопределение inline стилей canvas */
+.minigame-container .crossyroad-game canvas[style*="width"],
+.minigame-container .doodlejump-game canvas[style*="width"],
+.minigame-container .flappybird-game canvas[style*="width"],
+.minigame-container .zuma-game canvas[style*="width"] {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* Принудительное переопределение inline стилей игр */
+.minigame-container .crossyroad-game[style*="width"],
+.minigame-container .doodlejump-game[style*="width"],
+.minigame-container .flappybird-game[style*="width"],
+.minigame-container .zuma-game[style*="width"] {
+  width: 100% !important;
+  height: 100% !important;
 }
 
 /* Мобильные элементы управления - скрыты */
@@ -4096,6 +4116,104 @@
     margin: 0 !important;
   }
 }
+
+/* Стили для десктопной версии (полная копия мобильной версии) */
+@media (min-width: 769px) {
+  .minigame-container .crossyroad-game,
+  .minigame-container .doodlejump-game,
+  .minigame-container .flappybird-game,
+  .minigame-container .zuma-game {
+    width: 100% !important;
+    height: 100% !important;
+    max-width: none !important;
+    max-height: none !important;
+    position: relative !important;
+    overflow: hidden !important;
+    display: block !important;
+    min-width: 0 !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+    border-radius: 0 !important;
+    box-sizing: border-box !important;
+    transform: none !important;
+  }
+  
+  .minigame-container .crossyroad-game canvas,
+  .minigame-container .doodlejump-game canvas,
+  .minigame-container .flappybird-game canvas,
+  .minigame-container .zuma-game canvas {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    display: block !important;
+    flex: 1 !important;
+    max-width: none !important;
+    max-height: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+    border-radius: 0 !important;
+  }
+  
+  .minigame-container .crossyroad-game > div,
+  .minigame-container .doodlejump-game > div,
+  .minigame-container .flappybird-game > div,
+  .minigame-container .zuma-game > div {
+    position: absolute !important;
+    transform-origin: top left !important;
+    margin: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+  }
+  
+  /* Принудительное переопределение inline стилей игр для десктопной версии */
+  .minigame-container .crossyroad-game[style*="width"],
+  .minigame-container .doodlejump-game[style*="width"],
+  .minigame-container .flappybird-game[style*="width"],
+  .minigame-container .zuma-game[style*="width"] {
+    width: 100% !important;
+    height: 100% !important;
+  }
+  
+  /* Принудительное переопределение inline стилей canvas для десктопной версии */
+  .minigame-container .crossyroad-game canvas[style*="width"],
+  .minigame-container .doodlejump-game canvas[style*="width"],
+  .minigame-container .flappybird-game canvas[style*="width"],
+  .minigame-container .zuma-game canvas[style*="width"] {
+    width: 100% !important;
+    height: 100% !important;
+  }
+  
+  /* Принудительное скрытие элементов управления для десктопной версии */
+  .minigame-container .crossyroad-game .game-controls,
+  .minigame-container .doodlejump-game .game-controls,
+  .minigame-container .flappybird-game .game-controls,
+  .minigame-container .zuma-game .game-controls {
+    display: none !important;
+  }
+  
+  /* Принудительное ограничение игровой области для десктопной версии */
+  .minigame-container .crossyroad-game *,
+  .minigame-container .doodlejump-game *,
+  .minigame-container .flappybird-game *,
+  .minigame-container .zuma-game * {
+    max-width: 100% !important;
+    max-height: 100% !important;
+    overflow: hidden !important;
+  }
+  
+  /* Принудительное масштабирование фоновых изображений для десктопной версии */
+  .minigame-container .crossyroad-game div[style*="background"],
+  .minigame-container .doodlejump-game div[style*="background"],
+  .minigame-container .flappybird-game div[style*="background"] {
+    background-size: 100% 100% !important;
+    background-position: center !important;
+  }
+}
+
+
 
 /* Стили для смены питомца */
 .pet-change-section {
