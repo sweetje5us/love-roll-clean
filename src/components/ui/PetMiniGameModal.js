@@ -2440,9 +2440,7 @@ const ZumaGame = React.forwardRef(({ petSprite, onClose, petId, onLevelChange, o
   
   // Состояние для мобильного управления
   const [isAiming, setIsAiming] = useState(false);
-  const [aimPosition, setAimPosition] = useState({ x: 0, y: 0 });
   const [touchStartedOnPet, setTouchStartedOnPet] = useState(false);
-  const [initialTouchPosition, setInitialTouchPosition] = useState({ x: 0, y: 0 });
   
   // Ref для контейнера игры
   const gameContainerRef = useRef(null);
@@ -2454,63 +2452,45 @@ const ZumaGame = React.forwardRef(({ petSprite, onClose, petId, onLevelChange, o
     const container = gameContainerRef.current;
     
           const handleTouchMove = (e) => {
-        if (!gameOver && !win && !touchStartedOnPet && gameContainerRef.current) {
-          const rect = gameContainerRef.current.getBoundingClientRect();
+        // Быстрая проверка условий
+        if (gameOver || win || touchStartedOnPet || !gameContainerRef.current) return;
+        
         const touch = e.touches[0];
+        const rect = gameContainerRef.current.getBoundingClientRect();
         const x = touch.clientX - rect.left;
         const y = touch.clientY - rect.top;
         
-
-        
-        // Проверяем, что касание НЕ началось на питомце
-        const petLeft = petX.current - ZUMA_PET_SIZE * scale / 2;
-        const petRight = petX.current + ZUMA_PET_SIZE * scale / 2;
-        const petTop = petY.current - ZUMA_PET_SIZE * scale / 2;
-        const petBottom = petY.current + ZUMA_PET_SIZE * scale / 2;
+        // Быстрая проверка границ питомца
+        const petSize = ZUMA_PET_SIZE * scale / 2;
+        const dx = x - petX.current;
+        const dy = y - petY.current;
         
         // Если мы не на питомце, то это прицеливание
-        if (!(x >= petLeft && x <= petRight && y >= petTop && y <= petBottom)) {
-
-          
-          // Убеждаемся, что прицеливание активно
+        if (Math.abs(dx) > petSize || Math.abs(dy) > petSize) {
           if (!isAiming) {
-
             setIsAiming(true);
           }
           
-          // Обновляем позицию прицеливания
-          setAimPosition({ x, y });
-          
-          // Вычисляем угол прицеливания от питомца к текущей позиции пальца
-          const dx = x - petX.current;
-          const dy = y - petY.current;
+          // Обновляем угол прицеливания от питомца к текущей позиции пальца
           aimAngle.current = Math.atan2(dx, -dy);
-
         }
-      }
-    };
+      };
     
     const handleTouchEnd = (e) => {
-
-      if (!gameContainerRef.current) return;
+      // Быстрая проверка условий
+      if (!gameContainerRef.current || gameOver || win) return;
+      
       if (touchStartedOnPet) {
-        // Касание началось на питомце - просто сбрасываем состояние
-
         setTouchStartedOnPet(false);
       } else if (isAiming) {
-        // Прицеливание было активным - делаем выстрел
-
         setIsAiming(false);
-        
-        if (!gameOver && !win) {
-          shoot();
-        }
+        shoot();
       }
     };
     
-    // Добавляем обработчики с опцией passive: false
-    container.addEventListener('touchmove', handleTouchMove, { passive: false });
-    container.addEventListener('touchend', handleTouchEnd, { passive: false });
+    // Добавляем обработчики с опцией passive: true для лучшей производительности
+    container.addEventListener('touchmove', handleTouchMove, { passive: true });
+    container.addEventListener('touchend', handleTouchEnd, { passive: true });
     
     return () => {
       container.removeEventListener('touchmove', handleTouchMove);
@@ -2523,19 +2503,19 @@ const ZumaGame = React.forwardRef(({ petSprite, onClose, petId, onLevelChange, o
   const getLevelParams = (currentLevel) => {
     const BASE_CHAIN_LENGTH = 12;
     const BASE_ROWS = 4;
-    const BASE_SPEED = 0.6; // Увеличили базовую скорость с 0.4 до 0.6
-    const MAX_CHAIN_LENGTH = 30; // Увеличили максимальную длину цепочки с 24 до 30
-    const MAX_ROWS = 8; // Увеличили максимальное количество рядов с 7 до 8
-    const MAX_SPEED = BASE_SPEED * 2.0; // Увеличили максимальную скорость с 1.5x до 2.0x
+    const BASE_SPEED = 0.45; // Снизили базовую скорость для лучшей производительности
+    const MAX_CHAIN_LENGTH = 28; // Разумная максимальная длина цепочки
+    const MAX_ROWS = 8; // Разумное максимальное количество рядов
+    const MAX_SPEED = BASE_SPEED * 1.9; // Разумная максимальная скорость
     
-    // Более агрессивная прогрессия длины цепочки
-    const chainLength = Math.min(BASE_CHAIN_LENGTH + (currentLevel - 1) * 3, MAX_CHAIN_LENGTH);
+    // Сбалансированная прогрессия длины цепочки
+    const chainLength = Math.min(BASE_CHAIN_LENGTH + (currentLevel - 1) * 2.5, MAX_CHAIN_LENGTH);
     
-    // Более быстрая прогрессия количества рядов
-    const rows = Math.min(BASE_ROWS + Math.floor((currentLevel - 1) / 1.5), MAX_ROWS);
+    // Сбалансированная прогрессия количества рядов
+    const rows = Math.min(BASE_ROWS + Math.floor((currentLevel - 1) / 1.8), MAX_ROWS);
     
-    // Более агрессивная прогрессия скорости
-    const speed = Math.min(BASE_SPEED * (1 + 0.08 * (currentLevel - 1)), MAX_SPEED);
+    // Сбалансированная прогрессия скорости
+    const speed = Math.min(BASE_SPEED * (1 + 0.07 * (currentLevel - 1)), MAX_SPEED);
     
     return {
       chainLength,
@@ -2738,7 +2718,7 @@ const ZumaGame = React.forwardRef(({ petSprite, onClose, petId, onLevelChange, o
 
     
     const angle = aimAngle.current;
-    const speed = 7;
+    const speed = 20; // Увеличили скорость выстрела с 7 до 12
     shot.current = {
       x: petX.current,
       y: petY.current,
@@ -2798,16 +2778,17 @@ const ZumaGame = React.forwardRef(({ petSprite, onClose, petId, onLevelChange, o
         let changed = false;
         const now = performance.now();
         setAnimations(prev => prev.filter(anim => {
-          if (anim.type === 'insert') {
-            const { index, fromT, toT, startTime } = anim;
-            const progress = Math.min(1, (now - startTime) / ANIMATION_DURATION);
-            if (chain.current[index]) {
-              chain.current[index].t = fromT + (toT - fromT) * progress;
-              changed = true;
-            }
-            if (progress >= 1) return false;
-            return true;
-          }
+          // Убираем обработку анимации вставки для предотвращения прерывания движения
+          // if (anim.type === 'insert') {
+          //   const { index, fromT, toT, startTime } = anim;
+          //   const progress = Math.min(1, (now - startTime) / ANIMATION_DURATION);
+          //   if (chain.current[index]) {
+          //     chain.current[index].t = fromT + (toT - fromT) * progress;
+          //     changed = true;
+          //   }
+          //   if (progress >= 1) return false;
+          //   return true;
+          // }
           if (anim.type === 'disappear') {
             // handled in render
             const progress = Math.min(1, (now - anim.startTime) / ANIMATION_DURATION);
@@ -2865,18 +2846,19 @@ const ZumaGame = React.forwardRef(({ petSprite, onClose, petId, onLevelChange, o
             chain.current.splice(i, 0, { t, ...ball });
             
 
-            // Анимация вставки
-            setAnimations(prev => [...prev, {
-              type: 'insert',
-              index: i,
-              fromT: t, // shotPos.x/y можно использовать для визуальной анимации, если нужно
-              toT: t,
-              startTime: performance.now()
-            }]);
+            // Убираем анимацию вставки для предотвращения прерывания движения
+            // setAnimations(prev => [...prev, {
+            //   type: 'insert',
+            //   index: i,
+            //   fromT: t,
+            //   toT: t,
+            //   startTime: performance.now()
+            // }]);
             // Пересчитать t для всей цепочки, чтобы не было наложения
-            let headDist2 = headDistRef.current;
+            // НЕ пересчитываем headDistRef.current - оставляем движение цепочки непрерывным
+            const currentHeadDist = headDistRef.current;
             for (let j = 0; j < chain.current.length; j++) {
-              chain.current[j].t = Math.max(0, (headDist2 - j * ZUMA_BALL_SPACING) / totalLength);
+              chain.current[j].t = Math.max(0, (currentHeadDist - j * ZUMA_BALL_SPACING) / totalLength);
             }
             // Проверка совпадений
             let left = i, right = i;
@@ -2954,23 +2936,13 @@ const ZumaGame = React.forwardRef(({ petSprite, onClose, petId, onLevelChange, o
         }
         return;
       }
-      // Обновление рендера - только при необходимости
-      if (frameCountRef.current % 2 === 0) { // Обновляем каждые 2 кадра для плавности
-        setRenderTick(t => t + 1);
-      }
-      
-
-      
-      // Анимация спрайтов - всегда активна
+      // Анимация спрайтов - очень медленная для производительности
       setSpriteAnimationTime(prev => {
         const newTime = prev + deltaTimeSeconds;
-        if (newTime >= 0.2) { // Смена кадра каждые 0.2 секунды
+        if (newTime >= 0.5) { // Смена кадра каждые 0.5 секунды (очень медленно)
           const newFrame = (spriteFrameRef.current + 1) % 8;
           spriteFrameRef.current = newFrame;
           setSpriteFrame(newFrame);
-          
-          // Принудительно обновляем renderTick для перерисовки
-          setRenderTick(prev => prev + 1);
           
           // Уведомляем родительский компонент о смене кадра
           if (onSpriteFrameChange) {
@@ -2981,13 +2953,16 @@ const ZumaGame = React.forwardRef(({ petSprite, onClose, petId, onLevelChange, o
         return newTime;
       });
       
+      // Обновление рендера - каждый кадр для плавности
+      setRenderTick(t => t + 1);
+      
       // Принудительное обновление анимации для мобильных устройств - убрано, так как вызывает проблемы
       
       frame = requestAnimationFrame(loop);
     };
     frame = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(frame);
-  }, [gameOver, win, animations, renderTick, spriteFrame]);
+  }, [gameOver, win, animations, spriteFrame]);
 
   // Начисление счастья за победу
   useEffect(() => {
@@ -3202,44 +3177,29 @@ const ZumaGame = React.forwardRef(({ petSprite, onClose, petId, onLevelChange, o
       onMouseMove={isMobile ? undefined : handleMouseMove}
       onMouseDown={isMobile ? undefined : handleMouseDown}
       onTouchStart={(e) => {
-
-        if (!gameOver && !win && isMobile) {
-          const rect = e.currentTarget.getBoundingClientRect();
-          const touch = e.touches[0];
-          const x = touch.clientX - rect.left;
-          const y = touch.clientY - rect.top;
-          
-
-          
-          // Проверяем, касаемся ли питомца
-          const petLeft = petX.current - ZUMA_PET_SIZE * scale / 2;
-          const petRight = petX.current + ZUMA_PET_SIZE * scale / 2;
-          const petTop = petY.current - ZUMA_PET_SIZE * scale / 2;
-          const petBottom = petY.current + ZUMA_PET_SIZE * scale / 2;
-          
-
-          
-          if (x >= petLeft && x <= petRight && y >= petTop && y <= petBottom) {
-            // Касание питомца - только мгновенный выстрел, НЕ меняем прицел
-
-            setTouchStartedOnPet(true);
-            setIsAiming(false); // Убеждаемся, что прицеливание отключено
-            // НЕ меняем aimAngle - стреляем в текущем направлении
-            shoot();
-          } else {
-            // Касание в другом месте - начинаем прицеливание
-
-            setTouchStartedOnPet(false);
-            setIsAiming(true);
-            setAimPosition({ x, y });
-            setInitialTouchPosition({ x, y }); // Сохраняем начальную позицию
-            
-            // Вычисляем угол прицеливания от питомца до начальной позиции касания
-            const dx = x - petX.current;
-            const dy = y - petY.current;
-            aimAngle.current = Math.atan2(dx, -dy);
-
-          }
+        // Быстрая проверка условий
+        if (gameOver || win || !isMobile) return;
+        
+        const touch = e.touches[0];
+        const rect = e.currentTarget.getBoundingClientRect();
+        const x = touch.clientX - rect.left;
+        const y = touch.clientY - rect.top;
+        
+        // Быстрая проверка границ питомца
+        const petSize = ZUMA_PET_SIZE * scale / 2;
+        const dx = x - petX.current;
+        const dy = y - petY.current;
+        
+        if (Math.abs(dx) <= petSize && Math.abs(dy) <= petSize) {
+          // Касание питомца - мгновенный выстрел
+          setTouchStartedOnPet(true);
+          setIsAiming(false);
+          shoot();
+        } else {
+          // Касание в другом месте - начинаем прицеливание
+          setTouchStartedOnPet(false);
+          setIsAiming(true);
+          aimAngle.current = Math.atan2(dx, -dy);
         }
       }}
 
@@ -3389,23 +3349,7 @@ const ZumaGame = React.forwardRef(({ petSprite, onClose, petId, onLevelChange, o
         />
       </svg>
 
-      {/* Мобильный индикатор прицеливания */}
-      {isMobile && isAiming && !touchStartedOnPet && (
-        <div
-          style={{
-            position: 'absolute',
-            left: aimPosition.x - 10,
-            top: aimPosition.y - 10,
-            width: 20,
-            height: 20,
-            backgroundColor: 'rgba(255, 255, 0, 0.8)',
-            borderRadius: '50%',
-            border: '2px solid #fff',
-            zIndex: 15,
-            pointerEvents: 'none'
-          }}
-        />
-      )}
+
 
       {/* Питомец-стрелок */}
       <img
