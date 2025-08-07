@@ -413,6 +413,8 @@ const DoodleJumpGame = ({ petSprite, onClose, petId }) => {
       
       // Движение по горизонтали с deltaTime
       const currentMoveDir = window.doodleJumpMoveDir || moveDir.current;
+      
+      // Обычное движение (клавиатура и удерживание)
       petX.current += currentMoveDir * DJ_MOVE_SPEED_PER_SECOND * deltaTimeSeconds;
       
       // Ограничиваем движение питомца в пределах контейнера
@@ -616,6 +618,7 @@ const DoodleJumpGame = ({ petSprite, onClose, petId }) => {
     setGameOver(false);
     setRenderTick(t => t + 1);
     setRewarded(false);
+    moveDir.current = 0; // Сбрасываем обычное движение
   };
 
   // Определяем мобильное устройство по ширине экрана
@@ -644,7 +647,66 @@ const DoodleJumpGame = ({ petSprite, onClose, petId }) => {
         animation: 'none'
       }}
       tabIndex={0}
-      onClick={() => null}
+      onClick={(e) => {
+        if (!gameOver) {
+          // Мобильное управление
+          if (isMobile) {
+            const rect = e.currentTarget.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const width = rect.width;
+            
+            // Разделяем экран на две области: левая и правая половины
+            const isLeftHalf = x < width / 2;
+            
+            if (isLeftHalf) {
+              // Левая половина - движение влево
+              moveDir.current = -1;
+              // Сбрасываем через очень короткое время
+              setTimeout(() => {
+                moveDir.current = 0;
+              }, 1);
+            } else {
+              // Правая половина - движение вправо
+              moveDir.current = 1;
+              // Сбрасываем через очень короткое время
+              setTimeout(() => {
+                moveDir.current = 0;
+              }, 1);
+            }
+          }
+        }
+      }}
+      onTouchStart={(e) => {
+        if (!gameOver && isMobile) {
+          const rect = e.currentTarget.getBoundingClientRect();
+          const touch = e.touches[0];
+          const x = touch.clientX - rect.left;
+          const width = rect.width;
+          
+          // Разделяем экран на две области: левая и правая половины
+          const isLeftHalf = x < width / 2;
+          
+          if (isLeftHalf) {
+            // Левая половина - движение влево
+            moveDir.current = -1;
+          } else {
+            // Правая половина - движение вправо
+            moveDir.current = 1;
+          }
+        }
+      }}
+      onTouchEnd={(e) => {
+        if (isMobile) {
+          // Сбрасываем направление при отпускании
+          moveDir.current = 0;
+        }
+      }}
+      onTouchCancel={(e) => {
+        if (isMobile) {
+          // Сбрасываем направление при отмене touch события
+          moveDir.current = 0;
+        }
+      }}
     >
       <div
         style={{
@@ -750,6 +812,64 @@ const DoodleJumpGame = ({ petSprite, onClose, petId }) => {
         </div>
       )}
 
+      {/* Мобильные подсказки управления */}
+      {isMobile && !gameOver && (
+        <>
+          {/* Левая половина - движение влево */}
+          <div style={{
+            position: 'absolute',
+            left: 0,
+            top: 0,
+            width: '50%',
+            height: '100%',
+            border: '2px solid rgba(255, 255, 255, 0.3)',
+            borderRight: 'none',
+            pointerEvents: 'none',
+            zIndex: 15
+          }}>
+            <div style={{
+              position: 'absolute',
+              bottom: '10px',
+              left: '10px',
+              background: 'rgba(0, 0, 0, 0.5)',
+              color: 'white',
+              padding: '4px 8px',
+              borderRadius: '4px',
+              fontSize: '12px',
+              fontWeight: 'bold'
+            }}>
+              ← ВЛЕВО
+            </div>
+          </div>
+          
+          {/* Правая половина - движение вправо */}
+          <div style={{
+            position: 'absolute',
+            right: 0,
+            top: 0,
+            width: '50%',
+            height: '100%',
+            border: '2px solid rgba(255, 255, 255, 0.3)',
+            borderLeft: 'none',
+            pointerEvents: 'none',
+            zIndex: 15
+          }}>
+            <div style={{
+              position: 'absolute',
+              bottom: '10px',
+              right: '10px',
+              background: 'rgba(0, 0, 0, 0.5)',
+              color: 'white',
+              padding: '4px 8px',
+              borderRadius: '4px',
+              fontSize: '12px',
+              fontWeight: 'bold'
+            }}>
+              ВПРАВО →
+            </div>
+          </div>
+        </>
+      )}
 
       </div>
     </div>
@@ -3229,6 +3349,14 @@ const FlyingOverCityGame = React.forwardRef(({ petSprite, onClose, petId }, ref)
   
   const isInMinigameContainer = true; // Всегда true для FlyingOverCity в телефоне
 
+  // Определяем мобильное устройство по ширине экрана
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 700);
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 700);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   // refs для физики - инициализируем после получения containerSize
   const petX = useRef(0);
   const petY = useRef(0);
@@ -3342,6 +3470,8 @@ const FlyingOverCityGame = React.forwardRef(({ petSprite, onClose, petId }, ref)
       backgroundY.current += OBSTACLE_SPEED_PER_SECOND * deltaTimeSeconds * 0.5;
       // Убираем сброс backgroundY - пусть он растет бесконечно, а позиция вычисляется через модуль
       
+
+      
       setRenderTick(t => t + 1);
       frame = requestAnimationFrame(loop);
     };
@@ -3359,7 +3489,8 @@ const FlyingOverCityGame = React.forwardRef(({ petSprite, onClose, petId }, ref)
     };
     
     const handleClick = () => {
-      if (!gameOver) {
+      if (!gameOver && !isMobile) {
+        console.log('Глобальный клик: ПРЫЖОК');
         velocityY.current = JUMP_VELOCITY;
       }
     };
@@ -3409,7 +3540,53 @@ const FlyingOverCityGame = React.forwardRef(({ petSprite, onClose, petId }, ref)
         overflow: 'hidden',
         cursor: 'pointer'
       }}
-      onClick={() => null}
+      tabIndex={0}
+      onClick={(e) => {
+        if (!gameOver) {
+          // Мобильное управление - только для десктопа
+          if (!isMobile) {
+            const rect = e.currentTarget.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            const width = rect.width;
+            const height = rect.height;
+            
+            // Разделяем экран на области по вертикали
+            const isLeftHalf = x < width / 2;
+            
+            if (isLeftHalf) {
+              // Левая половина - прыжок
+              console.log('Десктопный клик: ПРЫЖОК');
+              velocityY.current = JUMP_VELOCITY;
+            } else {
+              // Правая половина - стрельба
+              console.log('Десктопный клик: СТРЕЛЬБА');
+            }
+          }
+        }
+      }}
+      onTouchStart={(e) => {
+        if (!gameOver && isMobile) {
+          const rect = e.currentTarget.getBoundingClientRect();
+          const touch = e.touches[0];
+          const x = touch.clientX - rect.left;
+          const y = touch.clientY - rect.top;
+          const width = rect.width;
+          const height = rect.height;
+          
+          // Разделяем экран на области по вертикали
+          const isLeftHalf = x < width / 2;
+          
+          if (isLeftHalf) {
+            // Левая половина - прыжок
+            console.log('Мобильный touch: ПРЫЖОК');
+            velocityY.current = JUMP_VELOCITY;
+          } else {
+            // Правая половина - стрельба
+            console.log('Мобильный touch: СТРЕЛЬБА');
+          }
+        }
+      }}
     >
       {/* Параллакс фон */}
       {backgroundSet.current.layers.map((layer, index) => {
@@ -3532,6 +3709,65 @@ const FlyingOverCityGame = React.forwardRef(({ petSprite, onClose, petId }, ref)
             Играть снова
           </button>
         </div>
+      )}
+
+      {/* Мобильные подсказки управления */}
+      {isMobile && !gameOver && (
+        <>
+          {/* Левая половина - прыжок */}
+          <div style={{
+            position: 'absolute',
+            left: 0,
+            top: 0,
+            width: '50%',
+            height: '100%',
+            border: '2px solid rgba(255, 255, 255, 0.3)',
+            borderRight: 'none',
+            pointerEvents: 'none',
+            zIndex: 15
+          }}>
+            <div style={{
+              position: 'absolute',
+              top: '10px',
+              left: '10px',
+              background: 'rgba(0, 0, 0, 0.5)',
+              color: 'white',
+              padding: '4px 8px',
+              borderRadius: '4px',
+              fontSize: '12px',
+              fontWeight: 'bold'
+            }}>
+              ↑ ПРЫЖОК
+            </div>
+          </div>
+          
+          {/* Правая половина - стрельба */}
+          <div style={{
+            position: 'absolute',
+            right: 0,
+            top: 0,
+            width: '50%',
+            height: '100%',
+            border: '2px solid rgba(255, 255, 255, 0.3)',
+            borderLeft: 'none',
+            pointerEvents: 'none',
+            zIndex: 15
+          }}>
+            <div style={{
+              position: 'absolute',
+              top: '10px',
+              right: '10px',
+              background: 'rgba(0, 0, 0, 0.5)',
+              color: 'white',
+              padding: '4px 8px',
+              borderRadius: '4px',
+              fontSize: '12px',
+              fontWeight: 'bold'
+            }}>
+              🔫 СТРЕЛЬБА
+            </div>
+          </div>
+        </>
       )}
     </div>
   );
