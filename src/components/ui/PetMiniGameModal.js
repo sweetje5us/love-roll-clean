@@ -573,7 +573,7 @@ const DoodleJumpGame = ({ petSprite, onClose, petId }) => {
           backgroundLayers.current[i] += diff * 0.3;
         }
         
-        // Перемещаем задние слои, которые вышли за границу
+        // Перемещаем слои, которые вышли за границу экрана
         for (let i = 0; i < backgroundLayers.current.length; i++) {
           if (backgroundLayers.current[i] >= containerSize.height) {
             // Находим самый верхний слой
@@ -582,8 +582,21 @@ const DoodleJumpGame = ({ petSprite, onClose, petId }) => {
           }
         }
         
-        // Проверяем и исправляем разрывы между слоев
+        // Убеждаемся, что слои покрывают весь экран без разрывов
         backgroundLayers.current.sort((a, b) => a - b);
+        
+        // Проверяем, что первый слой находится в видимой области или выше
+        if (backgroundLayers.current[0] > 0) {
+          backgroundLayers.current[0] = 0;
+        }
+        
+        // Проверяем, что последний слой находится в видимой области или ниже
+        const lastLayer = backgroundLayers.current[backgroundLayers.current.length - 1];
+        if (lastLayer < containerSize.height) {
+          backgroundLayers.current[backgroundLayers.current.length - 1] = containerSize.height;
+        }
+        
+        // Проверяем и исправляем разрывы между слоев
         for (let i = 1; i < backgroundLayers.current.length; i++) {
           const gap = backgroundLayers.current[i] - backgroundLayers.current[i - 1];
           if (gap > containerSize.height) {
@@ -592,10 +605,37 @@ const DoodleJumpGame = ({ petSprite, onClose, petId }) => {
           }
         }
         
-        // Добавляем дополнительные слои, если их недостаточно
+        // Добавляем дополнительные слои, если их недостаточно для полного покрытия
         while (backgroundLayers.current.length < 5) {
           let minY = Math.min(...backgroundLayers.current);
           backgroundLayers.current.push(minY - containerSize.height);
+        }
+        
+        // Убеждаемся, что у нас есть слой выше экрана для плавного появления
+        const topLayer = Math.min(...backgroundLayers.current);
+        if (topLayer > -containerSize.height) {
+          backgroundLayers.current.push(topLayer - containerSize.height);
+        }
+        
+        // Удаляем лишние слои, которые находятся слишком далеко от экрана
+        backgroundLayers.current = backgroundLayers.current.filter(y => 
+          y >= -containerSize.height * 2 && y <= containerSize.height * 2
+        );
+        
+        // Убеждаемся, что у нас достаточно слоев для покрытия
+        if (backgroundLayers.current.length < 3) {
+          const minY = Math.min(...backgroundLayers.current);
+          const maxY = Math.max(...backgroundLayers.current);
+          
+          // Добавляем слои сверху
+          while (backgroundLayers.current.length < 3) {
+            backgroundLayers.current.push(minY - containerSize.height);
+          }
+          
+          // Добавляем слои снизу
+          while (backgroundLayers.current.length < 5) {
+            backgroundLayers.current.push(maxY + containerSize.height);
+          }
         }
         
         // Движение платформ - изменяем in-place
@@ -707,6 +747,9 @@ const DoodleJumpGame = ({ petSprite, onClose, petId }) => {
         containerSize.height * 3,
         containerSize.height * 4
       ];
+      
+      // Добавляем слой выше экрана для плавного появления
+      backgroundLayers.current.push(-containerSize.height);
     }
     
     let plats = [];
@@ -769,6 +812,12 @@ const DoodleJumpGame = ({ petSprite, onClose, petId }) => {
       containerSize.height * 4
     ];
     
+    // Убеждаемся, что слои покрывают весь экран
+    if (backgroundLayers.current.length > 0) {
+      // Добавляем слой выше экрана для плавного появления
+      backgroundLayers.current.push(-containerSize.height);
+    }
+    
     setScore(0);
     setGameOver(false);
     setRenderTick(t => t + 1);
@@ -782,6 +831,18 @@ const DoodleJumpGame = ({ petSprite, onClose, petId }) => {
     const handleResize = () => setIsMobile(window.innerWidth < 700);
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
+  }, []);
+  
+  // Добавляем функцию для отладки фона
+  useEffect(() => {
+    window.toggleDoodleBackgroundDebug = () => {
+      window.debugBackground = !window.debugBackground;
+      console.log('Doodle Jump background debug:', window.debugBackground ? 'enabled' : 'disabled');
+    };
+    
+    return () => {
+      delete window.toggleDoodleBackgroundDebug;
+    };
   }, []);
 
 
@@ -880,21 +941,43 @@ const DoodleJumpGame = ({ petSprite, onClose, petId }) => {
       {/* Задние слои параллакс фона */}
       {backgroundLayers.current && backgroundLayers.current.length > 0 && backgroundLayers.current.map((y, index) => (
         <div
-          key={`background-${index}`}
+          key={`background-${index}-${y}`}
           style={{
             position: 'absolute',
             left: 0,
             top: y,
-            width: `${containerSize.width}px`,
-            height: `${containerSize.height}px`,
-            backgroundImage: `url(sprites/minigames/doodle-jump/back.png)`,
-            backgroundSize: `${containerSize.width}px ${containerSize.height}px`,
+            width: '100%',
+            height: '100%',
+            backgroundImage: `url(${getStaticPath('sprites/minigames/doodle-jump/back.png')})`,
+            backgroundSize: 'cover',
             backgroundRepeat: 'no-repeat',
             backgroundPosition: 'center center',
             zIndex: 0,
+            border: window.debugBackground ? '1px solid red' : 'none', // Отладочная рамка
           }}
         />
       ))}
+      
+      {/* Отладочная информация о фоновых слоях */}
+      {window.debugBackground && (
+        <div style={{
+          position: 'absolute',
+          top: 10,
+          right: 10,
+          background: 'rgba(0, 0, 0, 0.8)',
+          color: 'white',
+          padding: '8px',
+          borderRadius: '4px',
+          fontSize: '12px',
+          zIndex: 100,
+          fontFamily: 'monospace',
+        }}>
+          <div>Фоновые слои: {backgroundLayers.current.length}</div>
+          <div>Позиции: {backgroundLayers.current.map(y => Math.round(y)).join(', ')}</div>
+          <div>Размер контейнера: {Math.round(containerSize.width)}x{Math.round(containerSize.height)}</div>
+          <div>Масштаб: {scale.toFixed(2)}</div>
+        </div>
+      )}
       
       {/* Питомец */}
       <img
@@ -1319,13 +1402,15 @@ function generateLaneConfiguration(level) {
     lanes[laneIndex] = true;
   });
   
-  // Добавляем отладочную информацию
-  console.log('Генерируем конфигурацию полос для уровня', level, {
-    lanes: lanes,
-    totalLanes: baseLanes,
-    roadLanes: selectedRoadLanes,
-    safeLanes: [0, safeLaneIndex]
-  });
+  // Отладочная информация только при включенной отладке
+  if (window.debugLanes) {
+    console.log('Генерируем конфигурацию полос для уровня', level, {
+      lanes: lanes,
+      totalLanes: baseLanes,
+      roadLanes: selectedRoadLanes,
+      safeLanes: [0, safeLaneIndex]
+    });
+  }
   
   return {
     lanes: lanes,
@@ -1559,10 +1644,7 @@ const CrossyRoadGame = ({ petSprite, onClose, petId, onLevelChange }) => {
       const speedIncrease = Math.min((level - 1) * 25, 200); // Ограничиваем максимальное увеличение скорости
       const speed = (baseSpeed + speedIncrease) * deltaTimeSeconds;
       
-      // Отладочная информация о движении машин
-      if (window.debugLanes && obstacles.current.length > 0) {
-        console.log(`Движение машин: скорость=${speed.toFixed(2)}, машин=${obstacles.current.length}`);
-      }
+
       
       // Проверяем столкновения между машинами
       for (let i = obstacles.current.length - 1; i >= 0; i--) {
@@ -1610,15 +1692,9 @@ const CrossyRoadGame = ({ petSprite, onClose, petId, onLevelChange }) => {
           if (isObsOnRoadLane) {
             obs.x += obs.dir * speed;
             
-            // Отладочная информация
-            if (window.debugLanes) {
-              console.log(`Машина ${i}: движется по полосе ${obsLaneIndex}, X: ${obs.x.toFixed(1)}, Y: ${obs.y.toFixed(1)}`);
-            }
+
           } else {
             // Если машина не на дорожной полосе, удаляем её
-            if (window.debugLanes) {
-              console.log(`Машина ${i}: не на дорожной полосе (${obsLaneIndex}), удаляем`);
-            }
             obstacles.current.splice(i, 1);
             if (carRefs.current[i]) {
               delete carRefs.current[i];
@@ -1756,14 +1832,20 @@ const CrossyRoadGame = ({ petSprite, onClose, petId, onLevelChange }) => {
               roadLanes.push(i);
             }
           }
-          console.log(`Спавн: активные дорожные полосы: ${roadLanes.join(', ')}, конфигурация: [${currentConfig.lanes.join(', ')}], уровень: ${level}`);
+          // Отладочная информация только при включенной отладке
+          if (window.debugLanes) {
+            console.log(`Спавн: активные дорожные полосы: ${roadLanes.join(', ')}, конфигурация: [${currentConfig.lanes.join(', ')}], уровень: ${level}`);
+          }
         } else {
           // Если конфигурация не загружена, используем старую логику
           const lanes = Math.min(CR_LANE_COUNT, 3 + Math.floor(level / 3));
           for (let i = 0; i < lanes; i++) {
             if (i % 2 === 1) roadLanes.push(i);
           }
-          console.log(`Спавн: используется старая логика, дорожные полосы: ${roadLanes.join(', ')}, уровень: ${level}`);
+          // Отладочная информация только при включенной отладке
+          if (window.debugLanes) {
+            console.log(`Спавн: используется старая логика, дорожные полосы: ${roadLanes.join(', ')}, уровень: ${level}`);
+          }
         }
         
         if (roadLanes.length > 0) {
@@ -1826,14 +1908,20 @@ const CrossyRoadGame = ({ petSprite, onClose, petId, onLevelChange }) => {
               roadLanes.push(i);
             }
           }
-          console.log(`Группа машин: активные дорожные полосы: ${roadLanes.join(', ')}, конфигурация: [${currentConfig.lanes.join(', ')}], уровень: ${level}`);
+          // Отладочная информация только при включенной отладке
+          if (window.debugLanes) {
+            console.log(`Группа машин: активные дорожные полосы: ${roadLanes.join(', ')}, конфигурация: [${currentConfig.lanes.join(', ')}], уровень: ${level}`);
+          }
         } else {
           // Если конфигурация не загружена, используем старую логику
           const lanes = Math.min(CR_LANE_COUNT, 3 + Math.floor(level / 3));
           for (let i = 0; i < lanes; i++) {
             if (i % 2 === 1) roadLanes.push(i);
           }
-          console.log(`Группа машин: используется старая логика, дорожные полосы: ${roadLanes.join(', ')}, уровень: ${level}`);
+          // Отладочная информация только при включенной отладке
+          if (window.debugLanes) {
+            console.log(`Группа машин: используется старая логика, дорожные полосы: ${roadLanes.join(', ')}, уровень: ${level}`);
+          }
         }
         
         if (roadLanes.length > 0) {
@@ -1874,10 +1962,7 @@ const CrossyRoadGame = ({ petSprite, onClose, petId, onLevelChange }) => {
       const currentConfig = currentLaneConfigRef.current || laneConfig;
       const isPetOnRoadLane = isLaneRoad(petLaneIndex, currentConfig); // Используем динамическую конфигурацию
       
-      // Отладочная информация для проверки полос
-      if (window.debugLanes) {
-        console.log('Питомец на полосе:', petLaneIndex, 'На дороге:', isPetOnRoadLane, 'Всего полос:', laneConfig?.totalLanes, 'Y питомца:', Math.round(petY.current));
-      }
+
       
       // Проверяем коллизии с машинами
       for (let obs of obstacles.current) {
@@ -1886,10 +1971,7 @@ const CrossyRoadGame = ({ petSprite, onClose, petId, onLevelChange }) => {
         const currentConfig = currentLaneConfigRef.current || laneConfig;
         const isObsOnRoadLane = isLaneRoad(obsLaneIndex, currentConfig);
         
-        // Отладочная информация для машин
-        if (window.debugLanes) {
-          console.log(`Машина ${idx}: полоса ${obsLaneIndex}, на дороге: ${isObsOnRoadLane}, Y: ${Math.round(obs.y)}`);
-        }
+
         
         // Для обычных машин проверяем коллизию только если:
         // 1. Машина находится на дорожной полосе
@@ -1976,11 +2058,8 @@ const CrossyRoadGame = ({ petSprite, onClose, petId, onLevelChange }) => {
   const nextLevel = () => {
     // Проверяем, что размеры контейнера установлены правильно
     if (containerSize.width === 0 || containerSize.height === 0 || scale === 0) {
-      console.log('Размеры контейнера не готовы, откладываем nextLevel');
       return;
     }
-    
-    console.log('Переход на следующий уровень:', { level, containerSize, scale });
     
     // Выбираем новый фоновый тайл
     setBackgroundTile(getRandomBackgroundTile());
@@ -1992,13 +2071,15 @@ const CrossyRoadGame = ({ petSprite, onClose, petId, onLevelChange }) => {
     // Сохраняем актуальную конфигурацию в ref для использования в игровом цикле
     currentLaneConfigRef.current = newLaneConfig;
     
-    // Добавляем отладочную информацию о конфигурации
-    console.log('Новая конфигурация полос:', {
-      level: level,
-      lanes: newLaneConfig.lanes,
-      roadLanes: newLaneConfig.roadLanes,
-      totalLanes: newLaneConfig.totalLanes
-    });
+    // Отладочная информация только при включенной отладке
+    if (window.debugLanes) {
+      console.log('Новая конфигурация полос:', {
+        level: level,
+        lanes: newLaneConfig.lanes,
+        roadLanes: newLaneConfig.roadLanes,
+        totalLanes: newLaneConfig.totalLanes
+      });
+    }
     
     // Увеличиваем сложность: больше полос с препятствиями, выше скорость
     let obsArr = [];
@@ -2008,15 +2089,10 @@ const CrossyRoadGame = ({ petSprite, onClose, petId, onLevelChange }) => {
         const laneY = containerSize.height - (i + 1) * CR_LANE_HEIGHT * scale;
         const isRoadLane = newLaneConfig.lanes[i]; // Используем динамическую конфигурацию
         
-        // Добавляем отладочную информацию
-        if (window.debugLanes) {
-          console.log(`Создание машин: Полоса ${i}: Y=${laneY}, isRoad=${isRoadLane}`);
-        }
+
         
         // Размещаем машины только на дорожных полосах
         if (isRoadLane) {
-          console.log(`Создаем машины на дорожной полосе ${i} (Y=${laneY})`);
-          
           // Улучшенное размещение машин с прогрессивной сложностью
           const baseCarsPerLane = Math.min(3 + Math.floor(level / 2), 6); // Больше машин на полосу
           const direction = i % 2 === 1 ? 1 : -1; // Чередуем направление движения для разнообразия
@@ -2036,17 +2112,9 @@ const CrossyRoadGame = ({ petSprite, onClose, petId, onLevelChange }) => {
             
             const newCar = createCarObstacle(spawnX, laneY, direction, level);
             if (newCar) {
-              // Проверяем, что машина создалась на правильной полосе
-              const carLaneIndex = Math.floor((containerSize.height - newCar.y - CR_OBSTACLE_HEIGHT * scale / 2) / (CR_LANE_HEIGHT * scale));
-              const isCarOnRoadLane = isLaneRoad(carLaneIndex, newLaneConfig);
-              
-              console.log(`Создана машина ${j} на полосе ${i}: Y=${newCar.y}, проверка полосы=${carLaneIndex}, на дороге=${isCarOnRoadLane}`);
-              
               obsArr.push(newCar);
             }
           }
-        } else {
-          console.log(`Полоса ${i} не дорожная, пропускаем создание машин`);
         }
       }
     obstacles.current = obsArr;
@@ -2068,7 +2136,7 @@ const CrossyRoadGame = ({ petSprite, onClose, petId, onLevelChange }) => {
   useEffect(() => {
     if (containerSize.width === 0 || containerSize.height === 0 || scale === 0) return; // Ждем правильных размеров
     
-    console.log('Инициализация игры...', { containerSize, scale });
+
     setLevel(1);
     if (onLevelChange) onLevelChange(1);
     setScore(0);
@@ -2079,11 +2147,6 @@ const CrossyRoadGame = ({ petSprite, onClose, petId, onLevelChange }) => {
     
     // Инициализируем currentLaneConfigRef
     currentLaneConfigRef.current = initialLaneConfig;
-    
-    console.log('Инициализирована конфигурация полос:', {
-      lanes: initialLaneConfig.lanes,
-      roadLanes: initialLaneConfig.roadLanes
-    });
     
     // Очищаем существующие машины перед созданием новых
     obstacles.current = [];
@@ -2103,7 +2166,7 @@ const CrossyRoadGame = ({ petSprite, onClose, petId, onLevelChange }) => {
   useEffect(() => {
     if (containerSize.width > 0 && containerSize.height > 0 && scale > 0 && obstacles.current.length > 0) {
       // Если размеры изменились и машины уже есть, пересоздаем их
-      console.log('Пересоздание машин из-за изменения размеров...', { containerSize, scale });
+
       
       // Сохраняем текущий уровень
       const currentLevel = level;
@@ -2119,12 +2182,6 @@ const CrossyRoadGame = ({ petSprite, onClose, petId, onLevelChange }) => {
       // ОБНОВЛЯЕМ currentLaneConfigRef с новой конфигурацией
       currentLaneConfigRef.current = newLaneConfig;
       
-      console.log('Обновлена конфигурация при пересоздании:', {
-        level: currentLevel,
-        lanes: newLaneConfig.lanes,
-        roadLanes: newLaneConfig.roadLanes
-      });
-      
       // Создаем новые машины с правильными размерами
       let obsArr = [];
       const totalLanes = newLaneConfig.totalLanes;
@@ -2133,10 +2190,7 @@ const CrossyRoadGame = ({ petSprite, onClose, petId, onLevelChange }) => {
         const laneY = containerSize.height - (i + 1) * CR_LANE_HEIGHT * scale;
         const isRoadLane = newLaneConfig.lanes[i];
         
-        // Добавляем отладочную информацию
-        if (window.debugLanes) {
-          console.log(`Пересоздание: Полоса ${i}: Y=${laneY}, isRoad=${isRoadLane}`);
-        }
+
         
         if (isRoadLane) {
           const baseCarsPerLane = Math.min(3 + Math.floor(currentLevel / 2), 6);
@@ -2282,10 +2336,7 @@ const CrossyRoadGame = ({ petSprite, onClose, petId, onLevelChange }) => {
         const currentConfig = currentLaneConfigRef.current || laneConfig;
         const isRoadLane = isLaneRoad(i, currentConfig); // Используем динамическую конфигурацию
         
-        // Добавляем отладочную информацию
-        if (window.debugLanes) {
-          console.log(`Отображение дороги: Полоса ${i}: Y=${laneY}, isRoad=${isRoadLane}`);
-        }
+
         
         if (isRoadLane) {
           // Чередуем два типа дорожных тайлов для разнообразия
