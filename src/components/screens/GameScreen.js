@@ -20,6 +20,7 @@ import PhoneModal from '../ui/PhoneModal';
 import NotificationSystem from '../ui/NotificationSystem';
 import GameNotificationSystem from '../ui/GameNotificationSystem';
 import InlineDiceRoll from '../ui/InlineDiceRoll';
+import { useNotifications } from '../../contexts/NotificationContext';
 import EpisodeCompleteScreen from '../ui/EpisodeCompleteScreen';
 import { buildCharacterSprite } from '../../utils/characterUtils';
 import { clearEpisodeSaves, forceClearAllSaves } from '../../utils/saveUtils';
@@ -355,6 +356,9 @@ const GameScreen = () => {
   
   // Состояние для модального окна телефона
   const [isPhoneModalOpen, setIsPhoneModalOpen] = useState(false);
+  const { notifications } = useNotifications();
+  const [phoneAlert, setPhoneAlert] = useState(false);
+  const lastNotifiedIdRef = useRef(null);
   
   // Состояние для отслеживания изменений отношений
   const [hasNewRelationshipChanges, setHasNewRelationshipChanges] = useState(false);
@@ -376,6 +380,19 @@ const GameScreen = () => {
     effects: null,
     pendingEffects: null
   });
+
+  // Эффект уведомления для кнопки телефона: вибрация + иконка письма
+  useEffect(() => {
+    if (!notifications || notifications.length === 0) return;
+    const last = notifications[notifications.length - 1];
+    if (!last || last.id === lastNotifiedIdRef.current) return;
+    lastNotifiedIdRef.current = last.id;
+
+    // Включаем визуальный алерт до клика по телефону
+    setPhoneAlert(true);
+    // Лёгкая вибрация при каждом новом уведомлении
+    try { if (navigator?.vibrate) navigator.vibrate([60, 40, 60]); } catch {}
+  }, [notifications]);
 
   useEffect(() => {
     // Устанавливаем менеджер персонажей в EpisodeManager
@@ -936,6 +953,8 @@ const GameScreen = () => {
 
   const handleOpenPhoneModal = () => {
     setIsPhoneModalOpen(true);
+    // Сброс анимации/индикатора после открытия
+    setPhoneAlert(false);
   };
 
   const handleClosePhoneModal = () => {
@@ -1749,7 +1768,7 @@ const GameScreen = () => {
               </div>
             )}
           </button>
-          <button className="game-nav-button pulse phone-button" onClick={handleOpenPhoneModal} title="Телефон">
+          <button className={`game-nav-button pulse phone-button ${phoneAlert ? 'alert' : ''}`} onClick={handleOpenPhoneModal} title="Телефон">
             <img
               src={getStaticPath('sprites/ui/hud/phone.png')}
               alt="Телефон"
@@ -1757,6 +1776,11 @@ const GameScreen = () => {
               width={72}
               height={36}
             />
+            {phoneAlert && (
+              <span className="phone-mail-indicator" aria-hidden="true">
+                <i className="fas fa-envelope"></i>
+              </span>
+            )}
           </button>
           <button className="game-nav-button pulse pause-button" onClick={handleOpenPauseMenu} title="Пауза">
             <i className="fas fa-pause"></i>
