@@ -68,13 +68,43 @@
   min-height: 80px;
 }
 
-/* Скрыть аватар в верхней панели */
-.game-top-panel .game-character-avatar,
-.game-top-panel .game-character-preview,
-.game-top-panel .game-default-avatar,
-.game-top-panel .game-character-level-badge {
-  display: none !important;
+/* Дизайн круглого аватара со слоями */
+.game-top-panel .game-character-avatar {
+  position: relative;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2px solid rgba(0,0,0,0.08);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
 }
+
+.game-top-panel .game-character-preview {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  transform: translateY(6%) scale(0.72);
+  transform-origin: center;
+}
+
+.game-top-panel .game-avatar-container,
+.game-top-panel .game-avatar-layer {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.game-top-panel .game-default-avatar {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: #eee;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* бейдж уровня перенесён в строку с именем */
 
 /* Скрыть только кнопки отношений, магазина, инвентаря, питомца, но оставить телефон и паузу */
 .game-navigation-buttons .game-nav-button {
@@ -83,6 +113,89 @@
 .game-navigation-buttons .game-nav-button[title="Телефон"],
 .game-navigation-buttons .game-nav-button[title="Пауза"] {
   display: inline-flex !important;
+}
+
+/* Имя и уровень персонажа */
+.game-character-details {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.character-name-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.game-character-name {
+  font-weight: 700;
+  font-size: 16px;
+}
+.character-level-chip {
+  padding: 2px 6px;
+  font-size: 11px;
+  font-weight: 700;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #34d399, #10b981);
+  color: #fff;
+  border: 1px solid rgba(255,255,255,0.7);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.15);
+}
+.game-experience-section { margin-top: 2px; }
+.game-experience-bar {
+  position: relative;
+  height: 6px;
+  border-radius: 6px;
+  background: rgba(0,0,0,0.08);
+  overflow: hidden;
+}
+.game-experience-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #60a5fa, #3b82f6);
+}
+.game-experience-text {
+  font-size: 11px;
+  opacity: 0.75;
+}
+
+/* Кнопка телефона со спрайтом 72x36 */
+.game-navigation-buttons .phone-button {
+  width: 72px;
+  height: 36px;
+  padding: 0;
+  background: transparent;
+  border-radius: 8px;
+  position: relative;
+}
+.game-navigation-buttons .phone-button .phone-sprite {
+  width: 72px;
+  height: 36px;
+  object-fit: contain;
+  display: block;
+}
+
+/* Новый стиль кнопки паузы */
+.game-navigation-buttons .pause-button {
+  width: 40px;
+  height: 36px;
+  border-radius: 8px;
+  background: rgba(0,0,0,0.08);
+  border: 1px solid rgba(0,0,0,0.12);
+  color: #111;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+.game-navigation-buttons .pause-button i {
+  font-size: 14px;
+}
+
+/* Защита от «чёлок» телефонов (safe-area) */
+.game-top-panel {
+  padding-top: calc(15px + env(safe-area-inset-top));
+}
+.game-navigation-buttons {
+  padding-right: calc(0px + env(safe-area-inset-right));
 }
 
 /* Основная игровая область */

@@ -1686,17 +1686,19 @@ const GameScreen = () => {
                 <i className="fas fa-user"></i>
               </div>
             )}
-            {characterLevelInfo && (
-              <div className="game-character-level-badge">
-                {characterLevelInfo.level}
-              </div>
-            )}
           </div>
           
-          {/* Имя и шкала опыта */}
+          {/* Имя, уровень и шкала опыта */}
           <div className="game-character-details">
-            <div className="game-character-name">
-              {selectedCharacter?.name || 'Неизвестный'}
+            <div className="character-name-row">
+              <div className="game-character-name">
+                {selectedCharacter?.name || 'Неизвестный'}
+              </div>
+              {characterLevelInfo && (
+                <div className="character-level-chip" title={`Уровень ${characterLevelInfo.level}`}>
+                  LV {characterLevelInfo.level}
+                </div>
+              )}
             </div>
             {characterLevelInfo && (
               <div className="game-experience-section">
@@ -1747,10 +1749,16 @@ const GameScreen = () => {
               </div>
             )}
           </button>
-          <button className="game-nav-button pulse" onClick={handleOpenPhoneModal} title="Телефон">
-            <i className="fas fa-mobile-alt"></i>
+          <button className="game-nav-button pulse phone-button" onClick={handleOpenPhoneModal} title="Телефон">
+            <img
+              src={getStaticPath('sprites/ui/hud/phone.png')}
+              alt="Телефон"
+              className="phone-sprite"
+              width={72}
+              height={36}
+            />
           </button>
-          <button className="game-nav-button pulse" onClick={handleOpenPauseMenu} title="Пауза">
+          <button className="game-nav-button pulse pause-button" onClick={handleOpenPauseMenu} title="Пауза">
             <i className="fas fa-pause"></i>
           </button>
         </div>

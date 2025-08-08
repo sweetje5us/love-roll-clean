@@ -2075,14 +2075,14 @@ if (!isOpen) return null;
                                   {letters && <span className="letters">{letters}</span>}
                                 </button>
                               ))}
-                            </div>
+                          </div>
                           ))}
-                        </div>
+                          </div>
                         <div className="dialer-actions">
                           <button className="call-button" onClick={handleCall} title="Позвонить">
                             <i className="fas fa-phone"></i>
                           </button>
-                        </div>
+                          </div>
                         {/* hint removed in production */}
                         {dialerCall.isActive && (
                           <div className={`dialer-call-overlay ${dialerCall.phase}`}>
@@ -2092,10 +2092,10 @@ if (!isOpen) return null;
                                 {dialerCall.phase === 'calling' && 'Вызов…'}
                                 {dialerCall.phase === 'success' && 'Промокод активирован'}
                                 {dialerCall.phase === 'error' && dialerCall.message}
-                              </div>
+                          </div>
                               <button className="end-call" onClick={handleEndCall} title="Завершить">
                                 <i className="fas fa-phone-slash"></i>
-                              </button>
+                        </button>
                             </div>
                           </div>
                         )}
@@ -2135,11 +2135,11 @@ if (!isOpen) return null;
                                 {!['relationship_positive','relationship_negative','important_choice','item_received','quest_item_received','item_removed','quest_item_removed','experience_gained'].includes(item.type) && (
                                   <span className="mail-emoji">ℹ️</span>
                                 )}
-                              </div>
+                        </div>
                               <div className="mail-content">
                                 <div className="mail-title">
                                   {item.data?.message || item.type}
-                                </div>
+                        </div>
                                 <div className="mail-meta">
                                   {new Date(item.timestamp).toLocaleTimeString()}
                                 </div>
