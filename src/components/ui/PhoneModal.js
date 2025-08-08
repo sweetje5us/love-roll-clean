@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useRelationships, RELATIONSHIP_LEVELS, getRelationshipLevel } from '../../contexts/RelationshipsContext';
 import { useCharacters } from '../../contexts/CharacterContext';
@@ -22,12 +22,19 @@ import {
   getInventoryItemsWithInfo,
   getInventoryStats,
   sortInventoryItems,
-  filterInventoryItems
+  filterInventoryItems,
+  getPetSpecialText,
+  getPetSpecialColor,
+  getPetSpecialIcon
 } from '../../utils/itemUtils';
 import ItemCard from './ItemCard';
 import ChestModal from './ChestModal';
 import PetMiniGameModal from './PetMiniGameModal';
 import { FlyingOverCityGame, DoodleJumpGame, CrossyRoadGame, ZumaGame, getSpriteStyle } from './PetMiniGameModal';
+import CharacterPreview from './CharacterPreview';
+import OptionsCarousel from './OptionsCarousel';
+import { getAvailableOptions, getAvailablePaidOptions, getOptionDisplayName } from '../../utils/characterUtils';
+import { useNotifications } from '../../contexts/NotificationContext';
 
 
 
@@ -60,6 +67,12 @@ const PhoneModal = ({ isOpen, onClose }) => {
   const [selectedShopItem, setSelectedShopItem] = useState(null);
   const [shopView, setShopView] = useState('list'); // 'list' или 'details'
   
+  // Состояния для приложений "Камера" и "Здоровье"
+  const [cameraAppearance, setCameraAppearance] = useState(null);
+  const [cameraOptions, setCameraOptions] = useState({ hairStyles: [], hairColors: [], hairBehindStyles: [], dresses: { free: [], paid: [] }, accessories: { free: [], paid: [] }, bush: [] });
+  const [cameraLayers, setCameraLayers] = useState([]);
+  const [cameraFlash, setCameraFlash] = useState(false);
+  
   // Состояния для инвентаря
   const [inventoryFilter, setInventoryFilter] = useState('all');
   const [inventorySort, setInventorySort] = useState('name');
@@ -72,6 +85,157 @@ const PhoneModal = ({ isOpen, onClose }) => {
   const [selectedMinigame, setSelectedMinigame] = useState(null);
   const [isMiniGameOpen, setMiniGameOpen] = useState(false);
   const [, forceUpdate] = useState({});
+
+  // Почта: непрочитанные уведомления
+  const { notifications } = useNotifications();
+  const [mailItems, setMailItems] = useState([]); // {id,type,data,timestamp,read:false}
+  const [unreadCount, setUnreadCount] = useState(0);
+  // Категории уведомлений
+  const [contactsNotifications, setContactsNotifications] = useState([]); // связаны с персонажами
+  const [inventoryNotifications, setInventoryNotifications] = useState([]); // связаны с инвентарем
+  const [contactsUnreadCount, setContactsUnreadCount] = useState(0);
+  const [inventoryUnreadCount, setInventoryUnreadCount] = useState(0);
+
+  // Приход новых уведомлений -> складываем как письма (непрочитанные)
+  useEffect(() => {
+    if (!notifications || notifications.length === 0) return;
+    setMailItems(prev => {
+      const knownIds = new Set(prev.map(n => n.id));
+      const appended = notifications
+        .filter(n => !knownIds.has(n.id))
+        .map(n => ({ ...n, read: false }));
+      const next = [...prev, ...appended].sort((a,b) => b.timestamp - a.timestamp);
+      return next;
+    });
+
+    // Раскладываем по категориям (контакты/инвентарь)
+    const isContactsType = (t) => (
+      t === 'relationship_positive' || t === 'relationship_negative' || t === 'important_choice'
+    );
+    const isInventoryType = (t) => (
+      t === 'item_received' || t === 'quest_item_received' || t === 'item_removed' || t === 'quest_item_removed'
+    );
+
+    setContactsNotifications(prev => {
+      const known = new Set(prev.map(n => n.id));
+      const add = notifications.filter(n => isContactsType(n.type) && !known.has(n.id)).map(n => ({ ...n, read: false }));
+      return add.length ? [...prev, ...add] : prev;
+    });
+
+    setInventoryNotifications(prev => {
+      const known = new Set(prev.map(n => n.id));
+      const add = notifications.filter(n => isInventoryType(n.type) && !known.has(n.id)).map(n => ({ ...n, read: false }));
+      return add.length ? [...prev, ...add] : prev;
+    });
+  }, [notifications]);
+
+  useEffect(() => {
+    setUnreadCount(mailItems.reduce((acc, m) => acc + (m.read ? 0 : 1), 0));
+  }, [mailItems]);
+
+  useEffect(() => {
+    setContactsUnreadCount(contactsNotifications.reduce((acc, m) => acc + (m.read ? 0 : 1), 0));
+  }, [contactsNotifications]);
+
+  useEffect(() => {
+    setInventoryUnreadCount(inventoryNotifications.reduce((acc, m) => acc + (m.read ? 0 : 1), 0));
+  }, [inventoryNotifications]);
+
+  const markAllMailRead = () => {
+    setMailItems(prev => prev.map(m => ({ ...m, read: true })));
+  };
+
+  // Помечаем как прочитанные при входе в соответствующие приложения
+  useEffect(() => {
+    if (activeApp === 'contacts') {
+      setContactsNotifications(prev => prev.map(n => ({ ...n, read: true })));
+    }
+    if (activeApp === 'inventory') {
+      setInventoryNotifications(prev => prev.map(n => ({ ...n, read: true })));
+    }
+  }, [activeApp]);
+
+  // Телефон: промокоды
+  const [dialInput, setDialInput] = useState('');
+  const [usedPromocodes, setUsedPromocodes] = useState(() => {
+    try {
+      const saved = localStorage.getItem('usedPromocodes');
+      return saved ? JSON.parse(saved) : {};
+    } catch { return {}; }
+  });
+  const [dialerCall, setDialerCall] = useState({ isActive: false, phase: 'calling', message: '', number: '' });
+  const dialerNumberRef = useRef(null);
+
+  const formatPhoneNumber = (num) => {
+    if (!num) return '';
+    const clean = String(num).replace(/\s+/g, '');
+    if (clean.length <= 3) return clean;
+    if (clean.length <= 6) return `${clean.slice(0, 3)} ${clean.slice(3)}`;
+    const parts = [clean.slice(0, 3), clean.slice(3, 6)];
+    for (let i = 6; i < clean.length; i += 3) {
+      parts.push(clean.slice(i, i + 3));
+    }
+    return parts.join(' ');
+  };
+
+  const getPhoneLabel = (num) => {
+    if (!num || num.length === 0) return 'Наберите номер';
+    if (num.length < 3) return 'Короткий номер';
+    if (num.length < 10) return 'Локальный номер';
+    if (num.length === 10) return 'Мобильный номер';
+    return 'Международный номер';
+  };
+
+  const PROMO_ACTIONS = {
+    '88005553535': () => addGems(25),
+    '5552368': () => addItem('banshee', 1)
+  };
+
+  const handleDialPress = (symbol) => {
+    setDialInput(prev => (prev + symbol).slice(0, 20));
+  };
+
+  const handleDialBackspace = () => {
+    setDialInput(prev => prev.slice(0, -1));
+  };
+
+  const handleDialClear = () => setDialInput('');
+
+  const handleEndCall = () => {
+    setDialerCall({ isActive: false, phase: 'calling', message: '', number: '' });
+  };
+
+  useEffect(() => {
+    if (dialerNumberRef.current) {
+      dialerNumberRef.current.scrollLeft = dialerNumberRef.current.scrollWidth;
+    }
+  }, [dialInput]);
+
+  const handleCall = () => {
+    const code = dialInput.trim();
+    if (!code) return;
+    // Запускаем анимацию звонка
+    setDialerCall({ isActive: true, phase: 'calling', message: 'Соединение…', number: code });
+
+    setTimeout(() => {
+      // Проверяем промокод в момент "соединения"
+      if (!usedPromocodes[code] && PROMO_ACTIONS[code]) {
+        // Успешный промокод
+        PROMO_ACTIONS[code]();
+        const next = { ...usedPromocodes, [code]: true };
+        setUsedPromocodes(next);
+        try { localStorage.setItem('usedPromocodes', JSON.stringify(next)); } catch {}
+        setDialerCall({ isActive: true, phase: 'success', message: 'Промокод активирован', number: code });
+        setDialInput('');
+        setTimeout(() => setDialerCall({ isActive: false, phase: 'calling', message: '' }), 900);
+      } else {
+        // Ошибка: неверный или уже использован
+        const msg = usedPromocodes[code] ? 'Код уже использован' : 'Неверный номер';
+        setDialerCall({ isActive: true, phase: 'error', message: msg, number: code });
+        setTimeout(() => setDialerCall({ isActive: false, phase: 'calling', message: '' }), 900);
+      }
+    }, 700);
+  };
   
   // Состояние для модального окна сундука
   const [chestModal, setChestModal] = useState({
@@ -117,7 +281,7 @@ const PhoneModal = ({ isOpen, onClose }) => {
   } = useDailyRewards();
   
   // Получаем персонажа игрока из контекста
-  const { getCharacter } = useCharacters();
+  const { getCharacter, updateCharacter } = useCharacters();
   const params = useScreen().getNavigationParams();
   const { characterId } = params;
   const playerCharacter = characterId ? getCharacter(characterId) : null;
@@ -136,6 +300,65 @@ const PhoneModal = ({ isOpen, onClose }) => {
   const activePet = getActivePet();
   const activePetData = activePetId ? getItemById(activePetId) : null;
   const activePetStatus = getActivePetStatus();
+
+  // Инициализация данных для камеры при загрузке персонажа/инвентаря
+  useEffect(() => {
+    if (!playerCharacter) return;
+    const options = getAvailableOptions(playerCharacter.gender, playerCharacter.age);
+    const paid = getAvailablePaidOptions(playerCharacter.gender, playerCharacter.age, inventoryData);
+
+    setCameraOptions({ 
+      hairStyles: options.hairStyles || [],
+      hairColors: options.hairColors || [],
+      hairBehindStyles: options.hairBehindStyles || [],
+      dresses: options.dresses || { free: [], paid: [] },
+      accessories: options.accessories || { free: [], paid: [] },
+      bush: options.bush || []
+    });
+
+    const appearance = playerCharacter.appearance || {
+      hairStyle: 'long_hair',
+      hairColor: 'brown',
+      hairBehind: '',
+      dress: 'hoodie',
+      dressPaid: false,
+      accessory: '',
+      accessoryPaid: false,
+      bush: ''
+    };
+    setCameraAppearance(appearance);
+  }, [playerCharacter, inventoryData]);
+
+  const handleCameraAppearanceChange = (key, value) => {
+    setCameraAppearance(prev => ({ ...prev, [key]: value }));
+  };
+
+  const handleCameraSave = () => {
+    if (!playerCharacter || !cameraAppearance) return;
+    updateCharacter(playerCharacter.id, { appearance: cameraAppearance });
+  };
+
+  // Сборка слоёв для предпросмотра в камере без лишних оболочек
+  useEffect(() => {
+    if (!playerCharacter) return;
+    const data = { ...playerCharacter, appearance: cameraAppearance || playerCharacter.appearance };
+    try {
+      const layers = sceneManager.buildCharacterSprite(data, 'normal', inventoryData);
+      setCameraLayers(layers || []);
+    } catch (e) {
+      console.warn('Camera: не удалось собрать слои персонажа', e);
+      setCameraLayers([]);
+    }
+  }, [playerCharacter, cameraAppearance, inventoryData]);
+
+  const handleCameraCapture = () => {
+    if (!playerCharacter || !cameraAppearance) return;
+    setCameraFlash(true);
+    setTimeout(() => {
+      setCameraFlash(false);
+      updateCharacter(playerCharacter.id, { appearance: cameraAppearance });
+    }, 150);
+  };
   
   // Определяем класс анимации для питомца
   const getPetAnimationClass = () => {
@@ -646,6 +869,16 @@ const PhoneModal = ({ isOpen, onClose }) => {
       
       // Меняем активного питомца
       setActivePet(petId);
+
+      // Синхронизируем с персонажем, чтобы питомец стал активным глобально
+      const targetCharacterId = playerCharacter?.id || selectedCharacter?.id;
+      if (targetCharacterId && updateCharacter) {
+        try {
+          updateCharacter(targetCharacterId, { petId: petId, petName: petData.name || '' });
+        } catch (e) {
+          console.warn('PhoneModal: не удалось обновить персонажа при смене питомца', e);
+        }
+      }
     }
     
     // Возвращаемся к главному экрану
@@ -867,9 +1100,17 @@ if (!isOpen) return null;
                           {/* Первая страница приложений */}
                           <div className="home-screen-page">
                             <div className="phone-app-grid">
-                              <div className="phone-app-icon" onClick={() => handleAppClick('contacts')}>
-                                <i className="fas fa-address-book"></i>
-                                <span>Контакты</span>
+                              <div className="phone-app-icon" onClick={() => handleAppClick('camera')}>
+                                <i className="fas fa-camera"></i>
+                                <span>Камера</span>
+                              </div>
+                              <div className="phone-app-icon" onClick={() => handleAppClick('health')}>
+                                <i className="fas fa-heartbeat"></i>
+                                <span>Здоровье</span>
+                              </div>
+                              <div className="phone-app-icon" onClick={() => handleAppClick('pet')}>
+                                <i className="fas fa-paw"></i>
+                                <span>Питомец</span>
                               </div>
                               <div className="phone-app-icon" onClick={() => handleAppClick('shop')}>
                                 <i className="fas fa-shopping-cart"></i>
@@ -877,38 +1118,51 @@ if (!isOpen) return null;
                               </div>
                               <div className="phone-app-icon" onClick={() => handleAppClick('inventory')}>
                                 <i className="fas fa-briefcase"></i>
+                                {inventoryUnreadCount > 0 && (
+                                  <span className={`app-badge ${inventoryUnreadCount > 9 ? 'wide' : ''}`}>
+                                    {inventoryUnreadCount > 99 ? '99+' : inventoryUnreadCount}
+                                  </span>
+                                )}
                                 <span>Инвентарь</span>
                               </div>
-                              <div className="phone-app-icon" onClick={() => handleAppClick('pet')}>
-                                <i className="fas fa-paw"></i>
-                                <span>Питомец</span>
+                              <div className="phone-app-icon" onClick={() => handleAppClick('gallery')}>
+                                <i className="fas fa-images"></i>
+                                <span>Галерея</span>
+                              </div>
+                              <div className="phone-app-icon" onClick={() => handleAppClick('contacts')}>
+                                <i className="fas fa-address-book"></i>
+                                {contactsUnreadCount > 0 && (
+                                  <span className={`app-badge ${contactsUnreadCount > 9 ? 'wide' : ''}`}>
+                                    {contactsUnreadCount > 99 ? '99+' : contactsUnreadCount}
+                                  </span>
+                                )}
+                                <span>Контакты</span>
                               </div>
                               <div className="phone-app-icon" onClick={() => handleAppClick('messages')}>
                                 <i className="fas fa-comments"></i>
                                 <span>Сообщения</span>
                               </div>
-
-                              <div className="phone-app-icon" onClick={() => handleAppClick('gallery')}>
-                                <i className="fas fa-images"></i>
-                                <span>Галерея</span>
-                              </div>
-                              <div className="phone-app-icon" onClick={() => handleAppClick('settings')}>
-                                <i className="fas fa-cog"></i>
-                                <span>Настройки</span>
-                              </div>
                               <div className="phone-app-icon" onClick={() => handleAppClick('notes')}>
                                 <i className="fas fa-sticky-note"></i>
                                 <span>Заметки</span>
+                              </div>
+
+                              </div>
+                          </div>
+                          
+                          {/* Вторая страница приложений */}
+                          <div className="home-screen-page">
+                            <div className="phone-app-grid">
+                              <div className="phone-app-icon" onClick={() => handleAppClick('settings')}>
+                                <i className="fas fa-cog"></i>
+                                <span>Настройки</span>
                               </div>
                               <div className="phone-app-icon" onClick={() => handleAppClick('music')}>
                                 <i className="fas fa-music"></i>
                                 <span>Музыка</span>
                               </div>
-
                             </div>
                           </div>
-                          
-
                         </div>
                       </div>
                       
@@ -919,6 +1173,11 @@ if (!isOpen) return null;
                         </div>
                         <div className="dock-app" onClick={() => handleAppClick('mail')}>
                           <i className="fas fa-envelope"></i>
+                          {unreadCount > 0 && (
+                            <span className={`app-badge ${unreadCount > 9 ? 'wide' : ''}`}>
+                              {unreadCount > 99 ? '99+' : unreadCount}
+                            </span>
+                          )}
                         </div>
                         <div className="dock-app" onClick={() => handleAppClick('safari')}>
                           <i className="fas fa-compass"></i>
@@ -1775,34 +2034,71 @@ if (!isOpen) return null;
                         <h3>Телефон</h3>
                       </div>
                       <div className="phone-dialer">
-                        <div className="dialer-display">
-                          <span>Введите номер</span>
+                        <div className="dialer-display" title="Наберите номер">
+                          <div className="dialer-number" ref={dialerNumberRef}>{formatPhoneNumber(dialInput)}</div>
+                          <div className="dialer-label">{getPhoneLabel(dialInput)}</div>
+                          <div className="dialer-tools">
+                            {dialInput && (
+                              <button className="dialer-clear" onClick={handleDialBackspace} title="Удалить">
+                                <i className="fas fa-backspace"></i>
+                              </button>
+                            )}
+                          </div>
                         </div>
                         <div className="dialer-keypad">
-                          <div className="keypad-row">
-                            <button className="dialer-key">1</button>
-                            <button className="dialer-key">2</button>
-                            <button className="dialer-key">3</button>
-                          </div>
-                          <div className="keypad-row">
-                            <button className="dialer-key">4</button>
-                            <button className="dialer-key">5</button>
-                            <button className="dialer-key">6</button>
-                          </div>
-                          <div className="keypad-row">
-                            <button className="dialer-key">7</button>
-                            <button className="dialer-key">8</button>
-                            <button className="dialer-key">9</button>
-                          </div>
-                          <div className="keypad-row">
-                            <button className="dialer-key">*</button>
-                            <button className="dialer-key">0</button>
-                            <button className="dialer-key">#</button>
-                          </div>
+                          {[
+                            [
+                              { key: '1', letters: '' },
+                              { key: '2', letters: 'ABC' },
+                              { key: '3', letters: 'DEF' }
+                            ],
+                            [
+                              { key: '4', letters: 'GHI' },
+                              { key: '5', letters: 'JKL' },
+                              { key: '6', letters: 'MNO' }
+                            ],
+                            [
+                              { key: '7', letters: 'PQRS' },
+                              { key: '8', letters: 'TUV' },
+                              { key: '9', letters: 'WXYZ' }
+                            ],
+                            [
+                              { key: '*', letters: '' },
+                              { key: '0', letters: '+' },
+                              { key: '#', letters: '' }
+                            ]
+                          ].map((row, idx) => (
+                            <div key={idx} className="keypad-row">
+                              {row.map(({ key, letters }) => (
+                                <button key={key} className="dialer-key" onClick={() => handleDialPress(key)}>
+                                  <span className="digit">{key}</span>
+                                  {letters && <span className="letters">{letters}</span>}
+                                </button>
+                              ))}
+                            </div>
+                          ))}
                         </div>
-                        <button className="call-button">
-                          <i className="fas fa-phone"></i>
-                        </button>
+                        <div className="dialer-actions">
+                          <button className="call-button" onClick={handleCall} title="Позвонить">
+                            <i className="fas fa-phone"></i>
+                          </button>
+                        </div>
+                        {/* hint removed in production */}
+                        {dialerCall.isActive && (
+                          <div className={`dialer-call-overlay ${dialerCall.phase}`}>
+                            <div className="dialer-call-screen">
+                              <div className="calling-number">{formatPhoneNumber(dialerCall.number)}</div>
+                              <div className="calling-label">
+                                {dialerCall.phase === 'calling' && 'Вызов…'}
+                                {dialerCall.phase === 'success' && 'Промокод активирован'}
+                                {dialerCall.phase === 'error' && dialerCall.message}
+                              </div>
+                              <button className="end-call" onClick={handleEndCall} title="Завершить">
+                                <i className="fas fa-phone-slash"></i>
+                              </button>
+                            </div>
+                          </div>
+                        )}
                       </div>
                     </div>
                   )}
@@ -1815,20 +2111,43 @@ if (!isOpen) return null;
                           <i className="fas fa-arrow-left"></i>
                         </button>
                         <h3>Почта</h3>
+                        {unreadCount > 0 && (
+                          <button className="phone-action-button" onClick={markAllMailRead} title="Отметить всё как прочитанное">
+                            Прочитать всё
+                          </button>
+                        )}
                       </div>
                       <div className="mail-list">
-                        <div className="mail-item">
-                          <div className="mail-sender">Анна</div>
-                          <div className="mail-subject">Привет!</div>
-                          <div className="mail-preview">Как дела? Встретимся завтра?</div>
-                          <div className="mail-time">12:30</div>
-                        </div>
-                        <div className="mail-item">
-                          <div className="mail-sender">Работа</div>
-                          <div className="mail-subject">Встреча</div>
-                          <div className="mail-preview">Напоминание о встрече в 15:00</div>
-                          <div className="mail-time">10:15</div>
-                        </div>
+                        {mailItems.length === 0 ? (
+                          <div className="mail-empty">Писем нет</div>
+                        ) : (
+                          mailItems.map(item => (
+                            <div key={item.id} className={`mail-item ${item.read ? '' : 'unread'}`}>
+                              <div className="mail-icon">
+                                {item.type === 'relationship_positive' && <span className="mail-emoji">❤️</span>}
+                                {item.type === 'relationship_negative' && <span className="mail-emoji">💔</span>}
+                                {item.type === 'important_choice' && <span className="mail-emoji">⭐</span>}
+                                {item.type === 'item_received' && <span className="mail-emoji">🎁</span>}
+                                {item.type === 'quest_item_received' && <span className="mail-emoji">🗝️</span>}
+                                {item.type === 'item_removed' && <span className="mail-emoji">❌</span>}
+                                {item.type === 'quest_item_removed' && <span className="mail-emoji">🗑️</span>}
+                                {item.type === 'experience_gained' && <span className="mail-emoji">🎯</span>}
+                                {!['relationship_positive','relationship_negative','important_choice','item_received','quest_item_received','item_removed','quest_item_removed','experience_gained'].includes(item.type) && (
+                                  <span className="mail-emoji">ℹ️</span>
+                                )}
+                              </div>
+                              <div className="mail-content">
+                                <div className="mail-title">
+                                  {item.data?.message || item.type}
+                                </div>
+                                <div className="mail-meta">
+                                  {new Date(item.timestamp).toLocaleTimeString()}
+                                </div>
+                              </div>
+                              {!item.read && <span className="mail-dot" />}
+                            </div>
+                          ))
+                        )}
                       </div>
                     </div>
                   )}
@@ -1922,6 +2241,178 @@ if (!isOpen) return null;
                     </div>
                   )}
 
+                  {/* Камера (редактор внешности) */}
+                  {activeApp === 'camera' && (
+                    <div className="phone-app-content">
+                      <div className="phone-app-header">
+                        <button className="phone-back-button" onClick={handleBackToHome}>
+                          <i className="fas fa-arrow-left"></i>
+                        </button>
+                        <h3>Камера</h3>
+                      </div>
+                      <div className="camera-app">
+                        <div className="camera-preview">
+                          {/* Плоский превью без лишних оболочек: только sprite-container внутри camera-preview */}
+                          <div className="sprite-container" style={{ position: 'relative' }}>
+                            {cameraLayers.map((layer, index) => (
+                              <img
+                                key={`${layer.zIndex}-${index}`}
+                                src={layer.src}
+                                alt={`Слой ${layer.zIndex}`}
+                                className="sprite-layer"
+                                style={{
+                                  zIndex: layer.zIndex,
+                                  position: 'absolute',
+                                  top: 0,
+                                  left: 0,
+                                  width: '100%',
+                                  height: '100%',
+                                  objectFit: 'contain',
+                                  pointerEvents: 'none'
+                                }}
+                              />
+                            ))}
+                            {cameraFlash && <div className="camera-flash-overlay" />}
+                          </div>
+                          <button className="camera-capture-btn" onClick={handleCameraCapture} title="Сделать фото">
+                            <i className="fas fa-camera"></i>
+                          </button>
+                        </div>
+                        {cameraAppearance && (
+                          <div className="camera-controls">
+                            <OptionsCarousel
+                              options={cameraOptions.hairStyles}
+                              selectedValue={cameraAppearance.hairStyle}
+                              onSelect={(v) => handleCameraAppearanceChange('hairStyle', v)}
+                              displayName={(v) => getOptionDisplayName('hairStyle', v)}
+                            />
+                            <OptionsCarousel
+                              options={cameraOptions.hairColors}
+                              selectedValue={cameraAppearance.hairColor}
+                              onSelect={(v) => handleCameraAppearanceChange('hairColor', v)}
+                              displayName={(v) => getOptionDisplayName('hairColor', v)}
+                            />
+                            <OptionsCarousel
+                              options={cameraOptions.hairBehindStyles}
+                              selectedValue={cameraAppearance.hairBehind}
+                              onSelect={(v) => handleCameraAppearanceChange('hairBehind', v)}
+                              displayName={(v) => getOptionDisplayName('hairBehind', v)}
+                            />
+                            <OptionsCarousel
+                              options={[...(cameraOptions.dresses?.free || []), ...(cameraOptions.dresses?.paid || [])]}
+                              selectedValue={cameraAppearance.dress}
+                              onSelect={(v) => handleCameraAppearanceChange('dress', v)}
+                              displayName={(v) => getOptionDisplayName('dress', v)}
+                            />
+                            <OptionsCarousel
+                              options={[...(cameraOptions.accessories?.free || []), ...(cameraOptions.accessories?.paid || [])]}
+                              selectedValue={cameraAppearance.accessory}
+                              onSelect={(v) => handleCameraAppearanceChange('accessory', v)}
+                              displayName={(v) => getOptionDisplayName('accessory', v)}
+                            />
+                            {playerCharacter?.gender === 'female' && (
+                              <OptionsCarousel
+                                options={cameraOptions.bush}
+                                selectedValue={cameraAppearance.bush}
+                                onSelect={(v) => handleCameraAppearanceChange('bush', v)}
+                                displayName={(v) => getOptionDisplayName('bush', v)}
+                              />
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Здоровье (характеристики) */}
+                  {activeApp === 'health' && (
+                    <div className="phone-app-content">
+                      <div className="phone-app-header">
+                        <button className="phone-back-button" onClick={handleBackToHome}>
+                          <i className="fas fa-arrow-left"></i>
+                        </button>
+                        <h3>Здоровье</h3>
+                      </div>
+                      <div className="health-app">
+                        {playerCharacter && (() => {
+                          const genderMap = { female: 'Женский', male: 'Мужской' };
+                          const displayName = playerCharacter.name || 'Персонаж';
+                          const genderText = genderMap[playerCharacter.gender] || '—';
+                          const ageText = playerCharacter.age ? `${playerCharacter.age}` : '—';
+                          const levelText = playerCharacter.level != null ? playerCharacter.level : 1;
+
+                          const statDisplay = {
+                            charisma: 'Харизма',
+                            coldness: 'Хладнокровие',
+                            sensitivity: 'Чувствительность',
+                            cunning: 'Хитрость',
+                            determination: 'Решительность',
+                            intelligence: 'Интеллект'
+                          };
+
+                          // Бонусы от активного питомца (если спец. тип stat)
+                          const petItem = (activePetId ? getItemById(activePetId) : null) || (playerCharacter.petId ? getItemById(playerCharacter.petId) : null);
+                          const petBonus = {};
+                          if (petItem?.special?.type === 'stat') {
+                            const st = petItem.special.stat_type;
+                            const bonus = Number(petItem.special.bonus) || 0;
+                            if (st) petBonus[st] = bonus;
+                          }
+
+                          const stats = playerCharacter.stats || {};
+
+                          return (
+                            <>
+                              <div className="health-header">
+                                <div className="health-avatar" aria-hidden>
+                                  {String(displayName).slice(0,1).toUpperCase()}
+                                </div>
+                                <div className="health-title">
+                                  <div className="health-name" title={displayName}>{displayName}</div>
+                                  <div className="health-meta">{genderText} · {ageText}</div>
+                                </div>
+                                <div className="health-level">
+                                  <span className="health-level-badge">Ур. {levelText}</span>
+                                </div>
+                              </div>
+
+                              <div className="health-stat-list">
+                                {Object.entries(statDisplay).map(([key, label]) => {
+                                  const base = Number(stats[key]) || 0;
+                                  const bonus = Number(petBonus[key]) || 0;
+                                  const total = Math.max(0, base + bonus);
+                                  const percent = Math.min(100, (total / 20) * 100);
+                                  return (
+                                    <div key={key} className={`health-stat-card stat-${key}`}>
+                                      <div className="stat-body">
+                                        <div className="stat-icon" aria-hidden>
+                                          {/* подберем простые иконки-эмодзи */}
+                                          {key === 'charisma' && '✨'}
+                                          {key === 'coldness' && '❄️'}
+                                          {key === 'sensitivity' && '💖'}
+                                          {key === 'cunning' && '🦊'}
+                                          {key === 'determination' && '🔥'}
+                                          {key === 'intelligence' && '🧠'}
+                                        </div>
+                                        <div className="stat-info">
+                                          <div className="stat-label">{label}</div>
+                                          <div className="stat-bar"><div className="stat-fill" style={{ width: `${percent}%` }} /></div>
+                                        </div>
+                                        <div className="stat-value">
+                                          {base}
+                                          {bonus > 0 && <span className="stat-bonus">+{bonus}</span>}
+                                        </div>
+                                      </div>
+                                    </div>
+                                  );
+                                })}
+                              </div>
+                            </>
+                          );
+                        })()}
+                      </div>
+                    </div>
+                  )}
 
 
 
@@ -2003,48 +2494,43 @@ if (!isOpen) return null;
                                 {/* Средняя часть - статистика */}
                                 {activePet && (
                                   <div className="pet-stats-section">
-                                    <div className="pet-stat-row">
-                                      <div className="pet-stat-item">
+                                    {/* Способность питомца */}
+                                    {activePetData?.special && (
+                                      <div className="pet-ability">
+                                        <div
+                                          className={`pet-ability-badge ${activePet?.happiness < 60 ? 'inactive' : ''}`}
+                                          style={{ backgroundColor: activePet?.happiness < 60 ? '#666' : getPetSpecialColor(activePetData.special.type) }}
+                                          title={getPetSpecialText(activePetData) || 'Способность'}
+                                        >
+                                          <span className="pet-ability-icon">{getPetSpecialIcon(activePetData.special.type)}</span>
+                                          <span className="pet-ability-text">{getPetSpecialText(activePetData)}</span>
+                                        </div>
+                                      </div>
+                                    )}
+                                    <div className="pet-stats-grid">
+                                      <div className="pet-stat-compact" title={`Голод: ${Math.round(activePet.hunger)}%`}>
                                         <div className="stat-icon">🍽️</div>
                                         <div className="stat-bar">
-                                          <div 
-                                            className="stat-fill hunger-fill" 
-                                            style={{ width: `${activePet.hunger}%` }}
-                                          ></div>
+                                          <div className="stat-fill hunger-fill" style={{ width: `${activePet.hunger}%` }}></div>
                                         </div>
-                                        <div className="stat-value">{Math.round(activePet.hunger)}%</div>
                                       </div>
-                                      <div className="pet-stat-item">
+                                      <div className="pet-stat-compact" title={`Счастье: ${Math.round(activePet.happiness)}%`}>
                                         <div className="stat-icon">😊</div>
                                         <div className="stat-bar">
-                                          <div 
-                                            className="stat-fill happiness-fill" 
-                                            style={{ width: `${activePet.happiness}%` }}
-                                          ></div>
+                                          <div className="stat-fill happiness-fill" style={{ width: `${activePet.happiness}%` }}></div>
                                         </div>
-                                        <div className="stat-value">{Math.round(activePet.happiness)}%</div>
                                       </div>
-                                    </div>
-                                    <div className="pet-stat-row">
-                                      <div className="pet-stat-item">
+                                      <div className="pet-stat-compact" title={`Энергия: ${Math.round(activePet.energy)}%`}>
                                         <div className="stat-icon">⚡</div>
                                         <div className="stat-bar">
-                                          <div 
-                                            className="stat-fill energy-fill" 
-                                            style={{ width: `${activePet.energy}%` }}
-                                          ></div>
+                                          <div className="stat-fill energy-fill" style={{ width: `${activePet.energy}%` }}></div>
                                         </div>
-                                        <div className="stat-value">{Math.round(activePet.energy)}%</div>
                                       </div>
-                                      <div className="pet-stat-item">
+                                      <div className="pet-stat-compact" title={`Здоровье: ${Math.round(activePet.health)}%`}>
                                         <div className="stat-icon">❤️</div>
                                         <div className="stat-bar">
-                                          <div 
-                                            className="stat-fill health-fill" 
-                                            style={{ width: `${activePet.health}%` }}
-                                          ></div>
+                                          <div className="stat-fill health-fill" style={{ width: `${activePet.health}%` }}></div>
                                         </div>
-                                        <div className="stat-value">{Math.round(activePet.health)}%</div>
                                       </div>
                                     </div>
                                   </div>

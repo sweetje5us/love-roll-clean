@@ -49,6 +49,9 @@ export const InventoryProvider = ({ children }) => {
   // Добавить предмет в инвентарь
   const addItem = (itemIdOrObject, quantity = 1, customData = null) => {
     console.log('InventoryContext.addItem - получен:', itemIdOrObject, 'количество:', quantity);
+    let resolvedItemId = null;
+    let resolvedItemData = null;
+
     setInventory(prev => {
       let itemId, itemData;
 
@@ -72,6 +75,10 @@ export const InventoryProvider = ({ children }) => {
         return prev;
       }
 
+      // Сохраняем для уведомления вне setInventory
+      resolvedItemId = itemId;
+      resolvedItemData = itemData;
+
       const existingItem = prev[itemId] || {};
       const newQuantity = (existingItem.quantity || 0) + quantity;
       
@@ -90,6 +97,22 @@ export const InventoryProvider = ({ children }) => {
         [itemId]: newItem
       };
     });
+
+    // Показываем уведомление о получении предмета (для Почты и всплывашек)
+    try {
+      if (window.addNotification && resolvedItemId) {
+        const itemName = resolvedItemData?.name || resolvedItemId;
+        const qtySuffix = quantity > 1 ? ` x${quantity}` : '';
+        window.addNotification('item_received', {
+          message: `Получен предмет "${itemName}"${qtySuffix}`,
+          itemId: resolvedItemId,
+          name: itemName,
+          quantity
+        });
+      }
+    } catch (e) {
+      console.warn('InventoryContext.addItem - не удалось отправить уведомление', e);
+    }
   };
 
   // Удалить предмет из инвентаря
@@ -113,6 +136,23 @@ export const InventoryProvider = ({ children }) => {
         }
       };
     });
+
+    // Уведомление об изъятии предмета
+    try {
+      if (window.addNotification && itemId) {
+        const meta = getItemById(itemId) || inventory?.[itemId];
+        const itemName = (meta && meta.name) ? meta.name : itemId;
+        const qtySuffix = quantity > 1 ? ` x${quantity}` : '';
+        window.addNotification('item_removed', {
+          message: `Изъят предмет "${itemName}"${qtySuffix}`,
+          itemId,
+          name: itemName,
+          quantity
+        });
+      }
+    } catch (e) {
+      console.warn('InventoryContext.removeItem - не удалось отправить уведомление', e);
+    }
   };
 
   // Установить количество предмета

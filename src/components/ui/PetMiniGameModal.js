@@ -212,8 +212,67 @@ const BUILDING_SPRITES = {
   }
 };
 
+// Система летающих объектов
+const FLYING_OBJECTS = {
+  airplane: {
+    src: 'sprites/minigames/flappy-bird/objects/flying/airplane-mail-plane-pixel-art-sticker-u6127-x210.png',
+    originalWidth: 209,
+    originalHeight: 108,
+    scale: 0.25, // Уменьшаем масштаб для лучшего соответствия
+    speed: 80, // Скорость движения влево
+    movement: 'horizontal', // Движение по прямой влево
+    spawnInterval: 6000, // Увеличиваем интервал появления
+    lastSpawn: 0
+  },
+  balloon: {
+    src: 'sprites/minigames/flappy-bird/objects/flying/balloon.png',
+    originalWidth: 56,
+    originalHeight: 80,
+    scale: 0.35, // Уменьшаем масштаб для лучшего соответствия
+    speed: 30, // Скорость движения вверх-вниз
+    movement: 'vertical', // Движение вверх-вниз
+    spawnInterval: 7000, // Увеличиваем интервал появления
+    lastSpawn: 0
+  },
+  helicopter: {
+    src: 'sprites/minigames/flappy-bird/objects/flying/helicopter.png',
+    originalWidth: 426,
+    originalHeight: 170,
+    scale: 0.16, // Увеличиваем размер вертолета в 2 раза
+    speed: 60, // Скорость движения
+    movement: 'complex', // Сложное движение (влево, вверх, вниз)
+    spawnInterval: 6500, // Увеличиваем интервал появления
+    lastSpawn: 0
+  },
+  ufo: {
+    src: 'sprites/minigames/flappy-bird/objects/flying/ufo.png',
+    originalWidth: 808,
+    originalHeight: 173,
+    scale: 0.08, // Значительно уменьшаем масштаб НЛО
+    speed: 40, // Скорость движения
+    movement: 'random', // Случайная траектория
+    spawnInterval: 8000, // Увеличиваем интервал появления
+    lastSpawn: 0
+  },
+  missile: {
+    src: 'sprites/minigames/flappy-bird/objects/flying/missle.png',
+    originalWidth: 94,
+    originalHeight: 34,
+    scale: 0.22, // Масштаб ракеты под игру
+    speed: 220, // Горизонтальная скорость
+    movement: 'missile', // Горизонтальный полёт влево
+    spawnInterval: 9999999, // Не спавним из общего цикла
+    lastSpawn: 0
+  }
+};
+
 const FLYING_OBJECT_SIZE = 32;
 const FLYING_OBJECT_GAP = 100; // Расстояние между летящими объектами
+
+// Система снарядов
+const BULLET_SPEED = 200; // Скорость снаряда
+const BULLET_SIZE = 2; // Уменьшаем размер снаряда
+const BULLET_COOLDOWN = 500; // Задержка между выстрелами в мс
 
 function getRandomBuildingSprite() {
   const buildingTypes = Object.keys(BUILDING_SPRITES);
@@ -239,6 +298,197 @@ function getRandomFlyingObjectY() {
 function getRandomBuildingY() {
   // Функция больше не используется, так как здания позиционируются через bottom: 0
   return 0;
+}
+
+// Функции для работы с летающими объектами
+function getRandomFlyingObject() {
+  const objectTypes = Object.keys(FLYING_OBJECTS);
+  const randomType = objectTypes[Math.floor(Math.random() * objectTypes.length)];
+  return { type: randomType, ...FLYING_OBJECTS[randomType] };
+}
+
+function createFlyingObject(type, containerWidth, containerHeight, scale) {
+  const object = FLYING_OBJECTS[type];
+  if (!object) return null;
+  
+  // Базовые размеры с учётом запрошенного масштаба
+  const baseWidth = object.originalWidth * object.scale * scale;
+  const baseHeight = object.originalHeight * object.scale * scale;
+
+  // Сохраняем соотношение сторон: масштабируем ТОЛЬКО равномерно вниз при необходимости
+  let scaleFactor = 1;
+
+  // Типовые ограничения (НЛО меньше остальных)
+  if (type === 'ufo') {
+    const typeMaxWidth = 50 * scale;
+    const typeMaxHeight = 30 * scale;
+    if (baseWidth > typeMaxWidth) scaleFactor = Math.min(scaleFactor, typeMaxWidth / baseWidth);
+    if (baseHeight > typeMaxHeight) scaleFactor = Math.min(scaleFactor, typeMaxHeight / baseHeight);
+  }
+
+  // Глобальные ограничения для всех объектов
+  const globalMaxWidth = 80 * scale;
+  const globalMaxHeight = 50 * scale;
+  if (baseWidth * scaleFactor > globalMaxWidth) scaleFactor = Math.min(scaleFactor, globalMaxWidth / baseWidth);
+  if (baseHeight * scaleFactor > globalMaxHeight) scaleFactor = Math.min(scaleFactor, globalMaxHeight / baseHeight);
+
+  // Итоговые размеры без искажения аспектов
+  const width = baseWidth * scaleFactor;
+  const height = baseHeight * scaleFactor;
+  
+  // Начальная позиция за пределами экрана справа
+  const x = containerWidth + width;
+  const y = 20 + Math.random() * (containerHeight / 2 - height - 40);
+  
+  // Дополнительные параметры для разных типов движения
+  let movementParams = {};
+  
+  switch (object.movement) {
+    case 'vertical':
+      movementParams = {
+        verticalDirection: Math.random() > 0.5 ? 1 : -1,
+        verticalSpeed: object.speed * (0.5 + Math.random() * 0.5)
+      };
+      break;
+    case 'complex':
+      movementParams = {
+        verticalDirection: Math.random() > 0.5 ? 1 : -1,
+        verticalSpeed: object.speed * 0.3,
+        directionChangeTimer: 0,
+        directionChangeInterval: 1000 + Math.random() * 2000
+      };
+      break;
+    case 'random':
+      movementParams = {
+        randomAngle: Math.random() * Math.PI * 2,
+        randomSpeed: object.speed * (0.3 + Math.random() * 0.4),
+        directionChangeTimer: 0,
+        directionChangeInterval: 800 + Math.random() * 1200
+      };
+      break;
+    case 'missile':
+      // Ракета летит горизонтально влево
+      object.x -= object.speed * deltaTimeSeconds;
+      break;
+  }
+  
+  return {
+    type,
+    x,
+    y,
+    width,
+    height,
+    src: object.src,
+    speed: object.speed,
+    movement: object.movement,
+    ...movementParams
+  };
+}
+
+function updateFlyingObject(object, deltaTimeSeconds, containerWidth, containerHeight, scale) {
+  const deltaTimeMs = deltaTimeSeconds * 1000;
+  
+  switch (object.movement) {
+    case 'horizontal':
+      // Простое движение влево
+      object.x -= object.speed * deltaTimeSeconds;
+      break;
+      
+    case 'falling':
+      // Падение самолета по диагонали влево-вниз
+      object.x += object.fallDirection * object.fallSpeed * deltaTimeSeconds;
+      object.y += object.fallSpeed * deltaTimeSeconds;
+      break;
+      
+    case 'vertical':
+      // Движение вверх-вниз с горизонтальным движением
+      object.x -= object.speed * 0.5 * deltaTimeSeconds;
+      object.y += object.verticalSpeed * object.verticalDirection * deltaTimeSeconds;
+      
+      // Отражение от границ
+      if (object.y <= 20 || object.y >= containerHeight / 2 - object.height) {
+        object.verticalDirection *= -1;
+      }
+      break;
+      
+    case 'complex':
+      // Сложное движение вертолета
+      object.x -= object.speed * deltaTimeSeconds;
+      object.y += object.verticalSpeed * object.verticalDirection * deltaTimeSeconds;
+      
+      // Смена направления движения
+      object.directionChangeTimer += deltaTimeMs;
+      if (object.directionChangeTimer >= object.directionChangeInterval) {
+        object.verticalDirection *= -1;
+        object.directionChangeTimer = 0;
+        object.directionChangeInterval = 1000 + Math.random() * 2000;
+      }
+      
+      // Ограничения по высоте
+      if (object.y <= 20) {
+        object.y = 20;
+        object.verticalDirection = 1;
+      } else if (object.y >= containerHeight / 2 - object.height) {
+        object.y = containerHeight / 2 - object.height;
+        object.verticalDirection = -1;
+      }
+      break;
+      
+    case 'random':
+      // Случайная траектория НЛО
+      object.x -= object.speed * 0.3 * deltaTimeSeconds;
+      object.y += Math.sin(object.randomAngle) * object.randomSpeed * deltaTimeSeconds;
+      
+      // Смена направления
+      object.directionChangeTimer += deltaTimeMs;
+      if (object.directionChangeTimer >= object.directionChangeInterval) {
+        object.randomAngle = Math.random() * Math.PI * 2;
+        object.directionChangeTimer = 0;
+        object.directionChangeInterval = 800 + Math.random() * 1200;
+      }
+      
+      // Ограничения по высоте
+      if (object.y <= 20) {
+        object.y = 20;
+        object.randomAngle = Math.PI / 2;
+      } else if (object.y >= containerHeight / 2 - object.height) {
+        object.y = containerHeight / 2 - object.height;
+        object.randomAngle = -Math.PI / 2;
+      }
+      break;
+    case 'missile':
+      // Ракета летит горизонтально влево
+      object.x -= object.speed * deltaTimeSeconds;
+      break;
+  }
+  
+  return object;
+}
+
+// Функции для работы со снарядами
+function createBullet(petX, petY, petSize, scale) {
+  // Фиксированный размер снаряда - очень маленький
+  const bulletSize = Math.max(2, Math.min(6, 3 * scale)); // От 2 до 6 пикселей
+  
+  return {
+    x: petX + petSize, // Вылетает из правого края питомца
+    y: petY + petSize / 2 - bulletSize / 2, // Центрируем по вертикали
+    width: bulletSize,
+    height: bulletSize,
+    speed: BULLET_SPEED
+  };
+}
+
+function updateBullet(bullet, deltaTimeSeconds, containerWidth) {
+  bullet.x += bullet.speed * deltaTimeSeconds;
+  return bullet.x < containerWidth + bullet.width;
+}
+
+function checkBulletCollision(bullet, object) {
+  return bullet.x < object.x + object.width &&
+         bullet.x + bullet.width > object.x &&
+         bullet.y < object.y + object.height &&
+         bullet.y + bullet.height > object.y;
 }
 
 // --- Doodle Jump MiniGame ---
@@ -3990,11 +4240,29 @@ const FlyingOverCityGame = React.forwardRef(({ petSprite, onClose, petId }, ref)
   const petY = useRef(0);
   const velocityY = useRef(0);
   const obstacles = useRef([]);
+  const flyingObjects = useRef([]); // Новый массив для летающих объектов
+  const bullets = useRef([]); // Массив для снарядов
+  const missiles = useRef([]); // Массив для ракет, выпущенных вертолётами
   const backgroundLayers = useRef([]);
   const backgroundSet = useRef(getRandomBackgroundSet());
   
   // refs для параллакс фона
   const backgroundY = useRef(0);
+  
+  // Таймеры для появления летающих объектов
+  const flyingObjectTimers = useRef({
+    airplane: 0,
+    balloon: 0,
+    helicopter: 0,
+    ufo: 0
+  });
+  
+  // Таймер для стрельбы
+  const lastShotTime = useRef(0);
+  const lastHeliShotTime = useRef(0);
+  const HELI_SHOOT_INTERVAL_MIN = 2500;
+  const HELI_SHOOT_INTERVAL_MAX = 5000;
+  let nextHeliShootDelay = useRef(HELI_SHOOT_INTERVAL_MIN);
   
   // Инициализация позиции питомца после получения размеров контейнера
   useEffect(() => {
@@ -4004,13 +4272,29 @@ const FlyingOverCityGame = React.forwardRef(({ petSprite, onClose, petId }, ref)
     }
   }, [containerSize.width, containerSize.height, scale]);
   
-  // Экспортируем функцию прыжка через ref
+  // Функция стрельбы
+  const shoot = () => {
+    if (!gameOver) {
+      const currentTime = performance.now();
+      if (currentTime - lastShotTime.current > BULLET_COOLDOWN) {
+        const petSize = getScaledFlappyPetSize(scale);
+        console.log('Создание снаряда:', { petX: petX.current, petY: petY.current, petSize, scale });
+        const bullet = createBullet(petX.current, petY.current, petSize, scale);
+        console.log('Созданный снаряд:', bullet);
+        bullets.current.push(bullet);
+        lastShotTime.current = currentTime;
+      }
+    }
+  };
+
+  // Экспортируем функции через ref
   React.useImperativeHandle(ref, () => ({
     jump: () => {
       if (!gameOver) {
         velocityY.current = JUMP_VELOCITY;
       }
-    }
+    },
+    shoot: shoot
   }));
 
   // Награждение питомца
@@ -4060,6 +4344,124 @@ const FlyingOverCityGame = React.forwardRef(({ petSprite, onClose, petId }, ref)
       // Удаление препятствий за пределами экрана
       obstacles.current = obstacles.current.filter(obstacle => obstacle.x > -obstacle.width);
       
+      // Обновление летающих объектов
+      for (let flyingObject of flyingObjects.current) {
+        updateFlyingObject(flyingObject, deltaTimeSeconds, containerSize.width, containerSize.height, scale);
+      }
+      
+      // Обновление снарядов
+      bullets.current = bullets.current.filter(bullet => 
+        updateBullet(bullet, deltaTimeSeconds, containerSize.width)
+      );
+      
+      // Обновление ракет
+      for (let missile of missiles.current) {
+        updateFlyingObject(missile, deltaTimeSeconds, containerSize.width, containerSize.height, scale);
+      }
+      missiles.current = missiles.current.filter(m => m.x > -m.width);
+      
+      // Вертолёты стреляют ракетами с интервалом
+      const sinceLastHeliShot = currentTime - (lastHeliShotTime.current || 0);
+      if (sinceLastHeliShot > nextHeliShootDelay.current) {
+        // Выбираем случайный видимый вертолёт
+        const helis = flyingObjects.current.filter(o => o.type === 'helicopter');
+        if (helis.length > 0) {
+          const shooter = helis[Math.floor(Math.random() * helis.length)];
+          // Создаём ракету из положения вертолёта
+          const cfg = FLYING_OBJECTS.missile;
+          const baseW = cfg.originalWidth * cfg.scale * scale;
+          const baseH = cfg.originalHeight * cfg.scale * scale;
+          missiles.current.push({
+            type: 'missile',
+            x: shooter.x, // старт у вертолёта
+            y: shooter.y + shooter.height / 2 - baseH / 2,
+            width: baseW,
+            height: baseH,
+            src: cfg.src,
+            speed: cfg.speed,
+            movement: cfg.movement
+          });
+          lastHeliShotTime.current = currentTime;
+          nextHeliShootDelay.current = HELI_SHOOT_INTERVAL_MIN + Math.random() * (HELI_SHOOT_INTERVAL_MAX - HELI_SHOOT_INTERVAL_MIN);
+        }
+      }
+      
+      // Проверка столкновений снарядов с летающими объектами
+      for (let i = bullets.current.length - 1; i >= 0; i--) {
+        const bullet = bullets.current[i];
+        let bulletHit = false;
+        
+        for (let j = flyingObjects.current.length - 1; j >= 0; j--) {
+          const flyingObject = flyingObjects.current[j];
+          
+          if (checkBulletCollision(bullet, flyingObject)) {
+            // Удаляем снаряд
+            bullets.current.splice(i, 1);
+            bulletHit = true;
+            
+            // Обрабатываем попадание в зависимости от типа объекта
+            if (flyingObject.type === 'airplane') {
+              // Самолет начинает падать
+              flyingObject.movement = 'falling';
+              flyingObject.fallSpeed = 100;
+              flyingObject.fallDirection = -1; // Влево
+            } else if (flyingObject.type === 'helicopter' || flyingObject.type === 'ufo') {
+              // Вертолет и НЛО исчезают
+              flyingObjects.current.splice(j, 1);
+            }
+            // Воздушный шар игнорируется
+            break;
+          }
+        }
+        
+        // Попадание в ракету — ракета уничтожается
+        if (!bulletHit) {
+          for (let k = missiles.current.length - 1; k >= 0; k--) {
+            const m = missiles.current[k];
+            if (checkBulletCollision(bullet, m)) {
+              bullets.current.splice(i, 1);
+              missiles.current.splice(k, 1);
+              bulletHit = true;
+              break;
+            }
+          }
+        }
+        
+        if (bulletHit) break;
+      }
+      
+      // Удаление летающих объектов за пределами экрана
+      flyingObjects.current = flyingObjects.current.filter(obj => 
+        obj.x > -obj.width * 1.5 && // Удаляем немного раньше
+        obj.y > -obj.height * 1.5 && 
+        obj.y < containerSize.height + obj.height * 1.5
+      );
+      
+      // Создание новых летающих объектов
+      const gameTime = currentTime;
+      const maxFlyingObjects = 3; // Максимальное количество летающих объектов одновременно
+      
+      // Проверяем, сколько объектов каждого типа уже на экране
+      const objectCounts = {};
+      for (let obj of flyingObjects.current) {
+        objectCounts[obj.type] = (objectCounts[obj.type] || 0) + 1;
+      }
+      
+      for (let [type, config] of Object.entries(FLYING_OBJECTS)) {
+        const currentCount = objectCounts[type] || 0;
+        const maxPerType = type === 'ufo' ? 1 : 2; // НЛО максимум 1, остальные максимум 2
+        
+        if (gameTime - flyingObjectTimers.current[type] > config.spawnInterval && 
+            currentCount < maxPerType && 
+            flyingObjects.current.length < maxFlyingObjects) {
+          const newObject = createFlyingObject(type, containerSize.width, containerSize.height, scale);
+          if (newObject) {
+            flyingObjects.current.push(newObject);
+            flyingObjectTimers.current[type] = gameTime;
+          }
+        }
+      }
+      
       // Создание новых препятствий
       if (obstacles.current.length === 0 || 
           obstacles.current[obstacles.current.length - 1].x < containerSize.width - getScaledFlappyObstacleInterval(scale)) {
@@ -4075,12 +4477,23 @@ const FlyingOverCityGame = React.forwardRef(({ petSprite, onClose, petId }, ref)
         });
       }
       
-      // Проверка столкновений
+      // Проверка столкновений с препятствиями
       for (let obstacle of obstacles.current) {
         if (petX.current < obstacle.x + obstacle.width &&
             petX.current + getScaledFlappyPetSize(scale) > obstacle.x &&
             petY.current < obstacle.y + obstacle.height &&
             petY.current + getScaledFlappyPetSize(scale) > obstacle.y) {
+          setGameOver(true);
+          break;
+        }
+      }
+      
+      // Проверка столкновений с летающими объектами
+      for (let flyingObject of flyingObjects.current) {
+        if (petX.current < flyingObject.x + flyingObject.width &&
+            petX.current + getScaledFlappyPetSize(scale) > flyingObject.x &&
+            petY.current < flyingObject.y + flyingObject.height &&
+            petY.current + getScaledFlappyPetSize(scale) > flyingObject.y) {
           setGameOver(true);
           break;
         }
@@ -4113,6 +4526,9 @@ const FlyingOverCityGame = React.forwardRef(({ petSprite, onClose, petId }, ref)
     const handleKey = (e) => {
       if (e.code === 'Space' && !gameOver) {
         velocityY.current = JUMP_VELOCITY;
+      }
+      if (e.code === 'KeyX' && !gameOver) {
+        shoot();
       }
     };
     
@@ -4147,6 +4563,23 @@ const FlyingOverCityGame = React.forwardRef(({ petSprite, onClose, petId }, ref)
     
     // Очистка препятствий
     obstacles.current = [];
+    
+    // Очистка летающих объектов
+    flyingObjects.current = [];
+    
+    // Очистка снарядов
+    bullets.current = [];
+    
+    // Сброс таймеров летающих объектов
+    flyingObjectTimers.current = {
+      airplane: 0,
+      balloon: 0,
+      helicopter: 0,
+      ufo: 0
+    };
+    
+    // Сброс таймера стрельбы
+    lastShotTime.current = 0;
     
     // Сброс параллакс фона
     backgroundY.current = 0;
@@ -4189,6 +4622,7 @@ const FlyingOverCityGame = React.forwardRef(({ petSprite, onClose, petId }, ref)
             } else {
               // Правая половина - стрельба
               console.log('Десктопный клик: СТРЕЛЬБА');
+              shoot();
             }
           }
         }
@@ -4212,6 +4646,7 @@ const FlyingOverCityGame = React.forwardRef(({ petSprite, onClose, petId }, ref)
           } else {
             // Правая половина - стрельба
             console.log('Мобильный touch: СТРЕЛЬБА');
+            shoot();
           }
         }
       }}
@@ -4265,7 +4700,7 @@ const FlyingOverCityGame = React.forwardRef(({ petSprite, onClose, petId }, ref)
           top: petY.current,
           width: getScaledFlappyPetSize(scale),
           height: getScaledFlappyPetSize(scale),
-          zIndex: 2,
+          zIndex: 4, // Выше летающих объектов
           userSelect: 'none',
           pointerEvents: 'none',
           transform: 'scaleX(-1)', // Отзеркаливаем питомца
@@ -4275,7 +4710,7 @@ const FlyingOverCityGame = React.forwardRef(({ petSprite, onClose, petId }, ref)
       {/* Препятствия */}
       {obstacles.current.map((obstacle, idx) => (
         <img
-          key={idx}
+          key={`obstacle-${idx}`}
           src={obstacle.src}
           alt="obstacle"
           style={{
@@ -4290,6 +4725,75 @@ const FlyingOverCityGame = React.forwardRef(({ petSprite, onClose, petId }, ref)
           }}
         />
       ))}
+      
+      {/* Летающие объекты */}
+      {flyingObjects.current.map((flyingObject, idx) => (
+        <img
+          key={`flying-${flyingObject.type}-${idx}`}
+          src={flyingObject.src}
+          alt={flyingObject.type}
+          style={{
+            position: 'absolute',
+            left: flyingObject.x,
+            top: flyingObject.y,
+            width: flyingObject.width,
+            height: flyingObject.height,
+            zIndex: 3, // Выше питомца и препятствий
+            userSelect: 'none',
+            pointerEvents: 'none',
+          }}
+        />
+      ))}
+      
+      {/* Ракеты вертолётов */}
+      {missiles.current.map((m, idx) => (
+        <img
+          key={`missile-${idx}`}
+          src={FLYING_OBJECTS.missile.src}
+          alt="missile"
+          style={{
+            position: 'absolute',
+            left: m.x,
+            top: m.y,
+            width: m.width,
+            height: m.height,
+            zIndex: 4,
+            userSelect: 'none',
+            pointerEvents: 'none',
+          }}
+        />
+      ))}
+      
+      {/* Снаряды */}
+      {bullets.current.map((bullet, idx) => {
+        console.log(`Снаряд ${idx}:`, bullet);
+        return (
+          <span
+            key={`bullet-${idx}`}
+            style={{
+              position: 'absolute',
+              left: `${bullet.x}px`,
+              top: `${bullet.y}px`,
+              width: `${bullet.width}px`,
+              height: `${bullet.height}px`,
+              minWidth: `${bullet.width}px`,
+              maxWidth: `${bullet.width}px`,
+              minHeight: `${bullet.height}px`,
+              maxHeight: `${bullet.height}px`,
+              backgroundColor: '#FFD700', // Желтый цвет
+              borderRadius: '50%', // Круглая форма
+              zIndex: 5, // Выше всех объектов
+              userSelect: 'none',
+              pointerEvents: 'none',
+              boxSizing: 'border-box',
+              flexShrink: 0,
+              flexGrow: 0,
+              flexBasis: 'auto',
+              display: 'inline-block',
+            }}
+          />
+        );
+      })}
       
       {/* Счёт */}
       <div style={{

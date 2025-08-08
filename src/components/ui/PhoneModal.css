@@ -511,6 +511,7 @@
   min-height: 60px;
   justify-content: center;
   aspect-ratio: 1;
+  position: relative; /* для размещения бэйджа */
 }
 
 .phone-app-icon:hover {
@@ -539,6 +540,310 @@
   flex-direction: column;
   position: relative;
   overflow: hidden;
+}
+
+/* Камера */
+.camera-app {
+  display: grid;
+  grid-template-rows: 180px 1fr; /* превью (с кнопкой), контролы */
+  height: 100%;
+  padding: 8px;
+  gap: 8px;
+}
+
+.camera-preview {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  position: relative;
+  width: 100%;
+}
+
+/* Кнопка съемки поверх нижней границы превью */
+.camera-preview .camera-capture-btn {
+  position: absolute;
+  bottom: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.camera-preview .sprite-container {
+  width: 140px;
+  height: 140px;
+  border: 2px solid rgba(255, 255, 255, 0.35);
+  border-radius: 12px;
+  background: rgba(0,0,0,0.15);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15) inset, 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.camera-flash-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(255,255,255,0.9);
+  animation: flashOut 150ms ease forwards;
+  pointer-events: none;
+}
+
+@keyframes flashOut {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+.camera-controls {
+  display: grid;
+  grid-auto-rows: minmax(0, auto);
+  grid-template-columns: 1fr 1fr; /* две колонки, чтобы уместить все */
+  gap: 4px; /* меньше вертикальный зазор */
+  overflow: hidden;
+}
+
+/* Фикс перекрытия индикаторов у каруселей в камере */
+.camera-controls .options-carousel {
+  width: 100%;
+  margin: 0; /* убираем внешние отступы, чтобы влезло по высоте */
+  position: relative;
+  gap: 4px; /* компактнее внутри камеры */
+}
+
+.camera-controls .options-carousel .position-indicator {
+  display: none !important; /* экономим высоту, индикатор в камере не показываем */
+}
+
+/* Не вылезаем по ширине: учитываем две кнопки по 40px и внутренние отступы */
+.camera-controls .options-carousel .current-option {
+  max-width: 100% !important;
+  min-width: 0;
+  padding: 3px 6px !important;
+  font-size: 11px !important;
+  min-height: 22px !important;
+  line-height: 1.1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Уменьшаем кнопки стрелок внутри камеры */
+.camera-controls .options-carousel .carousel-button {
+  width: 22px !important;
+  height: 22px !important;
+  font-size: 11px !important;
+}
+
+/* Стили кнопки съемки – белая камера с кольцом */
+.camera-preview .camera-capture-btn {
+  position: absolute;
+  
+  left: 50%;
+  transform: translateX(-50%);
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 1px solid rgba(0,0,0,0.08);
+  background: #ffffff;
+  color: #2b2b2b;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.18);
+  z-index: 2;
+  padding: 0;
+  box-sizing: border-box;
+}
+.camera-preview .camera-capture-btn::before {
+  content: "";
+  position: absolute;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 2px solid rgba(255,255,255,0.7);
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,0.03);
+  z-index: 1;
+  pointer-events: none;
+}
+.camera-preview .camera-capture-btn i { font-size: 12px; line-height: 1; }
+
+.camera-actions {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.camera-capture-btn {
+  /* базовый сброс, чтобы не перебивать стили в камере */
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: none;
+  background: transparent;
+  color: inherit;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: none;
+  cursor: pointer;
+}
+
+/* Здоровье */
+.health-app {
+  padding: 8px;
+  height: 100%;
+  box-sizing: border-box;
+  display: grid;
+  grid-template-rows: auto 1fr; /* шапка + список */
+  gap: 8px;
+}
+
+.health-header {
+  display: grid;
+  grid-template-columns: 44px 1fr auto;
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+  border-radius: 12px;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.15);
+}
+
+.health-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #9b59b6, #8e44ad);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+}
+
+.health-title {
+  min-width: 0;
+}
+
+.health-name {
+  font-weight: 700;
+  font-size: 14px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.health-meta {
+  font-size: 11px;
+  opacity: 0.85;
+}
+
+.health-level .health-level-badge {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 6px 8px;
+  border-radius: 999px;
+  color: #fff;
+  background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+  border: 1px solid rgba(255,255,255,0.18);
+}
+
+.health-stat-list {
+  display: grid;
+  grid-auto-rows: minmax(0, auto);
+  grid-template-columns: 1fr;
+  gap: 6px;
+}
+
+.health-stat-card {
+  border-radius: 12px;
+  padding: 6px 8px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.12);
+}
+
+.health-stat-card .stat-body {
+  display: grid;
+  grid-template-columns: 22px 1fr auto;
+  align-items: center;
+  gap: 8px;
+}
+
+.health-stat-card .stat-icon {
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+}
+
+.health-stat-card .stat-info {
+  min-width: 0;
+}
+
+.health-stat-card .stat-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #f3f4f6; /* светлый нейтральный вместо розового */
+}
+
+.health-stat-card .stat-bar {
+  height: 6px;
+  background: rgba(255,255,255,0.22); /* контрастнее с фоном */
+  border: 1px solid rgba(255,255,255,0.35);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.health-stat-card .stat-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #22d3ee, #06b6d4); /* бирюзовая заливка для контраста */
+  box-shadow: 0 0 6px rgba(34, 211, 238, 0.35);
+}
+
+.health-stat-card .stat-value {
+  font-size: 12px;
+  font-weight: 700;
+  background: #ffffff;
+  color: #ec4899; /* розовый текст внутри белого чипа */
+  padding: 2px 8px;
+  border-radius: 999px;
+  line-height: 1.2;
+}
+
+.health-stat-card .stat-bonus {
+  color: inherit; /* совпадает с розовым чипа */
+  margin-left: 4px;
+}
+
+.health-stat-item {
+  display: grid;
+  grid-template-columns: 64px 1fr 28px;
+  align-items: center;
+  gap: 6px;
+}
+
+.health-stat-label {
+  font-size: 12px;
+  color: #2c3e50;
+  text-transform: capitalize;
+}
+
+.health-stat-bar {
+  height: 6px;
+  background: #e9ecef;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.health-stat-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #10b981, #059669);
+}
+
+.health-stat-value {
+  font-size: 12px;
+  font-weight: 600;
+  color: #2c3e50;
+  text-align: right;
 }
 
 .phone-app-header {
@@ -575,10 +880,26 @@
   font-weight: 600;
 }
 
+/* Универсальная кнопка действий в заголовке (например, Прочитать всё) */
+.phone-action-button {
+  margin-left: auto;
+  padding: 4px 8px;
+  border-radius: 8px;
+  background: rgba(255,255,255,0.15);
+  color: #fff;
+  border: 1px solid rgba(255,255,255,0.25);
+  font-size: 10px;
+  line-height: 1;
+}
+
 /* Специальный стиль для заголовка питомца с кнопкой смены */
 .pet-header-with-button h3 {
   flex: 1;
   text-align: center;
+}
+/* Компактный заголовок для приложения питомца */
+.phone-app-header.pet-header-with-button {
+  padding: 8px 12px;
 }
 
 .header-change-pet-btn {
@@ -614,49 +935,97 @@
 }
 
 .phone-contact {
-  display: flex;
+  display: grid;
+  grid-template-columns: 44px 1fr auto;
   align-items: center;
-  padding: 15px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  gap: 12px;
+  padding: 10px 12px;
+  margin-bottom: 8px;
+  border-radius: 12px;
+  background: rgba(0,0,0,0.18);
+  border: 1px solid rgba(255,255,255,0.15);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.12);
   cursor: pointer;
-  transition: background 0.3s ease;
+  transition: transform 0.15s ease, background 0.2s ease;
 }
 
-.phone-contact:hover {
-  background: rgba(255, 255, 255, 0.1);
-}
+.phone-contact:hover { background: rgba(0,0,0,0.24); transform: translateY(-1px); }
 
 .contact-avatar {
-  width: 40px;
-  height: 40px;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+  background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+  color: #ffffff;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: bold;
-  margin-right: 15px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.25);
+  border: 2px solid rgba(255,255,255,0.18);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
 }
+
+/* Вариативные градиенты для лучшей узнаваемости контактов */
+.phone-contact:nth-child(6n+1) .contact-avatar { background: linear-gradient(135deg, #fb7185, #ef4444); }
+.phone-contact:nth-child(6n+2) .contact-avatar { background: linear-gradient(135deg, #34d399, #10b981); }
+.phone-contact:nth-child(6n+3) .contact-avatar { background: linear-gradient(135deg, #60a5fa, #3b82f6); }
+.phone-contact:nth-child(6n+4) .contact-avatar { background: linear-gradient(135deg, #f59e0b, #f97316); }
+.phone-contact:nth-child(6n+5) .contact-avatar { background: linear-gradient(135deg, #f472b6, #ec4899); }
+.phone-contact:nth-child(6n+6) .contact-avatar { background: linear-gradient(135deg, #8b5cf6, #7c3aed); }
+
+/* Почта (экраны телефона) */
+.phone-app-content .mail-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 10px;
+  height: calc(100% - 44px);
+  overflow-y: auto;
+}
+
+.phone-app-content .mail-list .mail-item {
+  display: grid;
+  grid-template-columns: 28px 1fr auto;
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+  border-radius: 10px;
+  background: rgba(0,255,255,0.08);
+  backdrop-filter: blur(6px);
+  color: #fff;
+}
+
+.phone-app-content .mail-list .mail-item.unread {
+  background: rgba(255,255,255,0.18);
+}
+
+.phone-app-content .mail-list .mail-icon {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+}
+
+.phone-app-content .mail-list .mail-content { display: flex; flex-direction: column; }
+.phone-app-content .mail-list .mail-title { font-size: 12px; font-weight: 600; }
+.phone-app-content .mail-list .mail-meta { font-size: 10px; opacity: 0.85; }
+.phone-app-content .mail-list .mail-dot { width: 8px; height: 8px; border-radius: 50%; background: #22c55e; }
+.phone-app-content .mail-list .mail-empty { color: rgba(255,255,255,0.9); text-align: center; margin-top: 12px; }
 
 .contact-info {
   flex: 1;
 }
 
-.contact-name {
-  font-weight: 600;
-  margin-bottom: 4px;
-}
+.contact-name { font-weight: 800; margin-bottom: 2px; color: #ffffff; text-shadow: 0 1px 2px rgba(0,0,0,0.25); }
 
- .contact-status {
-   font-size: 12px;
-   opacity: 0.8;
- }
+ .contact-status { font-size: 11px; color: rgba(255,255,255,0.9); opacity: 1; }
 
- .contact-chevron {
-   color: #ccc;
-   font-size: 14px;
-   margin-left: auto;
- }
+ .contact-chevron { color: rgba(255,255,255,0.85); font-size: 14px; margin-left: auto; }
 
  /* Детальная страница контакта */
  .phone-contact-details {
@@ -1384,21 +1753,20 @@
 }
 
 .camera-preview {
-  width: 200px;
-  height: 200px;
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  border-radius: 15px;
+  /* переопределение старого блока: центр и без фиксированных margin */
+  width: 100%;
+  height: auto;
+  border: none;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: rgba(0, 0, 0, 0.3);
-  margin-bottom: 30px;
+  background: transparent;
+  margin: 0;
 }
 
 .camera-preview i {
   font-size: 48px;
-  margin-bottom: 10px;
+  
   opacity: 0.7;
 }
 
@@ -1407,10 +1775,7 @@
   opacity: 0.7;
 }
 
-.camera-controls {
-  display: flex;
-  gap: 20px;
-}
+.camera-controls { /* удалено дублирование и !important */ }
 
 .camera-button {
   width: 60px;
@@ -1543,52 +1908,41 @@
   font-size: 48px;
 }
 
-/* Новые приложения */
-.phone-dialer {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  padding: 20px;
-}
+/* Телефон: набор номера и промокоды */
+.phone-dialer { display: grid; grid-template-rows: auto 1fr auto; gap: 10px; padding: 12px 16px 10px; position: relative; }
+.dialer-display { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); border-radius: 12px; padding: 10px 14px; min-height: 60px; display: grid; grid-template-columns: 1fr auto; grid-template-rows: auto auto; column-gap: 8px; row-gap: 2px; }
+.dialer-number { grid-column: 1 / 2; grid-row: 1 / 2; color: #f3f4f6; font-size: 20px; text-align: center; letter-spacing: 1px; white-space: nowrap; overflow-x: auto; overflow-y: hidden; scrollbar-width: none; -ms-overflow-style: none; }
+.dialer-number::-webkit-scrollbar { display: none; }
+.dialer-label { grid-column: 1 / 2; grid-row: 2 / 3; color: rgba(255,255,255,0.75); font-size: 12px; text-align: center; }
+.dialer-tools { grid-column: 2 / 3; grid-row: 1 / 3; display: flex; align-items: center; }
+.dialer-clear { background: none; border: none; color: #f3f4f6; font-size: 18px; cursor: pointer; }
+.dialer-keypad { display: grid; grid-auto-rows: min-content; row-gap: 10px; }
+.keypad-row { display: grid; grid-template-columns: repeat(3, 1fr); column-gap: 14px; }
+.dialer-key { background: rgba(255,255,255,0.14); border: 1px solid rgba(255,255,255,0.2); color: #fff; font-weight: 700; border-radius: 50%; height: 48px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; transition: transform 0.08s ease, background 0.2s; }
+.dialer-key .digit { font-size: 18px; line-height: 1; }
+.dialer-key .letters { font-size: 9px; opacity: 0.8; margin-top: 2px; letter-spacing: 1px; }
+.dialer-key:active { transform: scale(0.96); background: rgba(255,255,255,0.2); }
+.dialer-actions { display: flex; justify-content: center; padding-bottom: 4px; }
+.call-button { width: 48px; height: 48px; border-radius: 50%; border: none; cursor: pointer; color: #fff; display: inline-flex; align-items: center; justify-content: center; box-shadow: 0 6px 12px rgba(16, 185, 129, 0.3); background: linear-gradient(135deg, #34d399, #10b981); }
 
-.dialer-pad {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 15px;
-  margin-top: 20px;
-}
-
-.dialer-button {
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.1);
-  border: none;
-  color: #fff;
-  font-size: 20px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
+/* Анимация звонка */
+.dialer-call-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   display: flex;
   align-items: center;
   justify-content: center;
+  animation: fadeIn 150ms ease;
+  z-index: 3;
 }
+.dialer-call-screen { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; background: transparent; }
+.dialer-call-screen .calling-number { font-size: 22px; color: #ffffff; font-weight: 600; letter-spacing: 1px; text-shadow: 0 1px 2px rgba(0,0,0,0.25); }
+.dialer-call-screen .calling-label { font-size: 12px; color: rgba(255,255,255,0.9); text-shadow: 0 1px 2px rgba(0,0,0,0.25); }
+.dialer-call-screen .end-call { width: 54px; height: 54px; border-radius: 50%; border: none; background: linear-gradient(135deg, #ef4444, #dc2626); color: #fff; box-shadow: 0 8px 16px rgba(239, 68, 68, 0.35); display: inline-flex; align-items: center; justify-content: center; cursor: pointer; }
 
-.dialer-button:hover {
-  background: rgba(255, 255, 255, 0.2);
-  transform: scale(1.1);
-}
-
-.dialer-button.call {
-  background: #00b894;
-  grid-column: span 3;
-  width: 100%;
-  border-radius: 30px;
-}
-
-.dialer-button.call:hover {
-  background: #00a085;
-}
+@keyframes ringPulse { 0% { transform: scale(0.9); opacity: 1;} 100% { transform: scale(1.15); opacity: 0;} }
+@keyframes fadeIn { from { opacity: 0;} to { opacity: 1;} }
 
 .phone-number-display {
   background: rgba(255, 255, 255, 0.1);
@@ -2391,6 +2745,31 @@
     .dock-app span {
       font-size: 8px;
     }
+/* Бэйдж для количества непрочитанных писем */
+.phone-dock .dock-app { position: relative; }
+.app-badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  border-radius: 999px;
+  background: #ef4444;
+  color: #fff;
+  font-size: 10px;
+  line-height: 16px;
+  text-align: center;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.app-badge.wide {
+  min-width: 20px;
+  padding: 0 6px;
+}
   } 
 
 /* Стили для раздела пополнения */
@@ -3386,16 +3765,22 @@
 /* Стили для приложения питомца */
 .pet-view {
   height: 100%;
-  padding: 0;
+  padding: 8px 0;
   display: flex;
   flex-direction: column;
+  align-items: center;
+  overflow: hidden; /* исключаем внутренний скролл */
 }
 
 .pet-container {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  width: 288px;
+  height: 376px;
+  box-sizing: border-box;
+  padding: 8px;
+  gap: 8px;
+  overflow: hidden;
 }
 
 /* Верхняя часть - питомец и имя */
@@ -3403,7 +3788,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 10px 0;
+  padding: 4px 0 2px;
 }
 
 .pet-avatar-container {
@@ -3415,8 +3800,8 @@
 
 .pet-avatar {
   position: relative;
-  width: 100px;
-  height: 100px;
+  width: 92px;
+  height: 92px;
   border-radius: 12px;
   background: linear-gradient(135deg, #e8f5e8, #f1f8e9);
   display: flex;
@@ -3427,8 +3812,8 @@
 }
 
 .pet-avatar img {
-  width: 75px;
-  height: 75px;
+  width: 72px;
+  height: 68px;
   object-fit: contain;
   transition: all 0.3s ease;
 }
@@ -3444,7 +3829,7 @@
 }
 
 .pet-name {
-  font-size: 16px;
+  font-size: 14px;
   font-weight: bold;
   color: #2c3e50;
   text-align: center;
@@ -3491,38 +3876,84 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
+  min-height: 0; /* чтобы контент не выталкивал нижние кнопки */
+  /* без скролла внутри фиксированного блока */
 }
 
-.pet-stat-row {
+/* Способность питомца */
+.pet-ability {
   display: flex;
-  gap: 10px;
+  flex-direction: column;
+  gap: 4px;
 }
 
-.pet-stat-item {
-  flex: 1;
+.pet-ability-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #fff;
+  padding: 6px 8px;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  max-width: 100%;
+}
+
+.pet-ability-icon {
+  font-size: 16px;
+}
+
+.pet-ability-text {
+  font-size: 11px;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.pet-ability-warning {
   display: flex;
   align-items: center;
   gap: 6px;
+  font-size: 11px;
+  color: #c0392b;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.pet-stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;
+}
+
+.pet-stat-compact {
+  display: flex;
+  align-items: center;
+  gap: 4px;
   background: #f8f9fa;
-  padding: 6px 8px;
+  padding: 4px 6px;
   border-radius: 8px;
   border: 1px solid #e9ecef;
 }
 
-.stat-icon {
-  font-size: 14px;
+.pet-container .pet-stats-grid .stat-icon {
+  font-size: 12px;
   min-width: 16px;
 }
 
-.stat-bar {
+.pet-container .pet-stats-grid .stat-bar {
   flex: 1;
-  height: 6px;
+  height: 4px;
   background: #e9ecef;
   border-radius: 3px;
   overflow: hidden;
+  min-width: 0;
 }
 
-.stat-fill {
+.pet-container .pet-stats-grid .stat-fill {
   height: 100%;
   border-radius: 3px;
   transition: width 0.3s ease;
@@ -3544,8 +3975,8 @@
   background: linear-gradient(90deg, #e74c3c, #c0392b);
 }
 
-.stat-value {
-  font-size: 11px;
+.pet-container .pet-stats-grid .stat-value {
+  font-size: 10px;
   font-weight: 600;
   color: #2c3e50;
   min-width: 25px;
@@ -3555,15 +3986,15 @@
 /* Нижняя часть - кнопки действий */
 .pet-action-buttons {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr;
-  gap: 6px;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 4px;
 }
 
 .pet-action-btn {
   background: linear-gradient(135deg, #9b59b6, #8e44ad);
   color: white;
   border: none;
-  padding: 8px 4px;
+  padding: 6px 4px;
   border-radius: 8px;
   font-size: 10px;
   font-weight: 600;
@@ -3575,7 +4006,7 @@
   justify-content: center;
   gap: 3px;
   box-shadow: 0 2px 6px rgba(155, 89, 182, 0.3);
-  min-height: 40px;
+  min-height: 32px;
 }
 
 .pet-action-btn:hover:not(:disabled) {
@@ -3949,18 +4380,19 @@
 /* Мобильные стили для приложения питомца */
 @media (max-width: 768px) {
   .pet-container {
-   
-    gap: 12px;
+    width: 288px; /* сохраняем фиксированный размер на телефоне */
+    height: 376px;
+    gap: 8px;
   }
   
   .pet-avatar {
-    width: 150px;
-    height: 150px;
+    width: 96px;
+    height: 96px;
   }
   
   .pet-avatar img {
-    width: 112px;
-    height: 112px;
+    width: 72px;
+    height: 72px;
   }
   
   .pet-name {

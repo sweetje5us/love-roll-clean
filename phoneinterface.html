@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Телефон</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            width: 288px;
+            height: 376px;
+            overflow: hidden;
+            position: relative;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .phone-button {
+            transition: all 0.2s ease;
+        }
+        .phone-button:active {
+            transform: scale(0.95);
+            opacity: 0.8;
+        }
+        .number-display {
+            text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+        }
+    </style>
+</head>
+<body class="bg-gray-100 flex flex-col border border-gray-300 rounded-lg shadow-xl overflow-hidden">
+    <!-- Отображение номера -->
+    <div class="flex-1 p-4 flex flex-col justify-center">
+        <div class="number-display text-3xl font-light text-center text-gray-800 mb-4 overflow-x-auto whitespace-nowrap" id="phoneNumber">
+            
+        </div>
+        <div class="text-center text-gray-500 text-sm" id="phoneLabel">
+            Наберите номер
+        </div>
+    </div>
+
+    <!-- Calling Screen (hidden by default) -->
+    <div id="callingScreen" class="hidden absolute inset-0 bg-gray-100 flex flex-col items-center justify-center">
+        <div class="text-2xl font-light text-gray-800 mb-2" id="callingNumber"></div>
+        <div class="text-gray-500 mb-8">Вызов...</div>
+        <div class="w-16 h-16 rounded-full bg-red-500 flex items-center justify-center shadow-lg">
+            <i class="fas fa-phone-slash text-white text-2xl"></i>
+        </div>
+    </div>
+
+    <!-- Клавиатура -->
+    <div class="grid grid-cols-3 gap-2 p-3 bg-gray-50">
+        <!-- Кнопки 1-9 -->
+        <button class="phone-button bg-white rounded-full h-14 flex flex-col items-center justify-center shadow-sm" onclick="addNumber('1')">
+            <span class="text-2xl font-light">1</span>
+            <span class="text-xs text-gray-400"></span>
+        </button>
+        <button class="phone-button bg-white rounded-full h-14 flex flex-col items-center justify-center shadow-sm" onclick="addNumber('2')">
+            <span class="text-2xl font-light">2</span>
+            <span class="text-xs text-gray-400">ABC</span>
+        </button>
+        <button class="phone-button bg-white rounded-full h-14 flex flex-col items-center justify-center shadow-sm" onclick="addNumber('3')">
+            <span class="text-2xl font-light">3</span>
+            <span class="text-xs text-gray-400">DEF</span>
+        </button>
+        <button class="phone-button bg-white rounded-full h-14 flex flex-col items-center justify-center shadow-sm" onclick="addNumber('4')">
+            <span class="text-2xl font-light">4</span>
+            <span class="text-xs text-gray-400">GHI</span>
+        </button>
+        <button class="phone-button bg-white rounded-full h-14 flex flex-col items-center justify-center shadow-sm" onclick="addNumber('5')">
+            <span class="text-2xl font-light">5</span>
+            <span class="text-xs text-gray-400">JKL</span>
+        </button>
+        <button class="phone-button bg-white rounded-full h-14 flex flex-col items-center justify-center shadow-sm" onclick="addNumber('6')">
+            <span class="text-2xl font-light">6</span>
+            <span class="text-xs text-gray-400">MNO</span>
+        </button>
+        <button class="phone-button bg-white rounded-full h-14 flex flex-col items-center justify-center shadow-sm" onclick="addNumber('7')">
+            <span class="text-2xl font-light">7</span>
+            <span class="text-xs text-gray-400">PQRS</span>
+        </button>
+        <button class="phone-button bg-white rounded-full h-14 flex flex-col items-center justify-center shadow-sm" onclick="addNumber('8')">
+            <span class="text-2xl font-light">8</span>
+            <span class="text-xs text-gray-400">TUV</span>
+        </button>
+        <button class="phone-button bg-white rounded-full h-14 flex flex-col items-center justify-center shadow-sm" onclick="addNumber('9')">
+            <span class="text-2xl font-light">9</span>
+            <span class="text-xs text-gray-400">WXYZ</span>
+        </button>
+        
+        <!-- Специальные кнопки -->
+        <button class="phone-button bg-white rounded-full h-14 flex flex-col items-center justify-center shadow-sm" onclick="addNumber('*')">
+            <span class="text-2xl font-light">*</span>
+        </button>
+        <button class="phone-button bg-white rounded-full h-14 flex flex-col items-center justify-center shadow-sm" onclick="addNumber('0')">
+            <span class="text-2xl font-light">0</span>
+            <span class="text-xs text-gray-400">+</span>
+        </button>
+        <button class="phone-button bg-white rounded-full h-14 flex flex-col items-center justify-center shadow-sm" onclick="addNumber('#')">
+            <span class="text-2xl font-light">#</span>
+        </button>
+        
+        <!-- Кнопки вызова и удаления -->
+        <button class="phone-button bg-green-500 rounded-full h-14 flex items-center justify-center shadow-sm col-span-1" onclick="callNumber()">
+            <i class="fas fa-phone text-white text-xl"></i>
+        </button>
+        <button class="phone-button bg-gray-200 rounded-full h-14 flex items-center justify-center shadow-sm col-span-1" onclick="deleteNumber()">
+            <i class="fas fa-backspace text-gray-700 text-xl"></i>
+        </button>
+        <button class="phone-button bg-blue-500 rounded-full h-14 flex items-center justify-center shadow-sm col-span-1" onclick="addContact()">
+            <i class="fas fa-user-plus text-white text-xl"></i>
+        </button>
+    </div>
+
+    <script>
+        let phoneNumber = '';
+        const phoneNumberElement = document.getElementById('phoneNumber');
+        const phoneLabelElement = document.getElementById('phoneLabel');
+
+        function addNumber(number) {
+            phoneNumber += number;
+            updateDisplay();
+        }
+
+        function deleteNumber() {
+            phoneNumber = phoneNumber.slice(0, -1);
+            updateDisplay();
+        }
+
+        function updateDisplay() {
+            phoneNumberElement.textContent = formatPhoneNumber(phoneNumber);
+            if (phoneNumber.length === 0) {
+                phoneLabelElement.textContent = 'Наберите номер';
+            } else {
+                phoneLabelElement.textContent = getPhoneLabel(phoneNumber);
+            }
+        }
+
+        function formatPhoneNumber(number) {
+            if (number.length <= 3) return number;
+            if (number.length <= 6) return `${number.slice(0, 3)} ${number.slice(3)}`;
+            return `${number.slice(0, 3)} ${number.slice(3, 6)} ${number.slice(6, 10)}`;
+        }
+
+        function getPhoneLabel(number) {
+            if (number.length < 3) return 'Короткий номер';
+            if (number.length < 10) return 'Локальный номер';
+            if (number.length === 10) return 'Мобильный номер';
+            return 'Международный номер';
+        }
+
+        function callNumber() {
+            if (phoneNumber.length === 0) {
+                alert('Введите номер для вызова');
+                return;
+            }
+            
+            const callingScreen = document.getElementById('callingScreen');
+            const callingNumber = document.getElementById('callingNumber');
+            
+            // Show calling screen
+            callingScreen.classList.remove('hidden');
+            callingNumber.textContent = formatPhoneNumber(phoneNumber);
+            
+            // Hide after 3 seconds (simulating call)
+            setTimeout(() => {
+                callingScreen.classList.add('hidden');
+                phoneNumber = '';
+                updateDisplay();
+            }, 3000);
+        }
+
+        function addContact() {
+            if (phoneNumber.length === 0) {
+                alert('Введите номер для добавления в контакты');
+                return;
+            }
+            const name = prompt('Введите имя контакта:');
+            if (name) {
+                alert(`Контакт "${name}" с номером ${phoneNumber} добавлен`);
+                // Здесь будет логика добавления в контакты
+            }
+        }
+    </script>
+</body>
+</html>

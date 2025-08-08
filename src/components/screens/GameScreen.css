@@ -68,6 +68,23 @@
   min-height: 80px;
 }
 
+/* Скрыть аватар в верхней панели */
+.game-top-panel .game-character-avatar,
+.game-top-panel .game-character-preview,
+.game-top-panel .game-default-avatar,
+.game-top-panel .game-character-level-badge {
+  display: none !important;
+}
+
+/* Скрыть только кнопки отношений, магазина, инвентаря, питомца, но оставить телефон и паузу */
+.game-navigation-buttons .game-nav-button {
+  display: none !important;
+}
+.game-navigation-buttons .game-nav-button[title="Телефон"],
+.game-navigation-buttons .game-nav-button[title="Пауза"] {
+  display: inline-flex !important;
+}
+
 /* Основная игровая область */
 .game-main-area {
   position: relative;
