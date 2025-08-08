@@ -797,7 +797,18 @@
   border: 2px solid rgba(79, 70, 229, 0.4) !important;
   color: #4c1d95 !important;
   position: relative;
-  padding-left: 180px !important;
+  padding-left: 160px !important; /* резерв слева под плашку проверки */
+  display: grid;
+  grid-template-columns: 160px 1fr;
+  grid-template-areas: 'stat content';
+}
+.choice-button .choice-text-line {
+  display: block;
+}
+
+.choice-button-dice-check .choice-text-line {
+  grid-area: content;
+  display: block;
 }
 
 .choice-button-dice-check:hover {
@@ -808,55 +819,45 @@
 }
 
 .choice-button-dice-check .stat-label {
-  position: absolute;
-  left: 6px;
-  top: 50%;
-  transform: translateY(-50%);
-  background: none;
-  color: #ff8cc6;
-  font-size: 10px;
-  font-weight: 700;
-  padding: 2px 4px;
-  border-radius: 4px;
-  text-transform: uppercase;
-  letter-spacing: 0.3px;
-  width: 145px;
-  text-align: left;
+  grid-area: stat;
+  align-self: center;
+  justify-self: start;
+  width: 140px;
   display: flex;
   align-items: center;
-  justify-content: flex-start;
-  flex-direction: row;
-  line-height: 1;
   gap: 6px;
+  background: rgba(79,70,229,0.1);
+  border: 1px solid rgba(79,70,229,0.25);
+  color: #3b0764;
+  padding: 6px 8px;
+  border-radius: 8px;
+  text-align: left;
+  line-height: 1.1;
 }
 
 .choice-button-dice-check .stat-label .stat-name {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  justify-content: center;
-  gap: 3px;
+  gap: 4px;
   font-size: 10px;
-  color: #ff8cc6;
-  border: 1px solid rgba(255, 140, 198, 0.3);
-  border-radius: 3px;
-  padding: 1px 4px;
+  color: #3b0764;
 }
 
 .choice-button-dice-check .stat-label .stat-name i {
   font-size: 10px;
   margin: 0;
   flex-shrink: 0;
-  color: #ff8cc6;
+  color: #3b0764;
 }
 
 .choice-button-dice-check .stat-label .stat-bonus {
   font-size: 10px;
   font-weight: 800;
-  color: #ff8cc6;
-  border: 1px solid rgba(255, 140, 198, 0.3);
-  border-radius: 3px;
-  padding: 1px 4px;
-  text-shadow: none;
+  color: #075985;
+  background: rgba(14,165,233,0.12);
+  border: 1px solid rgba(14,165,233,0.35);
+  border-radius: 4px;
+  padding: 1px 6px;
 }
 
 .choice-requirement {

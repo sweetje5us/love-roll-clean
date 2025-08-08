@@ -1990,7 +1990,7 @@ const GameScreen = () => {
                       </div>
                     </span>
                   )}
-                  {choiceText}
+                  <span className="choice-text-line">{choiceText}</span>
                   {!isAvailable && choice.requiredItem && (
                     <span className="choice-requirement">
                       (требуется: {episodeManager.getItemName ? episodeManager.getItemName(choice.requiredItem) : choice.requiredItem})
